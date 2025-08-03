@@ -4533,22 +4533,26 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
   console.log('✅ Supabase client initialisé correctement');
 
   async function afficherProfilUtilisateur() {
-    const code = document.getElementById("code-saisi").value.trim();
+    const codeInput = document.getElementById("code-saisi").value.trim().toUpperCase();
     const profilDiv = document.getElementById("profil-resultat");
 
-    if (!code) {
+    if (!codeInput) {
       profilDiv.innerHTML = "<p class='text-red-600'>⚠️ Merci d’entrer un code valide.</p>";
       return;
     }
 
+    // Afficher un message de chargement pendant la requête
+    profilDiv.innerHTML = "<p class='text-gray-600'>⏳ Recherche du profil...</p>";
+
     const { data, error } = await supabaseClient
       .from("users")
-      .select("mbti_type, enneagram_type, certainty_score")
-      .eq("code", code)
+      .select("mbti_type, enneagram_type, result_certainty")
+      .eq("code", codeInput)
       .single();
+    console.log(data, error);
 
     if (error || !data) {
-      profilDiv.innerHTML = "<p class='text-red-600'>❌ Aucun profil trouvé pour ce code.</p>";
+      profilDiv.innerHTML = "<p class='text-red-600'>❌ Code introuvable. Vérifie la saisie.</p>";
       return;
     }
 
@@ -4557,7 +4561,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       <div class="bg-gray-100 p-4 rounded shadow mt-4">
         <p class="mb-2">🧠 Type MBTI : <strong>${data.mbti_type}</strong></p>
         <p class="mb-2">🎭 Ennéatype : <strong>${data.enneagram_type}</strong></p>
-        <p class="mb-2">📊 Indice de certitude : <strong>${data.certainty_score}%</strong></p>
+        <p class="mb-2">📊 Indice de certitude : <strong>${data.result_certainty}%</strong></p>
       </div>
     `;
   }
