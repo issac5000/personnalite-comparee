@@ -230,14 +230,14 @@
             <!-- Badge premium discret -->
             <div class="inline-flex items-center gap-2 px-4 py-2 mb-8 text-sm font-medium text-slate-600 bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-full shadow-sm">
                 <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                Méthode d'évaluation unique au monde
+                Analyse psychologique avancée
             </div>
             
             <!-- Titre principal avec hiérarchie claire -->
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-slate-900 mb-6 leading-tight">
                 Et si vous vous connaissiez
                 <br>
-                <span class="text-blue-600 font-medium"><strong>vraiment</strong></span> ?
+                <span class="text-blue-600 font-medium">vraiment</span> ?
             </h1>
             
             <!-- Sous-titre épuré -->
@@ -284,7 +284,12 @@
             </div>
         </div>
         
-        
+        <!-- Scroll indicator minimaliste -->
+        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+            <div class="w-6 h-10 border-2 border-slate-300 rounded-full flex justify-center">
+                <div class="w-1 h-3 bg-slate-400 rounded-full mt-2 animate-bounce"></div>
+            </div>
+        </div>
     </div>
 
     <!-- How it works -->
@@ -305,7 +310,7 @@
                             <i class="fas fa-user text-xl"></i>
                         </div>
                         <div class="mt-5">
-                            <h3 class="text-lg font-medium text-gray-900"><strong>1. Auto-évaluation</strong></h3>
+                            <h3 class="text-lg font-medium text-gray-900">1. Auto-évaluation</h3>
                             <p class="mt-2 text-base text-gray-500">
                                 Répondez à 16 questions simples pour établir votre propre perception de votre personnalité.
                             </p>
@@ -316,7 +321,7 @@
                             <i class="fas fa-users text-xl"></i>
                         </div>
                         <div class="mt-5">
-                            <h3 class="text-lg font-medium text-gray-900"><strong>2. Évaluation par 3 proches</strong></h3>
+                            <h3 class="text-lg font-medium text-gray-900">2. Évaluation par 3 proches</h3>
                             <p class="mt-2 text-base text-gray-500">
                                 Partagez votre code unique avec 3 personnes de votre entourage qui répondront à 20 questions.
                             </p>
@@ -327,7 +332,7 @@
                             <i class="fas fa-chart-pie text-xl"></i>
                         </div>
                         <div class="mt-5">
-                            <h3 class="text-lg font-medium text-gray-900"><strong>3. Profil complet</strong></h3>
+                            <h3 class="text-lg font-medium text-gray-900">3. Profil complet</h3>
                             <p class="mt-2 text-base text-gray-500">
                                 Recevez une analyse pondérée combinant votre auto-évaluation et les évaluations de vos proches.
                             </p>
@@ -452,33 +457,20 @@
         </div>
     </div>
 
-    <section id="retourver-profil" class="bg-white py-16 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto">
-          <div class="text-center">
-            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl flex justify-center items-center gap-2">
-              <i class="fas fa-search text-blue-500 animate-pulse"></i>
-              Retrouver un profil
-            </h2>
-            <p class="mt-4 text-xl text-gray-500">
-              Saisis le code confidentiel que tu as reçu pour afficher un profil complet.
-            </p>
-          </div>
-          <form onsubmit="event.preventDefault(); afficherProfilUtilisateur();" autocomplete="off" class="mt-12 max-w-lg mx-auto">
-            <div class="flex flex-col sm:flex-row items-center gap-4">
-              <label for="code-saisi" class="sr-only">Code reçu</label>
-              <input type="text" id="code-saisi" class="flex-1 px-6 py-3 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-300 text-base text-center shadow-sm transition" placeholder="ABC123" maxlength="12" required>
-              <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700 transition">
-                <i class="fas fa-eye"></i> Voir le profil
-              </button>
-            </div>
-            <div id="profil-resultat" class="mt-8 text-gray-800 text-base leading-relaxed transition-all duration-300"></div>
-          </form>
+    <section class="max-w-xl mx-auto p-6 bg-white shadow rounded mt-10">
+        <h2 class="text-xl font-semibold mb-4">🔍 Retrouver un profil par code</h2>
+        
+        <div class="mb-4">
+          <label for="code-saisi" class="block text-gray-700 font-medium mb-2">Code reçu :</label>
+          <input type="text" id="code-saisi" class="w-full border border-gray-300 px-4 py-2 rounded" placeholder="Ex: ABC123">
         </div>
+      
+        <button onclick="afficherProfilUtilisateur()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+          Voir le profil
+        </button>
+      
+        <div id="profil-resultat" class="mt-6 text-gray-800 text-base leading-relaxed"></div>
       </section>
-      
-      
-      
-      
       
 
     <!-- Results Preview Section -->
@@ -3550,15 +3542,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             
             // Rediriger vers la section d'évaluation externe
             showExternalEvaluationQuestions();
-            
-            // Scroll automatique vers la section d'auto-évaluation
-            const autoEvalSection = document.getElementById('auto-evaluation');
-            if (autoEvalSection) {
-                autoEvalSection.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-            }
         }
         
         // Fonction pour afficher les questions d'évaluation externe
@@ -4561,8 +4544,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       </div>
     `;
   }
-
 </script>
-</body>
-</html>
 
+
+      
