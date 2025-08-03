@@ -1071,7 +1071,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('2')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1102,7 +1102,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('3')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1133,7 +1133,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('4')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1164,7 +1164,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('5')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1195,7 +1195,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('6')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1226,7 +1226,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('7')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1257,7 +1257,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('8')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1288,7 +1288,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('9')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -3140,9 +3140,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700">Les Type 2 sont motivés par le besoin d'être aimés et nécessaires. Ils sont empathiques, chaleureux et généreux, mais peuvent devenir possessifs et trop axés sur la reconnaissance.</p>
-                        
+
                         <h3 class="text-lg font-semibold text-gray-900">Motivations profondes :</h3>
-                        <div class="bg-red-50 p-4 rounded-lg">
+                        <div class="bg-green-50 p-4 rounded-lg">
                             <p><strong>Peur fondamentale :</strong> Ne pas être aimés ou être inutiles</p>
                             <p><strong>Désir fondamental :</strong> Se sentir appréciés, aimés et nécessaires</p>
                         </div>
@@ -3169,9 +3169,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700">Les Type 3 sont motivés par le besoin de réussir et d'être admirés. Ambitieux et énergiques, ils sont adaptables et conscients de leur image, mais peuvent devenir préoccupés par leur statut.</p>
-                        
+
                         <h3 class="text-lg font-semibold text-gray-900">Motivations profondes :</h3>
-                        <div class="bg-red-50 p-4 rounded-lg">
+                        <div class="bg-yellow-50 p-4 rounded-lg">
                             <p><strong>Peur fondamentale :</strong> Ne pas avoir de valeur personnelle</p>
                             <p><strong>Désir fondamental :</strong> Se sentir précieux et admiré pour leurs réalisations</p>
                         </div>
@@ -3198,9 +3198,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700">Les Type 4 recherchent l'authenticité et un sens personnel. Sensibles et créatifs, ils veulent être compris et exprimer leur individualité. Ils peuvent être introspectifs et parfois mélancoliques.</p>
-                        
+
                         <h3 class="text-lg font-semibold text-gray-900">Motivations profondes :</h3>
-                        <div class="bg-red-50 p-4 rounded-lg">
+                        <div class="bg-blue-50 p-4 rounded-lg">
                             <p><strong>Peur fondamentale :</strong> Ne pas avoir d'identité ou de valeur personnelle</p>
                             <p><strong>Désir fondamental :</strong> Trouver leur véritable identité et s'exprimer de manière authentique</p>
                         </div>
@@ -3227,9 +3227,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700">Les Type 5 veulent comprendre le monde. Ils sont observateurs, innovants et autonomes. Ils peuvent se retirer pour préserver leur énergie et développer leurs connaissances.</p>
-                        
+
                         <h3 class="text-lg font-semibold text-gray-900">Motivations profondes :</h3>
-                        <div class="bg-red-50 p-4 rounded-lg">
+                        <div class="bg-blue-50 p-4 rounded-lg">
                             <p><strong>Peur fondamentale :</strong> Être impuissant, inutile ou incapable</p>
                             <p><strong>Désir fondamental :</strong> Être compétent et comprendre l'environnement</p>
                         </div>
@@ -3256,9 +3256,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700">Les Type 6 recherchent la sécurité et la confiance. Loyaux et fiables, ils anticipent les problèmes et recherchent le soutien. Ils peuvent osciller entre la prudence et l'audace.</p>
-                        
+
                         <h3 class="text-lg font-semibold text-gray-900">Motivations profondes :</h3>
-                        <div class="bg-red-50 p-4 rounded-lg">
+                        <div class="bg-indigo-50 p-4 rounded-lg">
                             <p><strong>Peur fondamentale :</strong> Être sans soutien ou sans direction</p>
                             <p><strong>Désir fondamental :</strong> Être en sécurité et soutenu</p>
                         </div>
@@ -3285,9 +3285,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700">Les Type 7 sont optimistes et aventuriers. Ils recherchent des expériences stimulantes et veulent éviter la douleur et l'ennui. Souvent joyeux, ils peuvent se disperser.</p>
-                        
+
                         <h3 class="text-lg font-semibold text-gray-900">Motivations profondes :</h3>
-                        <div class="bg-red-50 p-4 rounded-lg">
+                        <div class="bg-orange-50 p-4 rounded-lg">
                             <p><strong>Peur fondamentale :</strong> Être privés ou coincés dans la souffrance</p>
                             <p><strong>Désir fondamental :</strong> Être heureux, satisfaits et libres</p>
                         </div>
@@ -3343,9 +3343,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700">Les Type 9 recherchent la paix intérieure et extérieure. Ils sont réceptifs, conciliants et stables. Ils fuient les conflits et peuvent devenir complaisants pour préserver l'harmonie.</p>
-                        
+
                         <h3 class="text-lg font-semibold text-gray-900">Motivations profondes :</h3>
-                        <div class="bg-red-50 p-4 rounded-lg">
+                        <div class="bg-teal-50 p-4 rounded-lg">
                             <p><strong>Peur fondamentale :</strong> Perdre la connexion ou être séparé des autres</p>
                             <p><strong>Désir fondamental :</strong> Maintenir la paix et l'harmonie</p>
                         </div>
