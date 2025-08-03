@@ -3550,6 +3550,15 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             
             // Rediriger vers la section d'évaluation externe
             showExternalEvaluationQuestions();
+            
+            // Scroll automatique vers la section d'auto-évaluation
+            const autoEvalSection = document.getElementById('auto-evaluation');
+            if (autoEvalSection) {
+                autoEvalSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
         }
         
         // Fonction pour afficher les questions d'évaluation externe
@@ -4552,9 +4561,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       </div>
     `;
   }
+
 </script>
 </body>
 </html>
 
-
-      
