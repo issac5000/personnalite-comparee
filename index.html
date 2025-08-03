@@ -31,14 +31,6 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = { darkMode: 'class' };
-      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Supabase JS library -->
    
@@ -46,13 +38,6 @@
         body {
             transition: background-color 0.3s, color 0.3s;
         }
-        .dark .bg-white { background-color: #1f2937; }
-        .dark .bg-gray-50 { background-color: #111827; }
-        .dark .bg-gray-100 { background-color: #1f2937; }
-        .dark .text-gray-900 { color: #f9fafb; }
-        .dark .text-gray-700 { color: #d1d5db; }
-        .dark .text-gray-600 { color: #9ca3af; }
-        .dark .text-gray-500 { color: #6b7280; }
         .rotate-180 {
             transform: rotate(180deg);
         }
@@ -184,9 +169,6 @@
 
 </head>
 <body class="font-sans bg-white text-gray-900">
-    <button id="theme-toggle" class="fixed top-4 right-4 p-2 rounded-full bg-gray-200 text-gray-700 shadow dark:bg-gray-700 dark:text-gray-200">
-        <i id="theme-toggle-icon" class="fas fa-moon"></i>
-    </button>
     <!-- Navigation -->
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -4579,34 +4561,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     `;
   }
 
-</script>
-<script>
-  const themeToggleBtn = document.getElementById('theme-toggle');
-  const themeToggleIcon = document.getElementById('theme-toggle-icon');
-
-  function setTheme(theme) {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-      themeToggleIcon.classList.remove('fa-moon');
-      themeToggleIcon.classList.add('fa-sun');
-    } else {
-      document.documentElement.classList.remove('dark');
-      themeToggleIcon.classList.remove('fa-sun');
-      themeToggleIcon.classList.add('fa-moon');
-    }
-  }
-
-  themeToggleBtn.addEventListener('click', () => {
-    if (document.documentElement.classList.contains('dark')) {
-      localStorage.theme = 'light';
-      setTheme('light');
-    } else {
-      localStorage.theme = 'dark';
-      setTheme('dark');
-    }
-  });
-
-  setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
 </script>
 </body>
 </html>
