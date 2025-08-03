@@ -7,6 +7,7 @@
 
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
 
   <!-- SEO Meta Tags -->
   <meta name="description" content="Découvrez votre vraie personnalité avec notre test MBTI et Ennéagramme gratuit. Analyse objective combinant votre auto-évaluation et l'avis de vos proches.">
@@ -4560,8 +4561,36 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
       </div>
     `;
   }
+// 🔮 Appel à l'API OpenAI pour générer l'analyse IA
+const prompt = `Voici un utilisateur avec un type MBTI "${data.mbti_type}" et un type Ennéagramme "${data.enneagram_type}". Rédige une description pédagogique, claire et personnalisée pour lui permettre de mieux comprendre sa personnalité. Ensuite, donne-lui 2 conseils pour exploiter ses forces et 2 pour travailler sur ses faiblesses.`;
+
+const responseDiv = document.getElementById("ai-response");
+
+try {
+  const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+"Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
+      max_tokens: 500
+    })
+  });
+
+  const result = await aiResponse.json();
+  responseDiv.innerText = result.choices?.[0]?.message?.content || "❌ Erreur : Réponse vide.";
+} catch (err) {
+  responseDiv.innerText = "⚠️ Une erreur est survenue lors de l'appel à l'IA.";
+}
 
 </script>
+
+  <div id="ai-response" style="white-space: pre-line; margin-top: 20px;"></div>
+
 </body>
 </html>
 
