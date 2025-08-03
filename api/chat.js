@@ -19,7 +19,8 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    res.status(200).json({ message: data.choices?.[0]?.message?.content || null });
+console.log("🧠 Réponse brute OpenAI :", data); // 👈 AJOUT ICI
+res.status(200).json({ message: data.choices?.[0]?.message?.content || null });
   } catch (error) {
     res.status(500).json({ error: "Erreur de l'API OpenAI" });
   }
