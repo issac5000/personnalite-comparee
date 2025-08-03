@@ -6,8 +6,6 @@
   <title>Personnalité Comparée | Test MBTI & Ennéagramme Gratuit</title>
 
   <!-- Supabase JS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1.39.6/dist/umd/supabase.min.js"></script>
-<script src="script.js"></script>
 
   <!-- SEO Meta Tags -->
   <meta name="description" content="Découvrez votre vraie personnalité avec notre test MBTI et Ennéagramme gratuit. Analyse objective combinant votre auto-évaluation et l'avis de vos proches.">
@@ -4364,6 +4362,53 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             }
         }
 
+        async function afficherProfilUtilisateur() {
+            const codeInput = document.getElementById("code-saisi").value;
+            const profilDiv = document.getElementById("profil-resultat");
+
+            if (typeof codeInput !== "string") {
+                console.error("Type de code invalide:", typeof codeInput);
+                profilDiv.innerHTML = "<p class='text-red-600'>⚠️ Code invalide.</p>";
+                return;
+            }
+
+            const code = codeInput.trim().toUpperCase();
+            console.log("Code saisi:", code);
+
+            if (!code) {
+                profilDiv.innerHTML = "<p class='text-red-600'>⚠️ Merci d’entrer un code valide.</p>";
+                return;
+            }
+
+            // Animation de chargement
+            profilDiv.innerHTML = '<div class="flex justify-center mt-4"><div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div></div>';
+
+            const { data, error } = await supabase
+                .from("users")
+                .select("mbti_type, enneagram_type, certainty_score")
+                .eq("code", code);
+
+            console.log("Résultat Supabase:", data, "Erreur:", error);
+
+            if (error) {
+                profilDiv.innerHTML = "<p class='text-red-600'>❌ Erreur lors de la récupération du profil.</p>";
+                return;
+            }
+
+            if (data && data.length > 0) {
+                const user = data[0];
+                profilDiv.innerHTML = `
+                <div class="bg-gray-100 p-4 rounded shadow mt-4">
+                  <p class="mb-2">🧠 Type MBTI : <strong>${user.mbti_type}</strong></p>
+                  <p class="mb-2">🎭 Ennéatype : <strong>${user.enneagram_type}</strong></p>
+                  <p class="mb-2">📊 Indice de certitude : <strong>${user.certainty_score}%</strong></p>
+                </div>
+                `;
+            } else {
+                profilDiv.innerHTML = "<p class='text-red-600'>❌ Code invalide ou introuvable.</p>";
+            }
+        }
+
         // Fermer la modale en cliquant à l'extérieur
         window.onclick = function(event) {
             const profileModal = document.getElementById('profile-modal');
@@ -4504,83 +4549,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         </div>
     </div>
 
-<script>
-  // Initialisation correcte du client Supabase
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  console.log('✅ Supabase client initialisé correctement');
-
-  async function afficherProfilUtilisateur() {
-    const codeInput = document.getElementById("code-saisi").value;
-    const profilDiv = document.getElementById("profil-resultat");
-
-    if (typeof codeInput !== "string") {
-      console.error("Type de code invalide:", typeof codeInput);
-      profilDiv.innerHTML = "<p class='text-red-600'>⚠️ Code invalide.</p>";
-      return;
-    }
-
-    const code = codeInput.trim().toUpperCase();
-    console.log("Code saisi:", code);
-
-    if (!code) {
-      profilDiv.innerHTML = "<p class='text-red-600'>⚠️ Merci d’entrer un code valide.</p>";
-      return;
-    }
-
-    // Animation de chargement
-    profilDiv.innerHTML = '<div class="flex justify-center mt-4"><div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div></div>';
-
-    const { data, error } = await supabase
-      .from("users")
-      .select("mbti_type, enneagram_type, certainty_score")
-      .eq("code", code);
-
-    console.log("Résultat Supabase:", data, "Erreur:", error);
-
-    if (error) {
-      profilDiv.innerHTML = "<p class='text-red-600'>❌ Erreur lors de la récupération du profil.</p>";
-      return;
-    }
-
-    if (data && data.length > 0) {
-      const user = data[0];
-      profilDiv.innerHTML = `
-        <div class="bg-gray-100 p-4 rounded shadow mt-4">
-          <p class="mb-2">🧠 Type MBTI : <strong>${user.mbti_type}</strong></p>
-          <p class="mb-2">🎭 Ennéatype : <strong>${user.enneagram_type}</strong></p>
-          <p class="mb-2">📊 Indice de certitude : <strong>${user.certainty_score}%</strong></p>
-        </div>
-      `;
-    } else {
-      profilDiv.innerHTML = "<p class='text-red-600'>❌ Code invalide ou introuvable.</p>";
-    }
-  }
-// 🔮 Appel à l'API OpenAI pour générer l'analyse IA
-const prompt = `Voici un utilisateur avec un type MBTI "${data.mbti_type}" et un type Ennéagramme "${data.enneagram_type}". Rédige une description pédagogique, claire et personnalisée pour lui permettre de mieux comprendre sa personnalité. Ensuite, donne-lui 2 conseils pour exploiter ses forces et 2 pour travailler sur ses faiblesses.`;
-
-const responseDiv = document.getElementById("ai-response");
-
-try {
-  const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-"Authorization": `Bearer ${window.env.OPENAI_API_KEY}`
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.7,
-      max_tokens: 500
-    })
-  });
-
-  const result = await aiResponse.json();
-  responseDiv.innerText = result.choices?.[0]?.message?.content || "❌ Erreur : Réponse vide.";
-} catch (err) {
-  responseDiv.innerText = "⚠️ Une erreur est survenue lors de l'appel à l'IA.";
-}
-
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -4588,6 +4556,8 @@ const supabase = createClient(
   "https://swjnpvfkloubshksobau.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"
 );
+
+window.supabase = supabase;
 
   console.log("✅ Supabase connecté avec succès.");
 
