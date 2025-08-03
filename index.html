@@ -4588,72 +4588,66 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     </div>
 
 <script>
-    let OPENAI_API_KEY = localStorage.getItem('OPENAI_API_KEY');
-    async function sendChatMessage(message) {
-        if (!OPENAI_API_KEY) {
-            OPENAI_API_KEY = prompt('Pour utiliser le chat, entrez votre clé API OpenAI :');
-            if (OPENAI_API_KEY) {
-                localStorage.setItem('OPENAI_API_KEY', OPENAI_API_KEY);
-            } else {
-                return "Le service de chat n'est pas configuré. Veuillez fournir une clé API OpenAI.";
-            }
-        }
-        try {
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${OPENAI_API_KEY}`
-                },
-                body: JSON.stringify({
-                    model: 'gpt-3.5-turbo',
-                    messages: [
-                        { role: 'system', content: 'Tu es un assistant spécialisé en MBTI et Ennéagramme.' },
-                        { role: 'user', content: message }
-                    ]
-                })
-            });
-            if (!response.ok) {
-                console.error('Erreur de l\u2019API OpenAI:', await response.text());
-                return "Impossible de contacter l'IA pour le moment.";
-            }
-            const data = await response.json();
-            return data.choices?.[0]?.message?.content?.trim() || "Réponse vide de l'IA.";
-        } catch (err) {
-            console.error('Exception lors de l\u2019appel OpenAI:', err);
-            return "Une erreur s'est produite lors de la communication avec l'IA.";
-        }
+  async function sendChatMessage(message) {
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { role: 'system', content: 'Tu es un assistant spécialisé en MBTI et Ennéagramme.' },
+            { role: 'user', content: message }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        console.error("Erreur de l’API OpenAI:", await response.text());
+        return "Impossible de contacter l'IA pour le moment.";
+      }
+
+      const data = await response.json();
+      return data.choices?.[0]?.message?.content?.trim() || "Réponse vide de l'IA.";
+    } catch (err) {
+      console.error("Erreur réseau:", err);
+      return "Une erreur est survenue lors de la communication avec l'IA.";
     }
-    function appendMessage(role, text) {
-        const chatBox = document.getElementById('chat-box');
-        if (!chatBox) return;
-        const wrapper = document.createElement('div');
-        wrapper.className = role === 'user' ? 'text-right mb-2' : 'text-left mb-2';
-        wrapper.innerHTML = `<span class="inline-block px-3 py-2 rounded-lg ${role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}">${text}</span>`;
-        chatBox.appendChild(wrapper);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        const sendBtn = document.getElementById('chat-send');
-        const input = document.getElementById('chat-input');
-        if (sendBtn && input) {
-            const sendMessage = async () => {
-                const question = input.value.trim();
-                if (!question) return;
-                appendMessage('user', question);
-                input.value = '';
-                const answer = await sendChatMessage(question);
-                appendMessage('assistant', answer);
-            };
-            sendBtn.addEventListener('click', sendMessage);
-            input.addEventListener('keydown', e => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
+  }
+
+  function appendMessage(role, text) {
+    const chatBox = document.getElementById('chat-box');
+    if (!chatBox) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = role === 'user' ? 'text-right mb-2' : 'text-left mb-2';
+    wrapper.innerHTML = `<span class="inline-block px-3 py-2 rounded-lg ${role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}">${text}</span>`;
+    chatBox.appendChild(wrapper);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const sendBtn = document.getElementById('chat-send');
+    const input = document.getElementById('chat-input');
+    if (sendBtn && input) {
+      const sendMessage = async () => {
+        const question = input.value.trim();
+        if (!question) return;
+        appendMessage('user', question);
+        input.value = '';
+        const answer = await sendChatMessage(question);
+        appendMessage('assistant', answer);
+      };
+      sendBtn.addEventListener('click', sendMessage);
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          sendMessage();
         }
-    });
+      });
+    }
+  });
 </script>
 
 <script type="module">
