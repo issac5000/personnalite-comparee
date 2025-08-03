@@ -4581,13 +4581,26 @@ try {
   responseDiv.innerText = "⚠️ Une erreur est survenue lors de l'appel à l'IA.";
 }
 
-</script>
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  <div id="ai-response" style="white-space: pre-line; margin-top: 20px;"></div>
-<script>
-  window.env = {
-    OPENAI_API_KEY: "${OPENAI_API_KEY}"
-  };
+const supabase = createClient(
+  "https://swjnpvfkloubshksobau.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"
+);
+
+  console.log("✅ Supabase connecté avec succès.");
+
+(async () => {
+  const { data, error } = await supabase.from("users").select("*");
+
+  if (error) {
+    console.error("❌ Erreur Supabase :", error);
+  } else {
+    console.log("📦 Données récupérées :", data);
+  }
+})();
+
 </script>
 
 </body>
