@@ -166,7 +166,6 @@
             display: none;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </head>
 <body class="font-sans bg-white text-gray-900">
@@ -1693,16 +1692,6 @@
                 ]
             }
         ];
-        // 🔐 Fonction pour générer un code unique
-function generateUniqueCode(length = 6) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
-
         // Récupère les questions externes depuis Supabase si l'utilisateur est un proche
 let questions = QUESTIONS_AUTO_EVALUATION;
 // 🔐 Génére un code aléatoire
@@ -2605,11 +2594,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
         function startEvaluationTest(relation) {
             alert(`Évaluation pour un ${relation} - Fonctionnalité en cours de développement`);
-        }
-
-        // Génération de code unique
-        function generateUniqueCode() {
-            return Math.random().toString(36).substr(2, 6).toUpperCase();
         }
 
         // Gestion des modales
@@ -4520,16 +4504,23 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
   // Initialisation correcte du client Supabase
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   console.log('✅ Supabase client initialisé correctement');
 
   async function afficherProfilUtilisateur() {
-    const code = document.getElementById("code-saisi").value.trim().toUpperCase();
+    const codeInput = document.getElementById("code-saisi").value;
     const profilDiv = document.getElementById("profil-resultat");
+
+    if (typeof codeInput !== "string") {
+      console.error("Type de code invalide:", typeof codeInput);
+      profilDiv.innerHTML = "<p class='text-red-600'>⚠️ Code invalide.</p>";
+      return;
+    }
+
+    const code = codeInput.trim().toUpperCase();
+    console.log("Code saisi:", code);
 
     if (!code) {
       profilDiv.innerHTML = "<p class='text-red-600'>⚠️ Merci d’entrer un code valide.</p>";
@@ -4542,24 +4533,27 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     const { data, error } = await supabase
       .from("users")
       .select("mbti_type, enneagram_type, certainty_score")
-      .eq("code", code)
-      .single();
+      .eq("code", code);
 
-    console.log(data, error);
+    console.log("Résultat Supabase:", data, "Erreur:", error);
 
-    if (error || !data) {
-      profilDiv.innerHTML = "<p class='text-red-600'>❌ Code introuvable. Vérifiez les majuscules ou réessayez.</p>";
+    if (error) {
+      profilDiv.innerHTML = "<p class='text-red-600'>❌ Erreur lors de la récupération du profil.</p>";
       return;
     }
 
-    // Affichage propre
-    profilDiv.innerHTML = `
-      <div class="bg-gray-100 p-4 rounded shadow mt-4">
-        <p class="mb-2">🧠 Type MBTI : <strong>${data.mbti_type}</strong></p>
-        <p class="mb-2">🎭 Ennéatype : <strong>${data.enneagram_type}</strong></p>
-        <p class="mb-2">📊 Indice de certitude : <strong>${data.certainty_score}%</strong></p>
-      </div>
-    `;
+    if (data && data.length > 0) {
+      const user = data[0];
+      profilDiv.innerHTML = `
+        <div class="bg-gray-100 p-4 rounded shadow mt-4">
+          <p class="mb-2">🧠 Type MBTI : <strong>${user.mbti_type}</strong></p>
+          <p class="mb-2">🎭 Ennéatype : <strong>${user.enneagram_type}</strong></p>
+          <p class="mb-2">📊 Indice de certitude : <strong>${user.certainty_score}%</strong></p>
+        </div>
+      `;
+    } else {
+      profilDiv.innerHTML = "<p class='text-red-600'>❌ Code invalide ou introuvable.</p>";
+    }
   }
 // 🔮 Appel à l'API OpenAI pour générer l'analyse IA
 const prompt = `Voici un utilisateur avec un type MBTI "${data.mbti_type}" et un type Ennéagramme "${data.enneagram_type}". Rédige une description pédagogique, claire et personnalisée pour lui permettre de mieux comprendre sa personnalité. Ensuite, donne-lui 2 conseils pour exploiter ses forces et 2 pour travailler sur ses faiblesses.`;
