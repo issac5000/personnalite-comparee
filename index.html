@@ -4193,20 +4193,21 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
                 alert('Le résultat final n’est pas encore prêt. Veuillez patienter encore quelques instants.');
                 return;
             }
-            const { mbtiType, enneagramType, mbtiCertainty, enneagramCertainty, overallCertainty } = computeWeightedResults(
+            // Recalculer uniquement les indices de certitude individuels
+            const { mbtiCertainty, enneagramCertainty } = computeWeightedResults(
                 result.user.mbti_scores,
                 result.user.enneagram_scores,
                 result.evaluations
             );
 
             const finalProfile = {
-                name: mbtiType,
+                name: result.user.result_mbti,
                 results: {
-                    mbti: mbtiType,
+                    mbti: result.user.result_mbti,
                     mbtiCertainty,
-                    enneagram: enneagramType,
+                    enneagram: result.user.result_enneagram,
                     enneagramCertainty,
-                    overallCertainty
+                    overallCertainty: result.user.certainty_score
                 },
                 externalEvaluations: result.evaluations.map(ev => ({
                     relation: ev.relation,
@@ -4376,7 +4377,7 @@ const shareText = `Je viens de découvrir mon profil de personnalité complet ! 
 
             const { data, error } = await supabase
                 .from("users")
-                .select("mbti_type, enneagram_type, certainty_score")
+                .select("result_mbti, result_enneagram, certainty_score")
                 .eq("code", code);
 
             console.log("Résultat Supabase:", data, "Erreur:", error);
@@ -4390,8 +4391,8 @@ const shareText = `Je viens de découvrir mon profil de personnalité complet ! 
                 const user = data[0];
                 profilDiv.innerHTML = `
                 <div class="bg-gray-100 p-4 rounded shadow mt-4">
-                  <p class="mb-2">🧠 Type MBTI : <strong>${user.mbti_type}</strong></p>
-                  <p class="mb-2">🎭 Ennéatype : <strong>${user.enneagram_type}</strong></p>
+                  <p class="mb-2">🧠 Type MBTI : <strong>${user.result_mbti}</strong></p>
+                  <p class="mb-2">🎭 Ennéatype : <strong>${user.result_enneagram}</strong></p>
                   <p class="mb-2">📊 Indice de certitude : <strong>${user.certainty_score}%</strong></p>
                 </div>
                 `;
