@@ -4050,6 +4050,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     enneagram: user.result_enneagram,
     certainty: user.certainty_score
 } : null
+
+console.log("✅ Certainty récupéré dans results :", user.certainty_score);
+
             };
             displayProfile(code, simplifiedProfile);
         }
