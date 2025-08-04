@@ -1226,7 +1226,7 @@
                         </div>
                         <div class="faq-content mt-2 hidden">
                             <p class="text-gray-600">
-                                Le score de certitude (en %) représente la différence entre votre type dominant et les autres types. Plus ce score est élevé, plus votre profil est clairement défini. Un score supérieur à 80% indique une forte correspondance, entre 60-80% une bonne correspondance, et en dessous de 60% un profil plus nuancé.
+                                Le score de certitude (en %) reflète le degré de convergence entre votre auto-évaluation et les retours de vos proches. Plus les évaluations s'accordent sur un même profil, plus ce score augmente, sans jamais dépasser 95%.
                             </p>
                         </div>
                     </button>
@@ -2032,7 +2032,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 // Récupérer l'utilisateur
                 const { data: user, error: userError } = await supabase
                     .from('users')
-                    .select('id, mbti_scores, enneagram_scores, mbti_type, enneagram_type')
+                    .select('id, code, mbti_scores, enneagram_scores, mbti_type, enneagram_type')
                     .eq('id', userId)
                     .single();
                 if (userError || !user) {
@@ -2054,20 +2054,29 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     return;
                 }
                 // Calculer le résultat pondéré
-                const { mbtiType, enneagramType, certainty } = computeWeightedResults(user.mbti_scores, user.enneagram_scores, evaluations);
-                // Mettre à jour l’utilisateur avec le résultat final
-                const { error: updateError } = await supabase
-                    .from('users')
-                    .update({
-                        result_mbti: mbtiType,
-                        result_enneagram: enneagramType,
-                        result_certainty: certainty
-                    })
-                    .eq('id', userId);
-                if (updateError) {
-                    console.error('Erreur lors de la mise à jour du résultat final :', updateError);
+                const { mbtiType, enneagramType, mbtiCertainty, enneagramCertainty, overallCertainty } = computeWeightedResults(user.mbti_scores, user.enneagram_scores, evaluations);
+
+                const finalMBTI = String(mbtiType);
+                const finalEnneagram = String(enneagramType);
+                const finalCertaintyScore = overallCertainty;
+
+                console.log('MBTI :', finalMBTI);
+                console.log('Ennéagramme :', finalEnneagram);
+                console.log('Certitude :', finalCertaintyScore);
+
+                const { data, error } = await supabase
+                  .from('users')
+                  .update({
+                    result_mbti: finalMBTI,
+                    result_enneagram: finalEnneagram,
+                    certainty_score: finalCertaintyScore,
+                  })
+                  .eq('code', user.code);
+
+                if (error) {
+                  console.error('❌ Erreur lors de l’update :', error);
                 } else {
-                    console.log('Résultat final calculé et enregistré');
+                  console.log('✅ Données bien enregistrées :', data);
                 }
             } catch (err) {
                 console.error('Exception lors du calcul final des résultats :', err);
@@ -2076,22 +2085,24 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
         /**
          * Calcule un résultat pondéré à partir des scores de l’auto‑évaluation et des évaluations externes.
-         * La pondération suit les pourcentages définis dans la FAQ : 10 % pour soi, 35 % famille, 35 % partenaire, 10 % ami, 10 % collègue.
-         * Si certaines catégories sont absentes, les poids sont rééquilibrés proportionnellement.
+         * La pondération suit : 5 % auto‑évaluation, 30 % famille, 30 % partenaire,
+         * 25 % ami et 10 % collègue. Si certaines catégories sont absentes,
+         * les poids sont rééquilibrés proportionnellement.
          * @param {Object} selfMbtiScores Scores MBTI de l’auto‑évaluation.
          * @param {Object} selfEnneagramScores Scores Ennéagramme de l’auto‑évaluation.
          * @param {Array} evaluations Liste des évaluations externes (chaque objet contient relation, mbti_scores et enneagram_scores).
-         * @returns {Object} Contient le type MBTI final, le type Ennéagramme final et le pourcentage de certitude.
+         * @returns {Object} Contient le type MBTI final, le type Ennéagramme final
+         * et les indices de certitude pour chaque profil.
          */
         function computeWeightedResults(selfMbtiScores, selfEnneagramScores, evaluations) {
             // Définition des poids initiaux pour chaque type de relation
             const baseWeights = {
-                family: 0.35,
-                partner: 0.35,
-                friend: 0.10,
+                family: 0.30,
+                partner: 0.30,
+                friend: 0.25,
                 colleague: 0.10
             };
-            const selfWeight = 0.10;
+            const selfWeight = 0.05;
             // Déterminer les catégories présentes
             const presentRelations = {};
             evaluations.forEach(ev => {
@@ -2102,7 +2113,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             Object.keys(presentRelations).forEach(rel => {
                 totalPresentWeight += baseWeights[rel] || 0;
             });
-            // Rééquilibrer les poids sur la base 0.9 (car 10 % pour soi)
+            // Rééquilibrer les poids sur la base 0.95 (car 5 % pour soi)
             const relationWeights = {};
             Object.keys(presentRelations).forEach(rel => {
                 relationWeights[rel] = ((baseWeights[rel] || 0) / totalPresentWeight) * (1 - selfWeight);
@@ -2118,6 +2129,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 combinedEnneagram[type] += selfEnneagramScores[type] * selfWeight;
             });
             // Ajouter les contributions des évaluations externes
+            const agreement = { mbti: 0, enneagram: 0 };
+
             evaluations.forEach(ev => {
                 const weightPerEval = (relationWeights[ev.relation] || 0) / presentRelations[ev.relation];
                 Object.keys(ev.mbti_scores).forEach(trait => {
@@ -2140,10 +2153,44 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     topEnnea = type;
                 }
             });
-            // Calcul du pourcentage de certitude (pourcentage de la catégorie dominante)
-            const totalEnnea = Object.values(combinedEnneagram).reduce((a, b) => a + b, 0);
-            const certainty = totalEnnea ? Math.round((combinedEnneagram[topEnnea] / totalEnnea) * 100) : 0;
-            return { mbtiType, enneagramType: topEnnea, certainty };
+
+            // Calcul de l'accord (certitude) après connaissance des types finaux
+            // Contribution de l'auto‑évaluation
+            const selfMbtiType =
+                (selfMbtiScores.E > selfMbtiScores.I ? 'E' : 'I') +
+                (selfMbtiScores.S > selfMbtiScores.N ? 'S' : 'N') +
+                (selfMbtiScores.T > selfMbtiScores.F ? 'T' : 'F') +
+                (selfMbtiScores.J > selfMbtiScores.P ? 'J' : 'P');
+            const selfEnneaType = Object.keys(selfEnneagramScores).reduce((a, b) =>
+                selfEnneagramScores[a] > selfEnneagramScores[b] ? a : b
+            );
+            agreement.mbti = selfMbtiType === mbtiType ? selfWeight : 0;
+            agreement.enneagram = selfEnneaType === topEnnea ? selfWeight : 0;
+
+            // Accord des évaluations externes (recalculé maintenant)
+            evaluations.forEach(ev => {
+                const weightPerEval = (relationWeights[ev.relation] || 0) / presentRelations[ev.relation];
+                const evMbtiType =
+                    (ev.mbti_scores.E > ev.mbti_scores.I ? 'E' : 'I') +
+                    (ev.mbti_scores.S > ev.mbti_scores.N ? 'S' : 'N') +
+                    (ev.mbti_scores.T > ev.mbti_scores.F ? 'T' : 'F') +
+                    (ev.mbti_scores.J > ev.mbti_scores.P ? 'J' : 'P');
+                const evEnneaType = Object.keys(ev.enneagram_scores).reduce((a, b) =>
+                    ev.enneagram_scores[a] > ev.enneagram_scores[b] ? a : b
+                );
+                if (evMbtiType === mbtiType) {
+                    agreement.mbti += weightPerEval;
+                }
+                if (evEnneaType === topEnnea) {
+                    agreement.enneagram += weightPerEval;
+                }
+            });
+
+            const mbtiCertainty = Math.min(95, Math.round(agreement.mbti * 100));
+            const enneagramCertainty = Math.min(95, Math.round(agreement.enneagram * 100));
+            const overallCertainty = Math.min(95, Math.round((mbtiCertainty + enneagramCertainty) / 2));
+
+            return { mbtiType, enneagramType: topEnnea, mbtiCertainty, enneagramCertainty, overallCertainty };
         }
 
         /**
@@ -2155,7 +2202,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             try {
                 const { data: user, error: userError } = await supabase
                     .from('users')
-                    .select('id, code, mbti_scores, enneagram_scores, mbti_type, enneagram_type, result_mbti, result_enneagram, result_certainty')
+.select('id, code, mbti_scores, enneagram_scores, mbti_type, enneagram_type, result_mbti, result_enneagram, certainty_score')
                     .eq('code', code)
                     .single();
                 if (userError || !user) {
@@ -2210,9 +2257,30 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 enneagramScores[a] > enneagramScores[b] ? a : b
             );
             
-            // Calculer le score de certitude
+            // Calculer la certitude pour le MBTI (moyenne des écarts entre chaque paire)
+            const mbtiPairs = [
+                ['E', 'I'],
+                ['S', 'N'],
+                ['T', 'F'],
+                ['J', 'P']
+            ];
+            let mbtiCertaintySum = 0;
+            mbtiPairs.forEach(([a, b]) => {
+                const pairTotal = mbtiScores[a] + mbtiScores[b];
+                if (pairTotal > 0) {
+                    mbtiCertaintySum += Math.abs(mbtiScores[a] - mbtiScores[b]) / pairTotal;
+                }
+            });
+            const mbtiCertainty = Math.min(95, Math.round((mbtiCertaintySum / mbtiPairs.length) * 100));
+
+            // Calculer la certitude pour l'Ennéagramme (poids du type dominant)
             const totalEnneagramScore = Object.values(enneagramScores).reduce((a, b) => a + b, 0);
-            const certaintyScore = Math.round((enneagramScores[enneagramType] / totalEnneagramScore) * 100);
+            const enneagramCertainty = totalEnneagramScore
+                ? Math.min(95, Math.round((enneagramScores[enneagramType] / totalEnneagramScore) * 100))
+                : 0;
+
+            // Certitude globale (moyenne des deux indices)
+            const certaintyScore = Math.round((mbtiCertainty + enneagramCertainty) / 2);
             
             // Générer un code unique pour l'utilisateur
             const uniqueCode = generateUniqueCode();
@@ -2222,6 +2290,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 code: uniqueCode,
                 mbtiType,
                 enneagramType,
+                mbtiCertainty,
+                enneagramCertainty,
                 certaintyScore,
                 mbtiScores,
                 enneagramScores,
@@ -2236,6 +2306,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 code: uniqueCode,
                 mbtiType,
                 enneagramType,
+                mbtiCertainty,
+                enneagramCertainty,
                 certaintyScore,
                 mbtiScores,
                 enneagramScores
@@ -2350,23 +2422,31 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                                     <div class="mt-4 bg-green-50 rounded-lg p-4">
                                         <p class="text-gray-700 font-medium">${results.mbtiType}</p>
                                         <p class="text-gray-600 text-sm mt-1">${mbtiDescriptions[results.mbtiType]}</p>
+                                        <div class="mt-4">
+                                            <div class="flex justify-between">
+                                                <span class="text-sm font-medium text-gray-700">Certitude</span>
+                                                <span class="text-sm text-gray-500">${results.mbtiCertainty}%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                                <div class="progress-bar bg-green-600 h-2.5 rounded-full" style="width: ${results.mbtiCertainty}%"></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <h4 class="text-lg font-medium text-gray-900">Profil Ennéagramme</h4>
                                     <div class="mt-4 bg-blue-50 rounded-lg p-4">
                                         <p class="text-gray-700 font-medium">Type ${results.enneagramType}</p>
                                         <p class="text-gray-600 text-sm mt-1">${enneagramDescriptions[results.enneagramType]}</p>
-                                    </div>
-                                    
-                                    <div class="mt-4">
-                                        <div class="flex justify-between">
-                                            <span class="text-sm font-medium text-gray-700">Certitude du résultat</span>
-                                            <span class="text-sm text-gray-500">${results.certaintyScore}%</span>
-                                        </div>
-                                        <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
-                                            <div class="progress-bar bg-blue-600 h-2.5 rounded-full" style="width: ${results.certaintyScore}%"></div>
+                                        <div class="mt-4">
+                                            <div class="flex justify-between">
+                                                <span class="text-sm font-medium text-gray-700">Certitude</span>
+                                                <span class="text-sm text-gray-500">${results.enneagramCertainty}%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                                <div class="progress-bar bg-blue-600 h-2.5 rounded-full" style="width: ${results.enneagramCertainty}%"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -3942,6 +4022,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
             // Récupération du profil via Supabase
             let result = await fetchUserProfileFromSupabase(code);
+         console.log("🧠 Résultat brut depuis Supabase :", result);
+console.log("📘 MBTI :", result.user?.result_mbti);
+console.log("📗 Ennéagramme :", result.user?.result_enneagram);
+console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
+
             if (!result) {
                 // Afficher le message d'erreur
                 document.querySelectorAll('.profile-step').forEach(step => {
@@ -3966,18 +4051,20 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             const { user, evaluations } = result;
             // Construire un objet de profil simplifié compatible avec displayProfile
             const simplifiedProfile = {
-                name: user.mbti_type ? user.mbti_type : 'Profil',
+                name: user.result_mbti || user.mbti_type || 'Profil',
                 selfEvaluationCompleted: true,
                 externalEvaluations: evaluations.map(ev => ({
                     relation: ev.relation,
                     completed: true,
                     completedAt: ev.created_at
                 })),
-                results: user.result_mbti && user.result_enneagram ? {
-                    mbti: user.result_mbti,
-                    enneagram: user.result_enneagram,
-                    certainty: user.result_certainty
-                } : null
+                results: user.result_mbti && user.result_enneagram
+                    ? {
+                        mbti: user.result_mbti,
+                        enneagram: user.result_enneagram,
+                        certainty: user.certainty_score
+                    }
+                    : null
             };
             displayProfile(code, simplifiedProfile);
         }
@@ -4114,12 +4201,21 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 alert('Le résultat final n’est pas encore prêt. Veuillez patienter encore quelques instants.');
                 return;
             }
+            // Recalculer uniquement les indices de certitude individuels
+            const { mbtiCertainty, enneagramCertainty } = computeWeightedResults(
+                result.user.mbti_scores,
+                result.user.enneagram_scores,
+                result.evaluations
+            );
+
             const finalProfile = {
                 name: result.user.result_mbti,
                 results: {
                     mbti: result.user.result_mbti,
+                    mbtiCertainty,
                     enneagram: result.user.result_enneagram,
-                    certainty: result.user.result_certainty
+                    enneagramCertainty,
+                    overallCertainty: result.user.certainty_score
                 },
                 externalEvaluations: result.evaluations.map(ev => ({
                     relation: ev.relation,
@@ -4154,30 +4250,46 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                         </div>
 
                         <!-- Résultats MBTI et Ennéagramme -->
-                        <div class="grid md:grid-cols-2 gap-6 mb-6">
-                            <div class="bg-blue-50 rounded-lg p-4">
-                                <h4 class="font-semibold text-blue-900 mb-2">Type MBTI</h4>
-                                <div class="text-2xl font-bold text-blue-600 mb-2">${profile.results.mbti}</div>
-                                <p class="text-sm text-blue-700">Basé sur l'analyse des fonctions cognitives</p>
-                            </div>
-                            <div class="bg-purple-50 rounded-lg p-4">
-                                <h4 class="font-semibold text-purple-900 mb-2">Ennéagramme</h4>
-                                <div class="text-2xl font-bold text-purple-600 mb-2">${profile.results.enneagram}</div>
-                                <p class="text-sm text-purple-700">Motivations et peurs fondamentales</p>
-                            </div>
-                        </div>
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <h4 class="font-semibold text-blue-900 mb-2">Type MBTI</h4>
+            <div class="text-2xl font-bold text-blue-600 mb-2">${profile.results.mbti}</div>
+            <div class="mt-2">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-blue-900">Certitude</span>
+                <span class="text-sm text-blue-700">${profile.results.mbtiCertainty}%</span>
+              </div>
+              <div class="w-full bg-blue-100 rounded-full h-2 mt-1">
+                <div class="bg-blue-600 h-2 rounded-full" style="width: ${profile.results.mbtiCertainty}%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-purple-50 rounded-lg p-4">
+            <h4 class="font-semibold text-purple-900 mb-2">Ennéagramme</h4>
+            <div class="text-2xl font-bold text-purple-600 mb-2">${profile.results.enneagram}</div>
+            <div class="mt-2">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-purple-900">Certitude</span>
+                <span class="text-sm text-purple-700">${profile.results.enneagramCertainty}%</span>
+              </div>
+              <div class="w-full bg-purple-100 rounded-full h-2 mt-1">
+                <div class="bg-purple-600 h-2 rounded-full" style="width: ${profile.results.enneagramCertainty}%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                        <!-- Certitude -->
-                        <div class="bg-gray-50 rounded-lg p-4 mb-6">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="font-medium text-gray-900">Certitude du résultat</span>
-                                <span class="text-lg font-bold text-green-600">${profile.results.certainty}%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-3">
-                                <div class="bg-green-500 h-3 rounded-full" style="width: ${profile.results.certainty}%"></div>
-                            </div>
-                            <p class="text-sm text-gray-600 mt-2">Basé sur la cohérence entre votre auto-évaluation et les évaluations de vos proches</p>
-                        </div>
+        <!-- Certitude globale -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-medium text-gray-900">Certitude globale</span>
+            <span class="text-lg font-bold text-green-600">${profile.results.overallCertainty}%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div class="bg-green-500 h-3 rounded-full" style="width: ${profile.results.overallCertainty}%"></div>
+          </div>
+          <p class="text-sm text-gray-600 mt-2">Basé sur la cohérence entre votre auto-évaluation et les évaluations de vos proches</p>
+        </div>
 
                         <!-- Détail des évaluations -->
                         <div class="mb-6">
@@ -4235,7 +4347,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 alert('Impossible de partager : le profil complet n’est pas encore disponible.');
                 return;
             }
-            const shareText = `Je viens de découvrir mon profil de personnalité complet ! Je suis ${result.user.result_mbti} (type ${result.user.result_enneagram}) avec ${result.user.result_certainty}% de certitude. Découvrez le vôtre sur https://personnalite-comparee.fr`;
+const shareText = `Je viens de découvrir mon profil de personnalité complet ! Je suis ${result.user.result_mbti} (type ${result.user.result_enneagram}) avec ${result.user.certainty_score}% de certitude. Découvrez le vôtre sur https://personnalite-comparee.fr`;
             if (navigator.share) {
                 navigator.share({
                     title: 'Mon profil de personnalité',
@@ -4273,7 +4385,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
             const { data, error } = await supabase
                 .from("users")
-                .select("mbti_type, enneagram_type, certainty_score")
+                .select("result_mbti, result_enneagram, certainty_score")
                 .eq("code", code);
 
             console.log("Résultat Supabase:", data, "Erreur:", error);
@@ -4287,8 +4399,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 const user = data[0];
                 profilDiv.innerHTML = `
                 <div class="bg-gray-100 p-4 rounded shadow mt-4">
-                  <p class="mb-2">🧠 Type MBTI : <strong>${user.mbti_type}</strong></p>
-                  <p class="mb-2">🎭 Ennéatype : <strong>${user.enneagram_type}</strong></p>
+                  <p class="mb-2">🧠 Type MBTI : <strong>${user.result_mbti}</strong></p>
+                  <p class="mb-2">🎭 Ennéatype : <strong>${user.result_enneagram}</strong></p>
                   <p class="mb-2">📊 Indice de certitude : <strong>${user.certainty_score}%</strong></p>
                 </div>
                 `;
