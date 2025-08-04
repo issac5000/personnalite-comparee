@@ -2058,11 +2058,12 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 // Mettre à jour l’utilisateur avec le résultat final
                 const { error: updateError } = await supabase
                     .from('users')
-                    .update({
-                        result_mbti: mbtiType,
-                        result_enneagram: enneagramType,
-                        result_certainty: overallCertainty
-                    })
+                   .update({
+  result_mbti: mbtiType,
+  result_enneagram: enneagramType,
+  certainty_score: overallCertainty
+})
+
                     .eq('id', userId);
                 if (updateError) {
                     console.error('Erreur lors de la mise à jour du résultat final :', updateError);
