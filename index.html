@@ -4014,6 +4014,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
             // Récupération du profil via Supabase
             let result = await fetchUserProfileFromSupabase(code);
+         console.log("🧠 Résultat brut depuis Supabase :", result);
+console.log("📘 MBTI :", result.user?.result_mbti);
+console.log("📗 Ennéagramme :", result.user?.result_enneagram);
+console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
+
             if (!result) {
                 // Afficher le message d'erreur
                 document.querySelectorAll('.profile-step').forEach(step => {
