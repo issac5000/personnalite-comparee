@@ -2032,7 +2032,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 // Récupérer l'utilisateur
                 const { data: user, error: userError } = await supabase
                     .from('users')
-                    .select('id, mbti_scores, enneagram_scores, mbti_type, enneagram_type')
+                    .select('id, code, mbti_scores, enneagram_scores, mbti_type, enneagram_type')
                     .eq('id', userId)
                     .single();
                 if (userError || !user) {
@@ -2055,20 +2055,28 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 }
                 // Calculer le résultat pondéré
                 const { mbtiType, enneagramType, mbtiCertainty, enneagramCertainty, overallCertainty } = computeWeightedResults(user.mbti_scores, user.enneagram_scores, evaluations);
-                // Mettre à jour l’utilisateur avec le résultat final
-                const { error: updateError } = await supabase
-                    .from('users')
-                   .update({
-  result_mbti: mbtiType,
-  result_enneagram: enneagramType,
-  certainty_score: overallCertainty
-})
 
-                    .eq('id', userId);
-                if (updateError) {
-                    console.error('Erreur lors de la mise à jour du résultat final :', updateError);
+                const finalMBTI = String(mbtiType);
+                const finalEnneagram = String(enneagramType);
+                const finalCertaintyScore = overallCertainty;
+
+                console.log('MBTI :', finalMBTI);
+                console.log('Ennéagramme :', finalEnneagram);
+                console.log('Certitude :', finalCertaintyScore);
+
+                const { data, error } = await supabase
+                  .from('users')
+                  .update({
+                    result_mbti: finalMBTI,
+                    result_enneagram: finalEnneagram,
+                    certainty_score: finalCertaintyScore,
+                  })
+                  .eq('code', user.code);
+
+                if (error) {
+                  console.error('❌ Erreur lors de l’update :', error);
                 } else {
-                    console.log('Résultat final calculé et enregistré');
+                  console.log('✅ Données bien enregistrées :', data);
                 }
             } catch (err) {
                 console.error('Exception lors du calcul final des résultats :', err);
