@@ -4331,7 +4331,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 alert('Impossible de partager : le profil complet n’est pas encore disponible.');
                 return;
             }
-            const shareText = `Je viens de découvrir mon profil de personnalité complet ! Je suis ${result.user.result_mbti} (type ${result.user.result_enneagram}) avec ${result.user.result_certainty}% de certitude. Découvrez le vôtre sur https://personnalite-comparee.fr`;
+const shareText = `Je viens de découvrir mon profil de personnalité complet ! Je suis ${result.user.result_mbti} (type ${result.user.result_enneagram}) avec ${result.user.certainty_score}% de certitude. Découvrez le vôtre sur https://personnalite-comparee.fr`;
             if (navigator.share) {
                 navigator.share({
                     title: 'Mon profil de personnalité',
