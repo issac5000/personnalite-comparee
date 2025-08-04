@@ -4045,11 +4045,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     completed: true,
                     completedAt: ev.created_at
                 })),
-                results: user.result_mbti && user.result_enneagram ? {
-                    mbti: user.result_mbti,
-                    enneagram: user.result_enneagram,
-                    certainty: user.result_certainty
-                } : null
+               results: user.result_mbti && user.result_enneagram ? {
+    mbti: user.result_mbti,
+    enneagram: user.result_enneagram,
+    certainty: user.certainty_score
+} : null
             };
             displayProfile(code, simplifiedProfile);
         }
