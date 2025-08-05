@@ -221,6 +221,18 @@
             color: #084d28;
             border-radius: 16px 16px 4px 16px;
         }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .assistant-bubble.limit-error {
+            background: #ffe5e5;
+            border: 1px solid #ff0000;
+            color: #b30000;
+            font-weight: bold;
+            animation: shake 0.4s;
+        }
         #chat-suggestions {
             display: flex;
             flex-direction: column;
@@ -4769,6 +4781,8 @@ console.log("📗 Ennéagramme :", result.user?.enneagram_type);
     </div>
 
 <script>
+  const LIMIT_MESSAGE = "Tu as atteint ta limite de 10 messages pour aujourd’hui 🤖<br>Psycho’Bot a besoin de recharger ses batteries neuronales !<br>Reviens demain… ou discute avec mon grand frère sur chat.openai.com 😄";
+
   async function sendChatMessage(message) {
     try {
       const response = await fetch('/api/chat', {
@@ -4785,37 +4799,47 @@ console.log("📗 Ennéagramme :", result.user?.enneagram_type);
         })
       });
 
+      if (response.status === 429) {
+        return { message: LIMIT_MESSAGE, limitError: true };
+      }
+
       if (!response.ok) {
         console.error("Erreur de l’API OpenAI:", await response.text());
-        return "Impossible de contacter l'IA pour le moment.";
+        return { message: "Impossible de contacter l'IA pour le moment." };
       }
 
       const data = await response.json();
-return data.message || "Réponse vide de l'IA.";
+      return { message: data.message || "Réponse vide de l'IA." };
 
     } catch (err) {
       console.error("Erreur réseau:", err);
-      return "Une erreur est survenue lors de la communication avec l'IA.";
+      return { message: "Une erreur est survenue lors de la communication avec l'IA." };
     }
   }
 
   let currentTyped = null;
+  let limitErrorShown = false;
 
-  function appendMessage(role, text) {
+  function appendMessage(role, text, options = {}) {
+    const { limitError = false } = options;
+    if (limitError && limitErrorShown) return;
+    if (limitError) limitErrorShown = true;
     const chatBox = document.getElementById('chat-box');
     if (!chatBox) return;
     const wrapper = document.createElement('div');
     wrapper.className = `chat-row ${role === 'user' ? 'user' : 'assistant'}`;
     const bubble = document.createElement('div');
-    bubble.className = `chat-bubble ${role === 'user' ? 'user-bubble' : 'assistant-bubble'}`;
+    let classes = `chat-bubble ${role === 'user' ? 'user-bubble' : 'assistant-bubble'}`;
+    if (limitError) classes += ' limit-error';
+    bubble.className = classes;
     wrapper.appendChild(bubble);
     chatBox.appendChild(wrapper);
 
     if (role === 'assistant') {
       if (currentTyped) {
         currentTyped.destroy();
-        currentTyped.el.textContent =
-          currentTyped.el.dataset.fullText || currentTyped.el.textContent;
+        currentTyped.el.innerHTML =
+          currentTyped.el.dataset.fullText || currentTyped.el.innerHTML;
       }
       bubble.dataset.fullText = text;
       currentTyped = new Typed(bubble, {
@@ -4823,6 +4847,7 @@ return data.message || "Réponse vide de l'IA.";
         typeSpeed: 30,
         showCursor: false,
         loop: false,
+        contentType: 'html',
         onStringTyped: () => {
           chatBox.scrollTop = chatBox.scrollHeight;
         },
@@ -4850,8 +4875,8 @@ return data.message || "Réponse vide de l'IA.";
         if (suggestionContainer) suggestionContainer.remove();
         appendMessage('user', question);
         input.value = '';
-        const answer = await sendChatMessage(question);
-        appendMessage('assistant', answer);
+        const { message, limitError } = await sendChatMessage(question);
+        appendMessage('assistant', message, { limitError });
       };
       sendBtn.addEventListener('click', sendMessage);
       input.addEventListener('keydown', e => {
