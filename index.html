@@ -4616,25 +4616,46 @@ return data.message || "Réponse vide de l'IA.";
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(
-  "https://swjnpvfkloubshksobau.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"
-);
+  const supabaseUrl = "https://swjnpvfkloubshksobau.supabase.co";
+  const supabaseKey =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg";
 
-window.supabase = supabase;
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  window.supabase = supabase;
 
-  console.log("✅ Supabase connecté avec succès.");
-
-(async () => {
-  const { data, error } = await supabase.from("users").select("*");
-
-  if (error) {
-    console.error("❌ Erreur Supabase :", error);
-  } else {
-    console.log("📦 Données récupérées :", data);
+  const externalForm = document.getElementById("external-form");
+  if (externalForm) {
+    externalForm.style.display = "none";
   }
-})();
 
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code")?.toUpperCase();
+
+  if (!code) {
+    alert("Code invalide ou introuvable.");
+  } else {
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .select("uses_count")
+        .eq("code", code)
+        .single();
+
+      if (error || !data) {
+        alert("Code invalide ou introuvable.");
+      } else if (data.uses_count >= 3) {
+        alert(
+          "Ce code a déjà été utilisé 3 fois. Il n’est plus possible de l’utiliser pour une nouvelle évaluation."
+        );
+        window.location.href = "/";
+      } else if (externalForm) {
+        externalForm.style.display = "";
+      }
+    } catch (err) {
+      console.error("Erreur lors de la vérification du code :", err);
+      alert("Code invalide ou introuvable.");
+    }
+  }
 </script>
 
 </body>
