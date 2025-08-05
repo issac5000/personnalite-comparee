@@ -2067,8 +2067,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 const { data, error } = await supabase
                   .from('users')
                   .update({
-                    result_mbti: finalMBTI,
-                    result_enneagram: finalEnneagram,
+                    mbti_type: finalMBTI,
+                    enneagram_type: finalEnneagram,
                     certainty_score: finalCertaintyScore,
                   })
                   .eq('code', user.code);
@@ -2202,7 +2202,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             try {
                 const { data: user, error: userError } = await supabase
                     .from('users')
-.select('id, code, mbti_scores, enneagram_scores, mbti_type, enneagram_type, result_mbti, result_enneagram, certainty_score')
+                    .select('id, code, mbti_scores, enneagram_scores, mbti_type, enneagram_type, certainty_score')
                     .eq('code', code)
                     .single();
                 if (userError || !user) {
@@ -4023,8 +4023,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             // Récupération du profil via Supabase
             let result = await fetchUserProfileFromSupabase(code);
          console.log("🧠 Résultat brut depuis Supabase :", result);
-console.log("📘 MBTI :", result.user?.result_mbti);
-console.log("📗 Ennéagramme :", result.user?.result_enneagram);
+console.log("📘 MBTI :", result.user?.mbti_type);
+console.log("📗 Ennéagramme :", result.user?.enneagram_type);
 console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
 
             if (!result) {
@@ -4038,7 +4038,7 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
 
             // Si le résultat final n'est pas encore calculé mais que
             // trois évaluations externes sont présentes, tenter de le générer.
-            if ((!result.user.result_mbti || !result.user.result_enneagram) &&
+            if ((!result.user.mbti_type || !result.user.enneagram_type) &&
                 result.evaluations.length >= 3) {
                 await checkAndFinalizeResults(result.user.id);
                 result = await fetchUserProfileFromSupabase(code);
@@ -4051,17 +4051,17 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
             const { user, evaluations } = result;
             // Construire un objet de profil simplifié compatible avec displayProfile
             const simplifiedProfile = {
-                name: user.result_mbti || user.mbti_type || 'Profil',
+                name: user.mbti_type || 'Profil',
                 selfEvaluationCompleted: true,
                 externalEvaluations: evaluations.map(ev => ({
                     relation: ev.relation,
                     completed: true,
                     completedAt: ev.created_at
                 })),
-                results: user.result_mbti && user.result_enneagram
+                results: user.mbti_type && user.enneagram_type
                     ? {
-                        mbti: user.result_mbti,
-                        enneagram: user.result_enneagram,
+                        mbti: user.mbti_type,
+                        enneagram: user.enneagram_type,
                         certainty: user.certainty_score
                     }
                     : null
@@ -4189,7 +4189,7 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
                 return;
             }
             // Calculer le résultat final si nécessaire
-            if (!result.user.result_mbti || !result.user.result_enneagram) {
+            if (!result.user.mbti_type || !result.user.enneagram_type) {
                 if (result.evaluations.length >= 3) {
                     await checkAndFinalizeResults(result.user.id);
                     // petite pause pour laisser le temps à la mise à jour
@@ -4197,7 +4197,7 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
                     result = await fetchUserProfileFromSupabase(code);
                 }
             }
-            if (!result.user.result_mbti || !result.user.result_enneagram) {
+            if (!result.user.mbti_type || !result.user.enneagram_type) {
                 alert('Le résultat final n’est pas encore prêt. Veuillez patienter encore quelques instants.');
                 return;
             }
@@ -4209,11 +4209,11 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
             );
 
             const finalProfile = {
-                name: result.user.result_mbti,
+                name: result.user.mbti_type,
                 results: {
-                    mbti: result.user.result_mbti,
+                    mbti: result.user.mbti_type,
                     mbtiCertainty,
-                    enneagram: result.user.result_enneagram,
+                    enneagram: result.user.enneagram_type,
                     enneagramCertainty,
                     overallCertainty: result.user.certainty_score
                 },
@@ -4343,11 +4343,11 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
         async function shareProfileResults(code) {
             // Récupérer le profil final à partager
             const result = await fetchUserProfileFromSupabase(code);
-            if (!result || !result.user.result_mbti || !result.user.result_enneagram) {
+            if (!result || !result.user.mbti_type || !result.user.enneagram_type) {
                 alert('Impossible de partager : le profil complet n’est pas encore disponible.');
                 return;
             }
-const shareText = `Je viens de découvrir mon profil de personnalité complet ! Je suis ${result.user.result_mbti} (type ${result.user.result_enneagram}) avec ${result.user.certainty_score}% de certitude. Découvrez le vôtre sur https://personnalite-comparee.fr`;
+const shareText = `Je viens de découvrir mon profil de personnalité complet ! Je suis ${result.user.mbti_type} (type ${result.user.enneagram_type}) avec ${result.user.certainty_score}% de certitude. Découvrez le vôtre sur https://personnalite-comparee.fr`;
             if (navigator.share) {
                 navigator.share({
                     title: 'Mon profil de personnalité',
@@ -4385,7 +4385,7 @@ const shareText = `Je viens de découvrir mon profil de personnalité complet ! 
 
             const { data, error } = await supabase
                 .from("users")
-                .select("result_mbti, result_enneagram, certainty_score")
+                .select("mbti_type, enneagram_type, certainty_score")
                 .eq("code", code);
 
             console.log("Résultat Supabase:", data, "Erreur:", error);
@@ -4399,8 +4399,8 @@ const shareText = `Je viens de découvrir mon profil de personnalité complet ! 
                 const user = data[0];
                 profilDiv.innerHTML = `
                 <div class="bg-gray-100 p-4 rounded shadow mt-4">
-                  <p class="mb-2">🧠 Type MBTI : <strong>${user.result_mbti}</strong></p>
-                  <p class="mb-2">🎭 Ennéatype : <strong>${user.result_enneagram}</strong></p>
+                  <p class="mb-2">🧠 Type MBTI : <strong>${user.mbti_type}</strong></p>
+                  <p class="mb-2">🎭 Ennéatype : <strong>${user.enneagram_type}</strong></p>
                   <p class="mb-2">📊 Indice de certitude : <strong>${user.certainty_score}%</strong></p>
                 </div>
                 `;
