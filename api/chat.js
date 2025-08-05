@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     const today = new Date().toISOString().split('T')[0];
     const { data: requestRow, error: requestError } = await supabase
-      .from('requests')
+      .from('chat_usage') // ✅ corrigé
       .select('count')
       .eq('client_id', clientId)
       .eq('date', today)
@@ -32,10 +32,10 @@ export default async function handler(req, res) {
     }
 
     if (!requestRow) {
-      await supabase.from('requests').insert({ client_id: clientId, date: today, count: 1 });
+      await supabase.from('chat_usage').insert({ client_id: clientId, date: today, count: 1 }); // ✅ corrigé
     } else if (requestRow.count < 10) {
       await supabase
-        .from('requests')
+        .from('chat_usage') // ✅ corrigé
         .update({ count: requestRow.count + 1 })
         .eq('client_id', clientId)
         .eq('date', today);
