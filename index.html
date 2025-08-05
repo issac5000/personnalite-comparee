@@ -4063,7 +4063,9 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
             const { user, evaluations } = result;
             // Construire un objet de profil simplifié compatible avec displayProfile
             const simplifiedProfile = {
-                name: user.mbti_type || 'Profil',
+                name: user.mbti_type && user.enneagram_type
+                    ? `${user.mbti_type} — type ${user.enneagram_type}`
+                    : user.mbti_type || 'Profil',
                 selfEvaluationCompleted: true,
                 externalEvaluations: evaluations.map(ev => ({
                     relation: ev.relation,
@@ -4225,7 +4227,7 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
             );
 
             const finalProfile = {
-                name: result.user.mbti_type,
+                name: `${result.user.mbti_type} — type ${result.user.enneagram_type}`,
                 results: {
                     mbti: result.user.mbti_type,
                     mbtiCertainty,
