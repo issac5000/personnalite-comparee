@@ -28,9 +28,11 @@
       <meta property="twitter:image" content="logo.jpg">
     
     <!-- Favicon -->
-      <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <!-- Supabase JS library -->
    
     <style>
@@ -2060,8 +2062,16 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 if (!evaluations || evaluations.length < 3) {
                     return;
                 }
-                // Calculer le résultat pondéré
-                const { mbtiType, enneagramType, mbtiCertainty, enneagramCertainty, overallCertainty } = computeWeightedResults(user.mbti_scores, user.enneagram_scores, evaluations);
+                // Calculer les types finaux et certitudes individuelles
+                const { mbtiType, enneagramType, mbtiCertainty, enneagramCertainty } = computeWeightedResults(user.mbti_scores, user.enneagram_scores, evaluations);
+
+                // Préparer les données pour la certitude globale
+                const selfTypes = getProfileFromScores(user.mbti_scores, user.enneagram_scores);
+                const externalTypes = evaluations.map(ev => {
+                    const { mbtiType: mbti, enneagramType: enneagram } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
+                    return { relation: ev.relation, mbti, enneagram };
+                });
+                const { overallCertainty } = computeOverallCertainty({ mbti: selfTypes.mbtiType, enneagram: selfTypes.enneagramType }, externalTypes);
 
                 const finalMBTI = String(mbtiType);
                 const finalEnneagram = String(enneagramType);
@@ -2210,9 +2220,61 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
             const mbtiCertainty = Math.min(95, Math.round(agreement.mbti * 100));
             const enneagramCertainty = Math.min(95, Math.round(agreement.enneagram * 100));
-            const overallCertainty = Math.min(95, Math.round((mbtiCertainty + enneagramCertainty) / 2));
 
-            return { mbtiType, enneagramType: topEnnea, mbtiCertainty, enneagramCertainty, overallCertainty };
+            return { mbtiType, enneagramType: topEnnea, mbtiCertainty, enneagramCertainty };
+        }
+
+        /**
+         * Calcule la certitude globale basée sur la cohérence entre
+         * l'auto‑évaluation et les évaluations externes.
+         * Retourne également les taux de cohérence par groupe.
+         * @param {Object} self Types de l'auto‑évaluation { mbti, enneagram }
+         * @param {Array} externals [{ relation, mbti, enneagram }]
+         * @returns {Object} { overallCertainty, groupCoherence }
+         */
+        function computeOverallCertainty(self, externals) {
+            const weights = {
+                auto: 5,
+                family: 30,
+                partner: 25,
+                friend: 25,
+                colleague: 15
+            };
+            const groups = {
+                family: [],
+                partner: [],
+                friend: [],
+                colleague: []
+            };
+            externals.forEach(ev => {
+                const mbtiMatch = ev.mbti === self.mbti ? 1 : 0;
+                const enneaMatch = ev.enneagram === self.enneagram ? 1 : 0;
+                const coherence = (mbtiMatch + enneaMatch) / 2;
+                if (groups[ev.relation]) {
+                    groups[ev.relation].push(coherence);
+                }
+            });
+            const groupCoherence = {
+                auto: 100,
+                family: 0,
+                partner: 0,
+                friend: 0,
+                colleague: 0
+            };
+            Object.keys(groups).forEach(rel => {
+                if (groups[rel].length > 0) {
+                    const sum = groups[rel].reduce((a, b) => a + b, 0);
+                    groupCoherence[rel] = Math.round((sum / groups[rel].length) * 100);
+                }
+            });
+            let overall =
+                weights.auto +
+                weights.family * (groupCoherence.family / 100) +
+                weights.partner * (groupCoherence.partner / 100) +
+                weights.friend * (groupCoherence.friend / 100) +
+                weights.colleague * (groupCoherence.colleague / 100);
+            overall = Math.round(overall);
+            return { overallCertainty: overall, groupCoherence };
         }
 
         /**
@@ -4234,13 +4296,27 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
                 alert('Le résultat final n’est pas encore prêt. Veuillez patienter encore quelques instants.');
                 return;
             }
-            // Recalculer uniquement les indices de certitude individuels
+            // Recalculer les indices de certitude individuels
             const { mbtiCertainty, enneagramCertainty } = computeWeightedResults(
                 result.user.mbti_scores,
                 result.user.enneagram_scores,
                 result.evaluations
             );
             const selfProfile = getProfileFromScores(result.user.mbti_scores, result.user.enneagram_scores);
+            const externalProfiles = result.evaluations.map(ev => {
+                const { mbtiType, enneagramType } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
+                return {
+                    relation: ev.relation,
+                    mbti: mbtiType,
+                    enneagram: enneagramType,
+                    completed: true,
+                    completedAt: ev.created_at
+                };
+            });
+            const { overallCertainty, groupCoherence } = computeOverallCertainty(
+                { mbti: selfProfile.mbtiType, enneagram: selfProfile.enneagramType },
+                externalProfiles.map(ev => ({ relation: ev.relation, mbti: ev.mbti, enneagram: ev.enneagram }))
+            );
             const finalProfile = {
                 name: `${result.user.mbti_type} — type ${result.user.enneagram_type}`,
                 results: {
@@ -4248,22 +4324,14 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
                     mbtiCertainty,
                     enneagram: result.user.enneagram_type,
                     enneagramCertainty,
-                    overallCertainty: result.user.certainty_score
+                    overallCertainty
                 },
                 selfEvaluation: {
                     mbti: selfProfile.mbtiType,
                     enneagram: selfProfile.enneagramType
                 },
-                externalEvaluations: result.evaluations.map(ev => {
-                    const { mbtiType, enneagramType } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
-                    return {
-                        relation: ev.relation,
-                        mbti: mbtiType,
-                        enneagram: enneagramType,
-                        completed: true,
-                        completedAt: ev.created_at
-                    };
-                })
+                externalEvaluations: externalProfiles,
+                coherence: groupCoherence
             };
             // Fermer la modale
             closeProfileModal();
@@ -4333,6 +4401,11 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
           <p class="text-sm text-gray-600 mt-2">Basé sur la cohérence entre votre auto-évaluation et les évaluations de vos proches</p>
         </div>
 
+        <!-- Graphique de cohérence -->
+        <div class="bg-white rounded-lg p-4 mb-6">
+          <canvas id="coherenceChart" height="200"></canvas>
+        </div>
+
                         <!-- Détail des évaluations -->
                         <div class="mb-6">
                             <h4 class="font-semibold text-gray-900 mb-3">Détail des évaluations</h4>
@@ -4375,6 +4448,40 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
             
             // Ajouter la modale au DOM
             document.body.appendChild(resultsModal);
+
+            // Initialiser le graphique de cohérence
+            const ctx = resultsModal.querySelector('#coherenceChart').getContext('2d');
+            Chart.register(ChartDataLabels);
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Auto', 'Famille', 'Partenaire', 'Ami', 'Collègue'],
+                    datasets: [{
+                        data: [
+                            profile.coherence.auto,
+                            profile.coherence.family,
+                            profile.coherence.partner,
+                            profile.coherence.friend,
+                            profile.coherence.colleague
+                        ],
+                        backgroundColor: ['#10B981', '#3B82F6', '#EC4899', '#F59E0B', '#6B7280']
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true, max: 100 }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            formatter: value => value + '%'
+                        }
+                    }
+                }
+            });
         }
 
         function closeResultsModal() {
