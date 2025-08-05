@@ -1,3 +1,10 @@
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
 export default async function handler(req, res) {
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
@@ -6,8 +13,42 @@ export default async function handler(req, res) {
   }
 
   try {
+    const clientId = req.body.client_id;
+    if (!clientId) {
+      return res.status(400).json({ error: 'client_id requis' });
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+    const { data: requestRow, error: requestError } = await supabase
+      .from('requests')
+      .select('count')
+      .eq('client_id', clientId)
+      .eq('date', today)
+      .maybeSingle();
+
+    if (requestError) {
+      console.error('Erreur Supabase:', requestError);
+      return res.status(500).json({ error: "Erreur de la base de données" });
+    }
+
+    if (!requestRow) {
+      await supabase.from('requests').insert({ client_id: clientId, date: today, count: 1 });
+    } else if (requestRow.count < 10) {
+      await supabase
+        .from('requests')
+        .update({ count: requestRow.count + 1 })
+        .eq('client_id', clientId)
+        .eq('date', today);
+    } else {
+      return res.status(429).json({
+        error:
+          "Tu as atteint ta limite de 10 messages pour aujourd’hui. Reviens demain ou discute avec le grand frère de Psycho’Bot sur chat.openai.com 😄",
+      });
+    }
+
     const userMessages = req.body.messages || [];
-    const lastUserMessage = userMessages.length > 0 ? userMessages[userMessages.length - 1].content : "";
+    const lastUserMessage =
+      userMessages.length > 0 ? userMessages[userMessages.length - 1].content : "";
 
     const systemMessage = {
       role: 'system',
