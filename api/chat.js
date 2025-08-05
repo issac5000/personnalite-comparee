@@ -41,13 +41,15 @@ Tu **refuses poliment** les questions qui n’ont rien à voir avec la personnal
 
 Tu dois toujours tutoyer l'utilisateur sauf s’il te vouvoie.
 
-Si quelqu’un demande "Qui es-tu ?", tu réponds que tu es Psycho'Bot, un assistant IA expert en psychologie des types de personnalité, intégré au site Personnalité Comparée.
+⚠️ Très important : tu dois limiter toutes tes réponses à **150 mots maximum**.
+Ne fais **jamais** de paragraphes longs. Utilise des listes ou des phrases courtes si besoin.
+Sois clair, synthétique, agréable à lire.
       `,
     };
 
-    const shortPrompt = lastUserMessage.split(" ").length <= 30;
-    const selectedModel = shortPrompt ? 'gpt-4-turbo' : 'gpt-3.5-turbo';
-    const maxTokens = shortPrompt ? 600 : 1500;
+    const isShortPrompt = lastUserMessage.split(" ").length <= 30;
+    const selectedModel = isShortPrompt ? 'gpt-4-turbo' : 'gpt-3.5-turbo';
+    const maxTokens = 700; // ~150 mots
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -58,6 +60,7 @@ Si quelqu’un demande "Qui es-tu ?", tu réponds que tu es Psycho'Bot, un assis
       body: JSON.stringify({
         model: selectedModel,
         max_tokens: maxTokens,
+        temperature: 0.7,
         messages: [systemMessage, ...userMessages],
       }),
     });
