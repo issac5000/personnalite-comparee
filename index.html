@@ -2090,6 +2090,21 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             }
         }
 
+        function getProfileFromScores(mbtiScores, enneagramScores) {
+            const mbtiType =
+                (mbtiScores.E > mbtiScores.I ? 'E' : 'I') +
+                (mbtiScores.S > mbtiScores.N ? 'S' : 'N') +
+                (mbtiScores.T > mbtiScores.F ? 'T' : 'F') +
+                (mbtiScores.J > mbtiScores.P ? 'J' : 'P');
+            let topEnnea = '1';
+            Object.keys(enneagramScores).forEach(type => {
+                if (enneagramScores[type] > enneagramScores[topEnnea]) {
+                    topEnnea = type;
+                }
+            });
+            return { mbtiType, enneagramType: topEnnea };
+        }
+
         /**
          * Calcule un résultat pondéré à partir des scores de l’auto‑évaluation et des évaluations externes.
          * La pondération suit : 5 % auto‑évaluation, 30 % famille, 30 % partenaire,
@@ -4225,7 +4240,7 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
                 result.user.enneagram_scores,
                 result.evaluations
             );
-
+            const selfProfile = getProfileFromScores(result.user.mbti_scores, result.user.enneagram_scores);
             const finalProfile = {
                 name: `${result.user.mbti_type} — type ${result.user.enneagram_type}`,
                 results: {
@@ -4235,11 +4250,20 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
                     enneagramCertainty,
                     overallCertainty: result.user.certainty_score
                 },
-                externalEvaluations: result.evaluations.map(ev => ({
-                    relation: ev.relation,
-                    completed: true,
-                    completedAt: ev.created_at
-                }))
+                selfEvaluation: {
+                    mbti: selfProfile.mbtiType,
+                    enneagram: selfProfile.enneagramType
+                },
+                externalEvaluations: result.evaluations.map(ev => {
+                    const { mbtiType, enneagramType } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
+                    return {
+                        relation: ev.relation,
+                        mbti: mbtiType,
+                        enneagram: enneagramType,
+                        completed: true,
+                        completedAt: ev.created_at
+                    };
+                })
             };
             // Fermer la modale
             closeProfileModal();
@@ -4314,12 +4338,18 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
                             <h4 class="font-semibold text-gray-900 mb-3">Détail des évaluations</h4>
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                                    <span class="text-sm font-medium text-gray-700">Votre auto-évaluation</span>
+                                    <div>
+                                        <span class="text-sm font-medium text-gray-700">Votre auto-évaluation</span>
+                                        <div class="text-xs text-gray-500">${profile.selfEvaluation.mbti} — type ${profile.selfEvaluation.enneagram}</div>
+                                    </div>
                                     <span class="text-sm text-green-600 font-medium">✓ Complétée</span>
                                 </div>
                                 ${profile.externalEvaluations.map(eval => `
                                     <div class="flex items-center justify-between p-3 ${eval.completed ? 'bg-green-50' : 'bg-gray-50'} rounded-lg">
-                                        <span class="text-sm font-medium text-gray-700">${eval.relation}</span>
+                                        <div>
+                                            <span class="text-sm font-medium text-gray-700">${eval.relation}</span>
+                                            <div class="text-xs text-gray-500">${eval.mbti} — type ${eval.enneagram}</div>
+                                        </div>
                                         <span class="text-sm ${eval.completed ? 'text-green-600' : 'text-gray-500'} font-medium">
                                             ${eval.completed ? '✓ Complétée le ' + new Date(eval.completedAt).toLocaleDateString('fr-FR') : '⏳ En attente'}
                                         </span>
