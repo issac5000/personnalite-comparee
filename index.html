@@ -473,7 +473,7 @@
               Saisis le code unique que tu as reçu pour afficher un profil complet.
             </p>
           </div>
-          <form onsubmit="event.preventDefault(); openProfileModal(document.getElementById('code-saisi').value);" autocomplete="off" class="mt-12 max-w-lg mx-auto">
+          <form onsubmit="event.preventDefault(); viewResults(document.getElementById('code-saisi').value);" autocomplete="off" class="mt-12 max-w-lg mx-auto">
             <div class="flex flex-col sm:flex-row items-center gap-4">
               <label for="code-saisi" class="sr-only">Code reçu</label>
               <input type="text" id="code-saisi" class="flex-1 px-6 py-3 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-300 text-base text-center shadow-sm transition" placeholder="ABC123" maxlength="12" required>
@@ -4185,8 +4185,12 @@ console.log("📊 Certitude (certainty_score) :", result.user?.certainty_score);
             }
         }
 
-        async function viewResults() {
-            const code = document.getElementById('display-code').textContent;
+        async function viewResults(codeParam) {
+            const code = (codeParam || document.getElementById('display-code').textContent).trim().toUpperCase();
+            if (!code) {
+                alert('Veuillez entrer un code');
+                return;
+            }
             let result = await fetchUserProfileFromSupabase(code);
             if (!result) {
                 alert('Profil introuvable.');
