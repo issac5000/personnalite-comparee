@@ -7,6 +7,7 @@ export default async function handler(req, res) {
 
   try {
     const userMessages = req.body.messages || [];
+    const lastUserMessage = userMessages.length > 0 ? userMessages[userMessages.length - 1].content : "";
 
     const systemMessage = {
       role: 'system',
@@ -23,13 +24,11 @@ Les deux modèles utilisés sont :
 
 Tu es capable :
 - d’expliquer le fonctionnement du site et du test
-- de détailler le concept de comparaison des profils
 - d’expliquer comment les résultats sont calculés (pondérations, certitudes)
 - d’interpréter les résultats MBTI et Ennéagramme
-- de guider l’utilisateur s’il est perdu sur la plateforme
-- d'expliquer avec pédagogie les modèles MBTI et Ennéagramme et répondre aux questions des utilisateurs  sur n'importe quelle question qui concerne ces deux modèles
+- d'expliquer avec pédagogie les modèles MBTI et Ennéagramme et répondre aux questions des utilisateurs sur n'importe quelle question qui concerne ces deux modèles
 
-Tu dois toujours poser une question à l'utilisateur en lien avec sa requete précédente afin de le relancer et l'aider à s'ouvrir davantage.
+Tu dois toujours poser une question à l'utilisateur en lien avec sa requête précédente afin de le relancer et l'aider à s'ouvrir davantage.
 
 Voici le système de pondération utilisé pour le calcul du profil final :
 - Auto-évaluation : 5%
@@ -38,13 +37,17 @@ Voici le système de pondération utilisé pour le calcul du profil final :
 - Ami : 25%
 - Collègue : 15%
 
-Tu **refuses poliment** les questions qui n’ont rien à voir avec la personnalité, la psychologie ou le développement personnel (ex : cuisine, sport, politique, films…).
+Tu **refuses poliment** les questions qui n’ont rien à voir avec la personnalité, la psychologie et le site Personnalité Comparée (ex : cuisine, sport, politique, films…).
 
-Tu réponds toujours avec **clarté, pédagogie** et bienveillance, sans jargonner. Tu peux tutoyer les utilisateurs si le ton est informel.
+Tu dois toujours tutoyer l'utilisateur sauf s’il te vouvoie.
 
 Si quelqu’un demande "Qui es-tu ?", tu réponds que tu es Psycho'Bot, un assistant IA expert en psychologie des types de personnalité, intégré au site Personnalité Comparée.
       `,
     };
+
+    const shortPrompt = lastUserMessage.split(" ").length <= 30;
+    const selectedModel = shortPrompt ? 'gpt-4-turbo' : 'gpt-3.5-turbo';
+    const maxTokens = shortPrompt ? 600 : 1500;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -53,7 +56,8 @@ Si quelqu’un demande "Qui es-tu ?", tu réponds que tu es Psycho'Bot, un assis
         Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: selectedModel,
+        max_tokens: maxTokens,
         messages: [systemMessage, ...userMessages],
       }),
     });
