@@ -35,6 +35,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <!-- Supabase JS library -->
    
     <style>
@@ -4745,13 +4746,44 @@ return data.message || "Réponse vide de l'IA.";
     }
   }
 
+  let currentTyped = null;
+
   function appendMessage(role, text) {
     const chatBox = document.getElementById('chat-box');
     if (!chatBox) return;
     const wrapper = document.createElement('div');
     wrapper.className = role === 'user' ? 'text-right mb-2' : 'text-left mb-2';
-    wrapper.innerHTML = `<span class="inline-block px-3 py-2 rounded-lg ${role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'}">${text}</span>`;
+    const bubble = document.createElement('span');
+    bubble.className = `inline-block px-3 py-2 rounded-lg ${
+      role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+    }`;
+    wrapper.appendChild(bubble);
     chatBox.appendChild(wrapper);
+
+    if (role === 'assistant') {
+      if (currentTyped) {
+        currentTyped.destroy();
+        currentTyped.el.textContent =
+          currentTyped.el.dataset.fullText || currentTyped.el.textContent;
+      }
+      bubble.dataset.fullText = text;
+      currentTyped = new Typed(bubble, {
+        strings: [text],
+        typeSpeed: 30,
+        showCursor: false,
+        loop: false,
+        onStringTyped: () => {
+          chatBox.scrollTop = chatBox.scrollHeight;
+        },
+        onComplete: () => {
+          chatBox.scrollTop = chatBox.scrollHeight;
+          currentTyped = null;
+        },
+      });
+    } else {
+      bubble.textContent = text;
+    }
+
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
