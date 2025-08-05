@@ -484,7 +484,13 @@
                 <p class="mt-4 text-xl text-gray-500">Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.</p>
             </div>
             <div class="mt-8">
-                <div id="chat-box" class="h-64 overflow-y-auto border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50"></div>
+                <div id="chat-box" class="h-64 overflow-y-auto border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50">
+                    <div id="chat-suggestions" class="flex flex-col space-y-2 fade-in">
+                        <button class="suggestion-btn w-full text-left bg-white border border-gray-200 rounded-lg p-3 shadow cursor-pointer hover:bg-gray-50 transition" data-question="Quel type est compatible avec un ENFP ?">❤️ Quel type est compatible avec un ENFP ?</button>
+                        <button class="suggestion-btn w-full text-left bg-white border border-gray-200 rounded-lg p-3 shadow cursor-pointer hover:bg-gray-50 transition" data-question="Comment est calculée la certitude globale ?">📊 Comment est calculée la certitude globale ?</button>
+                        <button class="suggestion-btn w-full text-left bg-white border border-gray-200 rounded-lg p-3 shadow cursor-pointer hover:bg-gray-50 transition" data-question="Pourquoi demander l’avis de mes proches ?">🤝 Pourquoi demander l’avis de mes proches ?</button>
+                    </div>
+                </div>
                 <div class="flex">
                     <input id="chat-input" type="text" placeholder="Posez votre question..." class="flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:ring-blue-500 focus:border-blue-500">
                     <button id="chat-send" class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700">Envoyer</button>
@@ -4798,10 +4804,13 @@ return data.message || "Réponse vide de l'IA.";
   document.addEventListener('DOMContentLoaded', () => {
     const sendBtn = document.getElementById('chat-send');
     const input = document.getElementById('chat-input');
+    const suggestionButtons = document.querySelectorAll('.suggestion-btn');
     if (sendBtn && input) {
       const sendMessage = async () => {
         const question = input.value.trim();
         if (!question) return;
+        const suggestionContainer = document.getElementById('chat-suggestions');
+        if (suggestionContainer) suggestionContainer.remove();
         appendMessage('user', question);
         input.value = '';
         const answer = await sendChatMessage(question);
@@ -4813,6 +4822,12 @@ return data.message || "Réponse vide de l'IA.";
           e.preventDefault();
           sendMessage();
         }
+      });
+      suggestionButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          input.value = btn.dataset.question || btn.textContent.trim();
+          sendMessage();
+        });
       });
     }
   });
