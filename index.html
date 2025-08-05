@@ -34,6 +34,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.umd.js"></script>
     <!-- Supabase JS library -->
    
     <style>
@@ -1652,6 +1653,7 @@ if (window.location.href.includes("external")) {
             setupProgressBars();
             setupEvaluationForm();
             loadFirstQuestion();
+            initCountUp();
         }
 
         // Menu mobile
@@ -2416,7 +2418,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             const autoEvalSection = document.getElementById('auto-evaluation');
             if (autoEvalSection) {
                 autoEvalSection.parentNode.insertBefore(resultsSection, autoEvalSection.nextSibling);
-                
+                initCountUp(resultsSection);
+
                 // Faire défiler vers les résultats
                 setTimeout(() => {
                     resultsSection.scrollIntoView({ behavior: 'smooth' });
@@ -2514,7 +2517,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                                         <div class="mt-4">
                                             <div class="flex justify-between">
                                                 <span class="text-sm font-medium text-gray-700">Certitude</span>
-                                                <span class="text-sm text-gray-500">${results.mbtiCertainty}%</span>
+                                                <span class="text-sm text-gray-500 countup" data-value="${results.mbtiCertainty}" data-suffix="%">0%</span>
                                             </div>
                                             <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
                                                 <div class="progress-bar bg-green-600 h-2.5 rounded-full" style="width: ${results.mbtiCertainty}%"></div>
@@ -2531,7 +2534,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                                         <div class="mt-4">
                                             <div class="flex justify-between">
                                                 <span class="text-sm font-medium text-gray-700">Certitude</span>
-                                                <span class="text-sm text-gray-500">${results.enneagramCertainty}%</span>
+                                                <span class="text-sm text-gray-500 countup" data-value="${results.enneagramCertainty}" data-suffix="%">0%</span>
                                             </div>
                                             <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
                                                 <div class="progress-bar bg-blue-600 h-2.5 rounded-full" style="width: ${results.enneagramCertainty}%"></div>
@@ -2559,6 +2562,33 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         }
 
         // Fonctions utilitaires
+        function initCountUp(root = document) {
+            const elements = root.querySelectorAll('.countup');
+            if (!elements.length) return;
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const endVal = parseFloat(el.dataset.value) || 0;
+                        const suffix = el.dataset.suffix || '';
+                        const counter = new CountUp(el, endVal, { duration: 1.5, suffix });
+                        if (!counter.error) {
+                            counter.start();
+                        } else {
+                            console.error(counter.error);
+                        }
+                        obs.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            elements.forEach(el => {
+                const suffix = el.dataset.suffix || '';
+                el.textContent = '0' + suffix;
+                observer.observe(el);
+            });
+        }
+
         function shareResults() {
             if (navigator.share) {
                 navigator.share({
@@ -4383,7 +4413,7 @@ console.log("📗 Ennéagramme :", result.user?.enneagram_type);
             <div class="mt-2">
               <div class="flex items-center justify-between">
                 <span class="text-sm font-medium text-blue-900">Certitude</span>
-                <span class="text-sm text-blue-700">${profile.results.mbtiCertainty}%</span>
+                <span class="text-sm text-blue-700 countup" data-value="${profile.results.mbtiCertainty}" data-suffix="%">0%</span>
               </div>
               <div class="w-full bg-blue-100 rounded-full h-2 mt-1">
                 <div class="bg-blue-600 h-2 rounded-full" style="width: ${profile.results.mbtiCertainty}%"></div>
@@ -4396,7 +4426,7 @@ console.log("📗 Ennéagramme :", result.user?.enneagram_type);
             <div class="mt-2">
               <div class="flex items-center justify-between">
                 <span class="text-sm font-medium text-purple-900">Certitude</span>
-                <span class="text-sm text-purple-700">${profile.results.enneagramCertainty}%</span>
+                <span class="text-sm text-purple-700 countup" data-value="${profile.results.enneagramCertainty}" data-suffix="%">0%</span>
               </div>
               <div class="w-full bg-purple-100 rounded-full h-2 mt-1">
                 <div class="bg-purple-600 h-2 rounded-full" style="width: ${profile.results.enneagramCertainty}%"></div>
@@ -4409,7 +4439,7 @@ console.log("📗 Ennéagramme :", result.user?.enneagram_type);
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
           <div class="flex items-center justify-between mb-2">
             <span class="font-medium text-gray-900">Certitude globale</span>
-            <span class="text-lg font-bold text-green-600">${profile.results.overallCertainty}%</span>
+            <span class="text-lg font-bold text-green-600 countup" data-value="${profile.results.overallCertainty}" data-suffix="%">0%</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-3">
             <div class="bg-green-500 h-3 rounded-full" style="width: ${profile.results.overallCertainty}%"></div>
@@ -4464,6 +4494,7 @@ console.log("📗 Ennéagramme :", result.user?.enneagram_type);
             
             // Ajouter la modale au DOM
             document.body.appendChild(resultsModal);
+            initCountUp(resultsModal);
 
             // Initialiser le graphique de cohérence
             const ctx = resultsModal.querySelector('#coherenceChart').getContext('2d');
