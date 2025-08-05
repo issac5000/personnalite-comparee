@@ -46,9 +46,19 @@
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        .type-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        button,
+        [class*="card"] {
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: rotateX(3deg) rotateY(3deg) scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        [class*="card"]:hover {
+            transform: perspective(600px) rotateX(3deg) rotateY(-3deg) scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
         .progress-bar {
             transition: width 0.5s ease-in-out;
