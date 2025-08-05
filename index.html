@@ -4627,51 +4627,55 @@ return data.message || "Réponse vide de l'IA.";
 
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code")?.toUpperCase();
+  const encodedCode = code ? encodeURIComponent(code) : null;
 
-  if (code) {
+  if (encodedCode) {
     if (externalForm) {
       externalForm.style.display = "none";
     }
 
     try {
-      const { data, error } = await supabase
+      const { data: user, error } = await supabase
         .from("users")
         .select("uses_count")
-        .eq("code", code)
+        .eq("code", encodedCode)
         .single();
 
-      if (error || !data) {
+      if (error || !user) {
         alert("Code invalide ou introuvable.");
-      } else if (data.uses_count >= 3) {
+        return;
+      } else if (user.uses_count >= 3) {
         alert(
           "Ce code a déjà été utilisé 3 fois. Il n’est plus possible de l’utiliser pour une nouvelle évaluation."
         );
         window.location.href = "/";
+        return;
       } else if (externalForm) {
         externalForm.style.display = "";
       }
     } catch (err) {
       console.error("Erreur lors de la vérification du code :", err);
       alert("Code invalide ou introuvable.");
+      return;
     }
 
     if (externalForm) {
       externalForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         try {
-          const { data, error } = await supabase
+          const { data: user, error } = await supabase
             .from("users")
             .select("uses_count")
-            .eq("code", code)
+            .eq("code", encodedCode)
             .single();
-          if (error || !data) {
+          if (error || !user) {
             alert("Erreur lors de la récupération du compteur.");
             return;
           }
           const { error: updateError } = await supabase
             .from("users")
-            .update({ uses_count: data.uses_count + 1 })
-            .eq("code", code);
+            .update({ uses_count: user.uses_count + 1 })
+            .eq("code", encodedCode);
           if (updateError) {
             alert("Erreur lors de la mise à jour du compteur.");
             return;
