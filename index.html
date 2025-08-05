@@ -31,6 +31,7 @@
     <link rel="icon" type="image/jpeg" href="logo.jpg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <!-- Supabase JS library -->
@@ -222,7 +223,7 @@
     </nav>
 
     <!-- Hero Section Premium -->
-    <div class="section-clair relative flex items-center justify-center overflow-hidden" style="min-height: 80vh;">
+    <div data-aos="fade-up" class="section-clair relative flex items-center justify-center overflow-hidden" style="min-height: 80vh;">
         <!-- Grille subtile en arrière-plan -->
         <div class="absolute inset-0 opacity-[0.02]">
             <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, rgb(15 23 42) 1px, transparent 0); background-size: 40px 40px;"></div>
@@ -291,7 +292,7 @@
     </div>
 
     <!-- How it works -->
-    <div class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
+    <div data-aos="fade-right" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -342,7 +343,7 @@
     </div>
 
     <!-- Auto-evaluation Section -->
-    <div id="auto-evaluation" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
+    <div id="auto-evaluation" data-aos="zoom-in" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -375,7 +376,7 @@
 
 
     <!-- Evaluate a friend Section -->
-    <div id="evaluation-proche" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
+    <div id="evaluation-proche" data-aos="fade-left" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -456,7 +457,7 @@
     </div>
 
     <!-- Chatbot Section -->
-    <section id="profil-chatbot" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
+    <section id="profil-chatbot" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Parler avec Psycho'Bot</h2>
@@ -472,7 +473,7 @@
         </div>
     </section>
 
-    <section id="retourver-profil" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
+    <section id="retourver-profil" data-aos="zoom-in" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
           <div class="text-center">
             <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl flex justify-center items-center gap-2">
@@ -496,7 +497,7 @@
       </section>
 
     <!-- MBTI Types Section -->
-    <div id="mbti" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
+    <div id="mbti" data-aos="fade-right" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -877,7 +878,7 @@
 
 
     <!-- Enneagram Types Section -->
-    <div id="enneagram" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
+    <div id="enneagram" data-aos="fade-left" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -1173,7 +1174,7 @@
 
 
     <!-- FAQ Section -->
-    <div id="faq" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
+    <div id="faq" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -4787,6 +4788,15 @@ return data.message || "Réponse vide de l'IA.";
       externalForm.style.display = "none";
     });
   }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 600,
+    easing: 'ease-out',
+    once: true
+  });
 </script>
 
 </body>
