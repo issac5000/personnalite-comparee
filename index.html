@@ -194,6 +194,45 @@
             from { background-color: #fef3c7; }
             to { background-color: #ffffff; }
         }
+
+        /* Chat styles */
+        .chat-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        .chat-row.user {
+            justify-content: flex-end;
+        }
+        .chat-row.assistant {
+            justify-content: flex-start;
+        }
+        .chat-bubble {
+            display: inline-block;
+            padding: 10px 14px;
+            font-size: 15px;
+        }
+        .assistant-bubble {
+            background: #e0f0ff;
+            color: #003b5c;
+            border-radius: 16px 16px 16px 4px;
+        }
+        .user-bubble {
+            background: #d1ffe0;
+            color: #084d28;
+            border-radius: 16px 16px 4px 16px;
+        }
+        #chat-suggestions {
+            display: flex;
+            flex-direction: column;
+        }
+        #chat-suggestions .assistant-bubble {
+            cursor: pointer;
+            margin-bottom: 8px;
+            align-self: flex-start;
+        }
+        #chat-suggestions .assistant-bubble:hover {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
     </style>
 
 </head>
@@ -485,10 +524,10 @@
             </div>
             <div class="mt-8">
                 <div id="chat-box" class="h-64 overflow-y-auto border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50">
-                    <div id="chat-suggestions" class="flex flex-col space-y-2 fade-in">
-                        <button class="suggestion-btn w-full text-left bg-white border border-gray-200 rounded-lg p-3 shadow cursor-pointer hover:bg-gray-50 transition" data-question="Quel type est compatible avec un ENFP ?">❤️ Quel type est compatible avec un ENFP ?</button>
-                        <button class="suggestion-btn w-full text-left bg-white border border-gray-200 rounded-lg p-3 shadow cursor-pointer hover:bg-gray-50 transition" data-question="Comment est calculée la certitude globale ?">📊 Comment est calculée la certitude globale ?</button>
-                        <button class="suggestion-btn w-full text-left bg-white border border-gray-200 rounded-lg p-3 shadow cursor-pointer hover:bg-gray-50 transition" data-question="Pourquoi demander l’avis de mes proches ?">🤝 Pourquoi demander l’avis de mes proches ?</button>
+                    <div id="chat-suggestions" class="chat-suggestions fade-in">
+                        <div class="chat-bubble assistant-bubble suggestion-bubble" data-question="Quel type est compatible avec un ENFP ?">❤️ Quel type est compatible avec un ENFP ?</div>
+                        <div class="chat-bubble assistant-bubble suggestion-bubble" data-question="Comment est calculée la certitude globale ?">📊 Comment est calculée la certitude globale ?</div>
+                        <div class="chat-bubble assistant-bubble suggestion-bubble" data-question="Pourquoi demander l’avis de mes proches ?">🤝 Pourquoi demander l’avis de mes proches ?</div>
                     </div>
                 </div>
                 <div class="flex">
@@ -4766,11 +4805,9 @@ return data.message || "Réponse vide de l'IA.";
     const chatBox = document.getElementById('chat-box');
     if (!chatBox) return;
     const wrapper = document.createElement('div');
-    wrapper.className = role === 'user' ? 'text-right mb-2' : 'text-left mb-2';
-    const bubble = document.createElement('span');
-    bubble.className = `inline-block px-3 py-2 rounded-lg ${
-      role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
-    }`;
+    wrapper.className = `chat-row ${role === 'user' ? 'user' : 'assistant'}`;
+    const bubble = document.createElement('div');
+    bubble.className = `chat-bubble ${role === 'user' ? 'user-bubble' : 'assistant-bubble'}`;
     wrapper.appendChild(bubble);
     chatBox.appendChild(wrapper);
 
@@ -4804,7 +4841,7 @@ return data.message || "Réponse vide de l'IA.";
   document.addEventListener('DOMContentLoaded', () => {
     const sendBtn = document.getElementById('chat-send');
     const input = document.getElementById('chat-input');
-    const suggestionButtons = document.querySelectorAll('.suggestion-btn');
+    const suggestionButtons = document.querySelectorAll('.suggestion-bubble');
     if (sendBtn && input) {
       const sendMessage = async () => {
         const question = input.value.trim();
