@@ -473,7 +473,7 @@
               Saisis le code unique que tu as reçu pour afficher un profil complet.
             </p>
           </div>
-          <form onsubmit="event.preventDefault(); afficherProfilUtilisateur();" autocomplete="off" class="mt-12 max-w-lg mx-auto">
+          <form onsubmit="event.preventDefault(); openProfileModal(document.getElementById('code-saisi').value);" autocomplete="off" class="mt-12 max-w-lg mx-auto">
             <div class="flex flex-col sm:flex-row items-center gap-4">
               <label for="code-saisi" class="sr-only">Code reçu</label>
               <input type="text" id="code-saisi" class="flex-1 px-6 py-3 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-300 text-base text-center shadow-sm transition" placeholder="ABC123" maxlength="12" required>
@@ -481,7 +481,6 @@
                 <i class="fas fa-eye"></i> Voir le profil
               </button>
             </div>
-            <div id="profil-resultat" class="mt-8 text-gray-800 text-base leading-relaxed transition-all duration-300"></div>
           </form>
         </div>
       </section>
@@ -3990,9 +3989,14 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         }; */
 
         // Fonctions de gestion de la modale
-        function openProfileModal() {
+        function openProfileModal(prefillCode) {
             document.getElementById('profile-modal').classList.add('show');
             resetProfileModal();
+            if (prefillCode) {
+                const input = document.getElementById('profile-code');
+                input.value = prefillCode.trim().toUpperCase();
+                checkProfileCode();
+            }
         }
 
         function closeProfileModal() {
@@ -4362,52 +4366,6 @@ const shareText = `Je viens de découvrir mon profil de personnalité complet ! 
             }
         }
 
-        async function afficherProfilUtilisateur() {
-            const codeInput = document.getElementById("code-saisi").value;
-            const profilDiv = document.getElementById("profil-resultat");
-
-            if (typeof codeInput !== "string") {
-                console.error("Type de code invalide:", typeof codeInput);
-                profilDiv.innerHTML = "<p class='text-red-600'>⚠️ Code invalide.</p>";
-                return;
-            }
-
-            const code = codeInput.trim().toUpperCase();
-            console.log("Code saisi:", code);
-
-            if (!code) {
-                profilDiv.innerHTML = "<p class='text-red-600'>⚠️ Merci d’entrer un code valide.</p>";
-                return;
-            }
-
-            // Animation de chargement
-            profilDiv.innerHTML = '<div class="flex justify-center mt-4"><div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div></div>';
-
-            const { data, error } = await supabase
-                .from("users")
-                .select("mbti_type, enneagram_type, certainty_score")
-                .eq("code", code);
-
-            console.log("Résultat Supabase:", data, "Erreur:", error);
-
-            if (error) {
-                profilDiv.innerHTML = "<p class='text-red-600'>❌ Erreur lors de la récupération du profil.</p>";
-                return;
-            }
-
-            if (data && data.length > 0) {
-                const user = data[0];
-                profilDiv.innerHTML = `
-                <div class="bg-gray-100 p-4 rounded shadow mt-4">
-                  <p class="mb-2">🧠 Type MBTI : <strong>${user.mbti_type}</strong></p>
-                  <p class="mb-2">🎭 Ennéatype : <strong>${user.enneagram_type}</strong></p>
-                  <p class="mb-2">📊 Indice de certitude : <strong>${user.certainty_score}%</strong></p>
-                </div>
-                `;
-            } else {
-                profilDiv.innerHTML = "<p class='text-red-600'>❌ Code invalide ou introuvable.</p>";
-            }
-        }
 
         // Fermer la modale en cliquant à l'extérieur
         window.onclick = function(event) {
