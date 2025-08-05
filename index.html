@@ -186,6 +186,14 @@
         .mobile-menu {
             display: none;
         }
+
+        .scroll-highlight {
+            animation: scrollHighlight 1s ease;
+        }
+        @keyframes scrollHighlight {
+            from { background-color: #fef3c7; }
+            to { background-color: #ffffff; }
+        }
     </style>
 
 </head>
@@ -197,11 +205,11 @@
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center">
                         <img src="logo111.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover">
-<span class="ml-3 text-xl font-bold text-black">Personnalité Comparée</span>
+<span id="brand-home" class="ml-3 text-xl font-bold text-black">Personnalité Comparée</span>
                     </div>
                 </div>
                 <div class="desktop-nav hidden md:ml-6 md:flex md:items-center md:space-x-8">
-                    <a href="#" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-blue-500 text-sm font-medium">Accueil</a>
+                    <a href="#" class="scroll-top-link text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-blue-500 text-sm font-medium">Accueil</a>
                     <a href="#mbti" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">MBTI</a>
                     <a href="#enneagram" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Ennéagramme</a>
                     <a href="#profil-chatbot" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">IA spécialisée</a>
@@ -222,7 +230,7 @@
         <!-- Menu mobile -->
         <div class="mobile-menu md:hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-                <a href="#" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium bg-blue-50">Accueil</a>
+                <a href="#" class="scroll-top-link text-gray-900 block px-3 py-2 rounded-md text-base font-medium bg-blue-50">Accueil</a>
                 <a href="#mbti" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">MBTI</a>
                 <a href="#enneagram" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Ennéagramme</a>
                 <a href="#profil-chatbot" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">IA spécialisée</a>
@@ -4808,9 +4816,26 @@ return data.message || "Réponse vide de l'IA.";
       });
     }
   });
-</script>
+  </script>
 
-<script type="module">
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const homeLinks = document.querySelectorAll('.scroll-top-link');
+      const brand = document.getElementById('brand-home');
+
+      function handleScrollTop(e) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.body.classList.add('scroll-highlight');
+        setTimeout(() => document.body.classList.remove('scroll-highlight'), 1000);
+      }
+
+      homeLinks.forEach(link => link.addEventListener('click', handleScrollTop));
+      if (brand) brand.addEventListener('click', handleScrollTop);
+    });
+  </script>
+
+  <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
   const supabaseUrl = "https://swjnpvfkloubshksobau.supabase.co";
