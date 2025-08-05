@@ -4656,6 +4656,39 @@ return data.message || "Réponse vide de l'IA.";
       alert("Code invalide ou introuvable.");
     }
   }
+
+  if (externalForm) {
+    externalForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("uses_count")
+          .eq("code", code)
+          .single();
+        if (error || !data) {
+          alert("Erreur lors de la récupération du compteur.");
+          return;
+        }
+        const { error: updateError } = await supabase
+          .from("users")
+          .update({ uses_count: data.uses_count + 1 })
+          .eq("code", code);
+        if (updateError) {
+          alert("Erreur lors de la mise à jour du compteur.");
+          return;
+        }
+        alert(
+          "Merci pour votre participation. Les résultats sont disponibles dans la section 'Mon profil'."
+        );
+        externalForm.reset();
+        externalForm.style.display = "none";
+      } catch (err) {
+        console.error("Erreur lors de l'incrémentation de uses_count :", err);
+        alert("Une erreur est survenue.");
+      }
+    });
+  }
 </script>
 
 </body>
