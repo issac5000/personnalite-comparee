@@ -2143,147 +2143,111 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             return { mbtiType, enneagramType: topEnnea };
         }
 
-        /**
-         * Calcule un résultat pondéré à partir des scores de l’auto‑évaluation et des évaluations externes.
-         * La pondération suit : 5 % auto‑évaluation, 30 % famille, 25 % partenaire,
-         * 25 % ami et 15 % collègue. Les scores sont normalisés en fonction des
-         * sources disponibles.
-         * @param {Object} selfMbtiScores Scores MBTI de l’auto‑évaluation.
-         * @param {Object} selfEnneagramScores Scores Ennéagramme de l’auto‑évaluation.
-         * @param {Array} evaluations Liste des évaluations externes (chaque objet contient relation, mbti_scores et enneagram_scores).
-         * @returns {Object} Contient le type MBTI final, le type Ennéagramme final,
-         * les indices de certitude pour chaque profil et les scores combinés.
-         */
-        function computeWeightedResults(selfMbtiScores, selfEnneagramScores, evaluations) {
-            const weights = {
-                self: 5,
-                family: 30,
-                partner: 25,
-                friend: 25,
-                colleague: 15
-            };
+      function computeWeightedResults(selfMbtiScores, selfEnneagramScores, evaluations) {
+    const weights = {
+        self: 5,
+        family: 30,
+        partner: 25,
+        friend: 25,
+        colleague: 15
+    };
 
-            const combinedMbti = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
-            const combinedEnneagram = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
+    const combinedMbti = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+    const combinedEnneagram = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
 
-            let totalWeight = 0;
+    let totalWeight = 0;
 
-            if (selfMbtiScores && selfEnneagramScores) {
-                Object.keys(selfMbtiScores).forEach(trait => {
-                    combinedMbti[trait] += selfMbtiScores[trait] * weights.self;
-                });
-                Object.keys(selfEnneagramScores).forEach(type => {
-                    combinedEnneagram[type] += selfEnneagramScores[type] * weights.self;
-                });
-                totalWeight += weights.self;
-            }
+    // On pondère uniquement les évaluations externes (auto-éval ignorée pour le calcul)
+    evaluations.forEach(ev => {
+        const w = weights[ev.relation] || 0;
+        Object.keys(ev.mbti_scores).forEach(trait => {
+            combinedMbti[trait] += ev.mbti_scores[trait] * w;
+        });
+        Object.keys(ev.enneagram_scores).forEach(type => {
+            combinedEnneagram[type] += ev.enneagram_scores[type] * w;
+        });
+        totalWeight += w;
+    });
 
-            evaluations.forEach(ev => {
-                const w = weights[ev.relation] || 0;
-                Object.keys(ev.mbti_scores).forEach(trait => {
-                    combinedMbti[trait] += ev.mbti_scores[trait] * w;
-                });
-                Object.keys(ev.enneagram_scores).forEach(type => {
-                    combinedEnneagram[type] += ev.enneagram_scores[type] * w;
-                });
-                totalWeight += w;
-            });
+    if (totalWeight === 0) {
+        return {
+            mbtiType: null,
+            enneagramType: null,
+            mbtiCertainty: 0,
+            enneagramCertainty: 0,
+            overallCertainty: 0,
+            combinedMbti,
+            combinedEnneagram
+        };
+    }
 
-            if (totalWeight === 0) {
-                return {
-                    mbtiType: null,
-                    enneagramType: null,
-                    mbtiCertainty: 0,
-                    enneagramCertainty: 0,
-                    overallCertainty: 0,
-                    combinedMbti,
-                    combinedEnneagram
-                };
-            }
+    // Normalisation
+    Object.keys(combinedMbti).forEach(trait => {
+        combinedMbti[trait] = combinedMbti[trait] / totalWeight;
+    });
+    Object.keys(combinedEnneagram).forEach(type => {
+        combinedEnneagram[type] = combinedEnneagram[type] / totalWeight;
+    });
 
-            Object.keys(combinedMbti).forEach(trait => {
-                combinedMbti[trait] = combinedMbti[trait] / totalWeight;
-            });
-            Object.keys(combinedEnneagram).forEach(type => {
-                combinedEnneagram[type] = combinedEnneagram[type] / totalWeight;
-            });
+    // Type MBTI final
+    const mbtiType =
+        (combinedMbti.E > combinedMbti.I ? 'E' : 'I') +
+        (combinedMbti.S > combinedMbti.N ? 'S' : 'N') +
+        (combinedMbti.T > combinedMbti.F ? 'T' : 'F') +
+        (combinedMbti.J > combinedMbti.P ? 'J' : 'P');
 
-            const mbtiType =
-                (combinedMbti.E > combinedMbti.I ? 'E' : 'I') +
-                (combinedMbti.S > combinedMbti.N ? 'S' : 'N') +
-                (combinedMbti.T > combinedMbti.F ? 'T' : 'F') +
-                (combinedMbti.J > combinedMbti.P ? 'J' : 'P');
-
-            let topEnnea = '1';
-            Object.keys(combinedEnneagram).forEach(type => {
-                if (combinedEnneagram[type] > combinedEnneagram[topEnnea]) {
-                    topEnnea = type;
-                }
-            });
-
-            // Types issus de l'auto‑évaluation
-            let selfMbtiType = null;
-            let selfEnneaType = null;
-            if (selfMbtiScores && selfEnneagramScores) {
-                selfMbtiType =
-                    (selfMbtiScores.E > selfMbtiScores.I ? 'E' : 'I') +
-                    (selfMbtiScores.S > selfMbtiScores.N ? 'S' : 'N') +
-                    (selfMbtiScores.T > selfMbtiScores.F ? 'T' : 'F') +
-                    (selfMbtiScores.J > selfMbtiScores.P ? 'J' : 'P');
-                selfEnneaType = Object.keys(selfEnneagramScores).reduce((a, b) =>
-                    selfEnneagramScores[a] > selfEnneagramScores[b] ? a : b
-                );
-            }
-
-            // Calcul de la concordance avec l'auto‑évaluation
-            let mbtiAgreement = selfMbtiType ? weights.self : 0;
-            let enneaAgreement = selfEnneaType ? weights.self : 0;
-
-            evaluations.forEach(ev => {
-                const w = weights[ev.relation] || 0;
-                const evMbtiType =
-                    (ev.mbti_scores.E > ev.mbti_scores.I ? 'E' : 'I') +
-                    (ev.mbti_scores.S > ev.mbti_scores.N ? 'S' : 'N') +
-                    (ev.mbti_scores.T > ev.mbti_scores.F ? 'T' : 'F') +
-                    (ev.mbti_scores.J > ev.mbti_scores.P ? 'J' : 'P');
-                const evEnneaType = Object.keys(ev.enneagram_scores).reduce((a, b) =>
-                    ev.enneagram_scores[a] > ev.enneagram_scores[b] ? a : b
-                );
-                if (selfMbtiType && evMbtiType === selfMbtiType) mbtiAgreement += w;
-                if (selfEnneaType && evEnneaType === selfEnneaType) enneaAgreement += w;
-            });
-
-            const mbtiCertainty = Math.round((mbtiAgreement / totalWeight) * 100);
-            const enneagramCertainty = Math.round((enneaAgreement / totalWeight) * 100);
-            let overallCertainty = Math.round((mbtiCertainty + enneagramCertainty) / 2);
-
-            const convergenceThreshold = 90;
-            if (mbtiCertainty >= convergenceThreshold || enneagramCertainty >= convergenceThreshold) {
-                overallCertainty = Math.min(100, overallCertainty + 10);
-            }
-
-            return {
-                mbtiType,
-                enneagramType: topEnnea,
-                mbtiCertainty,
-                enneagramCertainty,
-                overallCertainty,
-                combinedMbti,
-                combinedEnneagram
-            };
+    // Type Ennéagramme final
+    let topEnnea = '1';
+    Object.keys(combinedEnneagram).forEach(type => {
+        if (combinedEnneagram[type] > combinedEnneagram[topEnnea]) {
+            topEnnea = type;
         }
+    });
 
-        // Ancienne fonction de certitude basée uniquement sur la convergence
-        // des évaluations externes supprimée au profit d'un calcul pondéré
-        // incluant l'auto-évaluation.
+    // Analyse de convergence entre les proches
+    const typeCounts = { mbti: {}, enneagram: {} };
+    evaluations.forEach(ev => {
+        const evMbtiType =
+            (ev.mbti_scores.E > ev.mbti_scores.I ? 'E' : 'I') +
+            (ev.mbti_scores.S > ev.mbti_scores.N ? 'S' : 'N') +
+            (ev.mbti_scores.T > ev.mbti_scores.F ? 'T' : 'F') +
+            (ev.mbti_scores.J > ev.mbti_scores.P ? 'J' : 'P');
 
-        /**
-         * Calcule le profil final (MBTI, Ennéagramme et certitude) pour un code donné.
-         * Met à jour la table `users` avec les nouveaux scores et types.
-         * @param {String} code Code unique de l'utilisateur.
-         * @returns {Object|null} Profil calculé et évaluations associées.
-         */
-        async function calculateFinalProfile(code) {
+        const evEnneaType = Object.keys(ev.enneagram_scores).reduce((a, b) =>
+            ev.enneagram_scores[a] > ev.enneagram_scores[b] ? a : b
+        );
+
+        typeCounts.mbti[evMbtiType] = (typeCounts.mbti[evMbtiType] || 0) + 1;
+        typeCounts.enneagram[evEnneaType] = (typeCounts.enneagram[evEnneaType] || 0) + 1;
+    });
+
+    // Score de convergence uniquement basé sur les proches
+    const maxMbtiAgreement = Math.max(...Object.values(typeCounts.mbti));
+    const maxEnneaAgreement = Math.max(...Object.values(typeCounts.enneagram));
+    const totalEvaluations = evaluations.length;
+
+    const mbtiCertainty = Math.round((maxMbtiAgreement / totalEvaluations) * 100);
+    const enneagramCertainty = Math.round((maxEnneaAgreement / totalEvaluations) * 100);
+    let overallCertainty = Math.round((mbtiCertainty + enneagramCertainty) / 2);
+
+    // Boost si très forte convergence
+    const convergenceThreshold = 90;
+    if (mbtiCertainty >= convergenceThreshold || enneagramCertainty >= convergenceThreshold) {
+        overallCertainty = Math.min(100, overallCertainty + 10);
+    }
+
+    return {
+        mbtiType,
+        enneagramType: topEnnea,
+        mbtiCertainty,
+        enneagramCertainty,
+        overallCertainty,
+        combinedMbti,
+        combinedEnneagram
+    };
+}
+
+              async function calculateFinalProfile(code) {
             try {
                 const { data: user, error: userError } = await supabase
                     .from('users')
@@ -2341,11 +2305,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             }
         }
 
-        /**
-         * Récupère un profil utilisateur et ses évaluations externes depuis Supabase.
-         * @param {String} code Code unique de l'utilisateur.
-         * @returns {Object|null} Contient l’utilisateur et ses évaluations, ou null si introuvable.
-         */
         async function fetchUserProfileFromSupabase(code) {
             try {
                 const { data, error } = await supabase
@@ -2380,42 +2339,35 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             }
         }
 
-        // Calcul des résultats
         async function calculateResults() {
             const mbtiScores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
             const enneagramScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
-            
-            // Calculer les scores basés sur les réponses
+
             Object.keys(answers).forEach(questionId => {
                 const questionIndex = parseInt(questionId) - 1;
                 const answerIndex = answers[questionId];
                 const question = QUESTIONS_AUTO_EVALUATION[questionIndex];
                 const selectedOption = question.options[answerIndex];
-                
-                // Scores MBTI
+
                 Object.keys(selectedOption.mbti).forEach(trait => {
                     mbtiScores[trait] += selectedOption.mbti[trait];
                 });
-                
-                // Scores Ennéagramme
+
                 Object.keys(selectedOption.enneagram).forEach(type => {
                     enneagramScores[type] += selectedOption.enneagram[type];
                 });
             });
-            
-            // Déterminer le type MBTI
-            const mbtiType = 
+
+            const mbtiType =
                 (mbtiScores.E > mbtiScores.I ? 'E' : 'I') +
                 (mbtiScores.S > mbtiScores.N ? 'S' : 'N') +
                 (mbtiScores.T > mbtiScores.F ? 'T' : 'F') +
                 (mbtiScores.J > mbtiScores.P ? 'J' : 'P');
-            
-            // Déterminer le type Ennéagramme dominant
-            const enneagramType = Object.keys(enneagramScores).reduce((a, b) => 
+
+            const enneagramType = Object.keys(enneagramScores).reduce((a, b) =>
                 enneagramScores[a] > enneagramScores[b] ? a : b
             );
-            
-            // Calculer la certitude pour le MBTI (moyenne des écarts entre chaque paire)
+
             const mbtiPairs = [
                 ['E', 'I'],
                 ['S', 'N'],
@@ -2431,19 +2383,14 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             });
             const mbtiCertainty = Math.min(95, Math.round((mbtiCertaintySum / mbtiPairs.length) * 100));
 
-            // Calculer la certitude pour l'Ennéagramme (poids du type dominant)
             const totalEnneagramScore = Object.values(enneagramScores).reduce((a, b) => a + b, 0);
             const enneagramCertainty = totalEnneagramScore
                 ? Math.min(95, Math.round((enneagramScores[enneagramType] / totalEnneagramScore) * 100))
                 : 0;
 
-            // Certitude globale (moyenne des deux indices)
             const certaintyScore = Math.round((mbtiCertainty + enneagramCertainty) / 2);
-            
-            // Générer un code unique pour l'utilisateur
             const uniqueCode = generateUniqueCode();
-            
-            // Sauvegarder le profil avec le code
+
             const userProfile = {
                 code: uniqueCode,
                 mbtiType,
@@ -2455,11 +2402,10 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 enneagramScores,
                 timestamp: Date.now()
             };
-            // Enregistrement du profil dans Supabase
+
             await saveUserProfileToSupabase(userProfile);
-            // Sauvegarde locale pour un accès hors ligne
             localStorage.setItem('userProfile_' + uniqueCode, JSON.stringify(userProfile));
-            
+
             displayResults({
                 code: uniqueCode,
                 mbtiType,
@@ -2472,31 +2418,24 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             });
         }
 
-        // Affichage des résultats
         function displayResults(results) {
             const resultsHTML = generateResultsHTML(results);
-            
-            // Créer une nouvelle section pour les résultats
+
             const resultsSection = document.createElement('div');
             resultsSection.className = 'bg-blue-50 py-16 px-4 sm:px-6 lg:px-8';
             resultsSection.innerHTML = resultsHTML;
-            
-            // Insérer après la section d'auto-évaluation
+
             const autoEvalSection = document.getElementById('auto-evaluation');
             if (autoEvalSection) {
                 autoEvalSection.parentNode.insertBefore(resultsSection, autoEvalSection.nextSibling);
                 initCountUp(resultsSection);
 
-                // Faire défiler vers les résultats
                 setTimeout(() => {
                     resultsSection.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
             }
-            
-            // Sauvegarder les résultats
+
             localStorage.setItem('personalityTestResults', JSON.stringify(results));
-            
-            // Nettoyer la progression
             localStorage.removeItem('personalityTestProgress');
         }
 
