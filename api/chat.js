@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     const today = new Date().toISOString().split('T')[0];
     const { data: requestRow, error: requestError } = await supabase
-      .from('chat_usage') // ← ✅ corrigé ici
+      .from('chat_usage')
       .select('count')
       .eq('client_id', clientId)
       .eq('date', today)
