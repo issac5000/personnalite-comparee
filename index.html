@@ -2143,7 +2143,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             return { mbtiType, enneagramType: topEnnea };
         }
 
-     function computeWeightedResults(selfMbtiScores, selfEnneagramScores, evaluations) {
+    function computeWeightedResults(selfMbtiScores, selfEnneagramScores, evaluations) {
     const weights = {
         self: 5,
         family: 30,
@@ -2154,44 +2154,23 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
     const combinedMbti = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
     const combinedEnneagram = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
-    const typeCounts = { mbti: {}, enneagram: {} };
 
     let totalWeight = 0;
 
-    // Inclure auto-éval (pondérée à 5%)
     const allEvaluations = [
         { relation: 'self', mbti_scores: selfMbtiScores, enneagram_scores: selfEnneagramScores },
         ...evaluations
     ];
 
     allEvaluations.forEach(ev => {
-        const weight = weights[ev.relation] || 0;
-        if (weight === 0) return; // ignore les relations inconnues
-
+        const w = weights[ev.relation] || 0;
         Object.keys(ev.mbti_scores).forEach(trait => {
-            combinedMbti[trait] += ev.mbti_scores[trait] * weight;
+            combinedMbti[trait] += ev.mbti_scores[trait] * w;
         });
         Object.keys(ev.enneagram_scores).forEach(type => {
-            combinedEnneagram[type] += ev.enneagram_scores[type] * weight;
+            combinedEnneagram[type] += ev.enneagram_scores[type] * w;
         });
-
-        // Pour la convergence, uniquement les proches (pas l'auto-éval)
-        if (ev.relation !== 'self') {
-            const evMbtiType =
-                (ev.mbti_scores.E > ev.mbti_scores.I ? 'E' : 'I') +
-                (ev.mbti_scores.S > ev.mbti_scores.N ? 'S' : 'N') +
-                (ev.mbti_scores.T > ev.mbti_scores.F ? 'T' : 'F') +
-                (ev.mbti_scores.J > ev.mbti_scores.P ? 'J' : 'P');
-
-            const evEnneaType = Object.keys(ev.enneagram_scores).reduce((a, b) =>
-                ev.enneagram_scores[a] > ev.enneagram_scores[b] ? a : b
-            );
-
-            typeCounts.mbti[evMbtiType] = (typeCounts.mbti[evMbtiType] || 0) + 1;
-            typeCounts.enneagram[evEnneaType] = (typeCounts.enneagram[evEnneaType] || 0) + 1;
-        }
-
-        totalWeight += weight;
+        totalWeight += w;
     });
 
     if (totalWeight === 0) {
@@ -2202,11 +2181,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             enneagramCertainty: 0,
             overallCertainty: 0,
             combinedMbti,
-            combinedEnneagram
+            combinedEnneagram,
+            evaluations: allEvaluations
         };
     }
 
-    // Normalisation
     Object.keys(combinedMbti).forEach(trait => {
         combinedMbti[trait] = combinedMbti[trait] / totalWeight;
     });
@@ -2214,41 +2193,63 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         combinedEnneagram[type] = combinedEnneagram[type] / totalWeight;
     });
 
-    // Type MBTI final
     const mbtiType =
         (combinedMbti.E > combinedMbti.I ? 'E' : 'I') +
         (combinedMbti.S > combinedMbti.N ? 'S' : 'N') +
         (combinedMbti.T > combinedMbti.F ? 'T' : 'F') +
         (combinedMbti.J > combinedMbti.P ? 'J' : 'P');
 
-    // Type Ennéagramme final
-    const enneagramType = Object.keys(combinedEnneagram).reduce((a, b) =>
-        combinedEnneagram[a] > combinedEnneagram[b] ? a : b
-    );
+    let topEnnea = '1';
+    Object.keys(combinedEnneagram).forEach(type => {
+        if (combinedEnneagram[type] > combinedEnneagram[topEnnea]) {
+            topEnnea = type;
+        }
+    });
 
-    // Certitudes basées uniquement sur la convergence des proches
-    const maxMbtiAgreement = Math.max(...Object.values(typeCounts.mbti), 0);
-    const maxEnneaAgreement = Math.max(...Object.values(typeCounts.enneagram), 0);
+    const typeCounts = { mbti: {}, enneagram: {} };
+    evaluations.forEach(ev => {
+        const evMbtiType =
+            (ev.mbti_scores.E > ev.mbti_scores.I ? 'E' : 'I') +
+            (ev.mbti_scores.S > ev.mbti_scores.N ? 'S' : 'N') +
+            (ev.mbti_scores.T > ev.mbti_scores.F ? 'T' : 'F') +
+            (ev.mbti_scores.J > ev.mbti_scores.P ? 'J' : 'P');
+
+        const evEnneaType = Object.keys(ev.enneagram_scores).reduce((a, b) =>
+            ev.enneagram_scores[a] > ev.enneagram_scores[b] ? a : b
+        );
+
+        typeCounts.mbti[evMbtiType] = (typeCounts.mbti[evMbtiType] || 0) + 1;
+        typeCounts.enneagram[evEnneaType] = (typeCounts.enneagram[evEnneaType] || 0) + 1;
+    });
+
+    const maxMbtiAgreement = Math.max(...Object.values(typeCounts.mbti));
+    const maxEnneaAgreement = Math.max(...Object.values(typeCounts.enneagram));
     const totalEvaluations = evaluations.length;
 
-    const mbtiCertainty = totalEvaluations > 0 ? Math.round((maxMbtiAgreement / totalEvaluations) * 100) : 0;
-    const enneagramCertainty = totalEvaluations > 0 ? Math.round((maxEnneaAgreement / totalEvaluations) * 100) : 0;
+    const mbtiCertainty = Math.round((maxMbtiAgreement / totalEvaluations) * 100);
+    const enneagramCertainty = Math.round((maxEnneaAgreement / totalEvaluations) * 100);
     let overallCertainty = Math.round((mbtiCertainty + enneagramCertainty) / 2);
 
-    // Bonus si très forte convergence
     const convergenceThreshold = 90;
     if (mbtiCertainty >= convergenceThreshold || enneagramCertainty >= convergenceThreshold) {
         overallCertainty = Math.min(100, overallCertainty + 10);
     }
 
+    const selfEvaluation = {
+        relation: 'self',
+        mbti_scores: selfMbtiScores,
+        enneagram_scores: selfEnneagramScores
+    };
+
     return {
         mbtiType,
-        enneagramType,
+        enneagramType: topEnnea,
         mbtiCertainty,
         enneagramCertainty,
         overallCertainty,
         combinedMbti,
-        combinedEnneagram
+        combinedEnneagram,
+        evaluations: [selfEvaluation, ...evaluations]
     };
 }
 
