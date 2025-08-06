@@ -9,6 +9,10 @@ Webapp HTML/JS combinant test MBTI + Ennéagramme, sans backend. Résultats anon
 
 ## Configuration du chatbot
 
-Pour utiliser le chatbot, une clé API OpenAI est nécessaire. Lors de la première
-utilisation du chat, le navigateur vous invitera à saisir votre clé, qui sera
-stockée localement dans `localStorage`.
+Pour utiliser le chatbot, créez un fichier `.env` à la racine du projet contenant :
+
+```
+OPENAI_API_KEY=votre_cle_openai
+```
+
+Le serveur utilisera cette clé pour interroger l'API OpenAI.

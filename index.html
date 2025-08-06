@@ -221,18 +221,6 @@
             color: #084d28;
             border-radius: 16px 16px 4px 16px;
         }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-5px); }
-            40%, 80% { transform: translateX(5px); }
-        }
-        .assistant-bubble.limit-error {
-            background: #ffe5e5;
-            border: 1px solid #ff0000;
-            color: #b30000;
-            font-weight: bold;
-            animation: shake 0.4s;
-        }
         #chat-suggestions {
             display: flex;
             flex-direction: column;
@@ -1669,7 +1657,6 @@ async function enregistrerQuestionsPourProches(questionsAutoEvaluation, userCode
   if (error) {
     console.error("❌ Erreur lors de l'enregistrement Supabase :", error);
   } else {
-    console.log("✅ Questions pour proches enregistrées avec succès :", data);
     alert("Voici ton code à donner à 3 proches : " + userCode);
   }
 }
@@ -1678,8 +1665,6 @@ async function enregistrerQuestionsPourProches(questionsAutoEvaluation, userCode
 if (window.location.href.includes("external")) {
   const urlParams = new URLSearchParams(window.location.search);
   const code = urlParams.get("code");
-  console.log("Code reçu dans l'URL :", code);
-
   if (code) {
     // Appelle Supabase pour récupérer les questions liées à ce code
     supabase
@@ -1689,7 +1674,6 @@ if (window.location.href.includes("external")) {
       .then(({ data, error }) => {
         if (!error && data && data.length > 0 && data[0].external_questions) {
           questions = data[0].external_questions;
-          console.log("Questions externes chargées :", questions);
           afficherQuestions(); // appel explicite
         } else {
           console.error("Aucune question externe trouvée ou erreur :", error);
@@ -2055,8 +2039,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     if (error) {
       console.error('Erreur lors de l\'enregistrement du profil utilisateur :', error);
     } else {
-      console.log('Profil enregistré dans Supabase', data);
-
       if (testType === "auto") {
         enregistrerQuestionsPourProches(answers, userProfile.code);
       }
@@ -2101,7 +2083,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 if (insertError) {
                     console.error('Erreur lors de l’enregistrement de l’évaluation externe :', insertError);
                 } else {
-                    console.log('Évaluation externe enregistrée dans Supabase');
                     // Vérifier si suffisamment d’évaluations sont présentes pour calculer un résultat final
                     await checkAndFinalizeResults(userId);
                 }
@@ -2152,9 +2133,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 const finalMBTI = String(mbtiType);
                 const finalEnneagram = String(enneagramType);
 
-                console.log('MBTI :', finalMBTI);
-                console.log('Ennéagramme :', finalEnneagram);
-
                 const { data, error } = await supabase
                   .from('users')
                   .update({
@@ -2165,8 +2143,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
                 if (error) {
                   console.error('❌ Erreur lors de l’update :', error);
-                } else {
-                  console.log('✅ Données bien enregistrées :', data);
                 }
             } catch (err) {
                 console.error('Exception lors du calcul final des résultats :', err);
@@ -4212,9 +4188,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
             // Récupération du profil via Supabase
             let result = await fetchUserProfileFromSupabase(code);
-         console.log("🧠 Résultat brut depuis Supabase :", result);
-console.log("📘 MBTI :", result.user?.mbti_type);
-console.log("📗 Ennéagramme :", result.user?.enneagram_type);
 
             if (!result || !result.user) {
                 // Afficher le message d'erreur
@@ -4781,8 +4754,6 @@ console.log("📗 Ennéagramme :", result.user?.enneagram_type);
     </div>
 
 <script>
-  const LIMIT_MESSAGE = "Tu as atteint ta limite de 10 messages pour aujourd’hui 🤖<br>Psycho’Bot a besoin de recharger ses batteries neuronales !<br>Reviens demain… ou discute avec mon grand frère sur chat.openai.com 😄";
-
   async function sendChatMessage(message) {
     try {
       const response = await fetch('/api/chat', {
@@ -4798,18 +4769,13 @@ console.log("📗 Ennéagramme :", result.user?.enneagram_type);
           ]
         })
       });
-
-      if (response.status === 429) {
-        return { message: LIMIT_MESSAGE, limitError: true };
-      }
-
       if (!response.ok) {
         console.error("Erreur de l’API OpenAI:", await response.text());
         return { message: "Impossible de contacter l'IA pour le moment." };
       }
 
       const data = await response.json();
-      return { message: data.message || "Réponse vide de l'IA." };
+      return { message: data.response || "Réponse vide de l'IA." };
 
     } catch (err) {
       console.error("Erreur réseau:", err);
@@ -4818,20 +4784,14 @@ console.log("📗 Ennéagramme :", result.user?.enneagram_type);
   }
 
   let currentTyped = null;
-  let limitErrorShown = false;
 
-  function appendMessage(role, text, options = {}) {
-    const { limitError = false } = options;
-    if (limitError && limitErrorShown) return;
-    if (limitError) limitErrorShown = true;
+  function appendMessage(role, text) {
     const chatBox = document.getElementById('chat-box');
     if (!chatBox) return;
     const wrapper = document.createElement('div');
     wrapper.className = `chat-row ${role === 'user' ? 'user' : 'assistant'}`;
     const bubble = document.createElement('div');
-    let classes = `chat-bubble ${role === 'user' ? 'user-bubble' : 'assistant-bubble'}`;
-    if (limitError) classes += ' limit-error';
-    bubble.className = classes;
+    bubble.className = `chat-bubble ${role === 'user' ? 'user-bubble' : 'assistant-bubble'}`;
     wrapper.appendChild(bubble);
     chatBox.appendChild(wrapper);
 
@@ -4875,8 +4835,8 @@ console.log("📗 Ennéagramme :", result.user?.enneagram_type);
         if (suggestionContainer) suggestionContainer.remove();
         appendMessage('user', question);
         input.value = '';
-        const { message, limitError } = await sendChatMessage(question);
-        appendMessage('assistant', message, { limitError });
+        const { message } = await sendChatMessage(question);
+        appendMessage('assistant', message);
       };
       sendBtn.addEventListener('click', sendMessage);
       input.addEventListener('keydown', e => {
