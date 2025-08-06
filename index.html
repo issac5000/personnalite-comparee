@@ -2302,20 +2302,21 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     .eq('code', code);
 
                 return {
-                    user: {
-                        id: user.id,
-                        code,
-                        mbti_type: weighted.mbtiType,
-                        enneagram_type: weighted.enneagramType,
-                        mbti_scores: weighted.combinedMbti,
-                        enneagram_scores: weighted.combinedEnneagram,
-                        certainty_score: overallCertainty
-                    },
-                    evaluations,
-                    mbtiCertainty: weighted.mbtiCertainty,
-                    enneagramCertainty: weighted.enneagramCertainty,
-                    overallCertainty
-                };
+    user: {
+        id: user.id,
+        code,
+        mbti_type: weighted.mbtiType,
+        enneagram_type: weighted.enneagramType,
+        mbti_scores: weighted.combinedMbti,
+        enneagram_scores: weighted.combinedEnneagram,
+        certainty_score: overallCertainty
+    },
+    evaluations: weighted.evaluations,
+    mbtiCertainty: weighted.mbtiCertainty,
+    enneagramCertainty: weighted.enneagramCertainty,
+    overallCertainty
+};
+
             } catch (err) {
                 console.error('Erreur lors du calcul du profil final :', err);
                 return null;
