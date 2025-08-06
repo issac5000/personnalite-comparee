@@ -1,5 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
+// ✅ DEBUG : log des variables d'environnement
+console.log("🧪 DEBUG ENV VARS");
+console.log("SUPABASE_URL =", process.env.SUPABASE_URL);
+console.log("SUPABASE_SERVICE_ROLE_KEY =", process.env.SUPABASE_SERVICE_ROLE_KEY ? '✔️ Présente' : '❌ Manquante');
+console.log("OPENAI_API_KEY =", process.env.OPENAI_API_KEY ? '✔️ Présente' : '❌ Manquante');
+
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
