@@ -1,9 +1,0 @@
-{
-  "name": "personnalite-comparee",
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.43.3",
-    "openai": "^4.28.4"
-  }
-}
