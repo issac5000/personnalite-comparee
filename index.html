@@ -4222,7 +4222,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 }
             }
 
-            const { user, evaluations, overallCertainty } = result;
+            const { user, evaluations } = result;
+            const overallCertainty = result.overallCertainty ?? user.certainty_score ?? 0;
             // Construire un objet de profil simplifié compatible avec displayProfile
             const simplifiedProfile = {
                 name: user.mbti_type && user.enneagram_type
@@ -4406,14 +4407,15 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     coherence[rel] = Math.round((coherence[rel] / counts[rel]) * 100);
                 }
             });
+            const certaintyScore = Number(result.user.certainty_score) || 0;
             const finalProfile = {
                 name: `${result.user.mbti_type} — type ${result.user.enneagram_type}`,
                 results: {
                     mbti: result.user.mbti_type,
-                    mbtiCertainty: result.mbtiCertainty,
+                    mbtiCertainty: result.mbtiCertainty ?? certaintyScore,
                     enneagram: result.user.enneagram_type,
-                    enneagramCertainty: result.enneagramCertainty,
-                    overallCertainty: result.overallCertainty
+                    enneagramCertainty: result.enneagramCertainty ?? certaintyScore,
+                    overallCertainty: certaintyScore
                 },
                 selfEvaluation: {
                     mbti: selfProfile.mbtiType,
