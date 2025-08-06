@@ -236,14 +236,27 @@
             font-weight: bold;
             animation: shake 0.4s;
         }
-        #chat-suggestions .assistant-bubble {
-            cursor: pointer;
-            border: none;
-            outline: none;
+        .question-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
             font-size: 14px;
+            margin-top: auto;
+            padding: 12px;
         }
-        #chat-suggestions .assistant-bubble:hover {
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        .question-buttons button {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background-color: #e7f1fb;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .question-buttons button:hover {
+            background-color: #d0e7f7;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     </style>
 
@@ -535,11 +548,13 @@
                 <p class="mt-4 text-xl text-gray-500">Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.</p>
             </div>
             <div class="mt-8">
-                <div id="chat-box" class="h-64 overflow-y-auto border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50"></div>
-                <div id="chat-suggestions" class="chat-suggestions fade-in flex flex-wrap justify-between gap-2 mb-2 text-sm">
-                    <button class="chat-bubble assistant-bubble suggestion-bubble" data-question="Quel type est compatible avec un ENFP ?">❤️ Quel type est compatible avec un ENFP ?</button>
-                    <button class="chat-bubble assistant-bubble suggestion-bubble" data-question="Comment est calculée la certitude globale ?">📊 Comment est calculée la certitude globale ?</button>
-                    <button class="chat-bubble assistant-bubble suggestion-bubble" data-question="Pourquoi demander l’avis de mes proches ?">🤝 Pourquoi demander l’avis de mes proches ?</button>
+                <div id="chat-window" class="h-64 border border-gray-200 rounded-lg mb-4 bg-gray-50 flex flex-col">
+                    <div id="chat-box" class="flex-1 overflow-y-auto p-4"></div>
+                    <div id="chat-suggestions" class="question-buttons fade-in">
+                        <button class="suggestion-bubble" data-question="Quel type est compatible avec un ENFP ?">❤️ Quel type est compatible avec un ENFP ?</button>
+                        <button class="suggestion-bubble" data-question="Comment est calculée la certitude globale ?">📊 Comment est calculée la certitude globale ?</button>
+                        <button class="suggestion-bubble" data-question="Pourquoi demander l’avis de mes proches ?">🤝 Pourquoi demander l’avis de mes proches ?</button>
+                    </div>
                 </div>
                 <div class="flex">
                     <input id="chat-input" type="text" placeholder="Posez votre question..." class="flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:ring-blue-500 focus:border-blue-500">
