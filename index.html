@@ -2340,21 +2340,31 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
          */
         async function fetchUserProfileFromSupabase(code) {
             try {
-                const { data: user, error: userError } = await supabase
+                const { data, error } = await supabase
                     .from('users')
-                    .select('id, code, "scores mbti", scores_ennéagramme, mbti_type, enneagramme_type, "score de certitude"')
-                    .eq('code', code)
-                    .single();
-                if (userError || !user) {
+                    .select('*')
+                    .eq('code', code);
+
+                if (error) {
+                    console.error('Erreur lors de la récupération de l\'utilisateur :', error);
                     return null;
                 }
+
+                if (!data || data.length === 0) {
+                    return null;
+                }
+
+                const user = data[0];
+
                 const { data: evaluations, error: evalError } = await supabase
                     .from('external_evaluations')
                     .select('relation, mbti_scores, enneagram_scores, created_at')
                     .eq('user_id', user.id);
+
                 if (evalError) {
                     console.error('Erreur lors de la récupération des évaluations externes :', evalError);
                 }
+
                 return { user, evaluations: evaluations || [] };
             } catch (err) {
                 console.error('Exception lors de la récupération du profil :', err);
@@ -4347,25 +4357,34 @@ console.log("📗 Ennéagramme :", result.user?.enneagramme_type);
         }
 
         async function viewResults(codeParam) {
-            const code = (codeParam || document.getElementById('display-code').textContent).trim().toUpperCase();
-            if (!code) {
+            const userCode = (codeParam || document.getElementById('display-code').textContent)
+                .trim()
+                .toUpperCase();
+
+            if (!userCode) {
                 alert('Veuillez entrer un code');
                 return;
             }
-            let initial = await fetchUserProfileFromSupabase(code);
+
+            const initial = await fetchUserProfileFromSupabase(userCode);
+
             if (!initial) {
-                alert('Profil introuvable.');
+                alert('Code introuvable');
                 return;
             }
+
             if (initial.evaluations.length === 0) {
                 alert('Au moins une évaluation externe est nécessaire pour afficher le résultat final.');
                 return;
             }
-            const result = await calculateFinalProfile(code);
+
+            const result = await calculateFinalProfile(userCode);
+
             if (!result || !result.user.mbti_type || !result.user.enneagramme_type) {
                 alert('Le résultat final n’est pas encore prêt.');
                 return;
             }
+
             const selfProfile = getProfileFromScores(result.user["scores mbti"], result.user.scores_ennéagramme);
             const externalProfiles = result.evaluations.map(ev => {
                 const { mbtiType, enneagramType } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
@@ -4407,7 +4426,7 @@ console.log("📗 Ennéagramme :", result.user?.enneagramme_type);
                 externalCount: result.evaluations.length
             };
             closeProfileModal();
-            displayDetailedResults(finalProfile, code);
+            displayDetailedResults(finalProfile, userCode);
         }
 
         function displayDetailedResults(profile, code) {
