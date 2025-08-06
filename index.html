@@ -4395,18 +4395,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     completedAt: ev.created_at
                 };
             });
-            const counts = { family: 0, partner: 0, friend: 0, colleague: 0 };
-            const coherence = { auto: 100, family: 0, partner: 0, friend: 0, colleague: 0 };
-            externalProfiles.forEach(ev => {
-                const match = (ev.mbti === result.user.mbti_type ? 1 : 0) + (ev.enneagram === result.user.enneagram_type ? 1 : 0);
-                counts[ev.relation] = (counts[ev.relation] || 0) + 1;
-                coherence[ev.relation] += match / 2;
-            });
-            Object.keys(counts).forEach(rel => {
-                if (counts[rel] > 0) {
-                    coherence[rel] = Math.round((coherence[rel] / counts[rel]) * 100);
-                }
-            });
             const certaintyScore = result.user.certainty_score != null
                 ? Number(result.user.certainty_score)
                 : null;
@@ -4424,7 +4412,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     enneagram: selfProfile.enneagramType
                 },
                 externalEvaluations: externalProfiles,
-                coherence,
+                mbtiScores: result.user.mbti_scores,
+                enneagramScores: result.user.enneagram_scores,
                 externalCount: result.evaluations.length
             };
             closeProfileModal();
@@ -4500,9 +4489,16 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
           ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
         </div>
 
-        <!-- Graphique de cohérence -->
-        <div class="bg-white rounded-lg p-4 mb-6">
-          <canvas id="coherenceChart" height="200"></canvas>
+        <!-- Graphiques MBTI & Ennéagramme -->
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-white rounded-lg p-4">
+            <h4 class="font-semibold text-gray-900 mb-3">Dichotomies MBTI</h4>
+            <canvas id="mbtiChart" height="220"></canvas>
+          </div>
+          <div class="bg-white rounded-lg p-4">
+            <h4 class="font-semibold text-gray-900 mb-3">Types Ennéagramme</h4>
+            <canvas id="enneagramChart" height="220"></canvas>
+          </div>
         </div>
 
                         <!-- Détail des évaluations -->
@@ -4559,23 +4555,31 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             if (window.AOS) {
                 AOS.refresh();
             }
-
-            // Initialiser le graphique de cohérence
-            const ctx = resultsModal.querySelector('#coherenceChart').getContext('2d');
+            // Initialiser les graphiques MBTI et Ennéagramme
+            const mbtiCtx = resultsModal.querySelector('#mbtiChart').getContext('2d');
+            const mbtiPairs = [
+                { label: 'E / I', a: 'E', b: 'I' },
+                { label: 'S / N', a: 'S', b: 'N' },
+                { label: 'T / F', a: 'T', b: 'F' },
+                { label: 'J / P', a: 'J', b: 'P' }
+            ];
+            const mbtiData = mbtiPairs.map(pair => {
+                const aScore = profile.mbtiScores[pair.a];
+                const bScore = profile.mbtiScores[pair.b];
+                const dominant = aScore > bScore ? pair.a : pair.b;
+                const value = Math.round((Math.max(aScore, bScore) / (aScore + bScore)) * 100);
+                return { label: pair.label, value, dominant };
+            });
+            const mbtiDescriptions = { E: 'Extraversion', I: 'Introversion', S: 'Sensation', N: 'Intuition', T: 'Pensée', F: 'Sentiment', J: 'Jugement', P: 'Perception' };
             Chart.register(ChartDataLabels);
-            new Chart(ctx, {
+            new Chart(mbtiCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Auto', 'Famille', 'Partenaire', 'Ami', 'Collègue'],
+                    labels: mbtiData.map(d => d.label),
                     datasets: [{
-                        data: [
-                            profile.coherence.auto,
-                            profile.coherence.family,
-                            profile.coherence.partner,
-                            profile.coherence.friend,
-                            profile.coherence.colleague
-                        ],
-                        backgroundColor: ['#10B981', '#3B82F6', '#EC4899', '#F59E0B', '#6B7280']
+                        data: mbtiData.map(d => d.value),
+                        backgroundColor: '#93C5FD',
+                        borderRadius: 8
                     }]
                 },
                 options: {
@@ -4585,11 +4589,73 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     },
                     plugins: {
                         legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${mbtiDescriptions[mbtiData[ctx.dataIndex].dominant]}: ${ctx.parsed.x}%`
+                            }
+                        },
                         datalabels: {
                             anchor: 'end',
                             align: 'end',
-                            formatter: value => value + '%'
+                            formatter: (value, ctx) => `${value}% ${mbtiData[ctx.dataIndex].dominant}`
                         }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutCubic'
+                    }
+                }
+            });
+
+            const enneaCtx = resultsModal.querySelector('#enneagramChart').getContext('2d');
+            const enneaLabels = Object.keys(profile.enneagramScores).sort();
+            const enneaValues = enneaLabels.map(k => Math.round(profile.enneagramScores[k]));
+            const maxIndex = enneaValues.indexOf(Math.max(...enneaValues));
+            const enneaColors = enneaValues.map((v, i) => i === maxIndex ? '#A855F7' : '#D8B4FE');
+            const enneagramDescriptions = {
+                1: 'Le Réformateur',
+                2: "L'Altruiste",
+                3: 'Le Performeur',
+                4: "L'Individualiste",
+                5: "L'Investigateur",
+                6: 'Le Loyaliste',
+                7: "L'Épicurien",
+                8: 'Le Chef',
+                9: 'Le Médiateur'
+            };
+            new Chart(enneaCtx, {
+                type: 'bar',
+                data: {
+                    labels: enneaLabels.map(t => `Type ${t}`),
+                    datasets: [{
+                        data: enneaValues,
+                        backgroundColor: enneaColors,
+                        borderColor: enneaValues.map((v, i) => i === maxIndex ? '#7C3AED' : 'transparent'),
+                        borderWidth: enneaValues.map((v, i) => i === maxIndex ? 2 : 0),
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true, max: 100 }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.parsed.x}% - ${enneagramDescriptions[enneaLabels[ctx.dataIndex]]}`
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            formatter: value => `${value}%`
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutCubic'
                     }
                 }
             });
