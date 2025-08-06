@@ -2180,6 +2180,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     enneagramType: null,
                     mbtiCertainty: 0,
                     enneagramCertainty: 0,
+                    overallCertainty: 0,
                     combinedMbti,
                     combinedEnneagram
                 };
@@ -2205,59 +2206,61 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 }
             });
 
-            let mbtiAgreement = 0;
-            let enneaAgreement = 0;
-
-            const checkAgreement = (w, mbtiScores, enneaScores) => {
-                const typeMBTI =
-                    (mbtiScores.E > mbtiScores.I ? 'E' : 'I') +
-                    (mbtiScores.S > mbtiScores.N ? 'S' : 'N') +
-                    (mbtiScores.T > mbtiScores.F ? 'T' : 'F') +
-                    (mbtiScores.J > mbtiScores.P ? 'J' : 'P');
-                const typeEnnea = Object.keys(enneaScores).reduce((a, b) =>
-                    enneaScores[a] > enneaScores[b] ? a : b
-                );
-                if (typeMBTI === mbtiType) mbtiAgreement += w;
-                if (typeEnnea === topEnnea) enneaAgreement += w;
-            };
-
+            // Types issus de l'auto‑évaluation
+            let selfMbtiType = null;
+            let selfEnneaType = null;
             if (selfMbtiScores && selfEnneagramScores) {
-                checkAgreement(weights.self, selfMbtiScores, selfEnneagramScores);
+                selfMbtiType =
+                    (selfMbtiScores.E > selfMbtiScores.I ? 'E' : 'I') +
+                    (selfMbtiScores.S > selfMbtiScores.N ? 'S' : 'N') +
+                    (selfMbtiScores.T > selfMbtiScores.F ? 'T' : 'F') +
+                    (selfMbtiScores.J > selfMbtiScores.P ? 'J' : 'P');
+                selfEnneaType = Object.keys(selfEnneagramScores).reduce((a, b) =>
+                    selfEnneagramScores[a] > selfEnneagramScores[b] ? a : b
+                );
             }
+
+            // Calcul de la concordance avec l'auto‑évaluation
+            let mbtiAgreement = selfMbtiType ? weights.self : 0;
+            let enneaAgreement = selfEnneaType ? weights.self : 0;
+
             evaluations.forEach(ev => {
-                checkAgreement(weights[ev.relation] || 0, ev.mbti_scores, ev.enneagram_scores);
+                const w = weights[ev.relation] || 0;
+                const evMbtiType =
+                    (ev.mbti_scores.E > ev.mbti_scores.I ? 'E' : 'I') +
+                    (ev.mbti_scores.S > ev.mbti_scores.N ? 'S' : 'N') +
+                    (ev.mbti_scores.T > ev.mbti_scores.F ? 'T' : 'F') +
+                    (ev.mbti_scores.J > ev.mbti_scores.P ? 'J' : 'P');
+                const evEnneaType = Object.keys(ev.enneagram_scores).reduce((a, b) =>
+                    ev.enneagram_scores[a] > ev.enneagram_scores[b] ? a : b
+                );
+                if (selfMbtiType && evMbtiType === selfMbtiType) mbtiAgreement += w;
+                if (selfEnneaType && evEnneaType === selfEnneaType) enneaAgreement += w;
             });
 
-            const mbtiCertainty = Math.min(95, Math.round((mbtiAgreement / totalWeight) * 100));
-            const enneagramCertainty = Math.min(95, Math.round((enneaAgreement / totalWeight) * 100));
+            const mbtiCertainty = Math.round((mbtiAgreement / totalWeight) * 100);
+            const enneagramCertainty = Math.round((enneaAgreement / totalWeight) * 100);
+            let overallCertainty = Math.round((mbtiCertainty + enneagramCertainty) / 2);
 
-            return { mbtiType, enneagramType: topEnnea, mbtiCertainty, enneagramCertainty, combinedMbti, combinedEnneagram };
+            const convergenceThreshold = 90;
+            if (mbtiCertainty >= convergenceThreshold || enneagramCertainty >= convergenceThreshold) {
+                overallCertainty = Math.min(100, overallCertainty + 10);
+            }
+
+            return {
+                mbtiType,
+                enneagramType: topEnnea,
+                mbtiCertainty,
+                enneagramCertainty,
+                overallCertainty,
+                combinedMbti,
+                combinedEnneagram
+            };
         }
 
-        /**
-         * Calcule une certitude globale basée uniquement sur la convergence des évaluations externes.
-         * L'auto‑évaluation n'est pas prise en compte. Si moins de trois évaluations externes
-         * sont disponibles, la certitude est plafonnée à 60 %.
-         * @param {Array} externals Liste des profils externes { relation, mbti, enneagram }
-         * @returns {Number} Score de certitude global (0-100)
-         */
-        function computeConvergenceCertainty(externals) {
-            if (!externals || externals.length === 0) return 0;
-            let matches = 0;
-            let comparisons = 0;
-            for (let i = 0; i < externals.length; i++) {
-                for (let j = i + 1; j < externals.length; j++) {
-                    comparisons++;
-                    if (externals[i].mbti === externals[j].mbti) matches += 0.5;
-                    if (externals[i].enneagram === externals[j].enneagram) matches += 0.5;
-                }
-            }
-            let certainty = comparisons > 0 ? Math.round((matches / comparisons) * 100) : 0;
-            if (externals.length < 3) {
-                certainty = Math.min(certainty, 60);
-            }
-            return certainty;
-        }
+        // Ancienne fonction de certitude basée uniquement sur la convergence
+        // des évaluations externes supprimée au profit d'un calcul pondéré
+        // incluant l'auto-évaluation.
 
         /**
          * Calcule le profil final (MBTI, Ennéagramme et certitude) pour un code donné.
@@ -2289,11 +2292,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 }
 
                 const weighted = computeWeightedResults(user.mbti_scores, user.enneagram_scores, evaluations);
-                const externalProfiles = evaluations.map(ev => {
-                    const { mbtiType, enneagramType } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
-                    return { relation: ev.relation, mbti: mbtiType, enneagram: enneagramType };
-                });
-                const overallCertainty = computeConvergenceCertainty(externalProfiles);
+                const overallCertainty = weighted.overallCertainty;
 
                 await supabase
                     .from('users')
@@ -4391,9 +4390,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     completedAt: ev.created_at
                 };
             });
-            const certaintyScore = result.user.certainty_score != null
-                ? Number(result.user.certainty_score)
-                : null;
+            const certaintyScore = result.overallCertainty ??
+                (result.user.certainty_score != null ? Number(result.user.certainty_score) : null);
             const finalProfile = {
                 name: `${result.user.mbti_type} — type ${result.user.enneagram_type}`,
                 results: {
@@ -4675,11 +4673,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 alert('Impossible de partager : le profil complet n’est pas encore disponible.');
                 return;
             }
-            const externalProfiles = result.evaluations.map(ev => {
-                const { mbtiType, enneagramType } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
-                return { relation: ev.relation, mbti: mbtiType, enneagram: enneagramType };
-            });
-            const overallCertainty = computeConvergenceCertainty(externalProfiles);
+            const overallCertainty = result.user.certainty_score ?? 0;
             const shareText = `Je viens de découvrir mon profil de personnalité complet ! Je suis ${result.user.mbti_type} (type ${result.user.enneagram_type}) avec ${overallCertainty}% de certitude. Découvrez le vôtre sur https://personnalite-comparee.fr`;
             if (navigator.share) {
                 navigator.share({
