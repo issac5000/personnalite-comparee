@@ -4223,7 +4223,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             }
 
             const { user, evaluations } = result;
-            const overallCertainty = result.overallCertainty ?? user.certainty_score ?? 0;
+            const overallCertainty = result.overallCertainty ?? user.certainty_score ?? null;
             // Construire un objet de profil simplifié compatible avec displayProfile
             const simplifiedProfile = {
                 name: user.mbti_type && user.enneagram_type
@@ -4407,7 +4407,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     coherence[rel] = Math.round((coherence[rel] / counts[rel]) * 100);
                 }
             });
-            const certaintyScore = Number(result.user.certainty_score) || 0;
+            const certaintyScore = result.user.certainty_score != null
+                ? Number(result.user.certainty_score)
+                : null;
             const finalProfile = {
                 name: `${result.user.mbti_type} — type ${result.user.enneagram_type}`,
                 results: {
@@ -4455,39 +4457,36 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             <h4 class="font-semibold text-blue-900 mb-2">Type MBTI</h4>
             <div class="text-2xl font-bold text-blue-600 mb-2">${profile.results.mbti}</div>
             <div class="mt-2">
-              <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-blue-900">Certitude</span>
-                <span class="text-sm text-blue-700 countup" data-value="${profile.results.mbtiCertainty}" data-suffix="%">0%</span>
-              </div>
-              <div class="w-full bg-blue-100 rounded-full h-2 mt-1">
-                <div class="bg-blue-600 h-2 rounded-full" style="width: ${profile.results.mbtiCertainty}%"></div>
-              </div>
+              ${
+                profile.results.mbtiCertainty != null
+                  ? `<p>Certitude : ${profile.results.mbtiCertainty}%</p>
+                     <progress value="${profile.results.mbtiCertainty}" max="100" class="w-full"></progress>`
+                  : `<p>Certitude : Données en cours...</p>`
+              }
             </div>
           </div>
           <div class="bg-purple-50 rounded-lg p-4">
             <h4 class="font-semibold text-purple-900 mb-2">Ennéagramme</h4>
             <div class="text-2xl font-bold text-purple-600 mb-2">${profile.results.enneagram}</div>
             <div class="mt-2">
-              <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-purple-900">Certitude</span>
-                <span class="text-sm text-purple-700 countup" data-value="${profile.results.enneagramCertainty}" data-suffix="%">0%</span>
-              </div>
-              <div class="w-full bg-purple-100 rounded-full h-2 mt-1">
-                <div class="bg-purple-600 h-2 rounded-full" style="width: ${profile.results.enneagramCertainty}%"></div>
-              </div>
+              ${
+                profile.results.enneagramCertainty != null
+                  ? `<p>Certitude : ${profile.results.enneagramCertainty}%</p>
+                     <progress value="${profile.results.enneagramCertainty}" max="100" class="w-full"></progress>`
+                  : `<p>Certitude : Données en cours...</p>`
+              }
             </div>
           </div>
         </div>
 
         <!-- Certitude globale -->
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
-          <div class="flex items-center justify-between mb-2">
-            <span class="font-medium text-gray-900">Certitude globale</span>
-            <span class="text-lg font-bold text-green-600 countup" data-value="${profile.results.overallCertainty}" data-suffix="%">0%</span>
-          </div>
-          <div class="w-full bg-gray-200 rounded-full h-3">
-            <div class="bg-green-500 h-3 rounded-full" style="width: ${profile.results.overallCertainty}%"></div>
-          </div>
+          ${
+            profile.results.overallCertainty != null
+              ? `<p>Certitude : ${profile.results.overallCertainty}%</p>
+                 <progress value="${profile.results.overallCertainty}" max="100" class="w-full"></progress>`
+              : `<p>Certitude : Données en cours...</p>`
+          }
           <p class="text-sm text-gray-600 mt-2">Basé sur la cohérence entre votre auto-évaluation et les évaluations de vos proches</p>
           ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
         </div>
