@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     const today = new Date().toISOString().split('T')[0];
     const { data: requestRow, error: requestError } = await supabase
-      .from('chat_usage') // ✅ corrigé
+      .from('chat_usage') // ← ✅ corrigé ici
       .select('count')
       .eq('client_id', clientId)
       .eq('date', today)
@@ -32,10 +32,10 @@ export default async function handler(req, res) {
     }
 
     if (!requestRow) {
-      await supabase.from('chat_usage').insert({ client_id: clientId, date: today, count: 1 }); // ✅ corrigé
+      await supabase.from('chat_usage').insert({ client_id: clientId, date: today, count: 1 });
     } else if (requestRow.count < 10) {
       await supabase
-        .from('chat_usage') // ✅ corrigé
+        .from('chat_usage')
         .update({ count: requestRow.count + 1 })
         .eq('client_id', clientId)
         .eq('date', today);
@@ -111,6 +111,7 @@ Sois clair, synthétique, agréable à lire.
 
     res.status(200).json({ message: data.choices?.[0]?.message?.content || null });
   } catch (error) {
+    console.error("💥 Erreur serveur :", error);
     res.status(500).json({ error: "Erreur de l'API OpenAI" });
   }
 }
