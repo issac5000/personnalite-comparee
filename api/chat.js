@@ -20,6 +20,8 @@ export default async function handler(req, res) {
 
   try {
     const clientId = req.body.client_id;
+    const userMessages = req.body.messages || [];
+
     if (!clientId) {
       return res.status(400).json({ error: 'client_id requis' });
     }
@@ -33,7 +35,7 @@ export default async function handler(req, res) {
       .maybeSingle();
 
     if (requestError) {
-      console.error('Erreur Supabase:', requestError);
+      console.error('🟥 Erreur Supabase:', requestError);
       return res.status(500).json({ error: "Erreur de la base de données" });
     }
 
@@ -52,7 +54,6 @@ export default async function handler(req, res) {
       });
     }
 
-    const userMessages = req.body.messages || [];
     const lastUserMessage =
       userMessages.length > 0 ? userMessages[userMessages.length - 1].content : "";
 
@@ -115,9 +116,15 @@ Sois clair, synthétique, agréable à lire.
     const data = await response.json();
     console.log("🧠 Réponse brute OpenAI :", data);
 
-    res.status(200).json({ message: data.choices?.[0]?.message?.content || null });
+    if (!response.ok || !data.choices) {
+      console.error("🚫 Erreur OpenAI API :", data);
+      return res.status(500).json({ error: "Erreur de l'API OpenAI" });
+    }
+
+    res.status(200).json({ message: data.choices[0].message.content || null });
+
   } catch (error) {
     console.error("💥 Erreur serveur :", error);
-    res.status(500).json({ error: "Erreur de l'API OpenAI" });
+    res.status(500).json({ error: "Erreur interne du serveur" });
   }
 }
