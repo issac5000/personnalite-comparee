@@ -1,16 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
-
-// ✅ DEBUG : log des variables d'environnement
-console.log("🧪 DEBUG ENV VARS");
-console.log("SUPABASE_URL =", process.env.SUPABASE_URL);
-console.log("SUPABASE_SERVICE_ROLE_KEY =", process.env.SUPABASE_SERVICE_ROLE_KEY ? '✔️ Présente' : '❌ Manquante');
-console.log("OPENAI_API_KEY =", process.env.OPENAI_API_KEY ? '✔️ Présente' : '❌ Manquante');
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
 export default async function handler(req, res) {
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
@@ -19,47 +6,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const clientId = req.body.client_id;
     const userMessages = req.body.messages || [];
-
-    if (!clientId) {
-      return res.status(400).json({ error: 'client_id requis' });
-    }
-
-    const today = new Date().toISOString().split('T')[0];
-    const { data: requestRow, error: requestError } = await supabase
-      .from('chat_usage')
-      .select('count')
-      .eq('client_id', clientId)
-      .eq('date', today)
-      .maybeSingle();
-
-    if (requestError) {
-      console.error('🟥 Erreur Supabase:', requestError);
-      return res.status(500).json({ error: "Erreur de la base de données" });
-    }
-
-    if (!requestRow) {
-      await supabase.from('chat_usage').insert({ client_id: clientId, date: today, count: 1 });
-    } else if (requestRow.count < 10) {
-      await supabase
-        .from('chat_usage')
-        .update({ count: requestRow.count + 1 })
-        .eq('client_id', clientId)
-        .eq('date', today);
-    } else {
-      return res.status(429).json({
-        error:
-          "Tu as atteint ta limite de 10 messages pour aujourd’hui. Reviens demain ou discute avec le grand frère de Psycho’Bot sur chat.openai.com 😄",
-      });
-    }
-
-    const lastUserMessage =
-      userMessages.length > 0 ? userMessages[userMessages.length - 1].content : "";
 
     const systemMessage = {
       role: 'system',
-      content: `
+      content: 
 Tu es Psycho'Bot, l’assistant officiel du site www.personnalitecomparee.com.
 
 Ce site propose une analyse croisée de la personnalité à partir :
@@ -74,9 +25,9 @@ Tu es capable :
 - d’expliquer le fonctionnement du site et du test
 - d’expliquer comment les résultats sont calculés (pondérations, certitudes)
 - d’interpréter les résultats MBTI et Ennéagramme
-- d'expliquer avec pédagogie les modèles MBTI et Ennéagramme et répondre aux questions des utilisateurs sur n'importe quelle question qui concerne ces deux modèles
+- d'expliquer avec pédagogie les modèles MBTI et Ennéagramme et répondre aux questions des utilisateurs  sur n'importe quelle question qui concerne ces deux modèles
 
-Tu dois toujours poser une question à l'utilisateur en lien avec sa requête précédente afin de le relancer et l'aider à s'ouvrir davantage.
+Tu dois toujours poser une question à l'utilisateur en lien avec sa requète précédente afin de le relancer et l'aider à s'ouvrir davantage.
 
 Voici le système de pondération utilisé pour le calcul du profil final :
 - Auto-évaluation : 5%
@@ -87,28 +38,20 @@ Voici le système de pondération utilisé pour le calcul du profil final :
 
 Tu **refuses poliment** les questions qui n’ont rien à voir avec la personnalité, la psychologie et le site Personnalité Comparée (ex : cuisine, sport, politique, films…).
 
-Tu dois toujours tutoyer l'utilisateur sauf s’il te vouvoie.
+Tu dois toujours tutoyer l'utilisateur sauf si il te vouvoie.
 
-⚠️ Très important : tu dois limiter toutes tes réponses à **150 mots maximum**.
-Ne fais **jamais** de paragraphes longs. Utilise des listes ou des phrases courtes si besoin.
-Sois clair, synthétique, agréable à lire.
-      `,
+Si quelqu’un demande "Qui es-tu ?", tu réponds que tu es Psycho'Bot, un assistant IA expert en psychologie des types de personnalité, intégré au site Personnalité Comparée.
+      ,
     };
-
-    const isShortPrompt = lastUserMessage.split(" ").length <= 30;
-    const selectedModel = isShortPrompt ? 'gpt-4-turbo' : 'gpt-3.5-turbo';
-    const maxTokens = 700; // ~150 mots
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: Bearer ${OPENAI_API_KEY},
       },
       body: JSON.stringify({
-        model: selectedModel,
-        max_tokens: maxTokens,
-        temperature: 0.7,
+        model: 'gpt-3.5-turbo',
         messages: [systemMessage, ...userMessages],
       }),
     });
@@ -116,15 +59,8 @@ Sois clair, synthétique, agréable à lire.
     const data = await response.json();
     console.log("🧠 Réponse brute OpenAI :", data);
 
-    if (!response.ok || !data.choices) {
-      console.error("🚫 Erreur OpenAI API :", data);
-      return res.status(500).json({ error: "Erreur de l'API OpenAI" });
-    }
-
-    res.status(200).json({ message: data.choices[0].message.content || null });
-
+    res.status(200).json({ message: data.choices?.[0]?.message?.content || null });
   } catch (error) {
-    console.error("💥 Erreur serveur :", error);
-    res.status(500).json({ error: "Erreur interne du serveur" });
+    res.status(500).json({ error: "Erreur de l'API OpenAI" });
   }
 }
