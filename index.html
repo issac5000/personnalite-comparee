@@ -4459,8 +4459,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             <div class="mt-2">
               ${
                 profile.results.mbtiCertainty != null
-                  ? `<p>Certitude : ${profile.results.mbtiCertainty}%</p>
-                     <progress value="${profile.results.mbtiCertainty}" max="100" class="w-full"></progress>`
+                  ? `<p class="mb-1">Certitude</p>
+                     <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
+                       <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-blue-500 transition-all duration-1000" data-width="${profile.results.mbtiCertainty}" style="width:0"></div>
+                       <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.mbtiCertainty}%</span>
+                     </div>`
                   : `<p>Certitude : Données en cours...</p>`
               }
             </div>
@@ -4471,8 +4474,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             <div class="mt-2">
               ${
                 profile.results.enneagramCertainty != null
-                  ? `<p>Certitude : ${profile.results.enneagramCertainty}%</p>
-                     <progress value="${profile.results.enneagramCertainty}" max="100" class="w-full"></progress>`
+                  ? `<p class="mb-1">Certitude</p>
+                     <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
+                       <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-purple-500 transition-all duration-1000" data-width="${profile.results.enneagramCertainty}" style="width:0"></div>
+                       <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.enneagramCertainty}%</span>
+                     </div>`
                   : `<p>Certitude : Données en cours...</p>`
               }
             </div>
@@ -4483,8 +4489,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
           ${
             profile.results.overallCertainty != null
-              ? `<p>Certitude : ${profile.results.overallCertainty}%</p>
-                 <progress value="${profile.results.overallCertainty}" max="100" class="w-full"></progress>`
+              ? `<p class="mb-1">Certitude globale</p>
+                 <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
+                   <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-green-500 transition-all duration-1000" data-width="${profile.results.overallCertainty}" style="width:0"></div>
+                   <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.overallCertainty}%</span>
+                 </div>`
               : `<p>Certitude : Données en cours...</p>`
           }
           <p class="text-sm text-gray-600 mt-2">Basé sur la cohérence entre votre auto-évaluation et les évaluations de vos proches</p>
@@ -4539,6 +4548,17 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             // Ajouter la modale au DOM
             document.body.appendChild(resultsModal);
             initCountUp(resultsModal);
+
+            // Animer les barres de certitude
+            resultsModal.querySelectorAll('.certainty-bar').forEach(bar => {
+                const width = bar.dataset.width;
+                requestAnimationFrame(() => {
+                    bar.style.width = width + '%';
+                });
+            });
+            if (window.AOS) {
+                AOS.refresh();
+            }
 
             // Initialiser le graphique de cohérence
             const ctx = resultsModal.querySelector('#coherenceChart').getContext('2d');
