@@ -4537,7 +4537,7 @@ function displayResults(results) {
                                     <div class="flex items-center justify-between p-3 ${eval.completed ? 'bg-green-50' : 'bg-gray-50'} rounded-lg">
                                         <div>
                                             <span class="text-sm font-medium text-gray-700">${eval.relation}</span>
-                                            <div class="text-xs text-gray-500">${eval.mbti} — type ${eval.enneagram} — MBTI : Cohérence ${eval.coherenceMBTI} — Ennéagramme : Cohérence ${eval.coherenceEnneagramme}</div>
+                                            <div class="text-xs text-gray-500">${eval.mbti} — type ${eval.enneagram} — MBTI : <strong>Cohérence ${eval.coherenceMBTI}</strong> — Ennéagramme : <strong>Cohérence ${eval.coherenceEnneagramme}</strong></div>
                                         </div>
                                         <span class="text-sm ${eval.completed ? 'text-green-600' : 'text-gray-500'} font-medium">
                                             ${eval.completed ? '✓ Complétée le ' + new Date(eval.completedAt).toLocaleDateString('fr-FR') : '⏳ En attente'}
