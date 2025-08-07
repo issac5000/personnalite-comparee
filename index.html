@@ -2144,27 +2144,26 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             return { mbtiType, enneagramType: topEnnea };
         }
 
-        function computeCoherence(scores = {}) {
+        function getCohérenceIntrinsèque(scores) {
+            if (!scores) return "Inconnue";
+
             const pairs = [
-                ['I', 'E'],
-                ['S', 'N'],
-                ['T', 'F'],
-                ['J', 'P']
+                ["I", "E"],
+                ["S", "N"],
+                ["T", "F"],
+                ["J", "P"]
             ];
-            let totalDiff = 0;
-            let count = 0;
-            for (const [a, b] of pairs) {
-                const aScore = scores[a];
-                const bScore = scores[b];
-                if (typeof aScore === 'number' && typeof bScore === 'number') {
-                    totalDiff += Math.abs(aScore - bScore);
-                    count++;
-                }
-            }
-            const avg = count ? totalDiff / count : 0;
-            if (avg >= 30) return 'Forte';
-            if (avg >= 15) return 'Moyenne';
-            return 'Faible';
+
+            const écarts = pairs.map(([a, b]) => {
+                if (scores[a] == null || scores[b] == null) return 0;
+                return Math.abs(scores[a] - scores[b]);
+            });
+
+            const moyenne = écarts.reduce((sum, val) => sum + val, 0) / écarts.length;
+
+            if (moyenne >= 30) return "Forte";
+            if (moyenne >= 15) return "Moyenne";
+            return "Faible";
         }
 
        function computeWeightedResults(evaluations) {
@@ -4384,7 +4383,7 @@ function displayResults(results) {
 
             const externalProfiles = result.evaluations.map(ev => {
                 const { mbtiType, enneagramType } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
-                const coherence = computeCoherence(ev.mbti_scores);
+                const coherence = getCohérenceIntrinsèque(ev.mbti_scores);
                 return {
                     relation: ev.relation,
                     mbti: mbtiType,
