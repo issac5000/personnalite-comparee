@@ -4320,7 +4320,11 @@ function computeWeightedResults(selfMbtiScores, selfEnneagramScores, evaluations
                 return;
             }
 
-            const result = await calculateFinalProfile(userCode);
+const result = await fetch('/api/getFinalProfile', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ code: userCode })
+}).then(res => res.json());
 
             if (!result || !result.user.mbti_type || !result.user.enneagram_type) {
                 alert('Le résultat final n’est pas encore prêt.');
