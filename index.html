@@ -2144,6 +2144,29 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             return { mbtiType, enneagramType: topEnnea };
         }
 
+        function computeCoherence(scores = {}) {
+            const pairs = [
+                ['I', 'E'],
+                ['S', 'N'],
+                ['T', 'F'],
+                ['J', 'P']
+            ];
+            let totalDiff = 0;
+            let count = 0;
+            for (const [a, b] of pairs) {
+                const aScore = scores[a];
+                const bScore = scores[b];
+                if (typeof aScore === 'number' && typeof bScore === 'number') {
+                    totalDiff += Math.abs(aScore - bScore);
+                    count++;
+                }
+            }
+            const avg = count ? totalDiff / count : 0;
+            if (avg >= 30) return 'Forte';
+            if (avg >= 15) return 'Moyenne';
+            return 'Faible';
+        }
+
        function computeWeightedResults(evaluations) {
     const baseWeights = {
         family: 30,
@@ -4361,10 +4384,12 @@ function displayResults(results) {
 
             const externalProfiles = result.evaluations.map(ev => {
                 const { mbtiType, enneagramType } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
+                const coherence = computeCoherence(ev.mbti_scores);
                 return {
                     relation: ev.relation,
                     mbti: mbtiType,
                     enneagram: enneagramType,
+                    coherence,
                     completed: true,
                     completedAt: ev.created_at
                 };
@@ -4486,7 +4511,7 @@ function displayResults(results) {
                                     <div class="flex items-center justify-between p-3 ${eval.completed ? 'bg-green-50' : 'bg-gray-50'} rounded-lg">
                                         <div>
                                             <span class="text-sm font-medium text-gray-700">${eval.relation}</span>
-                                            <div class="text-xs text-gray-500">${eval.mbti} — type ${eval.enneagram}</div>
+                                            <div class="text-xs text-gray-500">${eval.mbti} — type ${eval.enneagram} — Cohérence : ${eval.coherence}</div>
                                         </div>
                                         <span class="text-sm ${eval.completed ? 'text-green-600' : 'text-gray-500'} font-medium">
                                             ${eval.completed ? '✓ Complétée le ' + new Date(eval.completedAt).toLocaleDateString('fr-FR') : '⏳ En attente'}
