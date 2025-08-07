@@ -2143,7 +2143,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             return { mbtiType, enneagramType: topEnnea };
         }
 
-        function computeWeightedResults(selfMbtiScores, selfEnneagramScores, evaluations) {
+       function computeWeightedResults(selfMbtiScores, selfEnneagramScores, evaluations) {
     const baseWeights = {
         family: 30,
         partner: 25,
@@ -2294,8 +2294,6 @@ async function calculateFinalProfile(code) {
         await supabase
             .from('users')
             .update({
-                mbti_scores: weighted.combinedMbti,
-                enneagram_scores: weighted.combinedEnneagram,
                 mbti_type: weighted.mbtiType,
                 enneagram_type: weighted.enneagramType,
                 certainty_score: overallCertainty
@@ -2308,8 +2306,8 @@ async function calculateFinalProfile(code) {
                 code,
                 mbti_type: weighted.mbtiType,
                 enneagram_type: weighted.enneagramType,
-                mbti_scores: weighted.combinedMbti,
-                enneagram_scores: weighted.combinedEnneagram,
+                mbti_scores: user.mbti_scores,
+                enneagram_scores: user.enneagram_scores,
                 certainty_score: overallCertainty
             },
             evaluations,
