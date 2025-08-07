@@ -36,6 +36,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Supabase JS library -->
    
     <style>
@@ -4497,7 +4498,7 @@ function displayResults(results) {
 
                         <!-- Actions -->
                         <div class="flex space-x-3">
-                            <button onclick="downloadResults('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            <button onclick="downloadResultsPDF('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                                 <i class="fas fa-download mr-2"></i>
                                 Télécharger PDF
                             </button>
@@ -4661,8 +4662,43 @@ function displayResults(results) {
             }
         }
 
-        function downloadResults(code) {
-            alert('Fonctionnalité de téléchargement PDF en développement. Votre rapport détaillé sera bientôt disponible !');
+        function downloadResultsPDF(code) {
+            const modal = document.getElementById('results-modal');
+            if (!modal) return;
+
+            const clone = modal.cloneNode(true);
+
+            clone.querySelector('.close')?.remove();
+            clone.querySelectorAll('button').forEach(btn => btn.remove());
+            clone.querySelectorAll('.flex.space-x-3').forEach(el => el.remove());
+
+            const canvases = modal.querySelectorAll('canvas');
+            const cloneCanvases = clone.querySelectorAll('canvas');
+            canvases.forEach((canvas, idx) => {
+                const img = document.createElement('img');
+                img.src = canvas.toDataURL('image/png');
+                const rect = canvas.getBoundingClientRect();
+                img.style.width = rect.width + 'px';
+                img.style.height = rect.height + 'px';
+                cloneCanvases[idx].replaceWith(img);
+            });
+
+            clone.style.position = 'absolute';
+            clone.style.left = '-9999px';
+            document.body.appendChild(clone);
+
+            const element = clone.querySelector('.modal-content');
+            const opt = {
+                margin: 0,
+                filename: 'ma-personnalite-comparee.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                document.body.removeChild(clone);
+            });
         }
 
         async function shareProfileResults(code) {
