@@ -1,11 +1,3 @@
-function getSelfMbtiType(scores) {
-  return scores ? buildMbtiType(scores) : null;
-}
-
-function getSelfEnneagramType(scores) {
-  return scores ? getMaxKey(scores) : null;
-}
-
 function buildMbtiType(scores = {}) {
   const pairs = [
     ['E', 'I'],
@@ -50,10 +42,7 @@ function getDominantType(weightMap) {
   return { dominantType, weight };
 }
 
-function computeFinalProfileFromExternalEvaluations(selfMbtiScores, selfEnneagramScores, evaluations) {
-  const selfMbtiType = getSelfMbtiType(selfMbtiScores);
-  const selfEnneagramType = getSelfEnneagramType(selfEnneagramScores);
-
+function computeFinalProfileFromExternalEvaluations(evaluations) {
   const emptyResult = {
     mbtiType: null,
     enneagramType: null,
@@ -62,8 +51,6 @@ function computeFinalProfileFromExternalEvaluations(selfMbtiScores, selfEnneagra
     overallCertainty: 0,
     mbtiConvergence: 0,
     enneagramConvergence: 0,
-    selfMbtiType,
-    selfEnneagramType,
   };
 
   if (!Array.isArray(evaluations) || evaluations.length < 3) {
@@ -131,8 +118,6 @@ function computeFinalProfileFromExternalEvaluations(selfMbtiScores, selfEnneagra
     overallCertainty,
     mbtiConvergence: mbtiCertainty,
     enneagramConvergence: enneagramCertainty,
-    selfMbtiType,
-    selfEnneagramType,
   };
 }
 

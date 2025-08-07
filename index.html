@@ -2143,7 +2143,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             return { mbtiType, enneagramType: topEnnea };
         }
 
-       function computeWeightedResults(selfMbtiScores, selfEnneagramScores, evaluations) {
+       function computeWeightedResults(evaluations) {
     const baseWeights = {
         family: 30,
         partner: 25,
@@ -2288,7 +2288,7 @@ async function calculateFinalProfile(code) {
             return { user, evaluations: [] };
         }
 
-        const weighted = computeWeightedResults(user.mbti_scores, user.enneagram_scores, evaluations);
+        const weighted = computeWeightedResults(evaluations);
         const overallCertainty = weighted.overallCertainty;
 
         await supabase
@@ -2296,7 +2296,9 @@ async function calculateFinalProfile(code) {
             .update({
                 mbti_type: weighted.mbtiType,
                 enneagram_type: weighted.enneagramType,
-                certainty_score: overallCertainty
+                certainty_score: overallCertainty,
+                mbti_scores: weighted.combinedMbti,
+                enneagram_scores: weighted.combinedEnneagram
             })
             .eq('code', code);
 
@@ -2306,8 +2308,8 @@ async function calculateFinalProfile(code) {
                 code,
                 mbti_type: weighted.mbtiType,
                 enneagram_type: weighted.enneagramType,
-                mbti_scores: user.mbti_scores,
-                enneagram_scores: user.enneagram_scores,
+                mbti_scores: weighted.combinedMbti,
+                enneagram_scores: weighted.combinedEnneagram,
                 certainty_score: overallCertainty
             },
             evaluations,
@@ -4350,7 +4352,6 @@ function displayResults(results) {
                 return;
             }
 
-            const selfProfile = getProfileFromScores(result.user.mbti_scores, result.user.enneagram_scores);
             const externalProfiles = result.evaluations.map(ev => {
                 const { mbtiType, enneagramType } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
                 return {
@@ -4371,10 +4372,6 @@ function displayResults(results) {
                     enneagram: result.user.enneagram_type,
                     enneagramCertainty: result.enneagramCertainty ?? certaintyScore,
                     overallCertainty: certaintyScore
-                },
-                selfEvaluation: {
-                    mbti: selfProfile.mbtiType,
-                    enneagram: selfProfile.enneagramType
                 },
                 externalEvaluations: externalProfiles,
                 mbtiScores: result.user.mbti_scores,
@@ -4450,7 +4447,7 @@ function displayResults(results) {
                  </div>`
               : `<p>Certitude : Données en cours...</p>`
           }
-          <p class="text-sm text-gray-600 mt-2">Basé sur la cohérence entre votre auto-évaluation et les évaluations de vos proches</p>
+          <p class="text-sm text-gray-600 mt-2">Basé sur les évaluations de vos proches</p>
           ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
         </div>
 
@@ -4470,13 +4467,6 @@ function displayResults(results) {
                         <div class="mb-6">
                             <h4 class="font-semibold text-gray-900 mb-3">Détail des évaluations</h4>
                             <div class="space-y-2">
-                                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                                    <div>
-                                        <span class="text-sm font-medium text-gray-700">Votre auto-évaluation</span>
-                                        <div class="text-xs text-gray-500">${profile.selfEvaluation.mbti} — type ${profile.selfEvaluation.enneagram}</div>
-                                    </div>
-                                    <span class="text-sm text-green-600 font-medium">✓ Complétée</span>
-                                </div>
                                 ${profile.externalEvaluations.map(eval => `
                                     <div class="flex items-center justify-between p-3 ${eval.completed ? 'bg-green-50' : 'bg-gray-50'} rounded-lg">
                                         <div>
@@ -4533,7 +4523,7 @@ function displayResults(results) {
             if (!enoughEvaluations || !hasMbtiScores || !hasEnneaScores) {
                 const message = document.createElement('p');
                 message.className = 'text-sm text-gray-500 text-center';
-                message.textContent = 'Graphiques disponibles après 3 évaluations externes.';
+                message.textContent = 'Données en attente (minimum 3 évaluations externes requises).';
                 if (mbtiCanvas) {
                     mbtiCanvas.remove();
                     mbtiCanvas.parentElement.appendChild(message.cloneNode(true));
