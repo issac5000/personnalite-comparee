@@ -4522,6 +4522,11 @@ function displayResults(results) {
           </div>
         </div>
 
+        <div id="ai-profile-summary" class="mt-6 bg-white rounded-lg p-4 border border-gray-200">
+          <h4 class="font-semibold text-gray-900 mb-2">Description IA du profil</h4>
+          <div id="ai-summary-content" class="text-sm text-gray-700">Génération en cours…</div>
+        </div>
+
                         <!-- Détail des évaluations -->
                         <div class="mb-6">
                             <h4 class="font-semibold text-gray-900 mb-3">Détail des évaluations</h4>
@@ -4593,6 +4598,7 @@ function displayResults(results) {
                 AOS.refresh();
             }
             renderCharts(profile, resultsModal);
+            loadAiProfileSummary(profile.results.mbti, profile.results.enneagram, resultsModal);
         }
 
         function renderCharts(profile, container) {
@@ -4720,6 +4726,46 @@ function displayResults(results) {
                     }
                 }
             });
+        }
+
+        async function loadAiProfileSummary(mbti, enneagram, modal) {
+            const container = modal.querySelector('#ai-summary-content');
+            if (!container) return;
+
+            const cacheKey = `ai-summary:${mbti}:${enneagram}`;
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                container.textContent = cached;
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        temperature: 0.5,
+                        messages: [
+                            { role: 'system', content: 'Tu es un psychologue pédagogique. Écris en français, clair et nuancé, sans jargon.' },
+                            { role: 'user', content: `Profil combiné: MBTI=${mbti}, Ennéagramme=${enneagram}.\nRédige 150 mots : explication profil obtenu, forces probables, angles morts fréquents, et 2 pistes d’amélioration pratiques.\nReste nuancé, évite les stéréotypes.` }
+                        ]
+                    })
+                });
+
+                if (!response.ok) throw new Error('bad response');
+                const data = await response.json();
+                const message = data.message?.trim();
+                if (message) {
+                    container.textContent = message;
+                    localStorage.setItem(cacheKey, message);
+                } else {
+                    container.textContent = "Description indisponible pour le moment.";
+                }
+            } catch (e) {
+                console.error('Erreur IA:', e);
+                container.textContent = "Erreur lors de la génération de la description.";
+            }
         }
 
         function closeResultsModal() {
