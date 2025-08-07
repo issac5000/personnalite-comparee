@@ -4422,6 +4422,7 @@ function displayResults(results) {
             const certaintyScore = result.overallCertainty ??
                 (result.user.certainty_score != null ? Number(result.user.certainty_score) : null);
             const finalProfile = {
+                uniqueCode: userCode,
                 name: `${result.user.mbti_type} — type ${result.user.enneagram_type}`,
                 self: { mbti: selfProfile.mbtiType, enneagram: selfProfile.enneagramType },
                 results: {
@@ -4522,12 +4523,12 @@ function displayResults(results) {
           </div>
         </div>
 
-        <div id="ai-profile-summary" class="mt-6 bg-white rounded-lg p-4 border border-gray-200">
-          <h4 class="font-semibold text-gray-900 mb-2">Description IA du profil</h4>
-          <div id="ai-summary-content" class="text-sm text-gray-700">Génération en cours…</div>
+        <div id="ai-profile-summary" class="mt-6 bg-gray-50 rounded-lg p-5 shadow-sm mb-6">
+            <h4 class="font-semibold text-gray-900 text-lg mb-3">Description IA du profil</h4>
+            <div id="ai-summary-content" class="text-sm leading-relaxed text-gray-700">Génération en cours…</div>
         </div>
 
-                        <!-- Détail des évaluations -->
+                            <!-- Détail des évaluations -->
                         <div class="mb-6">
                             <h4 class="font-semibold text-gray-900 mb-3">Détail des évaluations</h4>
                             <div class="space-y-2">
@@ -4598,7 +4599,7 @@ function displayResults(results) {
                 AOS.refresh();
             }
             renderCharts(profile, resultsModal);
-            loadAiProfileSummary(profile.results.mbti, profile.results.enneagram, resultsModal);
+            loadAiProfileSummary(profile, resultsModal);
         }
 
         function renderCharts(profile, container) {
@@ -4728,11 +4729,12 @@ function displayResults(results) {
             });
         }
 
-        async function loadAiProfileSummary(mbti, enneagram, modal) {
+        async function loadAiProfileSummary(profile, modal) {
             const container = modal.querySelector('#ai-summary-content');
             if (!container) return;
 
-            const cacheKey = `ai-summary:${mbti}:${enneagram}`;
+            const { results: { mbti, enneagram }, uniqueCode } = profile;
+            const cacheKey = `ai-summary:${uniqueCode}`;
             const cached = localStorage.getItem(cacheKey);
             if (cached) {
                 container.textContent = cached;
@@ -4746,9 +4748,10 @@ function displayResults(results) {
                     body: JSON.stringify({
                         model: 'gpt-3.5-turbo',
                         temperature: 0.5,
+                        max_tokens: 120,
                         messages: [
                             { role: 'system', content: 'Tu es un psychologue pédagogique. Écris en français, clair et nuancé, sans jargon.' },
-                            { role: 'user', content: `Profil combiné: MBTI=${mbti}, Ennéagramme=${enneagram}.\nRédige 150 mots : explication profil obtenu, forces probables, angles morts fréquents, et 2 pistes d’amélioration pratiques.\nReste nuancé, évite les stéréotypes.` }
+                            { role: 'user', content: `Profil combiné : MBTI=${mbti}, Ennéagramme=${enneagram}.\nRédige une description concise (max 100 mots) :\n1) forces principales, 2) point faible récurrent, 3) piste d’amélioration.\nLangage clair, ton positif, phrases courtes.` }
                         ]
                     })
                 });
