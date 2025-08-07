@@ -2144,7 +2144,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             return { mbtiType, enneagramType: topEnnea };
         }
 
-        function getCohérenceIntrinsèque(scores) {
+        function getCohérenceMBTI(scores) {
             if (!scores) return "Inconnue";
 
             const pairs = [
@@ -2163,6 +2163,30 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
             if (moyenne >= 30) return "Forte";
             if (moyenne >= 15) return "Moyenne";
+            return "Faible";
+        }
+
+        function getCohérenceEnnéagramme(scores) {
+            if (!scores) return "Inconnue";
+
+            const types = Object.keys(scores);
+            if (types.length === 0) return "Inconnue";
+
+            let dominantType = types[0];
+            types.forEach(type => {
+                if ((scores[type] || 0) > (scores[dominantType] || 0)) {
+                    dominantType = type;
+                }
+            });
+
+            const dominantScore = scores[dominantType] || 0;
+            const autres = types.filter(t => t !== dominantType).map(t => scores[t] || 0);
+            const moyenneAutres = autres.reduce((sum, v) => sum + v, 0) / (autres.length || 1);
+
+            const écart = dominantScore - moyenneAutres;
+
+            if (écart > 20) return "Forte";
+            if (écart >= 10) return "Moyenne";
             return "Faible";
         }
 
@@ -4383,12 +4407,14 @@ function displayResults(results) {
 
             const externalProfiles = result.evaluations.map(ev => {
                 const { mbtiType, enneagramType } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
-                const coherence = getCohérenceIntrinsèque(ev.mbti_scores);
+                const coherenceMBTI = getCohérenceMBTI(ev.mbti_scores);
+                const coherenceEnneagramme = getCohérenceEnnéagramme(ev.enneagram_scores);
                 return {
                     relation: ev.relation,
                     mbti: mbtiType,
                     enneagram: enneagramType,
-                    coherence,
+                    coherenceMBTI,
+                    coherenceEnneagramme,
                     completed: true,
                     completedAt: ev.created_at
                 };
@@ -4510,7 +4536,7 @@ function displayResults(results) {
                                     <div class="flex items-center justify-between p-3 ${eval.completed ? 'bg-green-50' : 'bg-gray-50'} rounded-lg">
                                         <div>
                                             <span class="text-sm font-medium text-gray-700">${eval.relation}</span>
-                                            <div class="text-xs text-gray-500">${eval.mbti} — type ${eval.enneagram} — Cohérence : ${eval.coherence}</div>
+                                            <div class="text-xs text-gray-500">${eval.mbti} — type ${eval.enneagram} — MBTI : Cohérence ${eval.coherenceMBTI} — Ennéagramme : Cohérence ${eval.coherenceEnneagramme}</div>
                                         </div>
                                         <span class="text-sm ${eval.completed ? 'text-green-600' : 'text-gray-500'} font-medium">
                                             ${eval.completed ? '✓ Complétée le ' + new Date(eval.completedAt).toLocaleDateString('fr-FR') : '⏳ En attente'}
