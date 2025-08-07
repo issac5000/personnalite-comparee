@@ -4668,9 +4668,8 @@ function displayResults(results) {
 
             const clone = modal.cloneNode(true);
 
-            clone.querySelector('.close')?.remove();
-            clone.querySelectorAll('button').forEach(btn => btn.remove());
-            clone.querySelectorAll('.flex.space-x-3').forEach(el => el.remove());
+            const actions = clone.querySelector('.flex.space-x-3');
+            if (actions) actions.remove();
 
             const canvases = modal.querySelectorAll('canvas');
             const cloneCanvases = clone.querySelectorAll('canvas');
@@ -4692,7 +4691,7 @@ function displayResults(results) {
                 margin: 0,
                 filename: 'ma-personnalite-comparee.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
+                html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
