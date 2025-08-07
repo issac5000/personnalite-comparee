@@ -4326,10 +4326,11 @@ const result = await fetch('/api/getFinalProfile', {
   body: JSON.stringify({ code: userCode })
 }).then(res => res.json());
 
-            if (!result || !result.user.mbti_type || !result.user.enneagram_type) {
-                alert('Le résultat final n’est pas encore prêt.');
-                return;
-            }
+if (!result || !result.user.mbti_type || !result.user.enneagram_type) {
+  alert('Le résultat final n’est pas encore prêt.');
+  return;
+}
+
 
             const selfProfile = getProfileFromScores(result.user.mbti_scores, result.user.enneagram_scores);
             const externalProfiles = result.evaluations.map(ev => {
