@@ -4508,12 +4508,6 @@ function displayResults(results) {
           <p class="text-sm text-gray-600 mt-2">Basé sur les évaluations de vos proches</p>
           ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
         </div>
-<p class="text-xs text-gray-500 mt-2">
-  <strong>🧠 Cohérence :</strong> mesure dans quelle mesure les réponses d’un proche sont logiquement stables.<br>
-  • <strong>Forte</strong> → réponses claires et alignées<br>
-  • <strong>Moyenne</strong> → quelques hésitations ou contradictions<br>
-  • <strong>Faible</strong> → réponses peu cohérentes entre elles
-</p>
 
 
         <!-- Graphiques MBTI & Ennéagramme -->
@@ -4553,6 +4547,12 @@ function displayResults(results) {
                             </div>
                         </div>
 
+<p class="text-xs text-gray-500 mt-2">
+  <strong> Cohérence :</strong> mesure dans quelle mesure les réponses d’un proche sont logiquement stables.<br>
+  • <strong>Forte</strong> → réponses claires et alignées<br>
+  • <strong>Moyenne</strong> → quelques hésitations ou contradictions<br>
+  • <strong>Faible</strong> → réponses peu cohérentes entre elles
+</p>
                         <!-- Actions -->
                         <div class="flex space-x-3">
                             <button onclick="downloadResultsPDF('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
