@@ -4345,6 +4345,8 @@ function displayResults(results) {
                 return;
             }
 
+            const selfProfile = getProfileFromScores(initial.user.mbti_scores || {}, initial.user.enneagram_scores || {});
+
             const result = await calculateFinalProfile(userCode);
 
             if (!result || !result.user.mbti_type || !result.user.enneagram_type) {
@@ -4366,6 +4368,7 @@ function displayResults(results) {
                 (result.user.certainty_score != null ? Number(result.user.certainty_score) : null);
             const finalProfile = {
                 name: `${result.user.mbti_type} — type ${result.user.enneagram_type}`,
+                self: { mbti: selfProfile.mbtiType, enneagram: selfProfile.enneagramType },
                 results: {
                     mbti: result.user.mbti_type,
                     mbtiCertainty: result.mbtiCertainty ?? certaintyScore,
@@ -4467,6 +4470,13 @@ function displayResults(results) {
                         <div class="mb-6">
                             <h4 class="font-semibold text-gray-900 mb-3">Détail des évaluations</h4>
                             <div class="space-y-2">
+                                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                                    <div>
+                                        <span class="text-sm font-medium text-gray-700">Auto-évaluation</span>
+                                        <div class="text-xs text-gray-500">${profile.self.mbti} — type ${profile.self.enneagram}</div>
+                                    </div>
+                                    <span class="text-sm text-green-600 font-medium">✓ Complétée</span>
+                                </div>
                                 ${profile.externalEvaluations.map(eval => `
                                     <div class="flex items-center justify-between p-3 ${eval.completed ? 'bg-green-50' : 'bg-gray-50'} rounded-lg">
                                         <div>
