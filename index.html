@@ -2166,7 +2166,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             const combinedMbti = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
             const combinedEnneagram = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
 
+            // Suivi des convergences externes
+            const mbtiTypeWeights = {};
+            const enneaTypeWeights = {};
             let totalWeight = 0;
+            let externalWeight = 0;
 
             if (selfMbtiScores && selfEnneagramScores) {
                 Object.keys(selfMbtiScores).forEach(trait => {
@@ -2187,6 +2191,21 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     combinedEnneagram[type] += ev.enneagram_scores[type] * w;
                 });
                 totalWeight += w;
+
+                // Convergence externe
+                const evMbtiType =
+                    (ev.mbti_scores.E > ev.mbti_scores.I ? 'E' : 'I') +
+                    (ev.mbti_scores.S > ev.mbti_scores.N ? 'S' : 'N') +
+                    (ev.mbti_scores.T > ev.mbti_scores.F ? 'T' : 'F') +
+                    (ev.mbti_scores.J > ev.mbti_scores.P ? 'J' : 'P');
+                mbtiTypeWeights[evMbtiType] = (mbtiTypeWeights[evMbtiType] || 0) + w;
+
+                const evEnneaType = Object.keys(ev.enneagram_scores).reduce((a, b) =>
+                    ev.enneagram_scores[a] > ev.enneagram_scores[b] ? a : b
+                );
+                enneaTypeWeights[evEnneaType] = (enneaTypeWeights[evEnneaType] || 0) + w;
+
+                externalWeight += w;
             });
 
             if (totalWeight === 0) {
@@ -2196,6 +2215,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     mbtiCertainty: 0,
                     enneagramCertainty: 0,
                     overallCertainty: 0,
+                    mbtiConvergence: 0,
+                    enneagramConvergence: 0,
+                    selfMbtiType: null,
+                    selfEnneagramType: null,
+                    selfAgreementWithGroup: false,
                     combinedMbti,
                     combinedEnneagram
                 };
@@ -2235,32 +2259,37 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 );
             }
 
-            // Calcul de la concordance avec l'auto‑évaluation
-            let mbtiAgreement = selfMbtiType ? weights.self : 0;
-            let enneaAgreement = selfEnneaType ? weights.self : 0;
+            // Convergence des proches (sans l'auto-évaluation)
+            let dominantMbti = null;
+            let dominantEnnea = null;
+            let maxMbtiWeight = 0;
+            let maxEnneaWeight = 0;
 
-            evaluations.forEach(ev => {
-                const w = weights[ev.relation] || 0;
-                const evMbtiType =
-                    (ev.mbti_scores.E > ev.mbti_scores.I ? 'E' : 'I') +
-                    (ev.mbti_scores.S > ev.mbti_scores.N ? 'S' : 'N') +
-                    (ev.mbti_scores.T > ev.mbti_scores.F ? 'T' : 'F') +
-                    (ev.mbti_scores.J > ev.mbti_scores.P ? 'J' : 'P');
-                const evEnneaType = Object.keys(ev.enneagram_scores).reduce((a, b) =>
-                    ev.enneagram_scores[a] > ev.enneagram_scores[b] ? a : b
-                );
-                if (selfMbtiType && evMbtiType === selfMbtiType) mbtiAgreement += w;
-                if (selfEnneaType && evEnneaType === selfEnneaType) enneaAgreement += w;
+            Object.keys(mbtiTypeWeights).forEach(type => {
+                const w = mbtiTypeWeights[type];
+                if (w > maxMbtiWeight) {
+                    maxMbtiWeight = w;
+                    dominantMbti = type;
+                }
             });
 
-            const mbtiCertainty = Math.round((mbtiAgreement / totalWeight) * 100);
-            const enneagramCertainty = Math.round((enneaAgreement / totalWeight) * 100);
-            let overallCertainty = Math.round((mbtiCertainty + enneagramCertainty) / 2);
+            Object.keys(enneaTypeWeights).forEach(type => {
+                const w = enneaTypeWeights[type];
+                if (w > maxEnneaWeight) {
+                    maxEnneaWeight = w;
+                    dominantEnnea = type;
+                }
+            });
 
-            const convergenceThreshold = 90;
-            if (mbtiCertainty >= convergenceThreshold || enneagramCertainty >= convergenceThreshold) {
-                overallCertainty = Math.min(100, overallCertainty + 10);
-            }
+            const mbtiConvergence = externalWeight ? Math.round((maxMbtiWeight / externalWeight) * 100) : 0;
+            const enneagramConvergence = externalWeight ? Math.round((maxEnneaWeight / externalWeight) * 100) : 0;
+
+            const mbtiCertainty = mbtiConvergence;
+            const enneagramCertainty = enneagramConvergence;
+            const overallCertainty = Math.round((mbtiCertainty + enneagramCertainty) / 2);
+
+            const selfAgreementWithGroup =
+                selfMbtiType === dominantMbti && selfEnneaType === dominantEnnea;
 
             return {
                 mbtiType,
@@ -2268,6 +2297,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 mbtiCertainty,
                 enneagramCertainty,
                 overallCertainty,
+                mbtiConvergence,
+                enneagramConvergence,
+                selfMbtiType,
+                selfEnneagramType: selfEnneaType,
+                selfAgreementWithGroup,
                 combinedMbti,
                 combinedEnneagram
             };
@@ -2333,7 +2367,12 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     evaluations,
                     mbtiCertainty: weighted.mbtiCertainty,
                     enneagramCertainty: weighted.enneagramCertainty,
-                    overallCertainty
+                    overallCertainty,
+                    mbtiConvergence: weighted.mbtiConvergence,
+                    enneagramConvergence: weighted.enneagramConvergence,
+                    selfMbtiType: weighted.selfMbtiType,
+                    selfEnneagramType: weighted.selfEnneagramType,
+                    selfAgreementWithGroup: weighted.selfAgreementWithGroup
                 };
             } catch (err) {
                 console.error('Erreur lors du calcul du profil final :', err);
