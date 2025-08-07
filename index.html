@@ -3621,19 +3621,10 @@ function displayResults(results) {
             localStorage.setItem('externalEvaluationCode', codeInput.value.trim().toUpperCase());
             localStorage.setItem('externalEvaluationRelation', selectedRelation);
             
-            // Rediriger vers la section d'évaluation externe
+            // Ouvrir les questions d'évaluation externe dans une fenêtre modale
             showExternalEvaluationQuestions();
-            
-            // Scroll automatique vers la section d'auto-évaluation
-            const autoEvalSection = document.getElementById('auto-evaluation');
-            if (autoEvalSection) {
-                autoEvalSection.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-            }
         }
-        
+
         // Fonction pour afficher les questions d'évaluation externe
         function showExternalEvaluationQuestions() {
             const code = localStorage.getItem('externalEvaluationCode');
@@ -3646,15 +3637,15 @@ function displayResults(results) {
                 'colleague': 'Collègue de travail'
             };
             
-            const questionsContainer = document.getElementById('questions-container');
-            if (!questionsContainer) return;
-            
-            questionsContainer.innerHTML = `
+            const content = `
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                        <div class="bg-blue-600 px-6 py-4">
-                            <h2 class="text-2xl font-bold text-white">Évaluation externe</h2>
-                            <p class="text-blue-100 mt-1">Code: ${code} | Relation: ${relationLabels[relation]}</p>
+                        <div class="bg-blue-600 px-6 py-4 flex justify-between items-center">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white">Évaluation externe</h2>
+                                <p class="text-blue-100 mt-1">Code: ${code} | Relation: ${relationLabels[relation]}</p>
+                            </div>
+                            <span class="close" onclick="closeModal()" style="color: white;">&times;</span>
                         </div>
                         <div class="p-6">
                             <div id="external-questions-content">
@@ -3675,7 +3666,20 @@ function displayResults(results) {
                     </div>
                 </div>
             `;
-            
+
+            showModal('', content);
+
+            // Masquer l'en-tête par défaut de la modale et ajuster la taille
+            const defaultHeader = document.querySelector('#current-modal .modal-header');
+            if (defaultHeader) defaultHeader.style.display = 'none';
+
+            const modalContent = document.querySelector('#current-modal .modal-content');
+            if (modalContent) {
+                modalContent.style.maxWidth = '900px';
+                modalContent.style.width = '90%';
+                modalContent.style.padding = '0';
+            }
+
             // Initialiser les questions externes
             currentExternalQuestionIndex = 0;
             externalAnswers = {};
