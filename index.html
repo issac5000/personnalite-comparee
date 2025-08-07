@@ -2169,18 +2169,13 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
     if (totalBaseWeight === 0) {
         return {
-            result_mbti: null,
-            result_enneagram: null,
-            certainty_score: 0,
-            self_mbti: selfMbtiScores ? 
-                (selfMbtiScores.E > selfMbtiScores.I ? 'E' : 'I') +
-                (selfMbtiScores.S > selfMbtiScores.N ? 'S' : 'N') +
-                (selfMbtiScores.T > selfMbtiScores.F ? 'T' : 'F') +
-                (selfMbtiScores.J > selfMbtiScores.P ? 'J' : 'P') : null,
-            self_enneagram: selfEnneagramScores ? 
-                Object.keys(selfEnneagramScores).reduce((a, b) =>
-                    selfEnneagramScores[a] > selfEnneagramScores[b] ? a : b
-                ) : null
+            mbtiType: null,
+            enneagramType: null,
+            mbtiCertainty: 0,
+            enneagramCertainty: 0,
+            overallCertainty: 0,
+            combinedMbti,
+            combinedEnneagram
         };
     }
 
@@ -2214,16 +2209,16 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         });
     });
 
-    const result_mbti =
+    const mbtiType =
         (combinedMbti.E > combinedMbti.I ? 'E' : 'I') +
         (combinedMbti.S > combinedMbti.N ? 'S' : 'N') +
         (combinedMbti.T > combinedMbti.F ? 'T' : 'F') +
         (combinedMbti.J > combinedMbti.P ? 'J' : 'P');
 
-    let result_enneagram = '1';
+    let topEnnea = '1';
     Object.keys(combinedEnneagram).forEach(type => {
-        if (combinedEnneagram[type] > combinedEnneagram[result_enneagram]) {
-            result_enneagram = type;
+        if (combinedEnneagram[type] > combinedEnneagram[topEnnea]) {
+            topEnnea = type;
         }
     });
 
@@ -2255,27 +2250,18 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         enneaFreq[type] = (enneaFreq[type] || 0) + 1;
     });
     const enneaMaxFreq = Math.max(...Object.values(enneaFreq));
-    const enneaCertainty = Math.round((enneaMaxFreq / enneagramTypes.length) * 100);
+    const enneagramCertainty = Math.round((enneaMaxFreq / enneagramTypes.length) * 100);
 
-    const certainty_score = Math.round((mbtiCertainty + enneaCertainty) / 2);
-
-    const self_mbti = selfMbtiScores ? 
-        (selfMbtiScores.E > selfMbtiScores.I ? 'E' : 'I') +
-        (selfMbtiScores.S > selfMbtiScores.N ? 'S' : 'N') +
-        (selfMbtiScores.T > selfMbtiScores.F ? 'T' : 'F') +
-        (selfMbtiScores.J > selfMbtiScores.P ? 'J' : 'P') : null;
-
-    const self_enneagram = selfEnneagramScores ? 
-        Object.keys(selfEnneagramScores).reduce((a, b) =>
-            selfEnneagramScores[a] > selfEnneagramScores[b] ? a : b
-        ) : null;
+    const overallCertainty = Math.round((mbtiCertainty + enneagramCertainty) / 2);
 
     return {
-        result_mbti,
-        result_enneagram,
-        certainty_score,
-        self_mbti,
-        self_enneagram
+        mbtiType,
+        enneagramType: topEnnea,
+        mbtiCertainty,
+        enneagramCertainty,
+        overallCertainty,
+        combinedMbti,
+        combinedEnneagram
     };
 }
 
@@ -2302,14 +2288,17 @@ async function calculateFinalProfile(code) {
             return { user, evaluations: [] };
         }
 
-        const results = computeWeightedResults(user.mbti_scores, user.enneagram_scores, evaluations);
+        const weighted = computeWeightedResults(user.mbti_scores, user.enneagram_scores, evaluations);
+        const overallCertainty = weighted.overallCertainty;
 
         await supabase
             .from('users')
             .update({
-                mbti_type: results.result_mbti,
-                enneagram_type: results.result_enneagram,
-                certainty_score: results.certainty_score
+                mbti_scores: weighted.combinedMbti,
+                enneagram_scores: weighted.combinedEnneagram,
+                mbti_type: weighted.mbtiType,
+                enneagram_type: weighted.enneagramType,
+                certainty_score: overallCertainty
             })
             .eq('code', code);
 
@@ -2317,20 +2306,23 @@ async function calculateFinalProfile(code) {
             user: {
                 id: user.id,
                 code,
-                mbti_type: results.result_mbti,
-                enneagram_type: results.result_enneagram,
-                certainty_score: results.certainty_score,
-                self_mbti: results.self_mbti,
-                self_enneagram: results.self_enneagram
+                mbti_type: weighted.mbtiType,
+                enneagram_type: weighted.enneagramType,
+                mbti_scores: weighted.combinedMbti,
+                enneagram_scores: weighted.combinedEnneagram,
+                certainty_score: overallCertainty
             },
             evaluations,
-            certainty_score: results.certainty_score
+            mbtiCertainty: weighted.mbtiCertainty,
+            enneagramCertainty: weighted.enneagramCertainty,
+            overallCertainty
         };
     } catch (err) {
         console.error('Erreur lors du calcul du profil final :', err);
         return null;
     }
 }
+
 async function fetchUserProfileFromSupabase(code) {
     try {
         const { data, error } = await supabase
@@ -2414,7 +2406,7 @@ async function calculateResults() {
         ? Math.min(95, Math.round((enneagramScores[enneagramType] / totalEnneagramScore) * 100))
         : 0;
 
-    const selfCertaintyScore = Math.round((mbtiCertainty + enneagramCertainty) / 2);
+    const certaintyScore = Math.round((mbtiCertainty + enneagramCertainty) / 2);
     
     const uniqueCode = generateUniqueCode();
     
@@ -2424,13 +2416,14 @@ async function calculateResults() {
         enneagramType,
         mbtiCertainty,
         enneagramCertainty,
-        certaintyScore: 0,
+        certaintyScore,
         mbtiScores,
         enneagramScores,
         timestamp: Date.now()
     };
 
     await saveUserProfileToSupabase(userProfile);
+    localStorage.setItem('userProfile_' + uniqueCode, JSON.stringify(userProfile));
     
     displayResults({
         code: uniqueCode,
@@ -2438,10 +2431,9 @@ async function calculateResults() {
         enneagramType,
         mbtiCertainty,
         enneagramCertainty,
-        certaintyScore: 0,
+        certaintyScore,
         mbtiScores,
-        enneagramScores,
-        selfCertaintyScore
+        enneagramScores
     });
 }
 
@@ -2464,6 +2456,7 @@ function displayResults(results) {
     
     localStorage.setItem('personalityTestResults', JSON.stringify(results));
     localStorage.removeItem('personalityTestProgress');
+}
 
         // Génération du HTML des résultats
         function generateResultsHTML(results) {
