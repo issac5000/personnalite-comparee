@@ -4520,8 +4520,32 @@ function displayResults(results) {
             if (window.AOS) {
                 AOS.refresh();
             }
-            // Initialiser les graphiques MBTI et Ennéagramme
-            const mbtiCtx = resultsModal.querySelector('#mbtiChart').getContext('2d');
+            renderCharts(profile, resultsModal);
+        }
+
+        function renderCharts(profile, container) {
+            const mbtiCanvas = container.querySelector('#mbtiChart');
+            const enneaCanvas = container.querySelector('#enneagramChart');
+            const enoughEvaluations = profile.externalCount >= 3;
+            const hasMbtiScores = profile.mbtiScores && Object.values(profile.mbtiScores).some(v => v > 0);
+            const hasEnneaScores = profile.enneagramScores && Object.values(profile.enneagramScores).some(v => v > 0);
+
+            if (!enoughEvaluations || !hasMbtiScores || !hasEnneaScores) {
+                const message = document.createElement('p');
+                message.className = 'text-sm text-gray-500 text-center';
+                message.textContent = 'Graphiques disponibles après 3 évaluations externes.';
+                if (mbtiCanvas) {
+                    mbtiCanvas.remove();
+                    mbtiCanvas.parentElement.appendChild(message.cloneNode(true));
+                }
+                if (enneaCanvas) {
+                    enneaCanvas.remove();
+                    enneaCanvas.parentElement.appendChild(message);
+                }
+                return;
+            }
+
+            const mbtiCtx = mbtiCanvas.getContext('2d');
             const mbtiPairs = [
                 { label: 'E / I', a: 'E', b: 'I' },
                 { label: 'S / N', a: 'S', b: 'N' },
@@ -4572,7 +4596,7 @@ function displayResults(results) {
                 }
             });
 
-            const enneaCtx = resultsModal.querySelector('#enneagramChart').getContext('2d');
+            const enneaCtx = enneaCanvas.getContext('2d');
             const enneaLabels = Object.keys(profile.enneagramScores).sort();
             const enneaValues = enneaLabels.map(k => Math.round(profile.enneagramScores[k]));
             const maxIndex = enneaValues.indexOf(Math.max(...enneaValues));
