@@ -3,14 +3,14 @@ const fetch = require('node-fetch');
 console.log("🔑 OPENAI_API_KEY depuis Vercel:", process.env.OPENAI_API_KEY ? "OK" : "NON DÉFINIE");
 
 module.exports = async function gestionnaire(demande, res) {
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
   if (demande.method !== 'POST') {
     return res.status(405).json({ erreur: 'Méthode non autorisée' });
   }
 
   try {
-    const { messages = [], temperature = 0.7, max_tokens } = demande.body;
+    const { messages = [], max_tokens } = demande.body;
 
     const systemMessage = {
       role: 'system',
@@ -50,10 +50,10 @@ Si quelqu’un demande "Qui es-tu ?", tu réponds que tu es Psycho'Bot, un assis
 
     const payload = {
       model: "gpt-5-mini-2025-08-07",
-      messages: [systemMessage, ...messages],
-      temperature,
+      messages: [systemMessage, ...messages]
     };
 
+    // max_tokens est optionnel
     if (max_tokens !== undefined) {
       payload.max_tokens = max_tokens;
     }
