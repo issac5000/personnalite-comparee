@@ -271,6 +271,21 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+        :root{
+          --pc-line: rgba(59,130,246,.30);  /* bleu doux (#3B82F6) */
+          --pc-dot:  rgba(10,15,26,.62);
+        }
+        /* le conteneur de la bannière doit déjà être positionné ; sinon: */
+        .pc-hero { position: relative; isolation: isolate; }
+
+        #pc-constellation{
+          position: absolute; inset: 0; width: 100%; height: 100%;
+          pointer-events: none; z-index: 0; /* contenu texte reste au-dessus */
+        }
+
+        @media (prefers-reduced-motion: reduce){
+          #pc-constellation{ display:none !important; }
+        }
     </style>
 
 </head>
@@ -320,7 +335,8 @@
     </nav>
 
     <!-- Hero Section Premium -->
-    <div data-aos="fade-up" class="section-clair relative flex items-center justify-center overflow-hidden" style="min-height: 80vh;">
+    <div data-aos="fade-up" class="section-clair relative flex items-center justify-center overflow-hidden pc-hero" data-hero style="min-height: 80vh;">
+        <canvas id="pc-constellation" aria-hidden="true"></canvas>
         <!-- Grille subtile en arrière-plan -->
         <div class="absolute inset-0 opacity-[0.02]">
             <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, rgb(15 23 42) 1px, transparent 0); background-size: 40px 40px;"></div>
@@ -5254,6 +5270,113 @@ function displayResults(results) {
   });
 </script>
 
+<script>
+(function(){
+  const wrap = (()=>{
+    // Essaie plusieurs sélecteurs raisonnables
+    return document.querySelector('section#hero, section.hero, .hero, .banner, [data-hero]') ||
+           [...document.querySelectorAll('section')].find(s => /vraiment|analyse/i.test(s.textContent)) ||
+           document.body;
+  })();
+
+  // Si pas déjà présent, injecte le canvas
+  let canvas = document.getElementById('pc-constellation');
+  if(!canvas){
+    canvas = document.createElement('canvas');
+    canvas.id = 'pc-constellation';
+    wrap.prepend(canvas);
+  }
+  // Classe de position si nécessaire
+  if(getComputedStyle(wrap).position === 'static'){ wrap.classList.add('pc-hero'); }
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+  const N = 110;              // nombre de points
+  const LINK_DIST = 120;      // distance de connexion
+  const mouse = { x:0, y:0, inside:false };
+  let pts = [], W=0, H=0;
+
+  function resize(){
+    const r = canvas.getBoundingClientRect();
+    W = canvas.width  = Math.floor(r.width * DPR);
+    H = canvas.height = Math.floor(r.height * DPR);
+    canvas.style.width  = r.width + 'px';
+    canvas.style.height = r.height + 'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    if(!pts.length){
+      pts = Array.from({length:N}, ()=>({
+        x: Math.random()*r.width,
+        y: Math.random()*r.height,
+        vx: (Math.random()-.5)*.25,
+        vy: (Math.random()-.5)*.25
+      }));
+    }
+  }
+  resize(); addEventListener('resize', resize);
+
+  // Suivi souris uniquement dans la bannière
+  wrap.addEventListener('mouseenter', ()=>mouse.inside = true);
+  wrap.addEventListener('mouseleave', ()=>mouse.inside = false);
+  wrap.addEventListener('mousemove', e=>{
+    const r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left;
+    mouse.y = e.clientY - r.top;
+  });
+
+  let stop = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  matchMedia('(prefers-reduced-motion: reduce)').addEventListener?.('change', e=>{ stop = e.matches; });
+
+  function frame(){
+    if(stop) return; // respect R.M.
+    const r = canvas.getBoundingClientRect();
+    ctx.clearRect(0,0,r.width,r.height);
+
+    // --- Move
+    for(const p of pts){
+      if(mouse.inside){
+        const dx = mouse.x - p.x, dy = mouse.y - p.y;
+        const d = Math.hypot(dx,dy) || 1;
+        // Attraction "un cran au-dessus de modéré"
+        const force = Math.min(0.035, 9/(d*d));
+        p.vx += (dx/d)*force;
+        p.vy += (dy/d)*force;
+      }
+      // friction + clamp
+      p.vx *= 0.991; p.vy *= 0.991;
+      const vmax = 1.2; // vitesse max
+      const sp = Math.hypot(p.vx,p.vy);
+      if(sp>vmax){ p.vx = p.vx/sp*vmax; p.vy = p.vy/sp*vmax; }
+
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>r.width)  p.vx *= -1;
+      if(p.y<0||p.y>r.height) p.vy *= -1;
+    }
+
+    // --- Lines
+    ctx.lineWidth = 0.7;
+    for(let i=0;i<N;i++){
+      for(let j=i+1;j<N;j++){
+        const a=pts[i], b=pts[j];
+        const dx=a.x-b.x, dy=a.y-b.y, d=Math.hypot(dx,dy);
+        if(d<LINK_DIST){
+          const o = 1 - d/LINK_DIST;
+          ctx.strokeStyle = `rgba(59,130,246,${(o*0.30).toFixed(3)})`; // bleu #3B82F6
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+
+    // --- Dots
+    ctx.fillStyle = getComputedStyle(document.documentElement)
+      .getPropertyValue('--pc-dot') || 'rgba(10,15,26,.62)';
+    for(const p of pts){ ctx.beginPath(); ctx.arc(p.x,p.y,1.2,0,Math.PI*2); ctx.fill(); }
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+</script>
 </body>
 </html>
 
