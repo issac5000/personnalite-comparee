@@ -1,32 +1,19 @@
-export default async function gestionnaire(demande, rés) {
-  const CLE_API_OPENAI = process.env.CLE_API_OPENAI;
+const fetch = require('node-fetch');
+
+module.exports = async function gestionnaire(demande, res) {
+  const OPENAI_API_KEY = process.env.CLE_API_OPENAI;
 
   if (demande.method !== 'POST') {
-    return rés.status(405).json({ erreur: 'Méthode non autorisée' });
+    return res.status(405).json({ erreur: 'Méthode non autorisée' });
   }
 
   try {
     const { messages = [], temperature = 0.7, max_tokens } = demande.body;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-5-mini-2025-08-07",
-      messages,
-      temperature,
-      max_tokens
-    });
-
-    rés.status(200).json(response.data);
-  } catch (error) {
-    console.error("Erreur API OpenAI:", error.response?.data || error.message || error);
-    rés.status(500).json({ error: error.response?.data || error.message || 'Erreur serveur' });
-  }
-}
-
-
     const systemMessage = {
       role: 'system',
       content: `
-  Tu es Psycho'Bot, l’assistant officiel du site www.personnalitecomparee.com.
+Tu es Psycho'Bot, l’assistant officiel du site www.personnalitecomparee.com.
 
 Ce site propose une analyse croisée de la personnalité à partir :
 - d’une auto-évaluation
@@ -60,10 +47,11 @@ Si quelqu’un demande "Qui es-tu ?", tu réponds que tu es Psycho'Bot, un assis
     };
 
     const payload = {
-      model,
+      model: "gpt-5-mini-2025-08-07",
       messages: [systemMessage, ...messages],
       temperature,
     };
+
     if (max_tokens !== undefined) {
       payload.max_tokens = max_tokens;
     }
@@ -78,14 +66,18 @@ Si quelqu’un demande "Qui es-tu ?", tu réponds que tu es Psycho'Bot, un assis
     });
 
     if (!response.ok) {
-      return res.status(500).json({ error: "Erreur de l'API OpenAI" });
+      const errorText = await response.text();
+      console.error("Erreur API OpenAI:", errorText);
+      return res.status(500).json({ error: "Erreur de l'API OpenAI", details: errorText });
     }
 
     const data = await response.json();
     console.log("🧠 Réponse brute OpenAI :", data);
 
     res.status(200).json({ message: data.choices?.[0]?.message?.content || null });
+
   } catch (error) {
-    res.status(500).json({ error: "Erreur de l'API OpenAI" });
+    console.error("Erreur API OpenAI:", error.response?.data || error.message || error);
+    res.status(500).json({ error: error.response?.data || error.message || 'Erreur serveur' });
   }
-}
+};
