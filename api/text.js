@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   try {
     const {
       messages = [],
-      model = 'gpt-5-mini',
+model: "gpt-5-mini",
       temperature = 0.7,
       max_tokens,
     } = req.body;
