@@ -5295,6 +5295,7 @@ function displayResults(results) {
   const N = 110;              // nombre de points
   let LINK_DIST = 120;        // distance de connexion
   let MAX_LINKS = N;          // connexions maximales par point
+  let BASE_OPACITY = 0.30;    // opacité maximale des lignes
   const mouse = { x:0, y:0, inside:false };
   const DRIFT = 0.013;                  // amplitude du drift autonome
   const ALLOW_DRIFT = matchMedia('(pointer: coarse)').matches;
@@ -5319,11 +5320,13 @@ function displayResults(results) {
 
   function updateConnectivity(){
     if(window.innerWidth <= 768){
-      LINK_DIST = 80;      // ~30% réduction de la distance de connexion
-      MAX_LINKS = 4;       // limite de connexions par point sur mobile
+      LINK_DIST = 60;      // distance divisée par 2 sur mobile
+      MAX_LINKS = 2;       // limite de connexions par point sur mobile
+      BASE_OPACITY = 0.15; // opacité réduite de moitié
     } else {
       LINK_DIST = 120;     // paramètres d'origine sur desktop
       MAX_LINKS = N;
+      BASE_OPACITY = 0.30; // opacité d'origine
     }
   }
 
@@ -5382,7 +5385,7 @@ function displayResults(results) {
         const dx=a.x-b.x, dy=a.y-b.y, d=Math.hypot(dx,dy);
         if(d<LINK_DIST && linksCount[i] < MAX_LINKS && linksCount[j] < MAX_LINKS){
           const o = 1 - d/LINK_DIST;
-          ctx.strokeStyle = `rgba(59,130,246,${(o*0.30).toFixed(3)})`; // bleu #3B82F6
+          ctx.strokeStyle = `rgba(59,130,246,${(o*BASE_OPACITY).toFixed(3)})`; // bleu #3B82F6
           ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
           linksCount[i]++;
           linksCount[j]++;
