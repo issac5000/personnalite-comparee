@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
 module.exports = async function gestionnaire(demande, res) {
-  const OPENAI_API_KEY = process.env.CLE_API_OPENAI;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
   if (demande.method !== 'POST') {
     return res.status(405).json({ erreur: 'Méthode non autorisée' });
