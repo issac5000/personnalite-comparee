@@ -1,5 +1,7 @@
 const fetch = require('node-fetch');
 
+console.log("🔑 OPENAI_API_KEY depuis Vercel:", process.env.OPENAI_API_KEY ? "OK" : "NON DÉFINIE");
+
 module.exports = async function gestionnaire(demande, res) {
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
