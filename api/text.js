@@ -1,17 +1,27 @@
-export default async function handler(req, res) {
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+export default async function gestionnaire(demande, rés) {
+  const CLE_API_OPENAI = process.env.CLE_API_OPENAI;
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Méthode non autorisée' });
+  if (demande.method !== 'POST') {
+    return rés.status(405).json({ erreur: 'Méthode non autorisée' });
   }
 
   try {
-    const {
-      messages = [],
-model: "gpt-5-mini",
-      temperature = 0.7,
-      max_tokens,
-    } = req.body;
+    const { messages = [], temperature = 0.7, max_tokens } = demande.body;
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-5-mini-2025-08-07",
+      messages,
+      temperature,
+      max_tokens
+    });
+
+    rés.status(200).json(response.data);
+  } catch (error) {
+    console.error("Erreur API OpenAI:", error.response?.data || error.message || error);
+    rés.status(500).json({ error: error.response?.data || error.message || 'Erreur serveur' });
+  }
+}
+
 
     const systemMessage = {
       role: 'system',
