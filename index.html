@@ -5293,7 +5293,8 @@ function displayResults(results) {
   const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
   const N = 110;              // nombre de points
-  const LINK_DIST = 120;      // distance de connexion
+  let LINK_DIST = 120;        // distance de connexion
+  let MAX_LINKS = N;          // connexions maximales par point
   const mouse = { x:0, y:0, inside:false };
   const DRIFT = 0.013;                  // amplitude du drift autonome
   const ALLOW_DRIFT = matchMedia('(pointer: coarse)').matches;
@@ -5315,7 +5316,20 @@ function displayResults(results) {
       }));
     }
   }
-  resize(); addEventListener('resize', resize);
+
+  function updateConnectivity(){
+    if(window.innerWidth <= 768){
+      LINK_DIST = 80;      // ~30% réduction de la distance de connexion
+      MAX_LINKS = 4;       // limite de connexions par point sur mobile
+    } else {
+      LINK_DIST = 120;     // paramètres d'origine sur desktop
+      MAX_LINKS = N;
+    }
+  }
+
+  resize();
+  updateConnectivity();
+  addEventListener('resize', () => { resize(); updateConnectivity(); });
 
   // Suivi souris uniquement dans la bannière
   wrap.addEventListener('mouseenter', ()=>mouse.inside = true);
@@ -5361,14 +5375,17 @@ function displayResults(results) {
 
     // --- Lines
     ctx.lineWidth = 0.7;
+    const linksCount = new Array(N).fill(0);
     for(let i=0;i<N;i++){
       for(let j=i+1;j<N;j++){
         const a=pts[i], b=pts[j];
         const dx=a.x-b.x, dy=a.y-b.y, d=Math.hypot(dx,dy);
-        if(d<LINK_DIST){
+        if(d<LINK_DIST && linksCount[i] < MAX_LINKS && linksCount[j] < MAX_LINKS){
           const o = 1 - d/LINK_DIST;
           ctx.strokeStyle = `rgba(59,130,246,${(o*0.30).toFixed(3)})`; // bleu #3B82F6
           ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+          linksCount[i]++;
+          linksCount[j]++;
         }
       }
     }
