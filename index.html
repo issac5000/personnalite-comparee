@@ -4599,7 +4599,7 @@ function displayResults(results) {
                 AOS.refresh();
             }
             renderCharts(profile, resultsModal);
-            loadAiProfileSummary(profile, resultsModal);
+            initAiProfileSummary(profile, code);
         }
 
         function renderCharts(profile, container) {
@@ -4729,17 +4729,21 @@ function displayResults(results) {
             });
         }
 
-        async function loadAiProfileSummary(profile, modal) {
-            const container = modal.querySelector('#ai-summary-content');
-            if (!container) return;
+        async function initAiProfileSummary(profile, code) {
+            const container = document.querySelector('#results-modal #ai-summary-content');
+            if (!container || container.dataset.loading === '1') return;
 
-            const { results: { mbti, enneagram }, uniqueCode } = profile;
-            const cacheKey = `ai-summary:${uniqueCode}`;
+            const { mbti, enneagram } = profile.results || {};
+            const cacheKey = `ai-summary:${code}:${mbti}:${enneagram}`;
             const cached = localStorage.getItem(cacheKey);
             if (cached) {
+                console.info('[AI Summary]', 'cache hit', cacheKey);
                 container.textContent = cached;
                 return;
             }
+
+            console.info('[AI Summary]', 'cache miss', cacheKey);
+            container.setAttribute('data-loading', '1');
 
             try {
                 const response = await fetch('/api/chat', {
@@ -4768,6 +4772,8 @@ function displayResults(results) {
             } catch (e) {
                 console.error('Erreur IA:', e);
                 container.textContent = "Erreur lors de la génération de la description.";
+            } finally {
+                container.removeAttribute('data-loading');
             }
         }
 
