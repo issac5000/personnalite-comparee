@@ -5,17 +5,16 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
-    try {
-      const {
-        messages = [],
-        model = 'gpt-3.5-turbo',
-        temperature = 0.7,
-        max_tokens,
-      } = req.body;
+  try {
+    const {
+      messages = [],
+      temperature = 0.7,
+      max_tokens,
+    } = req.body;
 
-      const systemMessage = {
-        role: 'system',
-        content: `
+    const systemMessage = {
+      role: 'system',
+      content: `
   Tu es Psycho'Bot, l’assistant officiel du site www.personnalitecomparee.com.
 
 Ce site propose une analyse croisée de la personnalité à partir :
@@ -49,23 +48,24 @@ Si quelqu’un demande "Qui es-tu ?", tu réponds que tu es Psycho'Bot, un assis
       `,
     };
 
-      const payload = {
-        model,
-        messages: [systemMessage, ...messages],
-        temperature,
-      };
-      if (max_tokens !== undefined) {
-        payload.max_tokens = max_tokens;
-      }
+    const payload = {
+      model: 'gpt-5-mini', // 🔹 Remplacement ici
+      messages: [systemMessage, ...messages],
+      temperature,
+    };
 
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify(payload),
-      });
+    if (max_tokens !== undefined) {
+      payload.max_tokens = max_tokens;
+    }
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify(payload),
+    });
 
     if (!response.ok) {
       return res.status(500).json({ error: "Erreur de l'API OpenAI" });
