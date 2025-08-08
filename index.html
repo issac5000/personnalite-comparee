@@ -5295,6 +5295,8 @@ function displayResults(results) {
   const N = 110;              // nombre de points
   const LINK_DIST = 120;      // distance de connexion
   const mouse = { x:0, y:0, inside:false };
+  const DRIFT = 0.013;                  // amplitude du drift autonome
+  const ALLOW_DRIFT = matchMedia('(pointer: coarse)').matches;
   let pts = [], W=0, H=0;
 
   function resize(){
@@ -5341,6 +5343,10 @@ function displayResults(results) {
         const force = Math.min(0.035, 9/(d*d));
         p.vx += (dx/d)*force;
         p.vy += (dy/d)*force;
+      } else if(ALLOW_DRIFT){
+        // léger mouvement autonome sur mobile
+        p.vx += (Math.random()-.5)*DRIFT;
+        p.vy += (Math.random()-.5)*DRIFT;
       }
       // friction + clamp
       p.vx *= 0.991; p.vy *= 0.991;
