@@ -259,6 +259,18 @@
             background-color: #d0e7f7;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+        .spinner {
+            border: 3px solid #e5e7eb;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: -2px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
     </style>
 
 </head>
@@ -3689,20 +3701,22 @@ function displayResults(results) {
                             <span class="close" onclick="closeModal()" style="color: white;">&times;</span>
                         </div>
                         <div class="p-6">
-                            <div id="external-questions-content">
-                                <!-- Les questions seront ajoutées ici -->
-                            </div>
-                            <div class="mt-6 flex justify-between">
-                                <button id="prev-external-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" style="display: none;">
-                                    <i class="fas fa-arrow-left mr-2"></i> Question précédente
-                                </button>
-                                <button id="next-external-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-                                    Question suivante <i class="fas fa-arrow-right ml-2"></i>
-                                </button>
-                                <button id="finish-external-test" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700" style="display: none;">
-                                    <i class="fas fa-check mr-2"></i> Terminer l'évaluation
-                                </button>
-                            </div>
+                            <form id="eval-form">
+                                <div id="external-questions-content">
+                                    <!-- Les questions seront ajoutées ici -->
+                                </div>
+                                <div class="mt-6 flex justify-between">
+                                    <button type="button" id="prev-external-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" style="display: none;">
+                                        <i class="fas fa-arrow-left mr-2"></i> Question précédente
+                                    </button>
+                                    <button type="button" id="next-external-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                        Question suivante <i class="fas fa-arrow-right ml-2"></i>
+                                    </button>
+                                    <button type="submit" id="submit-eval" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700" style="display: none;">
+                                        <i class="fas fa-check mr-2"></i> Terminer l'évaluation
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -3726,6 +3740,7 @@ function displayResults(results) {
             externalAnswers = {};
             displayExternalQuestion(0);
             setupExternalQuestionNavigation();
+            setupEvalFormSubmit();
         }
         
         // Variables pour l'évaluation externe
@@ -3988,7 +4003,6 @@ function displayResults(results) {
         function setupExternalQuestionNavigation() {
             const prevButton = document.getElementById('prev-external-question');
             const nextButton = document.getElementById('next-external-question');
-            const finishButton = document.getElementById('finish-external-test');
             
             if (prevButton) {
                 prevButton.addEventListener('click', function() {
@@ -4011,31 +4025,21 @@ function displayResults(results) {
                     }
                 });
             }
-            
-            if (finishButton) {
-                finishButton.addEventListener('click', function() {
-                    if (Object.keys(externalAnswers).length === EXTERNAL_EVALUATION_QUESTIONS.length) {
-                        submitExternalEvaluation();
-                    } else {
-                        alert('Veuillez répondre à toutes les questions avant de terminer.');
-                    }
-                });
-            }
         }
         
         // Mise à jour des boutons de navigation externes
         function updateExternalNavigationButtons() {
             const prevButton = document.getElementById('prev-external-question');
             const nextButton = document.getElementById('next-external-question');
-            const finishButton = document.getElementById('finish-external-test');
-            
+            const finishButton = document.getElementById('submit-eval');
+
             if (prevButton) {
                 prevButton.style.display = currentExternalQuestionIndex > 0 ? 'inline-flex' : 'none';
             }
-            
+
             const isLastQuestion = currentExternalQuestionIndex === EXTERNAL_EVALUATION_QUESTIONS.length - 1;
             const hasAnswer = externalAnswers[EXTERNAL_EVALUATION_QUESTIONS[currentExternalQuestionIndex].id] !== undefined;
-            
+
             if (nextButton && finishButton) {
                 if (isLastQuestion) {
                     nextButton.style.display = 'none';
@@ -4046,7 +4050,57 @@ function displayResults(results) {
                 }
             }
         }
-        
+
+        function setupEvalFormSubmit() {
+            const form = document.getElementById('eval-form');
+            const btn = document.getElementById('submit-eval');
+            if (!form || !btn) return;
+
+            const initialText = btn.textContent;
+
+            function showSavingState() {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> Veuillez patienter, nous enregistrons vos réponses...';
+            }
+
+            function resetButtonState() {
+                btn.disabled = false;
+                btn.textContent = initialText;
+            }
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                if (btn.disabled) return;
+                if (Object.keys(externalAnswers).length !== EXTERNAL_EVALUATION_QUESTIONS.length) {
+                    alert('Veuillez répondre à toutes les questions avant de terminer.');
+                    return;
+                }
+                showSavingState();
+                await new Promise(r => setTimeout(r, 0));
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 12000);
+                try {
+                    await Promise.race([
+                        submitExternalEvaluation(),
+                        new Promise((_, reject) => {
+                            controller.signal.addEventListener('abort', () => reject(new DOMException('Timeout', 'AbortError')));
+                        })
+                    ]);
+                } catch (err) {
+                    if (err.name === 'AbortError') {
+                        alert('La requête a expiré. Veuillez réessayer.');
+                    } else {
+                        console.error(err);
+                        alert('Une erreur est survenue lors de l\'enregistrement.');
+                    }
+                } finally {
+                    clearTimeout(timeoutId);
+                    resetButtonState();
+                }
+            }, { once: false });
+        }
+
         // Fonction pour soumettre l'évaluation externe
         async function submitExternalEvaluation() {
             const code = localStorage.getItem('externalEvaluationCode');
