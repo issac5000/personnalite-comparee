@@ -49,7 +49,7 @@ Si quelqu’un demande "Qui es-tu ?", tu réponds que tu es Psycho'Bot, un assis
     };
 
     const payload = {
-      model: "gpt-5-mini-2025-08-07",
+model: "gpt-4o-mini",
       messages: [systemMessage, ...messages]
     };
 
