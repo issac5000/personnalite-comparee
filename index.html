@@ -5321,8 +5321,8 @@ function displayResults(results) {
   function updateConnectivity(){
     if(window.innerWidth <= 768){
       LINK_DIST = 60;      // distance divisée par 2 sur mobile
-      MAX_LINKS = 2;       // limite de connexions par point sur mobile
-      BASE_OPACITY = 0.15; // opacité réduite de moitié
+      MAX_LINKS = 3;       // légère augmentation des connexions pour la visibilité
+      BASE_OPACITY = 0.80; // opacité renforcée pour mieux percevoir les lignes
     } else {
       LINK_DIST = 120;     // paramètres d'origine sur desktop
       MAX_LINKS = N;
