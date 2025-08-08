@@ -4056,16 +4056,27 @@ function displayResults(results) {
             const btn = document.getElementById('submit-eval');
             if (!form || !btn) return;
 
-            const initialText = btn.textContent;
-
-            function showSavingState() {
+            function setLoadingState() {
                 btn.disabled = true;
+                btn.classList.remove('bg-green-500', 'bg-red-500');
+                btn.removeAttribute('aria-live');
                 btn.innerHTML = '<span class="spinner"></span> Veuillez patienter, nous enregistrons vos réponses...';
             }
 
-            function resetButtonState() {
-                btn.disabled = false;
-                btn.textContent = initialText;
+            function setSuccessState() {
+                btn.disabled = true;
+                btn.classList.remove('bg-red-500', 'bg-green-600', 'hover:bg-green-700');
+                btn.classList.add('bg-green-500', 'text-white');
+                btn.removeAttribute('aria-live');
+                btn.innerHTML = 'Succès ✅';
+            }
+
+            function setErrorState() {
+                btn.disabled = true;
+                btn.classList.remove('bg-green-500', 'bg-green-600', 'hover:bg-green-700');
+                btn.classList.add('bg-red-500', 'text-white');
+                btn.innerHTML = 'Erreur ❌';
+                btn.setAttribute('aria-live', 'polite');
             }
 
             form.addEventListener('submit', async function(e) {
@@ -4075,7 +4086,7 @@ function displayResults(results) {
                     alert('Veuillez répondre à toutes les questions avant de terminer.');
                     return;
                 }
-                showSavingState();
+                setLoadingState();
                 await new Promise(r => setTimeout(r, 0));
 
                 const controller = new AbortController();
@@ -4087,6 +4098,7 @@ function displayResults(results) {
                             controller.signal.addEventListener('abort', () => reject(new DOMException('Timeout', 'AbortError')));
                         })
                     ]);
+                    setSuccessState();
                 } catch (err) {
                     if (err.name === 'AbortError') {
                         alert('La requête a expiré. Veuillez réessayer.');
@@ -4094,9 +4106,9 @@ function displayResults(results) {
                         console.error(err);
                         alert('Une erreur est survenue lors de l\'enregistrement.');
                     }
+                    setErrorState();
                 } finally {
                     clearTimeout(timeoutId);
-                    resetButtonState();
                 }
             }, { once: false });
         }
