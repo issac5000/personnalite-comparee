@@ -4750,7 +4750,7 @@ function displayResults(results) {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: 'gpt-3.5-turbo',
+                        model: 'gpt-5-mini',
                         temperature: 0.5,
                         max_tokens: 120,
                         messages: [
@@ -4997,7 +4997,7 @@ function displayResults(results) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-5-mini',
           messages: [
             { role: 'system', content: 'Tu es un assistant spécialisé en MBTI et Ennéagramme.' },
             { role: 'user', content: message }
