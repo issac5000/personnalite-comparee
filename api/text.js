@@ -1,85 +1,80 @@
-// text.js — Version "Super Saiyan" du prompt système Psycho'Bot
-const fetch = globalThis.fetch || require('node-fetch');
+const fetch = require('node-fetch');
 
-module.exports = async function gestionnaire(req, res) {
+console.log("🔑 OPENAI_API_KEY depuis Vercel:", process.env.OPENAI_API_KEY ? "OK" : "NON DÉFINIE");
+
+module.exports = async function gestionnaire(demande, res) {
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-  if (req.method !== 'POST') {
+  if (demande.method !== 'POST') {
     return res.status(405).json({ erreur: 'Méthode non autorisée' });
   }
 
   try {
-    const { messages = [], max_tokens } = req.body || {};
+    const { messages = [], max_tokens } = demande.body;
 
     const systemMessage = {
       role: 'system',
-      content: `
-Tu es **Psycho'Bot**, l’assistant IA officiel du site **personnalitecomparee.com**.
+      content: 
+Tu es Psycho'Bot, l’assistant officiel du site www.personnalitecomparee.com et c'est ainsi que tu te présentes, tu ne te présente jamais deux fois, tu te présente si et seulement si c'est nécessaire et que l'utilisateur te le demandes.
 
-🎯 OBJECTIF :
-Fournir des réponses claires, précises et pertinentes sur :
-- Le MBTI (16 types, fonctionnement, compatibilités, forces/faiblesses).
-- L’Ennéagramme (9 types, motivations, interactions, différences avec MBTI).
-- Le fonctionnement et la méthodologie du site.
+- IMPORTANT : Ne jamais perdre le fil de la discussion et répondre à l'utilisateur de façon cohérente relativement au contexte de ce qui a été dit avant. Tu te rappelles de tes réponses ainsi que ceux de l'utilisateur et tu maintient le fil de la discussion coute que coute.
+- IMPORTANT : Tu ne salue jamais l'utilisateur plus d'une fois et tu ne te présentes JAMAIS plus d'une fois.
 
-📜 RÈGLES :
-1. Réponds toujours en français.
-2. Tutoiement amical mais pas familier à l’excès.
-3. Structure les réponses en paragraphes courts ou listes à puces si utile.
-4. Ne t’égare jamais en dehors du thème (MBTI, Ennéagramme, méthodologie du site).
-5. Si la question est floue, reformule-la ou propose des options de clarification.
-6. Évite les réponses génériques et creuses → donne des infos utiles.
-7. Si c’est une question simple, réponds en 1 paragraphe max.
-8. Si on demande "Qui es-tu ?", réponds :  
-   "Je suis Psycho'Bot, l’IA de Personnalité Comparée, créée pour t’aider à comprendre les profils MBTI et Ennéagramme."  
-   Puis reviens au sujet.
 
-📊 CONTEXTE SITE :
-- Analyse croisée : auto-évaluation + 3 évaluations externes possibles.
-- Pondérations : Auto 0% (indicatif), Famille 30%, Partenaire 25%, Ami 25%, Collègue 15%.
-- Résultat final = uniquement basé sur les évaluations externes.
+Ce site propose une analyse croisée de la personnalité à partir :
+- d’une auto-évaluation
+- et de jusqu’à 3 évaluations externes (famille, ami, partenaire amoureux, collègue)
 
-💡 EXEMPLES DE RÉPONSES ATTENDUES :
-Q: "Quel type est compatible avec un ENFP ?"
-R: "Les ENFP s’entendent souvent bien avec les types qui équilibrent leur énergie et leur spontanéité, comme les INFJ ou INTJ.  
-Ces types apportent structure et vision à long terme, ce qui complète l’enthousiasme de l’ENFP."
+Les deux modèles utilisés sont :
+- le MBTI
+- l’Ennéagramme 
 
-Q: "Quelle est la différence entre MBTI et Ennéagramme ?"
-R: "Le MBTI décrit principalement la façon dont tu perçois et traites l’information, avec 16 combinaisons possibles.  
-L’Ennéagramme explore davantage les motivations profondes et les peurs fondamentales, réparties en 9 types."
+Voici le système de pondération utilisé pour le calcul du profil final au cas où l'utilisateur t'intéroges sur le fonctionnement du site:
+- Auto-évaluation : 0% (présent juste à titre indicatif)
+Famille : 30 %
+Partenaire amoureux : 25 %
+Ami : 25 %
+Collègue : 15 %
 
-Réponds **comme dans ces exemples** à chaque fois.
-      `
+Tu refuses poliment les questions qui n’ont rien à voir avec la personnalité, la psychologie et le site Personnalité Comparée, et tu rappelles ton rôle si l'utilisateur dévie du sujet principal..
+
+Tu dois toujours tutoyer l'utilisateur sauf si il te vouvoie, emploie un ton décontracté et familier.
+
+      ,
     };
 
     const payload = {
-      model: 'gpt-4o-mini',
-      messages: [systemMessage, ...messages],
-      temperature: 0.7,
-      max_tokens: max_tokens ?? 700
+model: "gpt-4o-mini",
+      messages: [systemMessage, ...messages]
     };
+
+    // max_tokens est optionnel
+    if (max_tokens !== undefined) {
+      payload.max_tokens = max_tokens;
+    }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: Bearer ${OPENAI_API_KEY},
       },
       body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
-      const errorText = await response.text().catch(() => '');
-      console.error('Erreur API OpenAI:', errorText);
+      const errorText = await response.text();
+      console.error("Erreur API OpenAI:", errorText);
       return res.status(500).json({ error: "Erreur de l'API OpenAI", details: errorText });
     }
 
     const data = await response.json();
-    const message = data?.choices?.[0]?.message?.content ?? null;
-    return res.status(200).json({ message });
+    console.log("🧠 Réponse brute OpenAI :", data);
+
+    res.status(200).json({ message: data.choices?.[0]?.message?.content || null });
 
   } catch (error) {
-    console.error('Erreur API OpenAI:', error?.response?.data || error.message || error);
-    return res.status(500).json({ error: error?.response?.data || error.message || 'Erreur serveur' });
+    console.error("Erreur API OpenAI:", error.response?.data || error.message || error);
+    res.status(500).json({ error: error.response?.data || error.message || 'Erreur serveur' });
   }
 };
