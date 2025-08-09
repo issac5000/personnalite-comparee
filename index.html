@@ -259,6 +259,29 @@
             background-color: #d0e7f7;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+        .pc-typing {
+            position: sticky;
+            bottom: 0;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.04);
+            backdrop-filter: blur(2px);
+            border-top: 1px solid rgba(0,0,0,0.06);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .pc-typing[hidden] { display: none; }
+        .pc-dots span {
+            animation: pc-blink 1.2s infinite;
+            display: inline-block;
+            padding-left: 2px;
+        }
+        .pc-dots span:nth-child(2) { animation-delay: .2s; }
+        .pc-dots span:nth-child(3) { animation-delay: .4s; }
+        @keyframes pc-blink {
+            0% { opacity: 0.2; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-1px); }
+            100% { opacity: 0.2; transform: translateY(0); }
+        }
         .spinner {
             border: 3px solid #e5e7eb;
             border-top: 3px solid #3b82f6;
@@ -598,6 +621,9 @@
           <button class="suggestion-bubble" data-question="Quel type est compatible avec un ENFP ?">❤️ Quel type est compatible avec un ENFP ?</button>
           <button class="suggestion-bubble" data-question="Comment est calculée la certitude globale ?">📊 Comment est calculée la certitude globale ?</button>
           <button class="suggestion-bubble" data-question="Pourquoi demander l’avis de mes proches ?">🤝 Pourquoi demander l’avis de mes proches ?</button>
+        </div>
+        <div id="pc-typing-indicator" class="pc-typing" aria-live="polite" role="status" hidden>
+          <span class="pc-typing-text">Psycho'Bot est en train d'écrire<span class="pc-dots"><span>.</span><span>.</span><span>.</span></span></span>
         </div>
       </div>
 
@@ -5213,6 +5239,21 @@ function displayResults(results) {
     const input = document.getElementById('chat-input');
     const suggestionButtons = document.querySelectorAll('.suggestion-bubble');
     if (sendBtn && input) {
+      const typingEl = document.getElementById('pc-typing-indicator');
+      let showTimer;
+      function showTyping() {
+        if (!typingEl) return;
+        typingEl.hidden = false;
+        const chatBox = document.getElementById('chat-box');
+        if (chatBox) {
+          const atBottom = Math.abs(chatBox.scrollHeight - chatBox.clientHeight - chatBox.scrollTop) <= 5;
+          if (atBottom) safeScrollToBottom(chatBox);
+        }
+      }
+      function hideTyping() {
+        if (typingEl) typingEl.hidden = true;
+      }
+
       const sendMessage = async () => {
         const question = input.value.trim();
         if (!question) return;
@@ -5220,8 +5261,18 @@ function displayResults(results) {
         if (suggestionContainer) suggestionContainer.remove();
         appendMessage('user', question);
         input.value = '';
-        const { message, limitError } = await sendChatMessage(question);
-        appendMessage('assistant', message, { limitError });
+        clearTimeout(showTimer);
+        let shown = false;
+        showTimer = setTimeout(() => { showTyping(); shown = true; }, 200);
+        try {
+          const { message, limitError } = await sendChatMessage(question);
+          appendMessage('assistant', message, { limitError });
+        } catch (e) {
+          console.error(e);
+        } finally {
+          clearTimeout(showTimer);
+          if (shown) hideTyping();
+        }
       };
       sendBtn.addEventListener('click', sendMessage);
       input.addEventListener('keydown', e => {
