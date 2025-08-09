@@ -10,10 +10,15 @@ module.exports = async function handler(req, res) {
 
   try {
     const { messages = [], max_tokens } = req.body || {};
+
+    // Monte le plafond par défaut pour éviter les coupures
+    const resolvedMaxTokens =
+      typeof max_tokens === 'number' ? Math.max(2000, max_tokens) : 2500;
+
     const payload = {
       model: 'gpt-4o-mini',
       stream: true,
-      max_tokens: Math.max(800, max_tokens || 900),
+      max_tokens: resolvedMaxTokens,
       messages,
     };
 
@@ -29,71 +34,94 @@ module.exports = async function handler(req, res) {
     if (!response.ok) {
       const errorText = await response.text().catch(() => '');
       console.error('Erreur API OpenAI:', errorText);
-      return res.status(500).json({ error: "Erreur de l'API OpenAI", details: errorText });
+      return res
+        .status(500)
+        .json({ error: "Erreur de l'API OpenAI", details: errorText });
     }
 
+    // Streaming texte brut (ton front concatène)
     res.writeHead(200, {
-      // on envoie du texte simple en flux (ton front concatène)
       'Content-Type': 'text/plain; charset=utf-8',
       'Transfer-Encoding': 'chunked',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
     });
 
     const decoder = new TextDecoder('utf-8');
     let buffer = '';
+    let finishReason = null;
 
-    // lecture du flux OpenAI (SSE "data: ...")
-    for await (const chunk of response.body) {
-      buffer += decoder.decode(chunk, { stream: true });
+    const processBuffer = () => {
+      const parts = buffer.split(/\r?\n/);
+      buffer = parts.pop() || ''; // garde la dernière ligne incomplète
 
-      let lines = buffer.split('\n');
-      buffer = lines.pop(); // on garde la dernière ligne potentiellement incomplète
+      for (const raw of parts) {
+        const line = raw.trim();
+        if (!line || !line.startsWith('data:')) continue;
 
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const data = line.slice(6);
+        // Tolère "data:" ou "data: "
+        let data = line.slice(5).trim();
+        if (data.startsWith(':')) data = data.slice(1).trim();
+        if (!data) continue;
+
         if (data === '[DONE]') {
-          // flush final du decoder au cas où
+          // fin du flux
           const tail = decoder.decode();
           if (tail) res.write(tail);
-          return res.end();
+          try {
+            if (!res.headersSent) {
+              res.setHeader(
+                'X-OpenAI-Finish-Reason',
+                finishReason || 'unknown'
+              );
+            }
+          } catch {}
+          return true; // signal de fin
         }
+
         try {
           const json = JSON.parse(data);
-          const text = json.choices?.[0]?.delta?.content || '';
+          const choice = json.choices && json.choices[0];
+          if (choice && typeof choice.finish_reason === 'string') {
+            finishReason = choice.finish_reason;
+          }
+          const text = choice?.delta?.content || '';
           if (text) res.write(text);
         } catch {
-          // ignore
+          // ignore les lignes non-JSON
         }
+      }
+      return false; // pas fini
+    };
+
+    // Lecture du flux SSE
+    for await (const chunk of response.body) {
+      buffer += decoder.decode(chunk, { stream: true });
+      const done = processBuffer();
+      if (done) {
+        return res.end();
       }
     }
 
-    // >>>> ICI: TRAITER LE RESTE (bug fixé)
-    // flush final du decoder et traitement du buffer résiduel
-    const tailFlush = decoder.decode(); // vide le decoder
+    // Flush final si le flux s'arrête sans [DONE]
+    const tailFlush = decoder.decode();
     if (tailFlush) buffer += tailFlush;
 
-    if (buffer) {
-      const lines = buffer.split('\n');
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const data = line.slice(6);
-        if (data && data !== '[DONE]') {
-          try {
-            const json = JSON.parse(data);
-            const text = json.choices?.[0]?.delta?.content || '';
-            if (text) res.write(text);
-          } catch { /* ignore */ }
+    // Traite ce qui reste dans le buffer
+    const doneAtEnd = processBuffer();
+    if (!doneAtEnd) {
+      try {
+        if (!res.headersSent) {
+          res.setHeader('X-OpenAI-Finish-Reason', finishReason || 'stream_end');
         }
-      }
+      } catch {}
+      res.end();
     }
-
-    res.end();
   } catch (error) {
     console.error('Erreur API OpenAI:', error);
-    // si on avait commencé à écrire, on termine proprement
-    try { res.end(); } catch {}
+    try {
+      res.end();
+    } catch {}
     if (!res.headersSent) {
       res.status(500).json({ error: error.message || 'Erreur serveur' });
     }
