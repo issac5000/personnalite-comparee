@@ -1,55 +1,72 @@
-const fetch = require('node-fetch');
+// text.js
 
-console.log("🔑 OPENAI_API_KEY depuis Vercel:", process.env.OPENAI_API_KEY ? "OK" : "NON DÉFINIE");
+// Sélection des éléments du DOM
+const input = document.querySelector('#userInput'); // champ texte
+const sendBtn = document.querySelector('#sendBtn'); // bouton "Envoyer"
+const chatBox = document.querySelector('#chatBox'); // zone d'affichage des messages
 
-module.exports = async function gestionnaire(demande, res) {
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
-  if (demande.method !== 'POST') {
-    return res.status(405).json({ erreur: 'Méthode non autorisée' });
-  }
-
+// Fonction d'envoi de message
+async function sendMessage() {
   try {
-    let { messages = [], max_tokens } = demande.body;
+    // 1️⃣ Récupérer le texte utilisateur en sécurité
+    let userText = input?.value;
+    if (typeof userText !== 'string') userText = '';
+    userText = userText.trim();
 
-    // ✅ Sécurité : si pas de messages, on met un message par défaut
-    if (!Array.isArray(messages) || messages.length === 0) {
-      console.warn("⚠️ messages[] vide, ajout d'un message par défaut.");
-      messages = [
-        { role: "system", content: "Tu es Psycho'Bot, assistant MBTI/Ennéagramme." },
-        { role: "user", content: "Bonjour" }
-      ];
+    // 2️⃣ Bloquer si aucun texte
+    if (!userText) {
+      console.warn("⚠️ Aucun texte saisi → requête annulée");
+      return;
     }
 
+    // 3️⃣ Ajouter le message de l'utilisateur dans l'UI
+    addMessageBubble(userText, 'user');
+    input.value = '';
+
+    // 4️⃣ Construire la charge utile avec un message SYSTEM obligatoire
     const payload = {
-      model: "gpt-5-mini",
-      messages,
-      temperature: 0.7,
-      max_tokens: max_tokens ?? 400
+      messages: [
+        { role: 'system', content: "Tu es Psycho'Bot, assistant MBTI/Ennéagramme." },
+        { role: 'user', content: userText }
+      ]
     };
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // 5️⃣ Appeler ton API backend
+    const r = await fetch('/api/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("❌ Erreur API OpenAI:", errorText);
-      return res.status(response.status).json({ error: "Erreur de l'API OpenAI", details: errorText });
+    const data = await r.json();
+
+    // 6️⃣ Si le serveur répond avec une erreur
+    if (!r.ok) {
+      console.error("❌ Erreur API :", data);
+      addMessageBubble("⚠️ Une erreur est survenue, réessaie plus tard.", 'bot');
+      return;
     }
 
-    const data = await response.json();
-    console.log("🧠 Réponse brute OpenAI :", data);
+    // 7️⃣ Afficher la réponse du bot
+    addMessageBubble(data.message || "(Pas de réponse)", 'bot');
 
-    res.status(200).json({ message: data.choices?.[0]?.message?.content || null });
-
-  } catch (error) {
-    console.error("💥 Erreur API OpenAI:", error);
-    res.status(500).json({ error: error.message || 'Erreur serveur' });
+  } catch (err) {
+    console.error("💥 Erreur front :", err);
+    addMessageBubble("⚠️ Erreur technique", 'bot');
   }
-};
+}
+
+// Fonction d'affichage des bulles
+function addMessageBubble(text, sender = 'bot') {
+  const bubble = document.createElement('div');
+  bubble.className = sender === 'user' ? 'bubble user' : 'bubble bot';
+  bubble.textContent = text;
+  chatBox.appendChild(bubble);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Écouteurs d'événements
+sendBtn.addEventListener('click', sendMessage);
+input.addEventListener('keypress', e => {
+  if (e.key === 'Enter') sendMessage();
+});
