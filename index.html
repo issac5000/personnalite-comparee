@@ -4087,27 +4087,28 @@ function displayResults(results) {
             const btn = document.getElementById('submit-eval');
             if (!form || !btn) return;
 
+            // Assistive technologies will announce status updates
+            btn.setAttribute('aria-live', 'polite');
+
             function setLoadingState() {
                 btn.disabled = true;
-                btn.classList.remove('bg-green-500', 'bg-red-500');
-                btn.removeAttribute('aria-live');
-                btn.innerHTML = '<span class="spinner"></span> Veuillez patienter, nous enregistrons vos réponses...';
+                btn.classList.remove('bg-green-500', 'bg-red-500', 'hover:bg-green-700');
+                btn.classList.add('bg-green-600', 'hover:bg-green-700', 'text-white');
+                btn.innerHTML = '<span class="spinner"></span> ⏳ Veuillez patienter, nous enregistrons vos réponses...';
             }
 
             function setSuccessState() {
                 btn.disabled = true;
                 btn.classList.remove('bg-red-500', 'bg-green-600', 'hover:bg-green-700');
                 btn.classList.add('bg-green-500', 'text-white');
-                btn.removeAttribute('aria-live');
                 btn.innerHTML = 'Succès ✅';
             }
 
-            function setErrorState() {
-                btn.disabled = true;
+            function setRetryState() {
+                btn.disabled = false;
                 btn.classList.remove('bg-green-500', 'bg-green-600', 'hover:bg-green-700');
                 btn.classList.add('bg-red-500', 'text-white');
-                btn.innerHTML = 'Erreur ❌';
-                btn.setAttribute('aria-live', 'polite');
+                btn.innerHTML = 'Réessayer';
             }
 
             form.addEventListener('submit', async function(e) {
@@ -4137,7 +4138,7 @@ function displayResults(results) {
                         console.error(err);
                         alert('Une erreur est survenue lors de l\'enregistrement.');
                     }
-                    setErrorState();
+                    setRetryState();
                 } finally {
                     clearTimeout(timeoutId);
                 }
