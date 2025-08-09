@@ -664,7 +664,7 @@
       <!-- Zone de saisie -->
       <div class="flex">
         <input id="chat-input" type="text" placeholder="Posez votre question..."
-               class="flex-grow px-4 py-2 focus:ring-blue-500 focus:border-blue-500">
+               class="flex-grow px-4 py-2 border border-gray-300 focus:ring-blue-500">
         <button id="chat-send" class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700">Envoyer</button>
       </div>
     </div>
@@ -5559,10 +5559,16 @@ function displayResults(results) {
     overflow: hidden !important;
   }
   #chat-input {
-    border-radius: 9999px 0 0 9999px !important;
+    border: 1px solid #ccc;
+    border-radius: 32px 0 0 32px !important;
+    transition: border-color 0.2s ease;
+  }
+  #chat-input:focus {
+    border-color: #3B82F6;
+    outline: none;
   }
   #chat-send {
-    border-radius: 0 9999px 9999px 0 !important;
+    border-radius: 0 32px 32px 0 !important;
   }
 </style>
 
