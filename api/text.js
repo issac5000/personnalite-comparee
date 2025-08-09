@@ -1,72 +1,74 @@
-// text.js
+// /api/chat.js
 
-// Sélection des éléments du DOM
-const input = document.querySelector('#userInput'); // champ texte
-const sendBtn = document.querySelector('#sendBtn'); // bouton "Envoyer"
-const chatBox = document.querySelector('#chatBox'); // zone d'affichage des messages
+const fetch = require('node-fetch');
 
-// Fonction d'envoi de message
-async function sendMessage() {
+// Log au chargement du fichier pour voir si la clé est dispo
+console.log("🔑 OPENAI_API_KEY depuis Vercel :", process.env.OPENAI_API_KEY ? "OK" : "NON DÉFINIE");
+
+module.exports = async function gestionnaire(demande, res) {
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+  // Vérif méthode
+  if (demande.method !== 'POST') {
+    return res.status(405).json({ erreur: 'Méthode non autorisée' });
+  }
+
+  // Vérif clé API
+  if (!OPENAI_API_KEY) {
+    console.error("❌ Clé API manquante !");
+    return res.status(500).json({ error: "OPENAI_API_KEY non définie sur le serveur" });
+  }
+
   try {
-    // 1️⃣ Récupérer le texte utilisateur en sécurité
-    let userText = input?.value;
-    if (typeof userText !== 'string') userText = '';
-    userText = userText.trim();
+    let { messages = [], max_tokens } = demande.body;
 
-    // 2️⃣ Bloquer si aucun texte
-    if (!userText) {
-      console.warn("⚠️ Aucun texte saisi → requête annulée");
-      return;
+    // ✅ Fallback si vide ou mauvais format
+    if (!Array.isArray(messages) || messages.length === 0) {
+      console.warn("⚠️ messages[] vide → ajout d'un message par défaut");
+      messages = [
+        { role: "system", content: "Tu es Psycho'Bot, assistant MBTI/Ennéagramme." },
+        { role: "user", content: "Bonjour" }
+      ];
     }
 
-    // 3️⃣ Ajouter le message de l'utilisateur dans l'UI
-    addMessageBubble(userText, 'user');
-    input.value = '';
-
-    // 4️⃣ Construire la charge utile avec un message SYSTEM obligatoire
     const payload = {
-      messages: [
-        { role: 'system', content: "Tu es Psycho'Bot, assistant MBTI/Ennéagramme." },
-        { role: 'user', content: userText }
-      ]
+      model: "gpt-5-mini",
+      messages,
+      temperature: 0.7,
+      max_tokens: max_tokens ?? 400
     };
 
-    // 5️⃣ Appeler ton API backend
-    const r = await fetch('/api/chat', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify(payload),
     });
 
-    const data = await r.json();
-
-    // 6️⃣ Si le serveur répond avec une erreur
-    if (!r.ok) {
-      console.error("❌ Erreur API :", data);
-      addMessageBubble("⚠️ Une erreur est survenue, réessaie plus tard.", 'bot');
-      return;
+    // Si erreur côté OpenAI
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ Erreur API OpenAI :", errorText);
+      return res.status(response.status).json({
+        error: "Erreur API OpenAI",
+        details: errorText
+      });
     }
 
-    // 7️⃣ Afficher la réponse du bot
-    addMessageBubble(data.message || "(Pas de réponse)", 'bot');
+    const data = await response.json();
+    console.log("🧠 Réponse brute OpenAI :", data);
 
-  } catch (err) {
-    console.error("💥 Erreur front :", err);
-    addMessageBubble("⚠️ Erreur technique", 'bot');
+    return res.status(200).json({
+      message: data.choices?.[0]?.message?.content || null
+    });
+
+  } catch (error) {
+    console.error("💥 Erreur serveur :", error);
+    return res.status(500).json({
+      error: error.message || 'Erreur serveur',
+      stack: error.stack || null
+    });
   }
-}
-
-// Fonction d'affichage des bulles
-function addMessageBubble(text, sender = 'bot') {
-  const bubble = document.createElement('div');
-  bubble.className = sender === 'user' ? 'bubble user' : 'bubble bot';
-  bubble.textContent = text;
-  chatBox.appendChild(bubble);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-// Écouteurs d'événements
-sendBtn.addEventListener('click', sendMessage);
-input.addEventListener('keypress', e => {
-  if (e.key === 'Enter') sendMessage();
-});
+};
