@@ -5551,23 +5551,43 @@ function displayResults(results) {
     overflow: hidden !important;
   }
 
-  /* Input: vrai contour visible + arrondi large */
-  #chat-input {
-    border: 1px solid #d1d5db !important;          /* gris clair visible */
-    border-radius: 32px !important;                 /* arrondi complet */
-    outline: none !important;
-    transition: border-color .2s ease;
-  }
-  #chat-input:focus {
-    border-color: #3B82F6 !important;               /* bleu au focus */
-    box-shadow: 0 0 0 3px rgba(59,130,246,.2) !important; /* halo focus */
+  /* Input + bouton : mêmes dimensions et arrondis harmonisés */
+  #chat-input,
+  #chat-send {
+    height: 42px; /* même hauteur pour alignement parfait */
   }
 
-  /* Bouton: arrondi large pour matcher l'input */
+  /* Input: vrai contour visible + arrondi large */
+  #chat-input {
+    border: 1px solid #d1d5db !important;
+    border-right: none !important; /* supprime la double bordure avec le bouton */
+    border-radius: 32px 0 0 32px !important; /* arrondi à gauche seulement */
+    outline: none !important;
+    transition: border-color .2s ease;
+    padding: 0 12px;
+  }
+
+  #chat-input:focus {
+    border-color: #3B82F6 !important;
+    box-shadow: 0 0 0 3px rgba(59,130,246,.2) !important;
+  }
+
+  /* Bouton envoyer */
   #chat-send {
-    border-radius: 32px !important;
+    border: 1px solid #d1d5db !important;
+    border-left: none !important; /* pas de double bordure */
+    border-radius: 0 32px 32px 0 !important; /* arrondi à droite seulement */
+    background-color: #2563eb; /* bleu */
+    color: white;
+    padding: 0 16px;
+    cursor: pointer;
+  }
+
+  #chat-send:hover {
+    background-color: #1d4ed8;
   }
 </style>
+
 </body>
 </html>
 
