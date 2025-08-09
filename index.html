@@ -350,6 +350,43 @@
   border: none !important;
 }
 
+        /* AUTO-ÉVALUATION : un seul grand ovale propre */
+        #auto-evaluation .section-box{
+          background: #f8fafc;
+          border: 1px solid #e5e7eb;
+          border-radius: 32px;
+          box-shadow: none !important;
+          padding: 28px;
+        }
+
+        /* Supprime la “carte” interne : pas de fond blanc, pas de bordure, pas d’ombre */
+        #auto-evaluation #questions-container > div{
+          background: transparent !important;
+          border: none !important;
+          box-shadow: none !important;
+        }
+        /* Si une classe “card” est utilisée par le renderer */
+        #auto-evaluation .question-card,
+        #auto-evaluation [class*="card"]{
+          background: transparent !important;
+          border: none !important;
+          box-shadow: none !important;
+        }
+
+        /* Bouton à l’intérieur, arrondi doux */
+        #auto-evaluation #next-question,
+        #auto-evaluation #prev-question,
+        #auto-evaluation #finish-test{
+          border-radius: 24px;
+        }
+
+        /* Supprimer l’effet d’inclinaison hérité dans cette section */
+        #auto-evaluation [class*="card"]:hover,
+        #auto-evaluation button:hover{
+          transform: none !important;
+          box-shadow: none !important;
+        }
+
     </style>
 
 </head>
@@ -532,7 +569,7 @@
     </div>
 
     <!-- Ovale unique -->
-    <div class="mt-12 mb-4 rounded-3xl shadow-lg p-6" style="background-color: #f9fafb;">
+    <div class="mt-12 mb-4 section-box">
       
       <!-- Question Cards Container -->
       <div id="questions-container">
@@ -1999,26 +2036,24 @@ if (window.location.href.includes("external")) {
             const progress = ((index + 1) / QUESTIONS_AUTO_EVALUATION.length) * 100;
             
             const questionHTML = `
-                <div class="question-container active fade-in bg-white shadow-md rounded-lg overflow-hidden">
-                    <div class="px-6 py-4">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-sm font-medium text-blue-600">Question ${index + 1}/${QUESTIONS_AUTO_EVALUATION.length}</span>
-                            <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
-                                <div class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                <div class="question-container active fade-in question-card p-0">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm font-medium text-blue-600">Question ${index + 1}/${QUESTIONS_AUTO_EVALUATION.length}</span>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
+                            <div class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-medium text-gray-900 mb-6">${question.question}</h3>
+
+                    <div class="space-y-4">
+                        ${question.options.map((option, optionIndex) => `
+                            <div class="flex items-start">
+                                <input id="q${question.id}-${optionIndex}" name="question${question.id}" type="radio" value="${optionIndex}" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 mt-1" ${answers[question.id] === optionIndex ? 'checked' : ''}>
+                                <label for="q${question.id}-${optionIndex}" class="ml-3 block text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-900 transition-colors">
+                                    ${option.text}
+                                </label>
                             </div>
-                        </div>
-                        <h3 class="text-xl font-medium text-gray-900 mb-6">${question.question}</h3>
-                        
-                        <div class="space-y-4">
-                            ${question.options.map((option, optionIndex) => `
-                                <div class="flex items-start">
-                                    <input id="q${question.id}-${optionIndex}" name="question${question.id}" type="radio" value="${optionIndex}" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 mt-1" ${answers[question.id] === optionIndex ? 'checked' : ''}>
-                                    <label for="q${question.id}-${optionIndex}" class="ml-3 block text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-900 transition-colors">
-                                        ${option.text}
-                                    </label>
-                                </div>
-                            `).join('')}
-                        </div>
+                        `).join('')}
                     </div>
                 </div>
             `;
@@ -5586,40 +5621,6 @@ function displayResults(results) {
     background-color: #1d4ed8;
   }
 </style>
-
-      /* --- Style Auto-évaluation --- */
-.question-container {
-  background-color: #f9f9f9; /* gris clair intérieur */
-  border-radius: 32px;       /* gros arrondi pour l’oval */
-  padding: 30px;
-  border: none;              /* pas de bordure */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* ombre légère */
-}
-
-.question-container .progress-bar {
-  margin-bottom: 20px;
-}
-
-.question-container button {
-  margin-top: 20px;
-  border-radius: 24px;       /* arrondi bouton */
-  padding: 12px 20px;
-  border: none;
-}
-
-/* Faire que le bouton soit à l’intérieur de l’oval */
-.question-container .button-wrapper {
-  display: flex;
-  justify-content: flex-end;
-}
-
-/* Supprimer tout encadré interne autour des réponses */
-.question-container .options {
-  border: none;
-  background: none;
-  padding: 0;
-}
-
 
 </body>
 </html>
