@@ -300,26 +300,32 @@
         @media (max-width:768px){
           .pc-info-banner{ margin:12px 0; font-size:.93rem; }
         }
+
+        /* Desktop: pas de contrainte, laisser le rendu normal */
+        @media (min-width: 769px){
+          .pc-psy-dialog{ max-height: none; overflow: visible; display: block; }
+          .pc-psy-content{ overflow: visible; max-height: none; }
+        }
+
+        /* Mobile: fix de scroll interne, scoppé UNIQUEMENT au bloc Psycho'Bot */
         @media (max-width: 768px){
-          /* Conteneur modal/carte qui porte le bloc Psycho'Bot */
           .pc-psy-dialog{
-            /* container en colonne pour réserver une zone scrollable */
             display: flex;
             flex-direction: column;
-            max-height: 100dvh;           /* unités dynamiques fiables sur mobile */
-            overflow: hidden;             /* le scroll se fait dans .pc-psy-content */
+            max-height: 100dvh;
+            overflow: hidden;
           }
-          /* Zone de contenu qui doit scroller */
           .pc-psy-content{
             flex: 1 1 auto;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;  /* inertie iOS */
+            -webkit-overflow-scrolling: touch;
           }
-          .pc-psy-content p, .pc-psy-content .text, .pc-psy-content [class*="desc"]{
+          .pc-psy-content p,
+          .pc-psy-content .text,
+          .pc-psy-content [class*="desc"]{
             white-space: normal;
             word-break: break-word;
             overflow-wrap: anywhere;
-            /* lève toute tentative de line-clamp / masquage */
             -webkit-line-clamp: unset !important;
             -webkit-box-orient: unset !important;
             display: block !important;
@@ -328,16 +334,26 @@
             mask-image: none !important;
             -webkit-mask-image: none !important;
           }
-          /* Si un dégradé/fade masque le bas du texte sur mobile */
+          /* Désactiver les fades masquants uniquement dans ce bloc */
           .pc-psy-content .fade,
-          .pc-psy-content::after,
-          .pc-psy-content .fade-mask{
+          .pc-psy-content .fade-mask,
+          .pc-psy-content::after{
             display: none !important;
-            mask-image: none !important;
-            -webkit-mask-image: none !important;
           }
         }
-    </style>
+
+        /* Rétablir la taille du bloc "Parler avec Psycho'Bot" (chat) */
+        #profil-chatbot,
+        #chat-window{
+          min-height: 240px;
+          overflow: visible;
+        }
+        #profil-chatbot .content,
+        #chat-window .content{
+          max-height: none;
+          overflow: visible;
+        }
+        </style>
 
 </head>
 <body class="font-sans bg-white text-gray-900">
@@ -5452,68 +5468,48 @@ function displayResults(results) {
 })();
 </script>
 <script>
-(function fixPsychoBotCut(){
-  // Localisation robuste du bloc Psycho'Bot (titre ou libellé contenant Psycho'Bot)
-  function findPsyBlock(root = document){
-    return [...root.querySelectorAll('section, article, div')]
-      .find(el => /Psycho'?Bot/i.test(el.textContent));
+(function(){
+  function findResultsPsyBlock(root=document){
+    const title = [...root.querySelectorAll('h2,h3,h4,div,section,article')]
+      .find(el => /Psycho'?Bot/i.test(el.textContent) && /Description|profil/i.test(el.textContent));
+    if(!title) return null;
+    const dialog = title.closest('[role="dialog"], .modal, .dialog, .sheet, .drawer, .card, section, article') || title.parentElement;
+    if(dialog && /Parler avec Psycho'?Bot/i.test(dialog.textContent)) return null;
+    const content = dialog.querySelector('.content, .body, .scroll, [class*="content"], [class*="body"]') || dialog;
+    return { dialog, content };
   }
 
-  function applyFix(target){
-    if(!target) return;
-    // Conteneur dialog/carte autour du bloc
-    const dialog = target.closest('[role="dialog"], .modal, .dialog, .sheet, .drawer, .card, section, article') || target;
-    // Zone de contenu (scroll)
-    const content = dialog.querySelector('.content, .body, .scroll, [class*="content"], [class*="body"]') || target;
-
-    // Ajouter les classes utilitaires (CSS ci-dessus)
+  function applyScope(){
+    const hit = findResultsPsyBlock();
+    if(!hit) return;
+    const { dialog, content } = hit;
     dialog.classList.add('pc-psy-dialog');
     content.classList.add('pc-psy-content');
 
-    // Nettoyage des styles inline qui brident le texte
-    // (max-height/height/overflow/line-clamp/masques)
+    // Nettoyage de styles inline uniquement dans ce bloc
     [dialog, content].forEach(n=>{
-      ['maxHeight','height'].forEach(p => { try{ n.style[p] = ''; }catch{} });
+      ['maxHeight','height','overflow'].forEach(p=>{ try{ n.style[p]=''; }catch{} });
     });
     content.querySelectorAll('p, .text, [class*="desc"]').forEach(n=>{
-      n.style.removeProperty('-webkit-line-clamp');
-      n.style.removeProperty('max-height');
-      n.style.removeProperty('overflow');
-      n.style.removeProperty('display');         // enlève -webkit-box
-      n.style.removeProperty('mask-image');
-      n.style.removeProperty('-webkit-mask-image');
-    });
-
-    // Si un gradient de fade existe, on le neutralise (classes/pseudos fréquents)
-    content.querySelectorAll('.fade, .fade-mask').forEach(el=>{
-      el.style.display = 'none';
+      ['-webkit-line-clamp','max-height','overflow','display','mask-image','-webkit-mask-image']
+        .forEach(prop => n.style.removeProperty(prop));
     });
   }
 
-  // 1) Au chargement
-  const first = findPsyBlock();
-  if(first) applyFix(first);
+  applyScope();
+  const mo = new MutationObserver(()=>applyScope());
+  mo.observe(document.body, { childList:true, subtree:true });
 
-  // 2) À l’injection/maj dynamique (SPA, API async)
-  const mo = new MutationObserver((muts)=>{
-    for(const m of muts){
-      if(m.addedNodes){
-        m.addedNodes.forEach(node=>{
-          if(!(node instanceof Element)) return;
-          const hit = findPsyBlock(node) || ( /Psycho'?Bot/i.test(node.textContent||'') ? node : null );
-          if(hit) applyFix(hit);
-        });
-      }
-    }
-  });
-  mo.observe(document.body, { childList: true, subtree: true });
-
-  // 3) Sur redimensionnement mobile (claviers / barre URL)
-  let resizeTimer=null;
-  window.addEventListener('resize', ()=>{
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(()=>{ const again = findPsyBlock(); if(again) applyFix(again); }, 120);
-  }, { passive:true });
+  // Re-appliquer correctement selon breakpoint (desktop/mobile)
+  let lastIsMobile = null;
+  function onResize(){
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if(isMobile === lastIsMobile) return;
+    lastIsMobile = isMobile;
+    applyScope();
+  }
+  window.addEventListener('resize', onResize, { passive:true });
+  onResize();
 })();
 </script>
 </body>
