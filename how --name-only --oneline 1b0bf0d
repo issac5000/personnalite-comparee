@@ -1,0 +1,30 @@
+* [33m1b0bf0d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrollback-1b0bf0d[m[33m, [m[1;31morigin/rollback-1b0bf0d[m[33m)[m zone de texte plus envoyer
+* [33m4a028ab[m zone de texte
+* [33m7187d99[m zone de texte
+* [33mdd21746[m[33m ([m[1;31morigin/codex/update-border-style-for-input-field[m[33m)[m style: add border and focus state to chat input
+* [33me33dd86[m[33m ([m[1;31morigin/28e5l1-codex/update-border-style-for-input-field[m[33m)[m style: add border and focus state to chat input
+* [33m6ea5dab[m[33m ([m[1;31morigin/codex/modifier-styles-css-pour-sections-arrondies[m[33m)[m Harmonize rounded sections
+* [33m3291012[m Delete CNAME
+* [33m8ab5a17[m Update CNAME
+* [33m58761aa[m[33m ([m[1;31morigin/codex/round-chat-window-and-input-areas[m[33m)[m Arrondir la fenetre de chat
+* [33mabcd71b[m forciing 1000
+* [33m82c6702[m forcing arrondie
+* [33m3660049[m suite galere bordure
+* [33mad50243[m toujours forcage
+* [33mc68a575[m forcer change
+* [33ma785b71[m chatbot modif
+* [33mb155250[m[33m ([m[1;31morigin/codex/increase-border-radius-for-chat-elements[m[33m)[m feat: soften chatbot UI
+* [33m6fc172c[m pb esthétique
+* [33ma668a76[m esthétique chatbot
+* [33m6a6cc82[m[33m ([m[1;31morigin/1ccagu-codex/update-css-for-rounded-corners-in-chatbot[m[33m)[m style: arrondir la section chat
+* [33m060e4aa[m[33m ([m[1;31morigin/codex/add-i-don-t-know-option-to-surveys[m[33m)[m Add 'Je ne sais pas' option to external evaluations
+* [33m09f146b[m[33m ([m[1;31morigin/codex/add-animated-typing-indicator-to-psycho-bot[m[33m)[m feat: add typing indicator for chatbot
+* [33mf61ea3c[m[33m ([m[1;31morigin/codex/add-scroll-indicator-on-results-page[m[33m)[m feat: add scroll indicator to AI summary
+* [33md2400af[m[33m ([m[1;31morigin/codex/fix-ai-description-loading-issue[m[33m)[m Fix incomplete AI description on results page
+* [33ma155cdd[m Update psy-results.js
+* [33mcef6b0b[m ajustement PB
+* [33mc7bb4e3[m ajustement chatbot
+* [33m15e2b53[m[33m ([m[1;31morigin/codex/agrandir-la-zone-de-chat-et-activer-le-scroll[m[33m)[m feat: enlarge chat window and auto-scroll
+* [33m492547a[m chatbot ajustement
+* [33mecdb7cc[m Update psy-results.js 2
+* [33m99e9feb[m Update psy-results.js
