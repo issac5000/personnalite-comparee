@@ -1,0 +1,21 @@
+<section id="profil-chatbot" class="py-12 px-4">
+  <div class="max-w-3xl mx-auto text-center">
+    <h2 class="text-3xl font-bold">Parler à Psycho'Bot</h2>
+    <p class="mt-2 text-gray-600">Pose-lui une question sur la personnalité et il te répondra.</p>
+  </div>
+  <div id="chat-window" class="mt-8 bg-white rounded-lg shadow flex flex-col">
+    <div id="chat-box" class="flex-1 p-4 overflow-y-auto space-y-4"></div>
+    <div id="chat-suggestions" class="question-buttons p-4 flex flex-wrap gap-2">
+      <button class="suggestion-bubble" data-question="Qui es-tu ?">Qui es-tu ?</button>
+      <button class="suggestion-bubble" data-question="Comment fonctionne ce test ?">Comment fonctionne ce test ?</button>
+      <button class="suggestion-bubble" data-question="Puis-je refaire le test ?">Puis-je refaire le test ?</button>
+    </div>
+    <div class="p-4 flex items-center gap-2 border-t">
+      <input id="chat-input" type="text" class="flex-1 px-4 py-2 border rounded" placeholder="Écris ton message..." />
+      <button id="chat-send" class="px-4 py-2 bg-blue-600 text-white rounded">Envoyer</button>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+<script src="profil-chatbot.js"></script>
