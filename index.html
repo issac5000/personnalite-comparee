@@ -583,51 +583,71 @@
         </div>
     </div>
 
-   <!-- Section Chatbot -->
+<!-- Section Chatbot -->
+<section id="profil-chatbot" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center">
+      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Parler avec Psycho'Bot</h2>
+      <p class="mt-4 text-xl text-gray-500">Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.</p>
+    </div>
 
-    <section id="profil-chatbot" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
+    <div class="mt-8">
+      <div id="chat-window" class="h-[360px] sm:h-[420px] lg:h-[480px] border border-gray-200 rounded-lg mb-4 bg-gray-50 flex flex-col">
+        <!-- Zone scrollable -->
+        <div id="chat-box" class="flex-1 p-4 overflow-y-auto" style="scroll-behavior: smooth;"></div>
 
-        <div class="max-w-3xl mx-auto">
-
-            <div class="text-center">
-
-                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Parler avec Psycho'Bot</h2>
-
-                <p class="mt-4 text-xl text-gray-500">Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.</p>
-
-            </div>
-
-            <div class="mt-8">
-
-                <div id="chat-window" class="h-[520px] sm:h-[600px] bordure bordure-gris-200 arrondi-lg mb-4 bg-gris-50 flex flex-col">
-
-                    <div id="chat-box" class="flex-1 overflow-y-auto p-4" style="scroll-behavior: smooth;"></div>
-
-                    <div id="chat-suggestions" class="question-buttons fade-in">
-
-                        <button class="suggestion-bubble" data-question="Quel type est compatible avec un ENFP ?"> ❤️ Quel type est compatible avec un ENFP ?</button>
-
-                        <button class="suggestion-bubble" data-question="Comment est calculé la certitude globale ?"> 📊 Comment est calculé la certitude globale ?</button>
-
-                        <button class="suggestion-bubble" data-question="Pourquoi demander l'avis de mes proches ?"> 🤝 Pourquoi demander l'avis de mes proches ?</button>
-
-                    </div>
-
-                </div>
-
-                <div class="flex">
-
-                    <input id="chat-input" type="text" placeholder="Posez votre question..." class="flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:ring-blue-500 focus:border-blue-500">
-
-                    <button id="chat-send" class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700">Envoyeur</button>
-
-                </div>
-
-            </div>
-
+        <!-- Suggestions fixées en bas -->
+        <div id="chat-suggestions" class="question-buttons border-t border-gray-200 p-3 bg-white">
+          <div class="flex flex-wrap gap-2">
+            <button type="button" class="suggestion-bubble" data-question="Quel type est compatible avec un ENFP ?">❤️ Quel type est compatible avec un ENFP ?</button>
+            <button type="button" class="suggestion-bubble" data-question="Comment est calculée la certitude globale ?">📊 Comment est calculée la certitude globale ?</button>
+            <button type="button" class="suggestion-bubble" data-question="Pourquoi demander l’avis de mes proches ?">🤝 Pourquoi demander l’avis de mes proches ?</button>
+          </div>
         </div>
+      </div>
 
-    </section>
+      <!-- Zone de saisie -->
+      <div class="flex">
+        <label for="chat-input" class="sr-only">Votre question</label>
+        <input id="chat-input" type="text" placeholder="Posez votre question..." class="flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:ring-blue-500 focus:border-blue-500">
+        <button id="chat-send" class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700">Envoyer</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Auto-scroll (appelle scrollChatToBottom() après chaque nouveau message) -->
+<script>
+  function scrollChatToBottom() {
+    const box = document.getElementById('chat-box');
+    if (box) box.scrollTop = box.scrollHeight;
+  }
+  window.addEventListener('load', scrollChatToBottom);
+</script>
+
+
+      <!-- Zone de saisie -->
+      <div class="flex">
+        <input id="chat-input" type="text" placeholder="Posez votre question..." class="flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:ring-blue-500 focus:border-blue-500">
+        <button id="chat-send" class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700">Envoyer</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Script auto-scroll -->
+<script>
+  function scrollChatToBottom() {
+    const box = document.getElementById('chat-box');
+    if (box) box.scrollTop = box.scrollHeight;
+  }
+
+  // Appelle cette fonction après chaque ajout de message
+  // Exemple :
+  // document.getElementById('chat-box').insertAdjacentHTML('beforeend', '<div>Message</div>');
+  // scrollChatToBottom();
+</script>
+
     <section id="retourver-profil" data-aos="zoom-in" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
           <div class="text-center">
