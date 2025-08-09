@@ -4612,7 +4612,7 @@ function displayResults(results) {
 
         <div id="ai-profile-summary" class="mt-6 bg-gray-50 rounded-lg p-5 shadow-sm mb-6">
             <h4 class="font-semibold text-gray-900 text-lg mb-3">Description succincte du profil par Psycho'Bot</h4>
-            <div id="ai-summary-content" class="text-sm leading-relaxed text-gray-700">Génération en cours…</div>
+            <div id="ai-summary-content" class="text-sm leading-relaxed text-gray-700 max-h-80 overflow-y-auto">Génération en cours…</div>
         </div>
 
                             <!-- Détail des évaluations -->
@@ -4832,36 +4832,49 @@ function displayResults(results) {
             console.info('[AI Summary]', 'cache miss', cacheKey);
             container.setAttribute('data-loading', '1');
 
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        model: 'gpt-5-mini',
-                        temperature: 0.5,
-                        max_tokens: 120,
-                        messages: [
-                            { role: 'system', content: 'Tu es un psychologue pédagogique. Écris en français, clair et nuancé, sans jargon.' },
-                            { role: 'user', content: `Profil combiné : MBTI=${mbti}, Ennéagramme=${enneagram}.\nRédige une description concise (max 150 mots) :\n1) forces principales, 2) point faible récurrent, 3) piste d’amélioration.\nLangage clair, ton positif, phrases courtes.` }
-                        ]
-                    })
-                });
+            let messages = [
+                { role: 'system', content: 'Tu es un psychologue pédagogique. Écris en français, clair et nuancé, sans jargon.' },
+                { role: 'user', content: `Profil combiné : MBTI=${mbti}, Ennéagramme=${enneagram}.\nRédige une description concise (max 150 mots) :\n1) forces principales, 2) point faible récurrent, 3) piste d’amélioration.\nLangage clair, ton positif, phrases courtes.` }
+            ];
 
-                if (!response.ok) throw new Error('bad response');
-                const data = await response.json();
-                const message = data.message?.trim();
-                if (message) {
-                    container.textContent = message;
-                    localStorage.setItem(cacheKey, message);
-                } else {
-                    container.textContent = "Description indisponible pour le moment.";
+            let totalText = '';
+            let attempts = 0;
+
+            while (true) {
+                try {
+                    const response = await fetch('/api/psy-results', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ messages })
+                    });
+
+                    if (!response.ok) throw new Error('bad response');
+                    const data = await response.json();
+                    totalText += data.content || '';
+
+                    if (data.finish_reason && data.finish_reason !== 'stop') {
+                        messages.push({ role: 'assistant', content: data.content || '' });
+                        messages.push({ role: 'user', content: 'continue' });
+                        continue;
+                    }
+
+                    const finalText = totalText.trim();
+                    container.textContent = finalText || "Description indisponible pour le moment.";
+                    if (finalText) localStorage.setItem(cacheKey, finalText);
+                    break;
+                } catch (e) {
+                    console.error('Erreur IA:', e);
+                    attempts++;
+                    if (attempts < 2) {
+                        container.textContent = "Échec de la génération, nouvelle tentative…";
+                        continue;
+                    }
+                    container.textContent = "Impossible de terminer la description";
+                    break;
                 }
-            } catch (e) {
-                console.error('Erreur IA:', e);
-                container.textContent = "Erreur lors de la génération de la description.";
-            } finally {
-                container.removeAttribute('data-loading');
             }
+
+            container.removeAttribute('data-loading');
         }
 
         function closeResultsModal() {
