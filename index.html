@@ -301,139 +301,78 @@
           .pc-info-banner{ margin:12px 0; font-size:.93rem; }
         }
 
-        /* Desktop: pas de contrainte, laisser le rendu normal */
-        @media (min-width: 769px){
-          .pc-psy-dialog{ max-height: none; overflow: visible; display: block; }
-          .pc-psy-content{ overflow: visible; max-height: none; }
+        #chat-window {
+          display: flex;
+          flex-direction: column;
         }
 
-        /* Mobile: fix de scroll interne, scoppé UNIQUEMENT au bloc Psycho'Bot */
-        @media (max-width: 768px){
-          .pc-psy-dialog{
-            display: flex;
-            flex-direction: column;
-            max-height: 100dvh;
-            overflow: hidden;
-          }
-          .pc-psy-content{
-            flex: 1 1 auto;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-          }
-          .pc-psy-content p,
-          .pc-psy-content .text,
-          .pc-psy-content [class*="desc"]{
-            white-space: normal;
-            word-break: break-word;
-            overflow-wrap: anywhere;
-            -webkit-line-clamp: unset !important;
-            -webkit-box-orient: unset !important;
-            display: block !important;
-            max-height: none !important;
-            overflow: visible !important;
-            mask-image: none !important;
-            -webkit-mask-image: none !important;
-          }
-          /* Désactiver les fades masquants uniquement dans ce bloc */
-          .pc-psy-content .fade,
-          .pc-psy-content .fade-mask,
-          .pc-psy-content::after{
-            display: none !important;
-          }
+        .chat-row {
+          display: flex;
+          margin-bottom: 0.75rem;
         }
 
-        /* wrapper résultats Psycho’Bot */
-        .results-page .pc-psy-result-desc{
-          white-space: pre-wrap;
-          word-break: break-word;
-          overflow-wrap: anywhere;
-          max-height: none;
+        .chat-row.user {
+          justify-content: flex-end;
         }
 
-        @media (max-width: 768px){
-          .results-page .psy-results-card{
-            display: flex;
-            flex-direction: column;
-            max-height: 100dvh;
-            overflow: hidden;
-          }
-          .results-page .pc-psy-result-desc{
-            flex: 1 1 auto;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            max-height: none !important;
-          }
+        .chat-row.assistant {
+          justify-content: flex-start;
         }
 
-        /* Lève tout line-clamp/mask uniquement dans ce bloc */
-        .results-page .pc-psy-result-desc,
-        .results-page .pc-psy-result-desc *{
-          -webkit-line-clamp: unset !important;
-          -webkit-box-orient: unset !important;
-          display: block !important;
-          max-height: none !important;
-          overflow: visible !important;
-          mask-image: none !important;
-          -webkit-mask-image: none !important;
+        .user-bubble,
+        .assistant-bubble {
+          max-width: 75%;
+          padding: 0.5rem 0.75rem;
+          border-radius: 0.5rem;
+          line-height: 1.4;
         }
 
-        /* Styles Psycho'Bot Chat */
-        #psy-chat .psy-chat-card{
-          border-radius: 16px;
-          border: 1px solid rgba(15,23,42,.08);
-          background: #f8fafc;
-          box-shadow: 0 10px 30px rgba(0,0,0,.06);
-          padding: 14px;
-          max-width: 920px;
-          margin: 0 auto;
-        }
-        #psy-chat .psy-chat-messages{
-          background: #eaf2ff;
-          border-radius: 12px;
-          padding: 12px;
-          max-height: clamp(220px, 40vh, 420px);
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
-        }
-        #psy-chat .psy-chat-input{
-          display: grid;
-          grid-template-columns: 1fr auto;
-          gap: 10px;
-          margin-top: 12px;
-        }
-        #psy-chat input[type="text"]{
-          border: 1px solid rgba(15,23,42,.12);
-          border-radius: 10px;
-          padding: 10px 12px;
-          background: #fff;
-        }
-        #psy-chat button{
-          border: 0;
-          border-radius: 10px;
-          padding: 10px 14px;
-          background: #2563eb;
+        .user-bubble {
+          background: #3b82f6;
           color: #fff;
-          font-weight: 600;
+        }
+
+        .assistant-bubble {
+          background: #e5e7eb;
+          color: #1f2937;
+        }
+
+        .question-buttons {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+
+        .suggestion-bubble {
+          background: #f3f4f6;
+          color: #1f2937;
+          padding: 0.5rem 0.75rem;
+          border-radius: 9999px;
+          font-size: 0.875rem;
           cursor: pointer;
+          transition: background 0.2s;
         }
-        @media (max-width: 768px){
-          #psy-chat .psy-chat-card{ padding: 12px; }
-          #psy-chat .psy-chat-messages{ max-height: clamp(200px, 45vh, 380px); }
+
+        .suggestion-bubble:hover {
+          background: #e5e7eb;
         }
-        #psy-chat .msg.user{
-          align-self: flex-end;
-          background:#fff;
-          border:1px solid rgba(15,23,42,.08);
-          border-radius: 10px;
-          padding: 8px 10px;
+
+        .limit-error {
+          animation: shake 0.4s;
+          background: #fee2e2;
+          color: #991b1b;
         }
-        #psy-chat .msg.bot{
-          background:#dbeafe;
-          border:1px solid rgba(37,99,235,.15);
-          border-radius: 10px;
-          padding: 8px 10px;
+
+        @keyframes shake {
+          0%,100% { transform: translateX(0); }
+          25% { transform: translateX(-3px); }
+          75% { transform: translateX(3px); }
         }
-        #psy-chat .psy-chat-messages .msg{ max-width: 100%; }
+
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
         </style>
 
 </head>
@@ -718,22 +657,23 @@
     </div>
 
       <!-- Section Chatbot -->
-    <section id="psy-chat" data-section="chat-psy" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto">
-            <div class="text-center">
-                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Parler avec Psycho'Bot</h2>
-                <p class="mt-4 text-xl text-gray-500">Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.</p>
-            </div>
-            <div class="mt-8">
-                <div class="psy-chat-card">
-                    <div class="psy-chat-messages" id="psyChatMessages" aria-live="polite"></div>
-                    <div class="psy-chat-input">
-                        <input id="psyChatInput" type="text" placeholder="Posez votre question…" />
-                        <button id="psyChatSend" type="button">Envoyer</button>
-                    </div>
-                </div>
-            </div>
+    <section id="profil-chatbot" class="py-12 px-4">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl font-bold">Parler à Psycho'Bot</h2>
+        <p class="mt-2 text-gray-600">Pose-lui une question sur la personnalité et il te répondra.</p>
+      </div>
+      <div id="chat-window" class="mt-8 bg-white rounded-lg shadow flex flex-col">
+        <div id="chat-box" class="flex-1 p-4 overflow-y-auto space-y-4"></div>
+        <div id="chat-suggestions" class="question-buttons p-4 flex flex-wrap gap-2">
+          <button class="suggestion-bubble" data-question="Qui es-tu ?">Qui es-tu ?</button>
+          <button class="suggestion-bubble" data-question="Comment fonctionne ce test ?">Comment fonctionne ce test ?</button>
+          <button class="suggestion-bubble" data-question="Puis-je refaire le test ?">Puis-je refaire le test ?</button>
         </div>
+        <div class="p-4 flex items-center gap-2 border-t">
+          <input id="chat-input" type="text" class="flex-1 px-4 py-2 border rounded" placeholder="Écris ton message..." />
+          <button id="chat-send" class="px-4 py-2 bg-blue-600 text-white rounded">Envoyer</button>
+        </div>
+      </div>
     </section>
 
     <section id="retourver-profil" data-aos="zoom-in" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
@@ -5210,85 +5150,7 @@ function displayResults(results) {
         </div>
     </div>
 
-<script>
-(function(){
-  const box = document.querySelector('#psyChatMessages');
-  const input = document.querySelector('#psyChatInput');
-  const sendBtn = document.querySelector('#psyChatSend');
-  if(!box || !input || !sendBtn) return;
-
-  const isNearBottom = () => (box.scrollHeight - (box.scrollTop + box.clientHeight)) < 24;
-  const scrollToBottom = () => { box.scrollTop = box.scrollHeight; };
-
-  function appendMessage(text, role){
-    const b = document.createElement('div');
-    b.className = 'msg ' + (role || 'bot');
-    b.style.cssText = 'white-space:pre-wrap; margin:6px 0;';
-    b.textContent = text;
-    box.appendChild(b);
-    if(isNearBottom()) scrollToBottom();
-    return b;
-  }
-
-  sendBtn.addEventListener('click', async ()=>{
-    const q = (input.value || '').trim();
-    if(!q) return;
-    appendMessage(q, 'user');
-    input.value = '';
-
-    const messageEl = appendMessage('', 'bot');
-
-    for await (const chunk of startPsychoBotStream(q)){
-      messageEl.textContent += chunk;
-      if(isNearBottom()) scrollToBottom();
-    }
-  });
-  input.addEventListener('keydown', e => {
-    if(e.key === 'Enter'){ e.preventDefault(); sendBtn.click(); }
-  });
-
-  async function* startPsychoBotStream(q){
-    try{
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'gpt-5-mini',
-          messages: [
-            { role: 'system', content: 'Tu es un assistant spécialisé en MBTI et Ennéagramme.' },
-            { role: 'user', content: q }
-          ]
-        })
-      });
-      if(!response.ok){
-        const err = response.status === 429 ? "Tu as atteint ta limite de messages pour aujourd'hui." : "Impossible de contacter l'IA.";
-        yield err;
-        return;
-      }
-      const data = await response.json();
-      const text = data.message || '';
-      for(const c of text){
-        yield c;
-        await new Promise(r=>setTimeout(r,15));
-      }
-    } catch(e){
-      yield "Une erreur est survenue lors de la communication avec l'IA.";
-    }
-  }
-
-  const unlockBody = ()=>{
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-  };
-  unlockBody();
-
-  const mo = new MutationObserver(()=>{
-    if(isNearBottom()) scrollToBottom();
-  });
-  mo.observe(box, { childList: true, subtree: true });
-})();
-</script>
+<script src="JS.script"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
