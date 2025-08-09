@@ -10,10 +10,15 @@ module.exports = async function gestionnaire(demande, res) {
   }
 
   try {
-    const { messages = [], max_tokens } = demande.body;
+    let { messages = [], max_tokens } = demande.body;
 
+    // ✅ Sécurité : si pas de messages, on met un message par défaut
     if (!Array.isArray(messages) || messages.length === 0) {
-      return res.status(400).json({ error: 'messages[] requis' });
+      console.warn("⚠️ messages[] vide, ajout d'un message par défaut.");
+      messages = [
+        { role: "system", content: "Tu es Psycho'Bot, assistant MBTI/Ennéagramme." },
+        { role: "user", content: "Bonjour" }
+      ];
     }
 
     const payload = {
@@ -34,7 +39,7 @@ module.exports = async function gestionnaire(demande, res) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Erreur API OpenAI:", errorText);
+      console.error("❌ Erreur API OpenAI:", errorText);
       return res.status(response.status).json({ error: "Erreur de l'API OpenAI", details: errorText });
     }
 
@@ -44,7 +49,7 @@ module.exports = async function gestionnaire(demande, res) {
     res.status(200).json({ message: data.choices?.[0]?.message?.content || null });
 
   } catch (error) {
-    console.error("Erreur API OpenAI:", error);
+    console.error("💥 Erreur API OpenAI:", error);
     res.status(500).json({ error: error.message || 'Erreur serveur' });
   }
 };
