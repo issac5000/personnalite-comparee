@@ -286,6 +286,20 @@
         @media (prefers-reduced-motion: reduce){
           #pc-constellation{ display:none !important; }
         }
+
+        .pc-info-banner{
+          background:#eef2ff;
+          color:#0f172a;
+          border:1px solid rgba(59,130,246,.25);
+          border-radius:12px;
+          padding:14px 16px;
+          margin:16px 0 12px;
+          line-height:1.5;
+          font-size:.95rem;
+        }
+        @media (max-width:768px){
+          .pc-info-banner{ margin:12px 0; font-size:.93rem; }
+        }
     </style>
 
 </head>
@@ -2602,21 +2616,16 @@ function displayResults(results) {
                                 </div>
                             </div>
                             
+                            <div class="pc-info-banner" role="note" aria-live="polite">
+                              Voici les profils avec lesquels vous vous identifiez. Partagez votre code unique à 3 proches, puis consultez vos résultats détaillés dans la section « Mon profil » ou « Retrouver un profil ».
+                            </div>
+
                             <div class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">
                                 <div>
                                     <h4 class="text-lg font-medium text-gray-900">Profil MBTI</h4>
                                     <div class="mt-4 bg-green-50 rounded-lg p-4">
                                         <p class="text-gray-700 font-medium">${results.mbtiType}</p>
                                         <p class="text-gray-600 text-sm mt-1">${mbtiDescriptions[results.mbtiType]}</p>
-                                        <div class="mt-4">
-                                            <div class="flex justify-between">
-                                                <span class="text-sm font-medium text-gray-700">Certitude</span>
-                                                <span class="text-sm text-gray-500 countup" data-value="${results.mbtiCertainty}" data-suffix="%">0%</span>
-                                            </div>
-                                            <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
-                                                <div class="progress-bar bg-green-600 h-2.5 rounded-full" style="width: ${results.mbtiCertainty}%"></div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -2625,15 +2634,6 @@ function displayResults(results) {
                                     <div class="mt-4 bg-blue-50 rounded-lg p-4">
                                         <p class="text-gray-700 font-medium">Type ${results.enneagramType}</p>
                                         <p class="text-gray-600 text-sm mt-1">${enneagramDescriptions[results.enneagramType]}</p>
-                                        <div class="mt-4">
-                                            <div class="flex justify-between">
-                                                <span class="text-sm font-medium text-gray-700">Certitude</span>
-                                                <span class="text-sm text-gray-500 countup" data-value="${results.enneagramCertainty}" data-suffix="%">0%</span>
-                                            </div>
-                                            <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
-                                                <div class="progress-bar bg-blue-600 h-2.5 rounded-full" style="width: ${results.enneagramCertainty}%"></div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
