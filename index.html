@@ -5542,24 +5542,16 @@ function displayResults(results) {
 })();
 </script>
 <style>
-  /* Arrondi béton, plus fort que tout */
-  #profil-chatbot #chat-window {
+  /* Arrondis forcés pour la fenêtre de chat et la zone de saisie */
+  #chat-window {
     border-radius: 32px !important;
     overflow: hidden !important;
-    /* parachute au cas où un border-radius 0 traîne encore : */
-    clip-path: inset(0 round 32px) !important;
   }
-
-  /* Capsule pour l'input+bouton */
-  #profil-chatbot .chat-input-group {
-    border-radius: 9999px !important;
-    overflow: hidden !important;
-    border: 1px solid rgb(209,213,219);
+  #chat-input {
+    border-radius: 9999px 0 0 9999px !important;
   }
-  #profil-chatbot #chat-input,
-  #profil-chatbot #chat-send {
-    border-radius: 0 !important;
-    border: 0 !important;
+  #chat-send {
+    border-radius: 0 9999px 9999px 0 !important;
   }
 </style>
 
