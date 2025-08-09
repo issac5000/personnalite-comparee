@@ -643,13 +643,14 @@
         </div>
       </div>
 
-      <div class="flex">
-        <input id="chat-input" type="text" placeholder="Posez votre question..."
-               class="flex-grow px-4 py-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-               style="border-top-left-radius:9999px;border-bottom-left-radius:9999px;">
-        <button id="chat-send" class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700"
-                style="border-top-right-radius:9999px;border-bottom-right-radius:9999px;">Envoyer</button>
-      </div>
+      <div class="flex chat-input-group">
+  <input id="chat-input" type="text" placeholder="Posez votre question..."
+         class="flex-grow px-4 py-2 focus:ring-blue-500 focus:border-blue-500 border-0">
+  <button id="chat-send" class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 border-0">
+    Envoyer
+  </button>
+</div>
+
     </div>
   </div>
 </section>
@@ -5535,6 +5536,27 @@ function displayResults(results) {
   frame();
 })();
 </script>
+  <style>
+  /* Arrondi fort de la fenêtre du chat */
+  #profil-chatbot #chat-window {
+    border-radius: 32px !important;
+    overflow: hidden !important;
+  }
+
+  /* Groupe input+bouton en capsule */
+  #profil-chatbot .chat-input-group {
+    border-radius: 9999px !important;
+    overflow: hidden !important;
+    border: 1px solid rgb(209,213,219); /* même gris que Tailwind border-gray-300 */
+  }
+
+  /* On enlève le radius des enfants (pour que le groupe contrôle tout) */
+  #profil-chatbot #chat-input,
+  #profil-chatbot #chat-send {
+    border-radius: 0 !important;
+  }
+</style>
+
 </body>
 </html>
 
