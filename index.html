@@ -4008,7 +4008,12 @@ function displayResults(results) {
                 ]
             }
         );
-        
+
+        // Ajout de l'option "Je ne sais pas" à chaque question d'évaluation externe
+        EXTERNAL_EVALUATION_QUESTIONS.forEach(q => {
+            q.options.push({ text: "Je ne sais pas", mbti: {}, enneagram: {} });
+        });
+
         // Fonction pour afficher une question externe
         function displayExternalQuestion(index) {
             const question = EXTERNAL_EVALUATION_QUESTIONS[index];
@@ -4028,18 +4033,22 @@ function displayResults(results) {
                     <h3 class="text-xl font-medium text-gray-900 mb-6">${question.question}</h3>
                     
                     <div class="space-y-4">
-                        ${question.options.map((option, optionIndex) => `
-                            <div class="flex items-start">
-                                <input id="eq${question.id}-${optionIndex}" name="external_question${question.id}" type="radio" value="${optionIndex}" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 mt-1" ${externalAnswers[question.id] === optionIndex ? 'checked' : ''}>
+                        ${question.options.map((option, optionIndex) => {
+                            const value = optionIndex === question.options.length - 1 ? 0 : optionIndex + 1;
+                            const extraClass = optionIndex === question.options.length - 1 ? ' mt-1' : '';
+                            const dataChoice = value === 0 ? ' data-choice="unknown"' : '';
+                            return `
+                            <div class="flex items-start${extraClass}">
+                                <input id="eq${question.id}-${optionIndex}" name="external_question${question.id}" type="radio" value="${value}"${dataChoice} class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 mt-1" ${externalAnswers[question.id] === value ? 'checked' : ''}>
                                 <label for="eq${question.id}-${optionIndex}" class="ml-3 block text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-900 transition-colors">
                                     ${option.text}
                                 </label>
-                            </div>
-                        `).join('')}
+                            </div>`;
+                        }).join('')}
                     </div>
                 </div>
             `;
-            
+
             // Écouter les changements de réponse
             const radioButtons = questionsContent.querySelectorAll('input[type="radio"]');
             radioButtons.forEach(radio => {
@@ -4176,8 +4185,11 @@ function displayResults(results) {
             const enneagramScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
             Object.keys(externalAnswers).forEach(questionId => {
                 const question = EXTERNAL_EVALUATION_QUESTIONS.find(q => q.id === parseInt(questionId));
-                const optionIndex = externalAnswers[questionId];
-                const selectedOption = question.options[optionIndex];
+                const value = externalAnswers[questionId];
+                if (value === 0) {
+                    return;
+                }
+                const selectedOption = question.options[value - 1];
                 // Ajouter les scores MBTI
                 Object.keys(selectedOption.mbti).forEach(trait => {
                     mbtiScores[trait] += selectedOption.mbti[trait];
