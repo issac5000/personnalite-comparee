@@ -4612,7 +4612,12 @@ function displayResults(results) {
 
         <div id="ai-profile-summary" class="mt-6 bg-gray-50 rounded-lg p-5 shadow-sm mb-6">
             <h4 class="font-semibold text-gray-900 text-lg mb-3">Description succincte du profil par Psycho'Bot</h4>
-            <div id="ai-summary-content" class="text-sm leading-relaxed text-gray-700 max-h-80 overflow-y-auto">Génération en cours…</div>
+            <div id="ai-summary-content" class="relative text-sm leading-relaxed text-gray-700 max-h-80 overflow-y-auto">
+                Génération en cours…
+                <div id="scroll-indicator" aria-hidden="true" class="pointer-events-none hidden absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-white flex items-end justify-center pb-1 text-gray-500">
+                    <span class="text-xl animate-bounce">⌄</span>
+                </div>
+            </div>
         </div>
 
                             <!-- Détail des évaluations -->
@@ -4816,6 +4821,31 @@ function displayResults(results) {
             });
         }
 
+        function setupScrollIndicator(container) {
+            if (!container || container.__scrollIndicatorInitialized) return;
+            const indicator = container.querySelector('#scroll-indicator');
+            if (!indicator) return;
+
+            const update = () => {
+                const needsScroll = container.scrollHeight > container.clientHeight + 1;
+                const scrolled = container.scrollTop > 8;
+                const atBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 4;
+                if (needsScroll && !scrolled && !atBottom) {
+                    indicator.classList.remove('hidden');
+                } else {
+                    indicator.classList.add('hidden');
+                }
+            };
+
+            container.addEventListener('scroll', update);
+            window.addEventListener('resize', update);
+            const observer = new MutationObserver(() => requestAnimationFrame(update));
+            observer.observe(container, { childList: true, characterData: true, subtree: true });
+
+            container.__scrollIndicatorInitialized = true;
+            requestAnimationFrame(update);
+        }
+
         async function initAiProfileSummary(profile, code) {
             const container = document.querySelector('#results-modal #ai-summary-content');
             if (!container || container.dataset.loading === '1') return;
@@ -4826,6 +4856,7 @@ function displayResults(results) {
             if (cached) {
                 console.info('[AI Summary]', 'cache hit', cacheKey);
                 container.textContent = cached;
+                setupScrollIndicator(container);
                 return;
             }
 
@@ -4875,6 +4906,7 @@ function displayResults(results) {
             }
 
             container.removeAttribute('data-loading');
+            setupScrollIndicator(container);
         }
 
         function closeResultsModal() {
