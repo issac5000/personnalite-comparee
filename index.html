@@ -662,19 +662,198 @@
         <h2 class="text-3xl font-bold">Parler à Psycho'Bot</h2>
         <p class="mt-2 text-gray-600">Pose-lui une question sur la personnalité et il te répondra.</p>
       </div>
-      <div id="chat-window" class="mt-8 bg-white rounded-lg shadow flex flex-col">
-        <div id="chat-box" class="flex-1 p-4 overflow-y-auto space-y-4"></div>
-        <div id="chat-suggestions" class="question-buttons p-4 flex flex-wrap gap-2">
-          <button class="suggestion-bubble" data-question="Qui es-tu ?">Qui es-tu ?</button>
-          <button class="suggestion-bubble" data-question="Comment fonctionne ce test ?">Comment fonctionne ce test ?</button>
-          <button class="suggestion-bubble" data-question="Puis-je refaire le test ?">Puis-je refaire le test ?</button>
-        </div>
-        <div class="p-4 flex items-center gap-2 border-t">
-          <input id="chat-input" type="text" class="flex-1 px-4 py-2 border rounded" placeholder="Écris ton message..." />
-          <button id="chat-send" class="px-4 py-2 bg-blue-600 text-white rounded">Envoyer</button>
-        </div>
+     <!-- ===== Psycho'Bot — Modern Chat (scoped) ===== -->
+<section id="psychat" class="pc-section">
+  <div class="pc-wrap">
+    <div class="pc-card" role="region" aria-label="Conversation avec Psycho'Bot">
+      <div class="pc-suggestions" id="pcSuggestions">
+        <button class="pc-chip" data-q="Qui es-tu ?">Qui es-tu ?</button>
+        <button class="pc-chip" data-q="Comment fonctionne ce test ?">Comment fonctionne ce test ?</button>
+        <button class="pc-chip" data-q="Puis-je refaire le test ?">Puis-je refaire le test ?</button>
       </div>
-    </section>
+
+      <div class="pc-messages" id="pcMessages" aria-live="polite" aria-atomic="false"></div>
+
+      <form class="pc-input" id="pcForm" autocomplete="off">
+        <input id="pcField" type="text" inputmode="text" placeholder="Pose ta question…" aria-label="Message pour Psycho'Bot" />
+        <button id="pcSend" type="submit" aria-label="Envoyer">Envoyer</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+/* ===== Styles — portés uniquement par #psychat ===== */
+#psychat{--ink:#0f172a;--muted:#6b7280;--bg:#f8fafc;--card:#ffffff;--accent:#2563eb;--accent-2:#93c5fd;--line:rgba(15,23,42,.08)}
+@media (prefers-color-scheme:dark){
+  #psychat{--ink:#e5e7eb;--muted:#9ca3af;--bg:#0b1220;--card:#0f172a;--accent:#3b82f6;--accent-2:#60a5fa;--line:rgba(148,163,184,.18)}
+}
+#psychat.pc-section{padding:2.5rem 1rem;background:var(--bg)}
+#psychat .pc-wrap{max-width:960px;margin:0 auto}
+#psychat .pc-card{
+  background:var(--card); border:1px solid var(--line); border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.08); padding:14px; display:grid; gap:12px;
+}
+#psychat .pc-suggestions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+#psychat .pc-chip{
+  border:1px solid var(--line); background:linear-gradient(180deg,#f1f5ff, #e9f2ff);
+  color:#0b1a38; padding:6px 10px; border-radius:999px; font-size:.9rem; cursor:pointer;
+  transition:transform .15s ease, box-shadow .15s ease; white-space:nowrap;
+}
+@media (prefers-color-scheme:dark){
+  #psychat .pc-chip{background:linear-gradient(180deg,#0f1b34,#0b1530); color:#e5ebff}
+}
+#psychat .pc-chip:hover{transform:translateY(-1px); box-shadow:0 6px 16px rgba(37,99,235,.15)}
+#psychat .pc-messages{
+  background:linear-gradient(180deg,#eef5ff, #eaf2ff);
+  border:1px solid var(--line); border-radius:12px; padding:12px;
+  max-height:clamp(240px,42vh,520px); overflow-y:auto; -webkit-overflow-scrolling:touch;
+  display:flex; flex-direction:column; gap:10px;
+}
+@media (prefers-color-scheme:dark){
+  #psychat .pc-messages{background:linear-gradient(180deg,#0e1a33,#0b142a)}
+}
+#psychat .pc-row{display:flex}
+#psychat .pc-row.user{justify-content:flex-end}
+#psychat .pc-row.bot{justify-content:flex-start}
+#psychat .pc-bubble{
+  max-width:min(80ch, 96%); padding:10px 12px; line-height:1.5; font-size:.98rem;
+  border-radius:14px; border:1px solid var(--line); background:#fff; color:#0b1a38;
+  white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere;
+}
+#psychat .pc-row.user .pc-bubble{background:#fff; border-color:rgba(37,99,235,.25)}
+#psychat .pc-row.bot  .pc-bubble{background:#dbeafe}
+@media (prefers-color-scheme:dark){
+  #psychat .pc-bubble{background:#0f172a; color:#e5e7eb}
+  #psychat .pc-row.bot .pc-bubble{background:#0c1a36}
+}
+#psychat .pc-input{display:grid;grid-template-columns:1fr auto;gap:10px}
+#psychat .pc-input input{
+  border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:#fff; color:var(--ink);
+}
+@media (prefers-color-scheme:dark){
+  #psychat .pc-input input{background:#0b1220;color:#e5e7eb}
+}
+#psychat .pc-input button{
+  border:0; border-radius:10px; padding:10px 14px; background:linear-gradient(180deg,var(--accent),#1f4fd8);
+  color:#fff; font-weight:600; cursor:pointer; transition:filter .15s ease, transform .05s ease;
+}
+#psychat .pc-input button:active{transform:translateY(1px)}
+#psychat .pc-input button[disabled]{opacity:.6; cursor:not-allowed}
+#psychat .pc-limit{
+  background:#fee2e2; color:#7f1d1d; border:1px solid rgba(244,63,94,.25);
+  animation:pc-shake .35s; font-weight:600;
+}
+@keyframes pc-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+</style>
+
+<script>
+/* ===== Logic — autonome, scoped et sans dépendance ===== */
+(function(){
+  const $ = (sel, root=document) => root.querySelector(sel);
+  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+  const box   = $('#pcMessages');
+  const field = $('#pcField');
+  const form  = $('#pcForm');
+  const chips = $$('#pcSuggestions .pc-chip');
+  const sendBtn = $('#pcSend');
+
+  if(!box || !field || !form){ console.warn('psychat: éléments manquants'); return; }
+
+  let limitShown = false;
+
+  const nearBottom = () => (box.scrollHeight - (box.scrollTop + box.clientHeight)) < 24;
+  const scrollToBottom = () => { box.scrollTop = box.scrollHeight; };
+
+  function bubble(role, text='', extraClass=''){
+    const row = document.createElement('div'); row.className = `pc-row ${role}`;
+    const b   = document.createElement('div'); b.className = `pc-bubble ${extraClass||''}`;
+    b.textContent = text;
+    row.appendChild(b); box.appendChild(row);
+    if(nearBottom()) scrollToBottom();
+    return b;
+  }
+
+  // Typewriter “maison” pour un rendu élégant sans lib
+  async function typewrite(el, fullText, speed=18){
+    el.textContent = ''; // reset
+    for(let i=0;i<fullText.length;i++){
+      el.textContent += fullText[i];
+      if(nearBottom()) scrollToBottom();
+      await new Promise(r=>setTimeout(r, speed));
+    }
+    if(nearBottom()) scrollToBottom();
+  }
+
+  async function sendToApi(question){
+    // Essaie d’abord format messages, sinon fallback simple "message"
+    const payloadA = { model:'gpt-5-mini', messages:[{role:'user',content:question}] };
+    const payloadB = { model:'gpt-5-mini', message:question };
+
+    try{
+      let res = await fetch('/api/chat', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payloadA)
+      });
+      if(res.status===429) return { text:"Tu as atteint ta limite de messages pour aujourd’hui 🤖", limit:true };
+      if(!res.ok){
+        // retente au format B
+        res = await fetch('/api/chat', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(payloadB)
+        });
+      }
+      if(res.status===429) return { text:"Tu as atteint ta limite de messages pour aujourd’hui 🤖", limit:true };
+      if(!res.ok) throw new Error('API non OK');
+
+      const data = await res.json();
+      const txt = data.message || data.content || '';
+      return { text: String(txt || "Désolé, je n’ai pas pu répondre.") };
+    }catch(e){
+      console.error('psychat api err:', e);
+      return { text:"Impossible de contacter l’IA pour le moment." };
+    }
+  }
+
+  async function handleSend(raw){
+    const q = (raw || '').trim();
+    if(!q) return;
+
+    // 1) user out
+    bubble('user', q);
+    // 2) remove suggestions au premier envoi
+    const sug = $('#pcSuggestions'); if(sug) sug.remove();
+    field.value = ''; field.focus(); sendBtn.disabled = true;
+
+    // 3) placeholder bot
+    const botEl = bubble('bot', '');
+
+    // 4) call API
+    const { text, limit } = await sendToApi(q);
+    if(limit && limitShown) { sendBtn.disabled = false; return; }
+
+    // 5) rendu élégant (limit -> bulle rouge)
+    if(limit){
+      botEl.classList.add('pc-limit');
+      await typewrite(botEl, text, 14);
+      limitShown = true;
+    }else{
+      await typewrite(botEl, text, 16);
+    }
+
+    sendBtn.disabled = false;
+  }
+
+  form.addEventListener('submit', e=>{ e.preventDefault(); handleSend(field.value); });
+  chips.forEach(ch => ch.addEventListener('click', ()=> handleSend(ch.dataset.q || ch.textContent)));
+
+  // Sécurité : ne jamais geler la page
+  document.documentElement.style.overflow = '';
+  document.body.style.overflow = '';
+})();
+</script>
+<!-- ===== /Psycho'Bot — Modern Chat ===== -->
 
     <section id="retourver-profil" data-aos="zoom-in" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
