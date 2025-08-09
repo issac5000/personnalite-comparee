@@ -33,7 +33,6 @@ module.exports = async function handler(req, res) {
     }
 
     res.writeHead(200, {
-      // on envoie du texte simple en flux (ton front concatène)
       'Content-Type': 'text/plain; charset=utf-8',
       'Transfer-Encoding': 'chunked',
       'Cache-Control': 'no-cache',
@@ -42,19 +41,21 @@ module.exports = async function handler(req, res) {
 
     const decoder = new TextDecoder('utf-8');
     let buffer = '';
+    let wordCount = 0;
+    let stopStreaming = false;
 
-    // lecture du flux OpenAI (SSE "data: ...")
+    // lecture du flux OpenAI
     for await (const chunk of response.body) {
-      buffer += decoder.decode(chunk, { stream: true });
+      if (stopStreaming) break;
 
+      buffer += decoder.decode(chunk, { stream: true });
       let lines = buffer.split('\n');
-      buffer = lines.pop(); // on garde la dernière ligne potentiellement incomplète
+      buffer = lines.pop();
 
       for (const line of lines) {
         if (!line.startsWith('data: ')) continue;
         const data = line.slice(6);
         if (data === '[DONE]') {
-          // flush final du decoder au cas où
           const tail = decoder.decode();
           if (tail) res.write(tail);
           return res.end();
@@ -62,37 +63,35 @@ module.exports = async function handler(req, res) {
         try {
           const json = JSON.parse(data);
           const text = json.choices?.[0]?.delta?.content || '';
-          if (text) res.write(text);
-        } catch {
-          // ignore
-        }
+          if (text) {
+            const words = text.split(/\s+/);
+            if (wordCount + words.length > 150) {
+              const remaining = 150 - wordCount;
+              res.write(words.slice(0, remaining).join(' '));
+              stopStreaming = true;
+              break;
+            } else {
+              res.write(text);
+              wordCount += words.length;
+            }
+          }
+        } catch { /* ignore */ }
       }
     }
 
-    // >>>> ICI: TRAITER LE RESTE (bug fixé)
-    // flush final du decoder et traitement du buffer résiduel
-    const tailFlush = decoder.decode(); // vide le decoder
-    if (tailFlush) buffer += tailFlush;
-
-    if (buffer) {
-      const lines = buffer.split('\n');
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const data = line.slice(6);
-        if (data && data !== '[DONE]') {
-          try {
-            const json = JSON.parse(data);
-            const text = json.choices?.[0]?.delta?.content || '';
-            if (text) res.write(text);
-          } catch { /* ignore */ }
-        }
+    // flush final
+    const tailFlush = decoder.decode();
+    if (tailFlush && !stopStreaming) {
+      const words = tailFlush.split(/\s+/);
+      if (wordCount < 150) {
+        const remaining = 150 - wordCount;
+        res.write(words.slice(0, remaining).join(' '));
       }
     }
 
     res.end();
   } catch (error) {
     console.error('Erreur API OpenAI:', error);
-    // si on avait commencé à écrire, on termine proprement
     try { res.end(); } catch {}
     if (!res.headersSent) {
       res.status(500).json({ error: error.message || 'Erreur serveur' });
