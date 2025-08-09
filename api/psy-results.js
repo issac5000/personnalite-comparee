@@ -10,10 +10,11 @@ module.exports = async function handler(req, res) {
 
   try {
     const { messages = [] } = req.body || {};
+
     const payload = {
       model: 'gpt-4o-mini',
-      stream: false, // réponse complète
-      max_tokens: 220, // ~150 mots
+      stream: false, // réponse complète pour éviter coupures
+      max_tokens: 250, // marge suffisante pour ~150 mots
       messages,
     };
 
@@ -35,8 +36,8 @@ module.exports = async function handler(req, res) {
     const data = await response.json();
     let text = data.choices?.[0]?.message?.content || '';
 
-    // Limiter à 150 mots max
-    const words = text.split(/\s+/);
+    // Coupe à 150 mots réels
+    const words = text.trim().split(/\s+/);
     if (words.length > 150) {
       text = words.slice(0, 150).join(' ') + '...';
     }
