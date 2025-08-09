@@ -9,16 +9,11 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { messages = [], max_tokens, model } = req.body || {};
-
-    // Monte le plafond pour éviter toute troncature
-    const resolvedMaxTokens =
-      typeof max_tokens === 'number' ? Math.max(2000, max_tokens) : 2500;
-
+    const { messages = [], max_tokens } = req.body || {};
     const payload = {
-      model: model || 'gpt-4o-mini',
-      stream: false, // ✅ pas de streaming côté OpenAI → on récupère tout d'un coup
-      max_tokens: resolvedMaxTokens,
+      model: 'gpt-4o-mini',
+      stream: true,
+      max_tokens: Math.max(800, max_tokens || 900),
       messages,
     };
 
@@ -34,40 +29,70 @@ module.exports = async function handler(req, res) {
     if (!response.ok) {
       const errorText = await response.text().catch(() => '');
       console.error('Erreur API OpenAI:', errorText);
-      return res
-        .status(500)
-        .json({ error: "Erreur de l'API OpenAI", details: errorText });
+      return res.status(500).json({ error: "Erreur de l'API OpenAI", details: errorText });
     }
 
-    const data = await response.json().catch(() => null);
-    if (!data || !data.choices || !data.choices[0]) {
-      console.error('Réponse inattendue OpenAI:', data);
-      return res.status(500).json({ error: 'Réponse OpenAI invalide' });
-    }
-
-    const choice = data.choices[0];
-    const content =
-      (choice.message && choice.message.content) ||
-      (typeof choice.text === 'string' ? choice.text : '') ||
-      '';
-    const finishReason = choice.finish_reason || 'stop';
-
-    // On garde le même type de réponse que ton ancien endpoint
     res.writeHead(200, {
+      // on envoie du texte simple en flux (ton front concatène)
       'Content-Type': 'text/plain; charset=utf-8',
+      'Transfer-Encoding': 'chunked',
       'Cache-Control': 'no-cache',
       'Connection': 'keep-alive',
-      'X-OpenAI-Finish-Reason': finishReason,
-      'X-OpenAI-Usage-Prompt-Tokens': String(data.usage?.prompt_tokens ?? ''),
-      'X-OpenAI-Usage-Completion-Tokens': String(data.usage?.completion_tokens ?? ''),
-      'X-OpenAI-Usage-Total-Tokens': String(data.usage?.total_tokens ?? ''),
     });
 
-    // Écrit tout en une fois → pas de risque de tronquer en cours de route
-    res.write(content || '');
+    const decoder = new TextDecoder('utf-8');
+    let buffer = '';
+
+    // lecture du flux OpenAI (SSE "data: ...")
+    for await (const chunk of response.body) {
+      buffer += decoder.decode(chunk, { stream: true });
+
+      let lines = buffer.split('\n');
+      buffer = lines.pop(); // on garde la dernière ligne potentiellement incomplète
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6);
+        if (data === '[DONE]') {
+          // flush final du decoder au cas où
+          const tail = decoder.decode();
+          if (tail) res.write(tail);
+          return res.end();
+        }
+        try {
+          const json = JSON.parse(data);
+          const text = json.choices?.[0]?.delta?.content || '';
+          if (text) res.write(text);
+        } catch {
+          // ignore
+        }
+      }
+    }
+
+    // >>>> ICI: TRAITER LE RESTE (bug fixé)
+    // flush final du decoder et traitement du buffer résiduel
+    const tailFlush = decoder.decode(); // vide le decoder
+    if (tailFlush) buffer += tailFlush;
+
+    if (buffer) {
+      const lines = buffer.split('\n');
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6);
+        if (data && data !== '[DONE]') {
+          try {
+            const json = JSON.parse(data);
+            const text = json.choices?.[0]?.delta?.content || '';
+            if (text) res.write(text);
+          } catch { /* ignore */ }
+        }
+      }
+    }
+
     res.end();
   } catch (error) {
     console.error('Erreur API OpenAI:', error);
+    // si on avait commencé à écrire, on termine proprement
     try { res.end(); } catch {}
     if (!res.headersSent) {
       res.status(500).json({ error: error.message || 'Erreur serveur' });
