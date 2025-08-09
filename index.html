@@ -545,85 +545,147 @@
 
 
     <!-- Evaluate a friend Section -->
-    <div id="evaluation-proche" data-aos="fade-left" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto">
-            <div class="text-center">
-                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                    Évaluer un proche
-                </h2>
-                <p class="mt-4 text-xl text-gray-500">
-                    Aidez un ami, un membre de votre famille ou un collègue à mieux comprendre sa personnalité
-                </p>
+<div id="evaluation-proche" data-aos="fade-left" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    <!-- Titres (en dehors de l'encadré) -->
+    <div class="text-center">
+      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+        Évaluer un proche
+      </h2>
+      <p class="mt-4 text-xl text-gray-500">
+        Aidez un ami, un membre de votre famille ou un collègue à mieux comprendre sa personnalité
+      </p>
+    </div>
+
+    <!-- Encadré arrondi façon chatbot -->
+    <div class="mt-10">
+      <div
+        class="rounded-2xl border border-gray-200 bg-white shadow-sm ring-1 ring-black/5">
+        <div class="px-6 sm:px-8 py-8">
+          <form id="evaluation-form" class="space-y-8">
+            <!-- Code unique -->
+            <div>
+              <label for="code" class="block text-sm font-medium text-gray-700">
+                Code unique de la personne
+              </label>
+              <div class="mt-2 relative">
+                <input
+                  type="text"
+                  name="code"
+                  id="code"
+                  required
+                  placeholder="Ex: ABC123"
+                  class="block w-full rounded-lg border border-gray-300 py-3 pl-4 pr-12 text-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+                <button
+                  type="button"
+                  id="search-code"
+                  class="absolute inset-y-0 right-0 my-1 mr-1 inline-flex items-center justify-center rounded-md bg-gray-100 px-3 text-blue-600 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  aria-label="Rechercher le code"
+                  title="Rechercher le code">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+              <p class="mt-2 text-sm text-gray-500">
+                Entrez le code que votre proche vous a communiqué
+              </p>
             </div>
 
-            <div class="mt-12 mb-4 section-box">
-                <div class="px-6 py-8">
-                    <form id="evaluation-form">
-                        <div class="mb-6">
-                            <label for="code" class="block text-sm font-medium text-gray-700">Code unique de la personne</label>
-                            <div class="mt-1 relative rounded-md shadow-sm">
-                                <input type="text" name="code" id="code" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-4 pr-12 py-3 sm:text-sm border-gray-300 rounded-md" placeholder="Ex: ABC123" required>
-                                <div class="absolute inset-y-0 right-0 flex items-center">
-                                    <button type="button" id="search-code" class="h-full rounded-r-md border-transparent bg-gray-100 px-4 text-blue-600 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                        <i class="fas fa-search"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="mt-2 text-sm text-gray-500">Entrez le code que votre proche vous a communiqué</p>
-                        </div>
-                        
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-3">Votre relation avec cette personne</label>
-                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div class="relative flex items-start">
-                                    <div class="flex items-center h-5">
-                                        <input id="family" name="relation" type="radio" value="family" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" required>
-                                    </div>
-                                    <div class="ml-3 text-sm">
-                                        <label for="family" class="font-medium text-gray-700">Membre de la famille</label>
-                                        <p class="text-gray-500">Parent, frère, sœur, enfant...</p>
-                                    </div>
-                                </div>
-                                <div class="relative flex items-start">
-                                    <div class="flex items-center h-5">
-                                        <input id="partner" name="relation" type="radio" value="partner" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" required>
-                                    </div>
-                                    <div class="ml-3 text-sm">
-                                        <label for="partner" class="font-medium text-gray-700">Partenaire amoureux</label>
-                                        <p class="text-gray-500">Conjoint, petit(e) ami(e)...</p>
-                                    </div>
-                                </div>
-                                <div class="relative flex items-start">
-                                    <div class="flex items-center h-5">
-                                        <input id="friend" name="relation" type="radio" value="friend" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" required>
-                                    </div>
-                                    <div class="ml-3 text-sm">
-                                        <label for="friend" class="font-medium text-gray-700">Ami(e)</label>
-                                        <p class="text-gray-500">Ami proche, meilleur ami...</p>
-                                    </div>
-                                </div>
-                                <div class="relative flex items-start">
-                                    <div class="flex items-center h-5">
-                                        <input id="colleague" name="relation" type="radio" value="colleague" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" required>
-                                    </div>
-                                    <div class="ml-3 text-sm">
-                                        <label for="colleague" class="font-medium text-gray-700">Collègue de travail</label>
-                                        <p class="text-gray-500">Collègue, manager, collaborateur...</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex justify-center">
-                            <button type="button" onclick="startExternalEvaluation()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                Commencer l'évaluation <i class="fas fa-play ml-2"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+            <!-- Relation -->
+            <div>
+              <span class="block text-sm font-medium text-gray-700 mb-3">
+                Votre relation avec cette personne
+              </span>
+
+              <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <!-- Famille -->
+                <label for="family"
+                  class="flex cursor-pointer gap-3 rounded-xl border border-gray-200 p-4 hover:bg-gray-50">
+                  <input
+                    id="family"
+                    name="relation"
+                    type="radio"
+                    value="family"
+                    required
+                    class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <div class="text-sm">
+                    <div class="font-medium text-gray-700">Membre de la famille</div>
+                    <p class="text-gray-500">Parent, frère, sœur, enfant...</p>
+                  </div>
+                </label>
+
+                <!-- Partenaire -->
+                <label for="partner"
+                  class="flex cursor-pointer gap-3 rounded-xl border border-gray-200 p-4 hover:bg-gray-50">
+                  <input
+                    id="partner"
+                    name="relation"
+                    type="radio"
+                    value="partner"
+                    required
+                    class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <div class="text-sm">
+                    <div class="font-medium text-gray-700">Partenaire amoureux</div>
+                    <p class="text-gray-500">Conjoint, petit(e) ami(e)...</p>
+                  </div>
+                </label>
+
+                <!-- Ami -->
+                <label for="friend"
+                  class="flex cursor-pointer gap-3 rounded-xl border border-gray-200 p-4 hover:bg-gray-50">
+                  <input
+                    id="friend"
+                    name="relation"
+                    type="radio"
+                    value="friend"
+                    required
+                    class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <div class="text-sm">
+                    <div class="font-medium text-gray-700">Ami(e)</div>
+                    <p class="text-gray-500">Ami proche, meilleur ami...</p>
+                  </div>
+                </label>
+
+                <!-- Collègue -->
+                <label for="colleague"
+                  class="flex cursor-pointer gap-3 rounded-xl border border-gray-200 p-4 hover:bg-gray-50">
+                  <input
+                    id="colleague"
+                    name="relation"
+                    type="radio"
+                    value="colleague"
+                    required
+                    class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <div class="text-sm">
+                    <div class="font-medium text-gray-700">Collègue de travail</div>
+                    <p class="text-gray-500">Collègue, manager, collaborateur...</p>
+                  </div>
+                </label>
+              </div>
             </div>
+
+            <!-- CTA -->
+            <div class="flex justify-center">
+              <button
+                type="button"
+                onclick="startExternalEvaluation()"
+                class="inline-flex items-center rounded-lg bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Commencer l'évaluation
+                <i class="fas fa-play ml-2"></i>
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
+    <!-- /Encadré -->
+  </div>
+</div>
+
 
 <!-- Section Chatbot -->
 <section id="profil-chatbot" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
