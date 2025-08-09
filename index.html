@@ -4038,6 +4038,12 @@ function displayResults(results) {
                                 </label>
                             </div>
                         `).join('')}
+                        <div class="flex items-start">
+                            <input id="eq${question.id}-${question.options.length}" name="external_question${question.id}" type="radio" value="${question.options.length}" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 mt-1" ${externalAnswers[question.id] === question.options.length ? 'checked' : ''}>
+                            <label for="eq${question.id}-${question.options.length}" class="ml-3 block text-sm font-medium text-gray-500 italic cursor-pointer hover:text-gray-700 transition-colors">
+                                Je ne sais pas
+                            </label>
+                        </div>
                     </div>
                 </div>
             `;
@@ -4181,14 +4187,16 @@ function displayResults(results) {
                 const question = EXTERNAL_EVALUATION_QUESTIONS.find(q => q.id === parseInt(questionId));
                 const optionIndex = externalAnswers[questionId];
                 const selectedOption = question.options[optionIndex];
-                // Ajouter les scores MBTI
-                Object.keys(selectedOption.mbti).forEach(trait => {
-                    mbtiScores[trait] += selectedOption.mbti[trait];
-                });
-                // Ajouter les scores Ennéagramme
-                Object.keys(selectedOption.enneagram).forEach(type => {
-                    enneagramScores[type] += selectedOption.enneagram[type];
-                });
+                if (selectedOption) {
+                    // Ajouter les scores MBTI
+                    Object.keys(selectedOption.mbti).forEach(trait => {
+                        mbtiScores[trait] += selectedOption.mbti[trait];
+                    });
+                    // Ajouter les scores Ennéagramme
+                    Object.keys(selectedOption.enneagram).forEach(type => {
+                        enneagramScores[type] += selectedOption.enneagram[type];
+                    });
+                }
             });
             // Enregistrer dans Supabase
             await saveExternalEvaluationToSupabase(code, relation, mbtiScores, enneagramScores);
