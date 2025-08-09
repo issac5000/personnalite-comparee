@@ -320,7 +320,7 @@
           line-height:1.5;
           font-size:.95rem;
         }
-        @media (max-width:768px){
+       @media (max-width:768px){
           .pc-info-banner{ margin:12px 0; font-size:.93rem; }
         }
 
@@ -328,6 +328,14 @@
 #chat-window {
   border-radius: 32px !important;
   overflow: hidden !important;
+}
+
+/* Boîte de contenu partagée pour les sections avec encadré arrondi */
+.section-box {
+  border-radius: 32px !important;
+  overflow: hidden !important;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
 }
 
 #chat-input {
@@ -523,23 +531,27 @@
                 </p>
             </div>
             
-            <!-- Question Cards Container -->
-            <div id="questions-container" class="mt-12">
-                <!-- Questions will be dynamically inserted here -->
+        <div class="mt-12 mb-4 section-box">
+            <div class="p-6">
+                <!-- Question Cards Container -->
+                <div id="questions-container">
+                    <!-- Questions will be dynamically inserted here -->
+                </div>
+
+                <!-- Navigation buttons -->
+                <div class="mt-8 flex justify-between">
+                    <button id="prev-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
+                        <i class="fas fa-arrow-left mr-2"></i> Question précédente
+                    </button>
+                    <button id="next-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Question suivante <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                    <button id="finish-test" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
+                        Terminer le test <i class="fas fa-check ml-2"></i>
+                    </button>
+                </div>
             </div>
-            
-            <!-- Navigation buttons -->
-            <div class="mt-8 flex justify-between">
-                <button id="prev-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
-                    <i class="fas fa-arrow-left mr-2"></i> Question précédente
-                </button>
-                <button id="next-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Question suivante <i class="fas fa-arrow-right ml-2"></i>
-                </button>
-                <button id="finish-test" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
-                    Terminer le test <i class="fas fa-check ml-2"></i>
-                </button>
-            </div>
+        </div>
         </div>
     </div>
 
@@ -555,8 +567,8 @@
                     Aidez un ami, un membre de votre famille ou un collègue à mieux comprendre sa personnalité
                 </p>
             </div>
-            
-            <div class="mt-12 bg-gray-50 rounded-lg shadow-md overflow-hidden">
+
+            <div class="mt-12 mb-4 section-box">
                 <div class="px-6 py-8">
                     <form id="evaluation-form">
                         <div class="mb-6">
@@ -1064,12 +1076,11 @@
                             <button onclick="showMBTIDetails('ESFP')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
     <!-- Enneagram Types Section -->
