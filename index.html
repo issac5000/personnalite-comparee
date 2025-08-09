@@ -519,42 +519,41 @@
         </div>
     </div>
 
-<style>
-  /* Coquille unique (même logique que le chatbot) */
-  #auto-evaluation .ae-shell{
-    background:#f6f8fb;                /* gris très léger, comme le chat */
-    border-radius:32px;
-    padding:24px;
-    box-shadow:0 12px 28px -16px rgba(15,23,42,.18);
-    border:1px solid rgba(2,6,23,.06);
-  }
+<!-- Auto-evaluation Section -->
+<div id="auto-evaluation" data-aos="zoom-in" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center">
+      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+        Auto-évaluation
+      </h2>
+      <p class="mt-4 text-xl text-gray-500">
+        Répondez à ces 16 questions pour commencer votre analyse
+      </p>
+    </div>
 
-  /* ⚠️ Supprime le "carré" interne ajouté par le rendu JS des questions */
-  #auto-evaluation #questions-container > div{
-    background:transparent !important;
-    border:none !important;
-    box-shadow:none !important;
-  }
+    <!-- Ovale unique -->
+    <div class="mt-12 mb-4 rounded-3xl shadow-lg p-6" style="background-color: #f9fafb;">
+      
+      <!-- Question Cards Container -->
+      <div id="questions-container">
+        <!-- Questions will be dynamically inserted here -->
+      </div>
 
-  /* Si certaines questions injectent encore des classes type card/shadow/bg-white */
-  #auto-evaluation #questions-container .bg-white,
-  #auto-evaluation #questions-container .shadow,
-  #auto-evaluation #questions-container .question-card{
-    background:transparent !important;
-    box-shadow:none !important;
-    border:none !important;
-  }
-
-  /* Boutons à l’intérieur du même ovale */
-  #auto-evaluation .nav-row{ 
-    display:flex; justify-content:space-between; gap:12px; margin-top:24px;
-  }
-
-  /* Désactive l’effet d’inclinaison hérité des [class*="card"] */
-  #auto-evaluation [class*="card"]:hover{ transform:none !important; }
-</style>
-
-
+      <!-- Navigation buttons inclus dans l’ovale -->
+      <div class="mt-8 flex justify-between">
+        <button id="prev-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
+          <i class="fas fa-arrow-left mr-2"></i> Question précédente
+        </button>
+        <button id="next-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          Question suivante <i class="fas fa-arrow-right ml-2"></i>
+        </button>
+        <button id="finish-test" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
+          Terminer le test <i class="fas fa-check ml-2"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <!-- Evaluate a friend Section -->
     <div id="evaluation-proche" data-aos="fade-left" class="section-fonce py-16 px-4 sm:px-6 lg:px-8">
@@ -5587,6 +5586,40 @@ function displayResults(results) {
     background-color: #1d4ed8;
   }
 </style>
+
+      /* --- Style Auto-évaluation --- */
+.question-container {
+  background-color: #f9f9f9; /* gris clair intérieur */
+  border-radius: 32px;       /* gros arrondi pour l’oval */
+  padding: 30px;
+  border: none;              /* pas de bordure */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* ombre légère */
+}
+
+.question-container .progress-bar {
+  margin-bottom: 20px;
+}
+
+.question-container button {
+  margin-top: 20px;
+  border-radius: 24px;       /* arrondi bouton */
+  padding: 12px 20px;
+  border: none;
+}
+
+/* Faire que le bouton soit à l’intérieur de l’oval */
+.question-container .button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Supprimer tout encadré interne autour des réponses */
+.question-container .options {
+  border: none;
+  background: none;
+  padding: 0;
+}
+
 
 </body>
 </html>
