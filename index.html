@@ -342,6 +342,41 @@
           }
         }
 
+        /* wrapper résultats Psycho’Bot */
+        .results-page .pc-psy-result-desc{
+          white-space: pre-wrap;
+          word-break: break-word;
+          overflow-wrap: anywhere;
+          max-height: none;
+        }
+
+        @media (max-width: 768px){
+          .results-page .psy-results-card{
+            display: flex;
+            flex-direction: column;
+            max-height: 100dvh;
+            overflow: hidden;
+          }
+          .results-page .pc-psy-result-desc{
+            flex: 1 1 auto;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            max-height: none !important;
+          }
+        }
+
+        /* Lève tout line-clamp/mask uniquement dans ce bloc */
+        .results-page .pc-psy-result-desc,
+        .results-page .pc-psy-result-desc *{
+          -webkit-line-clamp: unset !important;
+          -webkit-box-orient: unset !important;
+          display: block !important;
+          max-height: none !important;
+          overflow: visible !important;
+          mask-image: none !important;
+          -webkit-mask-image: none !important;
+        }
+
         /* Styles Psycho'Bot Chat */
         #psy-chat .psy-chat-card{
           border-radius: 16px;
@@ -4626,7 +4661,7 @@ function displayResults(results) {
             // Créer une nouvelle modale pour les résultats
             const resultsModal = document.createElement('div');
             resultsModal.id = 'results-modal';
-            resultsModal.className = 'modal show';
+            resultsModal.className = 'modal show results-page';
             resultsModal.innerHTML = `
                 <div class="modal-content" style="max-width: 800px;">
                     <div class="modal-header">
@@ -4704,9 +4739,9 @@ function displayResults(results) {
           </div>
         </div>
 
-        <div id="ai-profile-summary" class="mt-6 bg-gray-50 rounded-lg p-5 shadow-sm mb-6">
-            <h4 class="font-semibold text-gray-900 text-lg mb-3">Description succincte du profil par Psycho'Bot</h4>
-            <div id="ai-summary-content" class="text-sm leading-relaxed text-gray-700">Génération en cours…</div>
+        <div id="ai-profile-summary" class="psy-results-card mt-6 bg-gray-50 rounded-lg p-5 shadow-sm mb-6">
+            <h4 class="font-semibold text-gray-900 text-lg mb-3">Description du profil par Psycho'Bot</h4>
+            <div id="ai-summary-content" class="pc-psy-result-desc text-sm leading-relaxed text-gray-700">Génération en cours…</div>
         </div>
 
                             <!-- Détail des évaluations -->
@@ -4911,50 +4946,58 @@ function displayResults(results) {
         }
 
         async function initAiProfileSummary(profile, code) {
-            const container = document.querySelector('#results-modal #ai-summary-content');
-            if (!container || container.dataset.loading === '1') return;
+            const resultsRoot = document.getElementById('results-modal');
+            const wrapper = resultsRoot?.querySelector('#ai-profile-summary');
+            if (!wrapper || wrapper.dataset.loading === '1') return;
+
+            let target = wrapper.querySelector('.pc-psy-result-desc');
+            if (!target) {
+                target = document.createElement('div');
+                target.className = 'pc-psy-result-desc';
+                wrapper.appendChild(target);
+            }
 
             const { mbti, enneagram } = profile.results || {};
             const cacheKey = `ai-summary:${code}:${mbti}:${enneagram}`;
             const cached = localStorage.getItem(cacheKey);
             if (cached) {
-                console.info('[AI Summary]', 'cache hit', cacheKey);
-                container.textContent = cached;
+                target.textContent = cached;
                 return;
             }
 
-            console.info('[AI Summary]', 'cache miss', cacheKey);
-            container.setAttribute('data-loading', '1');
+            wrapper.setAttribute('data-loading', '1');
+            let buffer = '';
+            target.textContent = '';
 
             try {
-                const response = await fetch('/api/chat', {
+                const res = await fetch('/api/psy-results', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: 'gpt-5-mini',
-                        temperature: 0.5,
-                        max_tokens: 120,
+                        max_tokens: 900,
                         messages: [
                             { role: 'system', content: 'Tu es un psychologue pédagogique. Écris en français, clair et nuancé, sans jargon.' },
-                            { role: 'user', content: `Profil combiné : MBTI=${mbti}, Ennéagramme=${enneagram}.\nRédige une description concise (max 150 mots) :\n1) forces principales, 2) point faible récurrent, 3) piste d’amélioration.\nLangage clair, ton positif, phrases courtes.` }
+                            { role: 'user', content: `Profil combiné : MBTI=${mbti}, Ennéagramme=${enneagram}. Rédige une description complète :\n1) forces principales, 2) point faible récurrent, 3) pistes d’amélioration.` }
                         ]
                     })
                 });
 
-                if (!response.ok) throw new Error('bad response');
-                const data = await response.json();
-                const message = data.message?.trim();
-                if (message) {
-                    container.textContent = message;
-                    localStorage.setItem(cacheKey, message);
-                } else {
-                    container.textContent = "Description indisponible pour le moment.";
+                if (!res.ok) throw new Error('API error');
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder('utf-8');
+                for (;;) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    buffer += decoder.decode(value, { stream: true });
+                    target.textContent = buffer;
                 }
+                target.textContent = buffer;
+                localStorage.setItem(cacheKey, buffer);
             } catch (e) {
                 console.error('Erreur IA:', e);
-                container.textContent = "Erreur lors de la génération de la description.";
+                target.textContent = "Erreur lors de la génération de la description.";
             } finally {
-                container.removeAttribute('data-loading');
+                wrapper.removeAttribute('data-loading');
             }
         }
 
