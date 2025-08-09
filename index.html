@@ -519,7 +519,7 @@
         </div>
     </div>
 
-   <!-- Auto-evaluation Section -->
+ <!-- Auto-evaluation Section -->
 <div id="auto-evaluation" data-aos="zoom-in" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
   <div class="max-w-3xl mx-auto">
     <div class="text-center">
@@ -531,51 +531,29 @@
       </p>
     </div>
 
-    <!-- Zone harmonisée style chatbot -->
-    <div class="mt-12 mb-4 eval-panel">
-      <div class="p-6">
-        <!-- Question Cards Container -->
-        <div id="questions-container">
-          <!-- Questions will be dynamically inserted here -->
-        </div>
+    <!-- Conteneur unique propre -->
+    <div class="mt-12 mb-4 bg-white rounded-3xl shadow-lg p-6">
+      <!-- Question Cards Container -->
+      <div id="questions-container">
+        <!-- Questions will be dynamically inserted here -->
+      </div>
 
-        <!-- Navigation buttons -->
-        <div class="mt-8 flex justify-between">
-          <button id="prev-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-full shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
-            <i class="fas fa-arrow-left mr-2"></i> Question précédente
-          </button>
-          <button id="next-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            Question suivante <i class="fas fa-arrow-right ml-2"></i>
-          </button>
-          <button id="finish-test" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
-            Terminer le test <i class="fas fa-check ml-2"></i>
-          </button>
-        </div>
+      <!-- Navigation buttons -->
+      <div class="mt-8 flex justify-between">
+        <button id="prev-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
+          <i class="fas fa-arrow-left mr-2"></i> Question précédente
+        </button>
+        <button id="next-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          Question suivante <i class="fas fa-arrow-right ml-2"></i>
+        </button>
+        <button id="finish-test" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
+          Terminer le test <i class="fas fa-check ml-2"></i>
+        </button>
       </div>
     </div>
   </div>
 </div>
 
-<style>
-  /* Conteneur global style chatbot */
-  .eval-panel {
-    background: #f9fafb; /* gris clair comme chatbot */
-    border-radius: 32px;
-    border: none;
-    box-shadow: none;
-  }
-
-  /* Boutons pill */
-  #prev-question,
-  #next-question,
-  #finish-test {
-    border-radius: 9999px !important;
-    padding-left: 20px;
-    padding-right: 20px;
-    transform: none !important; /* supprime inclinaison hover */
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-  }
-</style>
 
 
 
