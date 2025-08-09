@@ -300,6 +300,19 @@
         @media (max-width:768px){
           .pc-info-banner{ margin:12px 0; font-size:.93rem; }
         }
+        @media (max-width: 768px){
+          .pc-psy-dialog{ max-height: calc(100dvh - 32px); overflow: hidden; }
+          .pc-psy-content{
+            overflow-y: auto; max-height: none;
+            -webkit-overflow-scrolling: touch;
+          }
+          .pc-psy-content p{
+            white-space: normal; word-break: break-word; overflow-wrap: anywhere;
+            /* lève tout line-clamp éventuel */
+            -webkit-line-clamp: initial; -webkit-box-orient: initial;
+            display: block !important; max-height: none !important; overflow: visible !important;
+          }
+        }
     </style>
 
 </head>
@@ -5403,6 +5416,30 @@ function displayResults(results) {
     requestAnimationFrame(frame);
   }
   frame();
+})();
+</script>
+<script>
+(function fixPsychoBotCut(){
+  const findNode = () => [...document.querySelectorAll('div,section,article')]
+    .find(el => /Psycho'?Bot/i.test(el.textContent));
+  function apply(el){
+    const dialog = el.closest('[role="dialog"], .modal, .dialog, .sheet, .drawer, .card') || el;
+    const content = dialog.querySelector('.content, .body, .scroll, [class*="content"], [class*="body"]') || dialog;
+    dialog.classList.add('pc-psy-dialog');
+    content.classList.add('pc-psy-content');
+    [content, dialog].forEach(n=>{
+      ['maxHeight','height'].forEach(p=> n.style[p] = n.style[p] && '');
+    });
+    content.querySelectorAll('p, .text, [class*="desc"]').forEach(p=>{
+      p.style.removeProperty('-webkit-line-clamp');
+      p.style.removeProperty('max-height');
+      p.style.removeProperty('overflow');
+      p.style.removeProperty('display');
+    });
+  }
+  const t = findNode(); if(t) apply(t);
+  const mo = new MutationObserver(()=>{ const x = findNode(); if(x) apply(x); });
+  mo.observe(document.body, { childList:true, subtree:true });
 })();
 </script>
 </body>
