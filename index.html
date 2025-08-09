@@ -5543,39 +5543,32 @@ function displayResults(results) {
       }
     }
 
-    // --- Dots
-    ctx.fillStyle = getComputedStyle(document.documentElement)
-      .getPropertyValue('--pc-dot') || 'rgba(10,15,26,.62)';
-    for(const p of pts){ ctx.beginPath(); ctx.arc(p.x,p.y,1.2,0,Math.PI*2); ctx.fill(); }
-
-    requestAnimationFrame(frame);
-  }
-  frame();
-})();
-</script>
+   </script>
 <style>
-  /* Arrondis forcés pour la fenêtre de chat et la zone de saisie */
+  /* --- Chat: arrondis + contour propre --- */
   #chat-window {
     border-radius: 32px !important;
     overflow: hidden !important;
   }
+
+  /* Input: vrai contour visible + arrondi large */
   #chat-input {
-    border: 1px solid #ccc;
-    border-radius: 32px 0 0 32px !important;
-    transition: border-color 0.2s ease;
+    border: 1px solid #d1d5db !important;          /* gris clair visible */
+    border-radius: 32px !important;                 /* arrondi complet */
+    outline: none !important;
+    transition: border-color .2s ease;
   }
   #chat-input:focus {
-    border-color: #3B82F6;
-    outline: none;
+    border-color: #3B82F6 !important;               /* bleu au focus */
+    box-shadow: 0 0 0 3px rgba(59,130,246,.2) !important; /* halo focus */
   }
+
+  /* Bouton: arrondi large pour matcher l'input */
   #chat-send {
-    border-radius: 0 32px 32px 0 !important;
+    border-radius: 32px !important;
   }
 </style>
-
 </body>
 </html>
-
-
 
       
