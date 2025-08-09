@@ -342,17 +342,63 @@
           }
         }
 
-        /* Rétablir la taille du bloc "Parler avec Psycho'Bot" (chat) */
-        #profil-chatbot,
-        #chat-window{
-          min-height: 240px;
-          overflow: visible;
+        /* Styles Psycho'Bot Chat */
+        #psy-chat .psy-chat-card{
+          border-radius: 16px;
+          border: 1px solid rgba(15,23,42,.08);
+          background: #f8fafc;
+          box-shadow: 0 10px 30px rgba(0,0,0,.06);
+          padding: 14px;
+          max-width: 920px;
+          margin: 0 auto;
         }
-        #profil-chatbot .content,
-        #chat-window .content{
-          max-height: none;
-          overflow: visible;
+        #psy-chat .psy-chat-messages{
+          background: #eaf2ff;
+          border-radius: 12px;
+          padding: 12px;
+          max-height: clamp(220px, 40vh, 420px);
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
         }
+        #psy-chat .psy-chat-input{
+          display: grid;
+          grid-template-columns: 1fr auto;
+          gap: 10px;
+          margin-top: 12px;
+        }
+        #psy-chat input[type="text"]{
+          border: 1px solid rgba(15,23,42,.12);
+          border-radius: 10px;
+          padding: 10px 12px;
+          background: #fff;
+        }
+        #psy-chat button{
+          border: 0;
+          border-radius: 10px;
+          padding: 10px 14px;
+          background: #2563eb;
+          color: #fff;
+          font-weight: 600;
+          cursor: pointer;
+        }
+        @media (max-width: 768px){
+          #psy-chat .psy-chat-card{ padding: 12px; }
+          #psy-chat .psy-chat-messages{ max-height: clamp(200px, 45vh, 380px); }
+        }
+        #psy-chat .msg.user{
+          align-self: flex-end;
+          background:#fff;
+          border:1px solid rgba(15,23,42,.08);
+          border-radius: 10px;
+          padding: 8px 10px;
+        }
+        #psy-chat .msg.bot{
+          background:#dbeafe;
+          border:1px solid rgba(37,99,235,.15);
+          border-radius: 10px;
+          padding: 8px 10px;
+        }
+        #psy-chat .psy-chat-messages .msg{ max-width: 100%; }
         </style>
 
 </head>
@@ -637,24 +683,19 @@
     </div>
 
       <!-- Section Chatbot -->
-    <section id="profil-chatbot" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
+    <section id="psy-chat" data-section="chat-psy" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Parler avec Psycho'Bot</h2>
                 <p class="mt-4 text-xl text-gray-500">Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.</p>
             </div>
             <div class="mt-8">
-                <div id="chat-window" class="h-64 bordure bordure-gris-200 arrondi-lg mb-4 bg-gris-50 flex flex-col">
-                    <div id="chat-box" class="flex-1 overflow-y-auto p-4"></div>
-                    <div id="chat-suggestions" class="question-buttons fade-in">
-                        <button class="suggestion-bubble" data-question="Quel type est compatible avec un ENFP ?"> ❤️ Quel type est compatible avec un ENFP ?</button>
-                        <button class="suggestion-bubble" data-question="Comment est calculé la certitude globale ?"> 📊 Comment est calculé la certitude globale ?</button>
-                        <button class="suggestion-bubble" data-question="Pourquoi demander l'avis de mes proches ?"> 🤝 Pourquoi demander l'avis de mes proches ?</button>
+                <div class="psy-chat-card">
+                    <div class="psy-chat-messages" id="psyChatMessages" aria-live="polite"></div>
+                    <div class="psy-chat-input">
+                        <input id="psyChatInput" type="text" placeholder="Posez votre question…" />
+                        <button id="psyChatSend" type="button">Envoyer</button>
                     </div>
-                </div>
-                <div class="flex">
-                    <input id="chat-input" type="text" placeholder="Posez votre question..." class="flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:ring-blue-500 focus:border-blue-500">
-                    <button id="chat-send" class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700">Envoyeur</button>
                 </div>
             </div>
         </div>
@@ -5127,133 +5168,84 @@ function displayResults(results) {
     </div>
 
 <script>
-  const LIMIT_MESSAGE = "Tu as atteint ta limite de 10 messages pour aujourd’hui 🤖<br>Psycho’Bot a besoin de recharger ses batteries neuronales !<br>Reviens demain… ou discute avec mon grand frère sur chat.openai.com 😄";
+(function(){
+  const box = document.querySelector('#psyChatMessages');
+  const input = document.querySelector('#psyChatInput');
+  const sendBtn = document.querySelector('#psyChatSend');
+  if(!box || !input || !sendBtn) return;
 
-  async function sendChatMessage(message) {
-    try {
+  const isNearBottom = () => (box.scrollHeight - (box.scrollTop + box.clientHeight)) < 24;
+  const scrollToBottom = () => { box.scrollTop = box.scrollHeight; };
+
+  function appendMessage(text, role){
+    const b = document.createElement('div');
+    b.className = 'msg ' + (role || 'bot');
+    b.style.cssText = 'white-space:pre-wrap; margin:6px 0;';
+    b.textContent = text;
+    box.appendChild(b);
+    if(isNearBottom()) scrollToBottom();
+    return b;
+  }
+
+  sendBtn.addEventListener('click', async ()=>{
+    const q = (input.value || '').trim();
+    if(!q) return;
+    appendMessage(q, 'user');
+    input.value = '';
+
+    const messageEl = appendMessage('', 'bot');
+
+    for await (const chunk of startPsychoBotStream(q)){
+      messageEl.textContent += chunk;
+      if(isNearBottom()) scrollToBottom();
+    }
+  });
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Enter'){ e.preventDefault(); sendBtn.click(); }
+  });
+
+  async function* startPsychoBotStream(q){
+    try{
       const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gpt-5-mini',
           messages: [
             { role: 'system', content: 'Tu es un assistant spécialisé en MBTI et Ennéagramme.' },
-            { role: 'user', content: message }
+            { role: 'user', content: q }
           ]
         })
       });
-
-      if (response.status === 429) {
-        return { message: LIMIT_MESSAGE, limitError: true };
+      if(!response.ok){
+        const err = response.status === 429 ? "Tu as atteint ta limite de messages pour aujourd'hui." : "Impossible de contacter l'IA.";
+        yield err;
+        return;
       }
-
-      if (!response.ok) {
-        console.error("Erreur de l’API OpenAI:", await response.text());
-        return { message: "Impossible de contacter l'IA pour le moment." };
-      }
-
       const data = await response.json();
-      return { message: data.message || "Réponse vide de l'IA." };
-
-    } catch (err) {
-      console.error("Erreur réseau:", err);
-      return { message: "Une erreur est survenue lors de la communication avec l'IA." };
-    }
-  }
-
-  let currentTyped = null;
-  let limitErrorShown = false;
-
-  function isNearBottom(el) {
-    return el.scrollHeight - el.scrollTop - el.clientHeight < 80;
-  }
-
-  function safeScrollToBottom(el) {
-    if (isNearBottom(el)) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
-  }
-
-  function appendMessage(role, text, options = {}) {
-    const { limitError = false } = options;
-    if (limitError && limitErrorShown) return;
-    if (limitError) limitErrorShown = true;
-    const chatBox = document.getElementById('chat-box');
-    if (!chatBox) return;
-    const wrapper = document.createElement('div');
-    wrapper.className = `chat-row ${role === 'user' ? 'user' : 'assistant'}`;
-    const bubble = document.createElement('div');
-    let classes = `chat-bubble ${role === 'user' ? 'user-bubble' : 'assistant-bubble'}`;
-    if (limitError) classes += ' limit-error';
-    bubble.className = classes;
-    wrapper.appendChild(bubble);
-    chatBox.appendChild(wrapper);
-    safeScrollToBottom(chatBox);
-
-    if (role === 'assistant') {
-      if (currentTyped) {
-        currentTyped.destroy();
-        currentTyped.el.innerHTML =
-          currentTyped.el.dataset.fullText || currentTyped.el.innerHTML;
+      const text = data.message || '';
+      for(const c of text){
+        yield c;
+        await new Promise(r=>setTimeout(r,15));
       }
-      bubble.dataset.fullText = text;
-      const observer = new MutationObserver(() => safeScrollToBottom(chatBox));
-      observer.observe(bubble, { childList: true, subtree: true, characterData: true });
-      currentTyped = new Typed(bubble, {
-        strings: [text],
-        typeSpeed: 30,
-        showCursor: false,
-        loop: false,
-        contentType: 'html',
-        onStringTyped: () => {
-          safeScrollToBottom(chatBox);
-        },
-        onComplete: () => {
-          safeScrollToBottom(chatBox);
-          currentTyped = null;
-          observer.disconnect();
-        },
-      });
-    } else {
-      bubble.textContent = text;
+    } catch(e){
+      yield "Une erreur est survenue lors de la communication avec l'IA.";
     }
-
-    safeScrollToBottom(chatBox);
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const sendBtn = document.getElementById('chat-send');
-    const input = document.getElementById('chat-input');
-    const suggestionButtons = document.querySelectorAll('.suggestion-bubble');
-    if (sendBtn && input) {
-      const sendMessage = async () => {
-        const question = input.value.trim();
-        if (!question) return;
-        const suggestionContainer = document.getElementById('chat-suggestions');
-        if (suggestionContainer) suggestionContainer.remove();
-        appendMessage('user', question);
-        input.value = '';
-        const { message, limitError } = await sendChatMessage(question);
-        appendMessage('assistant', message, { limitError });
-      };
-      sendBtn.addEventListener('click', sendMessage);
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          sendMessage();
-        }
-      });
-      suggestionButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          input.value = btn.dataset.question || btn.textContent.trim();
-          sendMessage();
-        });
-      });
-    }
+  const unlockBody = ()=>{
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+  };
+  unlockBody();
+
+  const mo = new MutationObserver(()=>{
+    if(isNearBottom()) scrollToBottom();
   });
-  </script>
+  mo.observe(box, { childList: true, subtree: true });
+})();
+</script>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
