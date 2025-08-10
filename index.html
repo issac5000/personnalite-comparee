@@ -1,25 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <style>
-  .suggestion-bubble {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 9999px;
-    padding: 10px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease-in-out;
-  }
-  .suggestion-bubble:hover {
-    background: rgba(255, 255, 255, 0.4);
-    transform: scale(1.05);
-  }
-</style>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Personnalité Comparée | Test MBTI & Ennéagramme Gratuit</title>
@@ -5661,6 +5642,35 @@ function showPrivacyPolicy() {
   afficherConversation();
 </script>
 
+<script>
+function addChatStyles() {
+  const style = document.createElement("style");
+  style.textContent = `
+    /* Effet verre dépoli façon iOS */
+    .suggestion-bubble {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 9999px;
+      padding: 10px 18px;
+      margin: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .suggestion-bubble:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
+    }
+  `;
+  document.head.appendChild(style);
+}
+addChatStyles();
+</script>
 
   
 </body>
