@@ -5645,7 +5645,7 @@ function showPrivacyPolicy() {
 <script>
 function addChatStyles() {
   const style = document.createElement("style");
-  style.textContent = `
+  style.textContent = 
     /* Bulles de suggestions style iOS raffiné */
     .suggestion-bubble {
       display: inline-flex;
@@ -5664,16 +5664,13 @@ function addChatStyles() {
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
       transition: all 0.3s ease;
-      width: fit-content;
-      max-width: 100%;
-      white-space: nowrap;
     }
     .suggestion-bubble:hover {
       transform: translateY(-1px) scale(1.04);
       background: rgba(255, 255, 255, 0.28);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     }
-  `;
+  ;
   document.head.appendChild(style);
 }
 addChatStyles();
