@@ -2801,19 +2801,10 @@ function displayResults(results) {
         }
 
         function shareResults() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Mon profil de personnalité',
-                    text: 'Découvrez votre profil de personnalité avec Personnalité Comparée',
-                    url: window.location.href
-                });
-            } else {
-                // Fallback pour les navigateurs qui ne supportent pas l'API Web Share
-                const url = window.location.href;
-                navigator.clipboard.writeText(url).then(() => {
-                    alert('Lien copié dans le presse-papiers !');
-                });
-            }
+            const mbti = document.querySelector('#results-modal .personality-badge.bg-green-100')?.textContent.trim() || '';
+            const enneagram = document.querySelector('#results-modal .personality-badge.bg-blue-100')?.textContent.trim() || '';
+            const description = document.getElementById('ai-summary-content')?.innerText.trim() || '';
+            shareProfile(mbti, enneagram, description);
         }
 
         function downloadResults() {
@@ -5132,26 +5123,53 @@ function showPrivacyPolicy() {
         }
 
         async function shareProfileResults(code) {
-            // Récupérer le profil final à partager
             const result = await fetchUserProfileFromSupabase(code);
             if (!result || !result.user.mbti_type || !result.user.enneagram_type) {
                 alert('Impossible de partager : le profil complet n’est pas encore disponible.');
                 return;
             }
-            const overallCertainty = result.user.certainty_score ?? 0;
-            const shareText = `Je viens de découvrir mon profil de personnalité complet ! Je suis ${result.user.mbti_type} (type ${result.user.enneagram_type}) avec ${overallCertainty}% de certitude. Découvrez le vôtre sur https://personnalitecomparee.com`;
+            const description = document.getElementById('ai-summary-content')?.innerText.trim() || '';
+            shareProfile(result.user.mbti_type, `Type ${result.user.enneagram_type}`, description);
+        }
+
+        function shareProfile(mbti, enneagram, description) {
+            const shareText = buildShareText(mbti, enneagram, description);
+            const url = 'https://www.personnalitecomparee.com';
             if (navigator.share) {
-                navigator.share({
-                    title: 'Mon profil de personnalité',
-                    text: shareText
-                });
+                navigator.share({ title: 'Mon profil de personnalité', text: shareText, url });
             } else {
-                navigator.clipboard.writeText(shareText).then(() => {
-                    alert('Résultats copiés dans le presse-papiers !');
-                }).catch(() => {
-                    prompt('Copiez ce message pour le partager:', shareText);
-                });
+                showShareFallback(shareText, url);
             }
+        }
+
+        function buildShareText(mbti, enneagram, description) {
+            return `Hey ! Je viens de passer l'évaluation du site www.personnalitecomparee.com et voici mon profil !\nJe suis "${mbti} et ${enneagram}"\nVoici une petite description de ma personnalité : "${description}"\nDites-moi si vous me reconnaissez et n'hésitez pas à aller passer aussi votre test ici : www.personnalitecomparee.com`;
+        }
+
+        function showShareFallback(text, url) {
+            const existing = document.getElementById('share-fallback');
+            if (existing) existing.remove();
+            const overlay = document.createElement('div');
+            overlay.id = 'share-fallback';
+            overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            const links = [
+                { name: 'Facebook', url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}` },
+                { name: 'WhatsApp', url: `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}` },
+                { name: 'X/Twitter', url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}` },
+                { name: 'LinkedIn', url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}` },
+                { name: 'Telegram', url: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}` },
+                { name: 'Email', url: `mailto:?subject=${encodeURIComponent('Mon profil de personnalité')}&body=${encodeURIComponent(text + ' ' + url)}` }
+            ];
+            overlay.innerHTML = `
+                <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
+                    <h3 class="text-lg font-medium mb-4">Partager</h3>
+                    <div class="flex flex-col space-y-2">
+                        ${links.map(l => `<a href="${l.url}" target="_blank" class="px-4 py-2 rounded hover:bg-gray-100">${l.name}</a>`).join('')}
+                    </div>
+                    <button class="mt-4 w-full px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" onclick="document.getElementById('share-fallback').remove()">Fermer</button>
+                </div>`;
+            overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+            document.body.appendChild(overlay);
         }
 
 
