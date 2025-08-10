@@ -396,7 +396,7 @@
             <a href="#enneagram" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Ennéagramme</a>
             <a href="#profil-chatbot" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">IA spécialisée</a>
             <a href="#faq" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">FAQ</a>
-            <button id="profile-btn-desktop" onclick="openProfileModal()" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <button id="profile-btn-desktop" onclick="openProfileModal()" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                 Mon profil
             </button>
         </nav>
@@ -414,7 +414,7 @@
                 <a href="#enneagram" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Ennéagramme</a>
                 <a href="#profil-chatbot" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">IA spécialisée</a>
                 <a href="#faq" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">FAQ</a>
-                <button id="profile-btn-mobile" onclick="openProfileModal()" class="w-full mt-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+                <button id="profile-btn-mobile" onclick="openProfileModal()" class="w-full mt-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800">
                     Mon profil
                 </button>
             </div>
@@ -569,7 +569,7 @@
                 <button id="prev-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
                     <i class="fas fa-arrow-left mr-2"></i> Question précédente
                 </button>
-                <button id="next-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button id="next-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                     Question suivante <i class="fas fa-arrow-right ml-2"></i>
                 </button>
                 <button id="finish-test" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
@@ -602,7 +602,7 @@
                     <div class="mt-1 relative rounded-md shadow-sm">
                         <input type="text" name="code" id="code" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-4 pr-12 py-3 sm:text-sm border-gray-300 rounded-md" placeholder="Ex: ABC123" required>
                         <div class="absolute inset-y-0 right-0 flex items-center">
-                            <button type="button" id="search-code" class="h-full rounded-r-md border-transparent bg-gray-100 px-4 text-blue-600 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button type="button" id="search-code" class="h-full rounded-r-md border-transparent bg-gray-100 px-4 text-black hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-black">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
@@ -653,7 +653,7 @@
                 </div>
                 
                 <div class="flex justify-center">
-                    <button type="button" onclick="startExternalEvaluation()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <button type="button" onclick="startExternalEvaluation()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                         Commencer l'évaluation <i class="fas fa-play ml-2"></i>
                     </button>
                 </div>
@@ -694,7 +694,7 @@
     <input id="chat-input" type="text" placeholder="Posez votre question à Psycho'Bot..."
            class="flex-grow px-4 py-2 text-gray-900 placeholder-gray-400 bg-white border-none focus:outline-none focus:ring-0" />
     <button id="chat-send"
-            class="px-5 py-2 bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none">
+            class="px-5 py-2 bg-black text-white font-medium hover:bg-gray-800 focus:outline-none">
       Envoyer
     </button>
   </div>
@@ -727,7 +727,7 @@
             <div class="flex flex-col sm:flex-row items-center gap-4">
               <label for="code-saisi" class="sr-only">Code reçu</label>
               <input type="text" id="code-saisi" class="flex-1 px-6 py-3 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-300 text-base text-center shadow-sm transition" placeholder="ABC123" maxlength="12" required>
-              <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700 transition">
+              <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-lg font-semibold shadow hover:bg-gray-800 transition">
                 <i class="fas fa-eye"></i> Voir le profil
               </button>
             </div>
@@ -766,7 +766,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('INTJ')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('INTJ')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -790,7 +790,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('ENTJ')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('ENTJ')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -814,7 +814,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('INTP')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('INTP')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -839,7 +839,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('ENFJ')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('ENFJ')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -863,7 +863,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('ENFP')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('ENFP')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -887,7 +887,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('INFJ')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('INFJ')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -911,7 +911,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('INFP')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('INFP')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -936,7 +936,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('ISTJ')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('ISTJ')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -960,7 +960,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('ISFJ')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('ISFJ')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -984,7 +984,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('ESTJ')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('ESTJ')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1008,7 +1008,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('ESFJ')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('ESFJ')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1033,7 +1033,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('ISTP')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('ISTP')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1057,7 +1057,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('ISFP')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('ISFP')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1081,7 +1081,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('ESTP')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('ESTP')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1105,7 +1105,7 @@
                             </p>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showMBTIDetails('ESFP')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showMBTIDetails('ESFP')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1153,7 +1153,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showEnneagramDetails('1')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('1')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1184,7 +1184,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showEnneagramDetails('2')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('2')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1215,7 +1215,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showEnneagramDetails('3')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('3')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1246,7 +1246,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showEnneagramDetails('4')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('4')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1277,7 +1277,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showEnneagramDetails('5')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('5')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1308,7 +1308,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showEnneagramDetails('6')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('6')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1339,7 +1339,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showEnneagramDetails('7')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('7')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1370,7 +1370,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showEnneagramDetails('8')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('8')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1401,7 +1401,7 @@
                             </div>
                         </div>
                         <div class="mt-5">
-                            <button onclick="showEnneagramDetails('9')" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+                            <button onclick="showEnneagramDetails('9')" class="text-sm font-medium text-black hover:text-gray-800">
                                 En savoir plus <i class="fas fa-arrow-right ml-1"></i>
                             </button>
                         </div>
@@ -1551,7 +1551,7 @@ Oui. Vous pouvez interroger Psycho’Bot dans la section "Parler avec Psycho’B
                 </div>
             </div>
             <div class="mt-8">
-                <button onclick="showAboutProject()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button onclick="showAboutProject()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                     En savoir plus sur le concept <i class="fas fa-arrow-right ml-2"></i>
                 </button>
             </div>
@@ -2724,7 +2724,7 @@ function displayResults(results) {
                                         <div class="bg-white border-2 border-blue-300 rounded-lg px-4 py-2">
                                             <span class="text-2xl font-bold text-blue-900 tracking-wider" id="unique-code">${results.code}</span>
                                         </div>
-                                        <button onclick="copyCode('${results.code}')" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <button onclick="copyCode('${results.code}')" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                                             <i class="fas fa-copy mr-1"></i> Copier
                                         </button>
                                     </div>
@@ -2756,7 +2756,7 @@ function displayResults(results) {
                             </div>
                             
                             <div class="mt-8 flex flex-wrap justify-center gap-4">
-                                <button onclick="shareResults()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <button onclick="shareResults()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                                     <i class="fas fa-share mr-2"></i> Partager
                                 </button>
                                 <button onclick="downloadResults()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
@@ -2837,13 +2837,13 @@ function displayResults(results) {
                 const button = event.target.closest('button');
                 const originalText = button.innerHTML;
                 button.innerHTML = '<i class="fas fa-check mr-1"></i> Copié !';
-                button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                button.classList.remove('bg-black', 'hover:bg-gray-800');
                 button.classList.add('bg-green-600', 'hover:bg-green-700');
                 
                 setTimeout(() => {
                     button.innerHTML = originalText;
                     button.classList.remove('bg-green-600', 'hover:bg-green-700');
-                    button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                    button.classList.add('bg-black', 'hover:bg-gray-800');
                 }, 2000);
             }).catch(() => {
                 alert('Code copié : ' + code);
@@ -3842,7 +3842,7 @@ function displayResults(results) {
                                     <button type="button" id="prev-external-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" style="display: none;">
                                         <i class="fas fa-arrow-left mr-2"></i> Question précédente
                                     </button>
-                                    <button type="button" id="next-external-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                    <button type="button" id="next-external-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                                         Question suivante <i class="fas fa-arrow-right ml-2"></i>
                                     </button>
                                     <button type="submit" id="submit-eval" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700" style="display: none;">
@@ -4307,7 +4307,7 @@ function displayResults(results) {
                         <p class="text-sm text-gray-500 mb-6">
                             La personne recevra ses résultats complets une fois que toutes les évaluations seront terminées.
                         </p>
-                        <button id="close-evaluation-modal" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        <button id="close-evaluation-modal" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-black hover:bg-gray-800">
                             <i class="fas fa-home mr-2"></i> Retour à l'accueil
                         </button>
                     </div>
@@ -4806,7 +4806,7 @@ function displayResults(results) {
                                 <i class="fas fa-download mr-2"></i>
                                 Télécharger PDF
                             </button>
-                            <button onclick="shareProfileResults('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                            <button onclick="shareProfileResults('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                                 <i class="fas fa-share mr-2"></i>
                                 Partager
                             </button>
@@ -5175,7 +5175,7 @@ function displayResults(results) {
                             <input type="text" id="profile-code" placeholder="Entrez votre code (ex: ABC123)" 
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-mono tracking-wider uppercase">
                         </div>
-                        <button onclick="checkProfileCode()" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <button onclick="checkProfileCode()" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                             <i class="fas fa-sign-in-alt mr-2"></i>
                             Accéder à mon profil
                         </button>
@@ -5233,7 +5233,7 @@ function displayResults(results) {
                             <i class="fas fa-share mr-2"></i>
                             Partager mon code
                         </button>
-                        <button id="view-results-btn" onclick="viewResults()" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" style="display: none;">
+                        <button id="view-results-btn" onclick="viewResults()" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800" style="display: none;">
                             <i class="fas fa-chart-pie mr-2"></i>
                             Voir mes résultats
                         </button>
@@ -5248,7 +5248,7 @@ function displayResults(results) {
                         </div>
                         <h3 class="text-lg font-medium text-gray-900 mb-2">Code introuvable</h3>
                         <p class="text-sm text-gray-500 mb-4">Le code que vous avez entré n'existe pas ou est incorrect.</p>
-                        <button onclick="resetProfileModal()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        <button onclick="resetProfileModal()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                             Réessayer
                         </button>
                     </div>
