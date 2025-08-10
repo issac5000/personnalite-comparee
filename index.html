@@ -2632,6 +2632,7 @@ function displayResults(results) {
     if (autoEvalSection) {
         autoEvalSection.parentNode.insertBefore(resultsSection, autoEvalSection.nextSibling);
         initCountUp(resultsSection);
+        addPDFDownloadHandler(resultsSection);
 
         setTimeout(() => {
             resultsSection.scrollIntoView({ behavior: 'smooth' });
@@ -2745,8 +2746,8 @@ function displayResults(results) {
                                 <button onclick="shareResults()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                                     <i class="fas fa-share mr-2"></i> Partager
                                 </button>
-                                <button onclick="downloadResults()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                    <i class="fas fa-download mr-2"></i> Télécharger
+                                <button class="download-pdf-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    <i class="fas fa-download mr-2"></i> Télécharger PDF
                                 </button>
                                 <button onclick="restartTest()" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <i class="fas fa-redo mr-2"></i> Refaire le test
@@ -2791,21 +2792,6 @@ function displayResults(results) {
             const enneagram = document.querySelector('#results-modal .personality-badge.bg-blue-100')?.textContent.trim() || '';
             const description = document.getElementById('ai-summary-content')?.innerText.trim() || '';
             shareProfile(mbti, enneagram, description);
-        }
-
-        function downloadResults() {
-            const results = localStorage.getItem('personalityTestResults');
-            if (results) {
-                const blob = new Blob([results], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'profil-personnalite.json';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
         }
 
         function copyCode(code) {
@@ -4817,7 +4803,7 @@ function showPrivacyPolicy() {
 
                         <!-- Actions -->
                         <div class="flex space-x-3">
-                            <button onclick="downloadResultsPDF('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            <button class="download-pdf-btn flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                                 <i class="fas fa-download mr-2"></i>
                                 Télécharger PDF
                             </button>
@@ -4831,8 +4817,9 @@ function showPrivacyPolicy() {
             `;
             
             // Ajouter la modale au DOM
-            document.body.appendChild(resultsModal);
-            initCountUp(resultsModal);
+    document.body.appendChild(resultsModal);
+    initCountUp(resultsModal);
+    addPDFDownloadHandler(resultsModal);
 
             // Animer les barres de certitude
             resultsModal.querySelectorAll('.certainty-bar').forEach(bar => {
@@ -5070,16 +5057,28 @@ function showPrivacyPolicy() {
             }
         }
 
-        function downloadResultsPDF(code) {
-            const modal = document.getElementById('results-modal');
-            if (!modal) return;
+        function addPDFDownloadHandler(root) {
+            const btn = root.querySelector('.download-pdf-btn');
+            if (btn) {
+                btn.addEventListener('click', downloadResultsPDF);
+            }
+        }
 
-            const clone = modal.cloneNode(true);
+        function downloadResultsPDF() {
+            let container = document.querySelector('#results-modal .modal-content');
+            let actionsSelector = '.flex.space-x-3';
+            if (!container) {
+                container = document.querySelector('.bg-blue-50 .bg-white.shadow-xl');
+                actionsSelector = '.flex.flex-wrap.justify-center.gap-4';
+            }
+            if (!container) return;
 
-            const actions = clone.querySelector('.flex.space-x-3');
+            const clone = container.cloneNode(true);
+
+            const actions = clone.querySelector(actionsSelector);
             if (actions) actions.remove();
 
-            const canvases = modal.querySelectorAll('canvas');
+            const canvases = container.querySelectorAll('canvas');
             const cloneCanvases = clone.querySelectorAll('canvas');
             canvases.forEach((canvas, idx) => {
                 const img = document.createElement('img');
@@ -5094,16 +5093,15 @@ function showPrivacyPolicy() {
             clone.style.left = '-9999px';
             document.body.appendChild(clone);
 
-            const element = clone.querySelector('.modal-content');
             const opt = {
                 margin: 0,
-                filename: 'ma-personnalite-comparee.pdf',
+                filename: 'personnalite-comparee-resultats.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().set(opt).from(element).save().then(() => {
+            html2pdf().set(opt).from(clone).save().then(() => {
                 document.body.removeChild(clone);
             });
         }
