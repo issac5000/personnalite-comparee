@@ -5628,35 +5628,34 @@ function displayResults(results) {
   #chat-send {
     border-radius: 0 9999px 9999px 0 !important;
   }
-</style>
-
- .suggestion-bubble {
-  border-radius: 12px;
-  background-color: #dfe3e8; /* gris plus foncé pour contraste */
-  color: #111; /* texte bien foncé */
-  padding: 8px 16px;
+.suggestion-bubble {
+  border-radius: 9999px; /* pastille ultra arrondie */
+  background-color: #e6e6e6; /* gris plus chaud et contrasté */
+  color: #222; /* texte très lisible */
+  padding: 8px 18px;
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
   border: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* léger relief */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* léger relief */
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .suggestion-bubble:hover {
-  background-color: #cdd3d8; /* fonce légèrement au hover */
+  background-color: #d4d4d4; /* gris plus foncé au hover */
   transform: translateY(-1px);
 }
 
 @media (prefers-color-scheme: dark) {
   .suggestion-bubble {
-    background-color: #3a3f44;
+    background-color: #404040;
     color: #f5f5f5;
   }
   .suggestion-bubble:hover {
-    background-color: #4a5056;
+    background-color: #4d4d4d;
   }
 }
+
 
 </body>
 </html>
