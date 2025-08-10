@@ -45,7 +45,6 @@
         }
         body {
             transition: background-color 0.3s, color 0.3s;
-            padding-top: 64px;
         }
         .rotate-180 {
             transform: rotate(180deg);
@@ -183,20 +182,8 @@
         .section-fonce {
             background-color: #fbfbfb;
         }
-
-        .sticky-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: #fff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-            backdrop-filter: saturate(180%) blur(8px);
-            overflow: visible;
-        }
-
         #site-header {
+            position: static;
             height: 64px;
         }
 
@@ -213,20 +200,24 @@
             display: block;
         }
 
-        .section {
-            scroll-margin-top: 72px;
-        }
-
-        #profil-chatbot {
-            scroll-margin-top: 72px;
-        }
-
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
             #site-header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                background: #fff;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+                backdrop-filter: saturate(180%) blur(8px);
                 height: 56px;
             }
             body {
                 padding-top: 56px;
+            }
+            .section,
+            #profil-chatbot {
+                scroll-margin-top: 72px;
             }
         }
 
