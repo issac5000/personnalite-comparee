@@ -1995,7 +1995,8 @@ if (window.location.href.includes("external")) {
             const progress = ((index + 1) / QUESTIONS_AUTO_EVALUATION.length) * 100;
             
             const questionHTML = `
-<div class="question-container fondu actif bg-white ombre-md arrondi-lg débordement-caché">                    <div class="px-6 py-4">
+<div class="question-container fade active bg-white overflow-hidden">
+<div class="px-6 py-4">
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-sm font-medium text-blue-600">Question ${index + 1}/${QUESTIONS_AUTO_EVALUATION.length}</span>
                             <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
