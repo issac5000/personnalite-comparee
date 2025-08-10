@@ -667,31 +667,40 @@
 <!-- Section Chatbot -->
 <section id="profil-chatbot" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
   <div class="max-w-3xl mx-auto">
-    <div class="flex items-center justify-between flex-wrap gap-2 text-center sm:text-left">
+
+    <!-- Titre centré -->
+    <div class="text-center">
       <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Parler avec Psycho'Bot</h2>
+      <p class="mt-4 text-xl text-gray-500">
+        Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.
+      </p>
+    </div>
+
+    <!-- Bouton effacer, juste au-dessus du chat, aligné à droite -->
+    <div class="mt-4 flex justify-end">
       <button id="clear-chat"
               onclick="resetConversation()"
               class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full shadow">
         🗑 Effacer la conversation
       </button>
-      <p class="mt-4 text-xl text-gray-500 w-full sm:w-auto">
-        Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.
-      </p>
     </div>
 
-    <div class="mt-8">
+    <div class="mt-2">
       <!-- Fenêtre de chat -->
       <div id="chat-window" class="h-[280px] sm:h-[320px] border border-gray-200 mb-4 bg-gray-50 flex flex-col">
         <div id="chat-box" class="flex-1 overflow-y-auto p-4" style="scroll-behavior: smooth;"></div>
 
-        <div id="chat-suggestions" class="question-buttons fade-in p-3">
+        <!-- Suggestions: 2 côte à côte, 3e centrée en dessous quand visible -->
+        <div id="chat-suggestions" class="question-buttons p-3">
           <button class="suggestion-bubble" data-question="Quel type est compatible avec un ENFP ?">❤️ Quel type est compatible avec un ENFP ?</button>
           <button class="suggestion-bubble" data-question="Comment est calculée la certitude globale ?">📊 Comment est calculée la certitude globale ?</button>
           <button class="suggestion-bubble" data-question="Pourquoi demander l’avis de mes proches ?">🤝 Pourquoi demander l’avis de mes proches ?</button>
         </div>
 
         <div id="pc-typing-indicator" class="pc-typing" aria-live="polite" role="status" hidden>
-          <span class="pc-typing-text">Psycho'Bot est en train d'écrire<span class="pc-dots"><span>.</span><span>.</span><span>.</span></span></span>
+          <span class="pc-typing-text">Psycho'Bot est en train d'écrire
+            <span class="pc-dots"><span>.</span><span>.</span><span>.</span></span>
+          </span>
         </div>
       </div>
 
@@ -5507,14 +5516,11 @@ function showPrivacyPolicy() {
       }
     }
 
-<!-- 1) Typed doit être chargé AVANT notre script -->
+<!-- Typed doit être chargé avant notre script pour l’effet progressif -->
 <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
 
-<!-- 2) Notre script unique du chatbot -->
 <script>
-  console.log("🔌 Chatbot script chargé");
-
-  /* Arrondis (optionnel) */
+  // Styles (arrondis + grille des suggestions)
   (function addChatStyles(){
     const s=document.createElement('style');
     s.textContent=`
@@ -5524,6 +5530,9 @@ function showPrivacyPolicy() {
       #chat-box{display:flex;flex-direction:column;gap:8px;}
       .user-bubble{align-self:flex-end;background:#e8f0ff;padding:10px 12px;border-radius:14px;max-width:85%;}
       .assistant-bubble{align-self:flex-start;background:#f6f6f6;padding:10px 12px;border-radius:14px;max-width:85%;}
+      /* Grille: 2 boutons sur la 1ère ligne, 3e centré en dessous */
+      #chat-suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+      #chat-suggestions .suggestion-bubble:nth-child(3){grid-column:1 / -1;justify-self:center;}
     `;
     document.head.appendChild(s);
   })();
@@ -5549,6 +5558,13 @@ function showPrivacyPolicy() {
   function setTyping(on){ const el=document.getElementById("pc-typing-indicator"); if(el) el.hidden=!on; }
   function safeScrollToBottom(el){ el.scrollTo({top:el.scrollHeight,behavior:'smooth'}); }
 
+  function toggleSuggestions(){
+    const sugg=document.getElementById('chat-suggestions');
+    if(!sugg) return;
+    // si conversation existante -> cachées, sinon -> visibles en grille
+    sugg.style.display = messages.length ? 'none' : 'grid';
+  }
+
   function appendMessage(role,text,{typing=(role==='assistant'),skipPersist=false}={}){
     const chatBox=document.getElementById("chat-box"); if(!chatBox) return;
     const row=document.createElement('div'); row.className=`chat-row ${role==='user'?'user':'assistant'}`;
@@ -5568,22 +5584,23 @@ function showPrivacyPolicy() {
       messages.push({role,content:text});
       messages=trimHistoryClient(messages,MAX_CONTEXT_TOKENS_CLIENT);
       localStorage.setItem("chatHistory",JSON.stringify(messages));
+      toggleSuggestions(); // cacher si un message vient d’être ajouté
     }
   }
 
   function afficherConversation(){
     const box=document.getElementById("chat-box"); if(!box) return;
-    box.innerHTML=""; messages.forEach(m=>appendMessage(m.role,m.content,{skipPersist:true,typing:false}));
+    box.innerHTML="";
+    messages.forEach(m=>appendMessage(m.role,m.content,{skipPersist:true,typing:false}));
     box.scrollTop=box.scrollHeight;
+    toggleSuggestions(); // afficher/cacher selon l’état au chargement
   }
 
   async function envoyerMessage(texte){
     if(!texte || !texte.trim()) return;
     const q=texte.trim();
 
-    // Cacher les suggestions
-    const sugg=document.getElementById('chat-suggestions'); if(sugg) sugg.style.display='none';
-
+    toggleSuggestions(); // les cacher si ce n’est pas déjà le cas
     appendMessage('user',q);
     setTyping(true);
 
@@ -5599,14 +5616,12 @@ function showPrivacyPolicy() {
     }
   }
 
-  // Bouton reset appelé par onclick sur le HTML
+  // Bouton reset (appelé par onclick sur le HTML)
   window.resetConversation=function(){
     messages=[];
     localStorage.removeItem("chatHistory");
-    // Efface l'UI
     const box=document.getElementById("chat-box"); if(box) box.innerHTML="";
-    // Réaffiche les suggestions
-    const sugg=document.getElementById('chat-suggestions'); if(sugg) sugg.style.display='block';
+    toggleSuggestions(); // re-affiche en grille (2 + 1 centré)
   };
 
   // Brancher contrôles
@@ -5623,16 +5638,9 @@ function showPrivacyPolicy() {
     });
   })();
 
-  // Démarrage
+  // Init
   afficherConversation();
 </script>
-
-    document.head.appendChild(style);
-  })();
-
-  afficherConversation();
-</script>
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
 
 
   
