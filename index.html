@@ -3750,29 +3750,46 @@ function showPrivacyPolicy() {
             showModal('Conditions d\'Utilisation', content);
         }
 
-        function showLegalNotices() {
-            const content = `
-                <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Mentions Légales</h3>
-                    
-                    <h4 class="font-semibold text-gray-900">Éditeur du site</h4>
-                    <p class="text-gray-700">Personnalité Comparée<br>
-                    Site web éducatif<br>
-                    Contact : contact@personnalite-comparee.fr</p>
-                    
-                    <h4 class="font-semibold text-gray-900">Hébergement</h4>
-                    <p class="text-gray-700">Ce site est hébergé par Manus Cloud Platform</p>
-                    
-                    <h4 class="font-semibold text-gray-900">Propriété intellectuelle</h4>
-                    <p class="text-gray-700">Le contenu de ce site est protégé par le droit d'auteur. Les modèles MBTI et Ennéagramme sont utilisés à des fins éducatives.</p>
-                    
-                    <h4 class="font-semibold text-gray-900">Cookies</h4>
-                    <p class="text-gray-700">Ce site utilise uniquement le stockage local du navigateur pour sauvegarder votre progression. Aucun cookie de suivi n'est utilisé.</p>
-                </div>
-            `;
-            showModal('Mentions Légales', content);
-        }
-
+       function showLegalNotices() {
+  const content = `
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900">Mentions Légales</h3>
+      
+      <h4 class="font-semibold text-gray-900">Éditeur du site</h4>
+      <p class="text-gray-700">
+        <strong>Personnalité Comparée</strong><br>
+        Site web éducatif et informatif sur les tests de personnalité (MBTI et Ennéagramme)<br>
+        Contact : <a href="mailto:contact@personnalite-comparee.fr" class="text-blue-600 hover:underline">contact@personnalite-comparee.fr</a>
+      </p>
+      
+      <h4 class="font-semibold text-gray-900">Hébergement</h4>
+      <p class="text-gray-700">
+        Ce site est hébergé par <strong>Vercel Inc.</strong><br>
+        340 S Lemon Ave #4133<br>
+        Walnut, CA 91789, États-Unis<br>
+        <a href="https://vercel.com" target="_blank" rel="noopener" class="text-blue-600 hover:underline">https://vercel.com</a>
+      </p>
+      
+      <h4 class="font-semibold text-gray-900">Propriété intellectuelle</h4>
+      <p class="text-gray-700">
+        L’ensemble du contenu de ce site (textes, éléments graphiques, code source) est protégé par les lois en vigueur sur la propriété intellectuelle.<br>
+        Les modèles MBTI et Ennéagramme sont des systèmes conceptuels utilisés ici uniquement à des fins pédagogiques et informatives.
+      </p>
+      
+      <h4 class="font-semibold text-gray-900">Responsabilité</h4>
+      <p class="text-gray-700">
+        Les informations fournies sur ce site le sont à titre indicatif et ne constituent en aucun cas un conseil professionnel, médical ou psychologique. L’utilisateur reste seul responsable de l’usage qu’il fait des informations et résultats proposés.
+      </p>
+      
+      <h4 class="font-semibold text-gray-900">Cookies et stockage local</h4>
+      <p class="text-gray-700">
+        Ce site n’utilise pas de cookies de suivi.<br>
+        Seules certaines données nécessaires au fonctionnement (comme la progression dans le test ou le code d’accès aux résultats) sont stockées localement dans le navigateur ou dans notre base de données Supabase.
+      </p>
+    </div>
+  `;
+  showModal('Mentions Légales', content);
+}
         function showContact() {
             const content = `
                 <div class="space-y-4">
