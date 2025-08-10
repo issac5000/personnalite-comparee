@@ -3688,27 +3688,48 @@ function displayResults(results) {
         }
 
         // Fonctions pour les pages légales et contact
-        function showPrivacyPolicy() {
-            const content = `
-                <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Politique de Confidentialité</h3>
-                    <p class="text-gray-700">Dernière mise à jour : ${new Date().toLocaleDateString('fr-FR')}</p>
-                    
-                    <h4 class="font-semibold text-gray-900">Collecte des données</h4>
-                    <p class="text-gray-700">Nous collectons uniquement les données nécessaires au fonctionnement du test de personnalité : vos réponses aux questions et les évaluations de vos proches.</p>
-                    
-                    <h4 class="font-semibold text-gray-900">Utilisation des données</h4>
-                    <p class="text-gray-700">Vos données sont utilisées exclusivement pour calculer votre profil de personnalité. Elles ne sont jamais partagées avec des tiers.</p>
-                    
-                    <h4 class="font-semibold text-gray-900">Stockage et sécurité</h4>
-                    <p class="text-gray-700">Toutes les données sont stockées localement dans votre navigateur. Aucune information n'est transmise à nos serveurs.</p>
-                    
-                    <h4 class="font-semibold text-gray-900">Vos droits</h4>
-                    <p class="text-gray-700">Vous pouvez supprimer vos données à tout moment en vidant le cache de votre navigateur.</p>
-                </div>
-            `;
-            showModal('Politique de Confidentialité', content);
-        }
+function showPrivacyPolicy() {
+  const content = `
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900">Politique de Confidentialité</h3>
+      <p class="text-gray-700">Dernière mise à jour : ${new Date().toLocaleDateString('fr-FR')}</p>
+
+      <h4 class="font-semibold text-gray-900">1. Données collectées</h4>
+      <p class="text-gray-700">Nous collectons uniquement les réponses fournies lors&nbsp;:</p>
+      <ul class="list-disc pl-6 text-gray-700">
+        <li>de vos auto-évaluations ;</li>
+        <li>des évaluations réalisées par vos proches.</li>
+      </ul>
+      <p class="text-gray-700">Aucune autre donnée personnelle (nom, e-mail, localisation, etc.) n’est demandée ni enregistrée.</p>
+
+      <h4 class="font-semibold text-gray-900">2. Finalité de la collecte</h4>
+      <ul class="list-disc pl-6 text-gray-700">
+        <li>Calculer et afficher votre profil de personnalité ;</li>
+        <li>Générer les résultats finaux à partir des évaluations reçues.</li>
+      </ul>
+
+      <h4 class="font-semibold text-gray-900">3. Stockage des données</h4>
+      <p class="text-gray-700">Vos réponses sont stockées de manière sécurisée dans notre base de données <strong>Supabase</strong>. Elles ne sont pas enregistrées ailleurs.</p>
+
+      <h4 class="font-semibold text-gray-900">4. Partage des données</h4>
+      <p class="text-gray-700">Nous ne vendons, n’échangeons et ne partageons <strong>aucune</strong> donnée avec des tiers. Seules les personnes disposant de votre code unique peuvent consulter vos résultats.</p>
+
+      <h4 class="font-semibold text-gray-900">5. Sécurité</h4>
+      <p class="text-gray-700">Supabase applique des mesures de sécurité standards (chiffrement en transit, contrôles d’accès). Nous limitons l’accès aux données aux seules finalités décrites ci-dessus.</p>
+
+      <h4 class="font-semibold text-gray-900">6. Durée de conservation</h4>
+      <p class="text-gray-700">Les réponses sont conservées tant que votre code unique reste valide dans notre base. Vous pouvez demander leur suppression à tout moment.</p>
+
+      <h4 class="font-semibold text-gray-900">7. Vos droits</h4>
+      <ul class="list-disc pl-6 text-gray-700">
+        <li>Demander une copie de vos données ;</li>
+        <li>Demander la suppression définitive de vos données.</li>
+      </ul>
+      <p class="text-gray-700">Pour exercer ces droits, contactez-nous via la section <strong>Support</strong> du site.</p>
+    </div>
+  `;
+  showModal('Politique de Confidentialité', content);
+}
 
         function showTermsOfService() {
             const content = `
