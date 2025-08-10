@@ -683,11 +683,13 @@
       <!-- Fenêtre de chat -->
       <div id="chat-window" class="h-[280px] sm:h-[320px] border border-gray-200 mb-4 bg-gray-50 flex flex-col">
         <div id="chat-box" class="flex-1 overflow-y-auto p-4" style="scroll-behavior: smooth;"></div>
+
         <div id="chat-suggestions" class="question-buttons fade-in p-3">
           <button class="suggestion-bubble" data-question="Quel type est compatible avec un ENFP ?">❤️ Quel type est compatible avec un ENFP ?</button>
           <button class="suggestion-bubble" data-question="Comment est calculée la certitude globale ?">📊 Comment est calculée la certitude globale ?</button>
           <button class="suggestion-bubble" data-question="Pourquoi demander l’avis de mes proches ?">🤝 Pourquoi demander l’avis de mes proches ?</button>
         </div>
+
         <div id="pc-typing-indicator" class="pc-typing" aria-live="polite" role="status" hidden>
           <span class="pc-typing-text">Psycho'Bot est en train d'écrire<span class="pc-dots"><span>.</span><span>.</span><span>.</span></span></span>
         </div>
@@ -707,8 +709,6 @@
     </div>
   </div>
 </section>
-
-
 
 <script>
   function scrollChatToBottom() {
@@ -5507,137 +5507,126 @@ function showPrivacyPolicy() {
       }
     }
 
-   <script>
+<!-- 1) Typed doit être chargé AVANT notre script -->
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+<!-- 2) Notre script unique du chatbot -->
+<script>
+  console.log("🔌 Chatbot script chargé");
+
+  /* Arrondis (optionnel) */
+  (function addChatStyles(){
+    const s=document.createElement('style');
+    s.textContent=`
+      #chat-window{border-radius:32px!important;overflow:hidden!important;}
+      #chat-input{border-radius:9999px 0 0 9999px!important;}
+      #chat-send{border-radius:0 9999px 9999px 0!important;}
+      #chat-box{display:flex;flex-direction:column;gap:8px;}
+      .user-bubble{align-self:flex-end;background:#e8f0ff;padding:10px 12px;border-radius:14px;max-width:85%;}
+      .assistant-bubble{align-self:flex-start;background:#f6f6f6;padding:10px 12px;border-radius:14px;max-width:85%;}
+    `;
+    document.head.appendChild(s);
+  })();
+
+  // ===== Mémoire locale + trim =====
   let messages = JSON.parse(localStorage.getItem("chatHistory")) || [];
   const MAX_CONTEXT_TOKENS_CLIENT = 1600;
 
-  function estimateTokens(str) { return Math.ceil((str || "").length / 4); }
-  function trimHistoryClient(msgs, budgetTokens) {
-    const keep = [];
-    let total = 0;
-    for (let i = msgs.length - 1; i >= 0; i--) {
-      const m = msgs[i];
-      const c = typeof m.content === "string" ? m.content : JSON.stringify(m.content);
-      const cost = estimateTokens(c) + 8;
-      if (total + cost > budgetTokens) break;
-      keep.push(m); total += cost;
+  function estimateTokens(str){ return Math.ceil((str||"").length/4); }
+  function trimHistoryClient(msgs,budgetTokens){
+    const keep=[]; let total=0;
+    for(let i=msgs.length-1;i>=0;i--){
+      const m=msgs[i];
+      const c=typeof m.content==="string"?m.content:JSON.stringify(m.content);
+      const cost=estimateTokens(c)+8;
+      if(total+cost>budgetTokens) break;
+      keep.push(m); total+=cost;
     }
     return keep.reverse();
   }
 
-  function setTyping(isTyping) {
-    const el = document.getElementById("pc-typing-indicator");
-    if (el) el.hidden = !isTyping;
-  }
-  function safeScrollToBottom(el) {
-    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-  }
+  // ===== UI helpers =====
+  function setTyping(on){ const el=document.getElementById("pc-typing-indicator"); if(el) el.hidden=!on; }
+  function safeScrollToBottom(el){ el.scrollTo({top:el.scrollHeight,behavior:'smooth'}); }
 
-  function afficherConversation() {
-    const chatBox = document.getElementById("chat-box");
-    chatBox.innerHTML = "";
-    messages.forEach(m => appendMessage(m.role, m.content, { skipPersist: true, typing: false }));
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
+  function appendMessage(role,text,{typing=(role==='assistant'),skipPersist=false}={}){
+    const chatBox=document.getElementById("chat-box"); if(!chatBox) return;
+    const row=document.createElement('div'); row.className=`chat-row ${role==='user'?'user':'assistant'}`;
+    const bubble=document.createElement('div'); bubble.className=`chat-bubble ${role==='user'?'user-bubble':'assistant-bubble'}`;
+    row.appendChild(bubble); chatBox.appendChild(row);
 
-  function appendMessage(role, text, opts = {}) {
-    const { typing = (role === 'assistant'), skipPersist = false } = opts;
-    const chatBox = document.getElementById("chat-box");
-    if (!chatBox) return;
-
-    const row = document.createElement('div');
-    row.className = `chat-row ${role === 'user' ? 'user' : 'assistant'}`;
-    const bubble = document.createElement('div');
-    bubble.className = `chat-bubble ${role === 'user' ? 'user-bubble' : 'assistant-bubble'}`;
-    row.appendChild(bubble);
-    chatBox.appendChild(row);
-
-    if (role === 'assistant' && typing && window.Typed) {
-      bubble.dataset.fullText = text;
-      const observer = new MutationObserver(() => safeScrollToBottom(chatBox));
-      observer.observe(bubble, { childList: true, subtree: true, characterData: true });
-      new Typed(bubble, {
-        strings: [text],
-        typeSpeed: 30,
-        showCursor: false,
-        loop: false,
-        contentType: 'html',
-        onComplete: () => { observer.disconnect(); safeScrollToBottom(chatBox); }
-      });
-    } else {
-      bubble.textContent = text;
+    if(role==='assistant' && typing && window.Typed){
+      const obs=new MutationObserver(()=>safeScrollToBottom(chatBox));
+      obs.observe(bubble,{childList:true,subtree:true,characterData:true});
+      new Typed(bubble,{strings:[text],typeSpeed:30,showCursor:false,loop:false,contentType:'html',onComplete:()=>{obs.disconnect();safeScrollToBottom(chatBox);}});
+    }else{
+      bubble.textContent=text;
     }
     safeScrollToBottom(chatBox);
 
-    if (!skipPersist) {
-      messages.push({ role, content: text });
-      messages = trimHistoryClient(messages, MAX_CONTEXT_TOKENS_CLIENT);
-      localStorage.setItem("chatHistory", JSON.stringify(messages));
+    if(!skipPersist){
+      messages.push({role,content:text});
+      messages=trimHistoryClient(messages,MAX_CONTEXT_TOKENS_CLIENT);
+      localStorage.setItem("chatHistory",JSON.stringify(messages));
     }
   }
 
-  async function envoyerMessage(texte) {
-    if (!texte || !texte.trim()) return;
-    const question = texte.trim();
+  function afficherConversation(){
+    const box=document.getElementById("chat-box"); if(!box) return;
+    box.innerHTML=""; messages.forEach(m=>appendMessage(m.role,m.content,{skipPersist:true,typing:false}));
+    box.scrollTop=box.scrollHeight;
+  }
 
-    const suggestionContainer = document.getElementById('chat-suggestions');
-    if (suggestionContainer) suggestionContainer.style.display = 'none';
+  async function envoyerMessage(texte){
+    if(!texte || !texte.trim()) return;
+    const q=texte.trim();
 
-    appendMessage('user', question);
+    // Cacher les suggestions
+    const sugg=document.getElementById('chat-suggestions'); if(sugg) sugg.style.display='none';
+
+    appendMessage('user',q);
     setTyping(true);
 
-    try {
-      const res = await fetch("/api/text", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages })
-      });
-      const data = await res.json();
-      appendMessage('assistant', data.message || "(pas de réponse)", { typing: true });
-    } catch (err) {
-      console.error("Erreur chatbot:", err);
-      appendMessage('assistant', "Oups, problème de connexion. Réessaye dans quelques secondes.", { typing: false });
-    } finally {
+    try{
+      const res=await fetch("/api/text",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages})});
+      const data=await res.json();
+      appendMessage('assistant', data.message || "(pas de réponse)", {typing:true});
+    }catch(e){
+      console.error(e);
+      appendMessage('assistant',"Oups, problème de connexion. Réessaye dans quelques secondes.",{typing:false});
+    }finally{
       setTyping(false);
     }
   }
 
-  // Fonction de reset
-  window.resetConversation = function () {
-    messages = [];
+  // Bouton reset appelé par onclick sur le HTML
+  window.resetConversation=function(){
+    messages=[];
     localStorage.removeItem("chatHistory");
-    afficherConversation();
-
+    // Efface l'UI
+    const box=document.getElementById("chat-box"); if(box) box.innerHTML="";
     // Réaffiche les suggestions
-    const suggestionContainer = document.getElementById('chat-suggestions');
-    if (suggestionContainer) suggestionContainer.style.display = 'block';
+    const sugg=document.getElementById('chat-suggestions'); if(sugg) sugg.style.display='block';
   };
 
-  const sendBtn = document.getElementById("chat-send");
-  const input = document.getElementById("chat-input");
-  if (sendBtn && input) {
-    sendBtn.addEventListener("click", () => {
-      envoyerMessage(input.value);
-      input.value = "";
-      input.focus();
+  // Brancher contrôles
+  (function bindUI(){
+    const sendBtn=document.getElementById("chat-send");
+    const input=document.getElementById("chat-input");
+    if(sendBtn && input){
+      sendBtn.addEventListener("click",()=>{ envoyerMessage(input.value); input.value=""; input.focus(); });
+      input.addEventListener("keypress",(e)=>{ if(e.key==="Enter"){ e.preventDefault(); sendBtn.click(); }});
+    }
+    document.querySelectorAll('#chat-suggestions .suggestion-bubble').forEach(btn=>{
+      const q=btn.dataset.question||btn.textContent.trim();
+      btn.addEventListener('click',()=>envoyerMessage(q));
     });
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") { e.preventDefault(); sendBtn.click(); }
-    });
-  }
+  })();
 
-  document.querySelectorAll('#chat-suggestions .suggestion-bubble').forEach(btn => {
-    const q = btn.dataset.question || btn.textContent.trim();
-    btn.addEventListener('click', () => envoyerMessage(q));
-  });
+  // Démarrage
+  afficherConversation();
+</script>
 
-  (function injectQuickStyles() {
-    const style = document.createElement('style');
-    style.textContent = `
-      #chat-box {display:flex;flex-direction:column;gap:8px;}
-      .user-bubble {align-self:flex-end;background:#e8f0ff;padding:10px 12px;border-radius:14px;max-width:85%;}
-      .assistant-bubble {align-self:flex-start;background:#f6f6f6;padding:10px 12px;border-radius:14px;max-width:85%;}
-    `;
     document.head.appendChild(style);
   })();
 
