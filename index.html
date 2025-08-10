@@ -667,12 +667,16 @@
 <!-- Section Chatbot -->
 <section id="profil-chatbot" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
   <div class="max-w-3xl mx-auto">
-    <div class="text-center">
-      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Parler avec Psycho'Bot</h2>
-      <p class="mt-4 text-xl text-gray-500">
-        Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.
-      </p>
-    </div>
+ <div class="flex items-center justify-between flex-wrap gap-2 text-center sm:text-left">
+  <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Parler avec Psycho'Bot</h2>
+  <button id="clear-chat" class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full shadow">
+    🗑 Effacer la conversation
+  </button>
+  <p class="mt-4 text-xl text-gray-500 w-full sm:w-auto">
+    Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.
+  </p>
+</div>
+
 
     <div class="mt-8">
       <!-- Fenêtre de chat -->
@@ -5676,7 +5680,17 @@ function showPrivacyPolicy() {
 </script>
 
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+document.getElementById("clear-chat").addEventListener("click", () => {
+  document.getElementById("chat-box").innerHTML = "";
+  localStorage.removeItem("chatHistory");
 
+  const msg = document.createElement("div");
+  msg.classList.add("assistant-bubble");
+  msg.textContent = "💬 Conversation effacée.";
+  document.getElementById("chat-box").appendChild(msg);
+});
+
+  
 </body>
 </html>
 
