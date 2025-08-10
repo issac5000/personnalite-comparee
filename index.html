@@ -658,15 +658,15 @@
 
 <!-- Zone de saisie -->
 <div class="flex w-full max-w-lg">
-  <input id="chat-input" type="text" placeholder="Posez votre question..."
-         class="flex-grow px-4 py-2 border border-gray-300 rounded-l-full text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
-  <button id="chat-send"
-          class="px-5 py-2 rounded-r-full bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-    Envoyer
-  </button>
+  <div class="flex w-full border border-gray-300 rounded-full overflow-hidden">
+    <input id="chat-input" type="text" placeholder="Posez votre question..."
+           class="flex-grow px-4 py-2 text-gray-900 placeholder-gray-400 bg-white border-none focus:outline-none focus:ring-0" />
+    <button id="chat-send"
+            class="px-5 py-2 bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none">
+      Envoyer
+    </button>
+  </div>
 </div>
-
-
 </div>
 
 </section>
