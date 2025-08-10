@@ -3797,7 +3797,7 @@ function showPrivacyPolicy() {
                     
                     <div class="bg-blue-50 p-4 rounded-lg">
                         <h4 class="font-semibold text-blue-900">Email</h4>
-                        <p class="text-blue-700">contact@personnalite-comparee.fr</p>
+                        <p class="text-blue-700">contact@personnalitecomparee.com</p>
                     </div>
                     
                     <div class="bg-blue-50 p-4 rounded-lg">
@@ -4620,7 +4620,7 @@ function showPrivacyPolicy() {
 
         function shareProfileCode() {
             const code = document.getElementById('display-code').textContent;
-            const shareText = `Salut ! Peux-tu m'aider à mieux comprendre ma personnalité ? Utilise ce code ${code} sur https://personnalite-comparee.fr pour m'évaluer. Merci ! 😊`;
+            const shareText = `Salut ! Peux-tu m'aider à mieux comprendre ma personnalité ? Utilise ce code ${code} sur https://personnalitecomparee.com pour m'évaluer. Merci ! 😊`;
             
             if (navigator.share) {
                 navigator.share({
@@ -5139,7 +5139,7 @@ function showPrivacyPolicy() {
                 return;
             }
             const overallCertainty = result.user.certainty_score ?? 0;
-            const shareText = `Je viens de découvrir mon profil de personnalité complet ! Je suis ${result.user.mbti_type} (type ${result.user.enneagram_type}) avec ${overallCertainty}% de certitude. Découvrez le vôtre sur https://personnalite-comparee.fr`;
+            const shareText = `Je viens de découvrir mon profil de personnalité complet ! Je suis ${result.user.mbti_type} (type ${result.user.enneagram_type}) avec ${overallCertainty}% de certitude. Découvrez le vôtre sur https://personnalitecomparee.com`;
             if (navigator.share) {
                 navigator.share({
                     title: 'Mon profil de personnalité',
