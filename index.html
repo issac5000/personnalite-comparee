@@ -5670,6 +5670,139 @@ function showPrivacyPolicy() {
   }
 </style>
 
+  <script>
+  // === Mémoire locale ===
+  let messages = JSON.parse(localStorage.getItem("chatHistory")) || [];
+
+  // === Estimation et trimming client (économie tokens) ===
+  function estimateTokens(str) {
+    if (!str) return 0;
+    return Math.ceil(str.length / 4); // approx 4 chars/token
+  }
+
+  function trimHistoryClient(msgs, budgetTokens) {
+    const keep = [];
+    let total = 0;
+    for (let i = msgs.length - 1; i >= 0; i--) {
+      const m = msgs[i];
+      const c = typeof m.content === "string" ? m.content : JSON.stringify(m.content);
+      const cost = estimateTokens(c) + 8; // marge pour role/format
+      if (total + cost > budgetTokens) break;
+      keep.push(m);
+      total += cost;
+    }
+    return keep.reverse();
+  }
+
+  // Budget contexte côté client (le serveur retrimmera encore si besoin)
+  const MAX_CONTEXT_TOKENS_CLIENT = 1600;
+
+  // === UI ===
+  function afficherConversation() {
+    const chatBox = document.getElementById("chat-box");
+    chatBox.innerHTML = "";
+    messages.forEach(msg => {
+      const div = document.createElement("div");
+      div.className = msg.role === "user" ? "user-message" : "assistant-message";
+      div.textContent = msg.content;
+      chatBox.appendChild(div);
+    });
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function setTyping(isTyping) {
+    const el = document.getElementById("pc-typing-indicator");
+    if (!el) return;
+    el.hidden = !isTyping;
+  }
+
+  async function envoyerMessage(texte) {
+    if (!texte || !texte.trim()) return;
+
+    // 1) Ajouter le message user
+    messages.push({ role: "user", content: texte.trim() });
+
+    // 2) Trim côté client (pour limiter le coût avant envoi)
+    const safeMessages = trimHistoryClient(messages, MAX_CONTEXT_TOKENS_CLIENT);
+
+    // 3) Persister et afficher
+    messages = safeMessages;
+    localStorage.setItem("chatHistory", JSON.stringify(messages));
+    afficherConversation();
+    setTyping(true);
+
+    try {
+      // 4) Appel API avec TOUT l’historique (sécurisé)
+      const res = await fetch("/api/text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages }) // on envoie l'historique complet (déjà trim)
+      });
+
+      const data = await res.json();
+
+      // 5) Ajouter la réponse assistant
+      messages.push({ role: "assistant", content: data.message || "(pas de réponse)" });
+
+      // 6) Re-trim + persister + afficher
+      const safeAfter = trimHistoryClient(messages, MAX_CONTEXT_TOKENS_CLIENT);
+      messages = safeAfter;
+      localStorage.setItem("chatHistory", JSON.stringify(messages));
+      afficherConversation();
+    } catch (err) {
+      console.error("Erreur chatbot :", err);
+    } finally {
+      setTyping(false);
+    }
+  }
+
+  // Reset conversation (si tu veux un bouton)
+  window.resetConversation = function () {
+    messages = [];
+    localStorage.removeItem("chatHistory");
+    afficherConversation();
+  };
+
+  // Brancher bouton ENVOYER
+  const sendBtn = document.getElementById("chat-send");
+  const input = document.getElementById("chat-input");
+
+  if (sendBtn && input) {
+    sendBtn.addEventListener("click", () => {
+      envoyerMessage(input.value);
+      input.value = "";
+      input.focus();
+    });
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendBtn.click();
+      }
+    });
+  }
+
+  // Brancher les bulles de suggestions existantes
+  document.querySelectorAll('#chat-suggestions .suggestion-bubble').forEach(btn => {
+    const q = btn.dataset.question || btn.textContent;
+    btn.addEventListener('click', () => envoyerMessage(q));
+  });
+
+  // Styles rapides des bulles (si besoin)
+  (function injectQuickStyles(){
+    const style = document.createElement('style');
+    style.textContent = `
+      #chat-box { display:flex; flex-direction:column; gap:8px; }
+      .user-message { align-self:flex-end; background:#e8f0ff; padding:10px 12px; border-radius:14px; max-width:85%; }
+      .assistant-message { align-self:flex-start; background:#f6f6f6; padding:10px 12px; border-radius:14px; max-width:85%; }
+    `;
+    document.head.appendChild(style);
+  })();
+
+  // Démarrage
+  afficherConversation();
+</script>
+
+
 </body>
 </html>
 
