@@ -5645,8 +5645,8 @@ function showPrivacyPolicy() {
 <script>
 function addChatStyles() {
   const style = document.createElement("style");
-  style.textContent = 
-    /* Bulles de suggestions style iOS raffiné */
+  style.textContent = `
+    /* Bulles de suggestions style iOS ultra arrondies */
     .suggestion-bubble {
       display: inline-flex;
       align-items: center;
@@ -5655,8 +5655,8 @@ function addChatStyles() {
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       border: 1px solid rgba(255, 255, 255, 0.28);
-      border-radius: 9999px;
-      padding: 10px 18px;
+      border-radius: 50px; /* encore plus arrondi */
+      padding: 10px 22px;
       margin: 6px;
       font-size: 14px;
       font-weight: 500; /* moins gras */
@@ -5670,7 +5670,7 @@ function addChatStyles() {
       background: rgba(255, 255, 255, 0.28);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     }
-  ;
+  `;
   document.head.appendChild(style);
 }
 addChatStyles();
