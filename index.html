@@ -667,16 +667,17 @@
 <!-- Section Chatbot -->
 <section id="profil-chatbot" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
   <div class="max-w-3xl mx-auto">
- <div class="flex items-center justify-between flex-wrap gap-2 text-center sm:text-left">
-  <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Parler avec Psycho'Bot</h2>
-  <button id="clear-chat" class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full shadow">
-    🗑 Effacer la conversation
-  </button>
-  <p class="mt-4 text-xl text-gray-500 w-full sm:w-auto">
-    Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.
-  </p>
-</div>
-
+    <div class="flex items-center justify-between flex-wrap gap-2 text-center sm:text-left">
+      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Parler avec Psycho'Bot</h2>
+      <button id="clear-chat"
+              onclick="resetConversation()"
+              class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full shadow">
+        🗑 Effacer la conversation
+      </button>
+      <p class="mt-4 text-xl text-gray-500 w-full sm:w-auto">
+        Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.
+      </p>
+    </div>
 
     <div class="mt-8">
       <!-- Fenêtre de chat -->
@@ -692,20 +693,21 @@
         </div>
       </div>
 
-<!-- Zone de saisie -->
-<div class="flex w-full">
-  <div class="flex w-full border border-gray-300 rounded-full overflow-hidden">
-    <input id="chat-input" type="text" placeholder="Posez votre question à Psycho'Bot..."
-           class="flex-grow px-4 py-2 text-gray-900 placeholder-gray-400 bg-white border-none focus:outline-none focus:ring-0" />
-    <button id="chat-send"
-            class="px-5 py-2 bg-black text-white font-medium hover:bg-gray-800 focus:outline-none">
-      Envoyer
-    </button>
+      <!-- Zone de saisie -->
+      <div class="flex w-full">
+        <div class="flex w-full border border-gray-300 rounded-full overflow-hidden">
+          <input id="chat-input" type="text" placeholder="Posez votre question à Psycho'Bot..."
+                 class="flex-grow px-4 py-2 text-gray-900 placeholder-gray-400 bg-white border-none focus:outline-none focus:ring-0" />
+          <button id="chat-send"
+                  class="px-5 py-2 bg-black text-white font-medium hover:bg-gray-800 focus:outline-none">
+            Envoyer
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
-</div>
-
 </section>
+
 
 
 <script>
@@ -5505,190 +5507,144 @@ function showPrivacyPolicy() {
       }
     }
 
-    // --- Dots
-    ctx.fillStyle = getComputedStyle(document.documentElement)
-      .getPropertyValue('--pc-dot') || 'rgba(10,15,26,.62)';
-    for(const p of pts){ ctx.beginPath(); ctx.arc(p.x,p.y,1.2,0,Math.PI*2); ctx.fill(); }
-
-    requestAnimationFrame(frame);
-  }
-  frame();
-})();
-</script>
-<style>
-  /* Arrondis forcés pour la fenêtre de chat et la zone de saisie */
-  #chat-window {
-    border-radius: 32px !important;
-    overflow: hidden !important;
-  }
-  #chat-input {
-    border-radius: 9999px 0 0 9999px !important;
-  }
-  #chat-send {
-    border-radius: 0 9999px 9999px 0 !important;
-  }
-</style>
-
- <script>
-  // ===== Mémoire locale + trim =====
+   <script>
   let messages = JSON.parse(localStorage.getItem("chatHistory")) || [];
+  const MAX_CONTEXT_TOKENS_CLIENT = 1600;
 
-  function estimateTokens(str){ if(!str) return 0; return Math.ceil(str.length/4); }
-  function trimHistoryClient(msgs, budgetTokens){
-    const keep=[]; let total=0;
-    for(let i=msgs.length-1;i>=0;i--){
-      const m=msgs[i];
-      const c=typeof m.content==="string"?m.content:JSON.stringify(m.content);
-      const cost=estimateTokens(c)+8;
-      if(total+cost>budgetTokens) break;
-      keep.push(m); total+=cost;
+  function estimateTokens(str) { return Math.ceil((str || "").length / 4); }
+  function trimHistoryClient(msgs, budgetTokens) {
+    const keep = [];
+    let total = 0;
+    for (let i = msgs.length - 1; i >= 0; i--) {
+      const m = msgs[i];
+      const c = typeof m.content === "string" ? m.content : JSON.stringify(m.content);
+      const cost = estimateTokens(c) + 8;
+      if (total + cost > budgetTokens) break;
+      keep.push(m); total += cost;
     }
     return keep.reverse();
   }
-  const MAX_CONTEXT_TOKENS_CLIENT = 1600;
 
-  // ===== UI helpers =====
-  function setTyping(isTyping){
-    const el=document.getElementById("pc-typing-indicator");
-    if(!el) return;
-    el.hidden=!isTyping;
+  function setTyping(isTyping) {
+    const el = document.getElementById("pc-typing-indicator");
+    if (el) el.hidden = !isTyping;
   }
-  function safeScrollToBottom(el){
+  function safeScrollToBottom(el) {
     el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
   }
 
-  // Rendu simple de tout l'historique (utilisé au chargement et après reset)
-  function afficherConversation(){
-    const chatBox=document.getElementById("chat-box");
-    chatBox.innerHTML="";
-    messages.forEach(m=>appendMessage(m.role, m.content, {skipPersist:true, typing:false}));
-    chatBox.scrollTop=chatBox.scrollHeight;
+  function afficherConversation() {
+    const chatBox = document.getElementById("chat-box");
+    chatBox.innerHTML = "";
+    messages.forEach(m => appendMessage(m.role, m.content, { skipPersist: true, typing: false }));
+    chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  // Append une bulle (avec Typed si assistant)
-  function appendMessage(role, text, opts={}){
-    const { typing = (role==='assistant'), skipPersist=false } = opts;
-    const chatBox=document.getElementById("chat-box");
-    if(!chatBox) return;
+  function appendMessage(role, text, opts = {}) {
+    const { typing = (role === 'assistant'), skipPersist = false } = opts;
+    const chatBox = document.getElementById("chat-box");
+    if (!chatBox) return;
 
-    const row=document.createElement('div');
-    row.className = `chat-row ${role==='user'?'user':'assistant'}`;
-    const bubble=document.createElement('div');
-    bubble.className = `chat-bubble ${role==='user'?'user-bubble':'assistant-bubble'}`;
+    const row = document.createElement('div');
+    row.className = `chat-row ${role === 'user' ? 'user' : 'assistant'}`;
+    const bubble = document.createElement('div');
+    bubble.className = `chat-bubble ${role === 'user' ? 'user-bubble' : 'assistant-bubble'}`;
     row.appendChild(bubble);
     chatBox.appendChild(row);
 
-    if(role==='assistant' && typing && window.Typed){
-      // Effet progressif si Typed dispo
+    if (role === 'assistant' && typing && window.Typed) {
       bubble.dataset.fullText = text;
-      const observer=new MutationObserver(()=>safeScrollToBottom(chatBox));
-      observer.observe(bubble,{childList:true,subtree:true,characterData:true});
-      new Typed(bubble,{
-        strings:[text],
-        typeSpeed:30,
-        showCursor:false,
-        loop:false,
-        contentType:'html',
-        onComplete:()=>{ observer.disconnect(); safeScrollToBottom(chatBox); }
+      const observer = new MutationObserver(() => safeScrollToBottom(chatBox));
+      observer.observe(bubble, { childList: true, subtree: true, characterData: true });
+      new Typed(bubble, {
+        strings: [text],
+        typeSpeed: 30,
+        showCursor: false,
+        loop: false,
+        contentType: 'html',
+        onComplete: () => { observer.disconnect(); safeScrollToBottom(chatBox); }
       });
     } else {
-      // Fallback sans Typed ou message user
       bubble.textContent = text;
     }
     safeScrollToBottom(chatBox);
 
-    if(!skipPersist){
-      messages.push({ role, content:text });
+    if (!skipPersist) {
+      messages.push({ role, content: text });
       messages = trimHistoryClient(messages, MAX_CONTEXT_TOKENS_CLIENT);
       localStorage.setItem("chatHistory", JSON.stringify(messages));
     }
   }
 
-  async function envoyerMessage(texte){
-    if(!texte || !texte.trim()) return;
+  async function envoyerMessage(texte) {
+    if (!texte || !texte.trim()) return;
     const question = texte.trim();
 
-    // Cacher les suggestions au 1er envoi
-    const suggestionContainer=document.getElementById('chat-suggestions');
-    if(suggestionContainer) suggestionContainer.remove();
+    const suggestionContainer = document.getElementById('chat-suggestions');
+    if (suggestionContainer) suggestionContainer.style.display = 'none';
 
-    // Ajouter le message user (et persister)
     appendMessage('user', question);
-
-    // Afficher indicateur "en train d'écrire"
     setTyping(true);
 
-    try{
-      // Envoyer l'historique complet
-      const res = await fetch("/api/text",{
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
+    try {
+      const res = await fetch("/api/text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages })
       });
       const data = await res.json();
-
-      // Ajouter la réponse assistant AVEC typing progressif
-      appendMessage('assistant', data.message || "(pas de réponse)", { typing:true });
-    }catch(err){
+      appendMessage('assistant', data.message || "(pas de réponse)", { typing: true });
+    } catch (err) {
       console.error("Erreur chatbot:", err);
-      appendMessage('assistant', "Oups, problème de connexion. Réessaye dans quelques secondes.", { typing:false });
-    }finally{
+      appendMessage('assistant', "Oups, problème de connexion. Réessaye dans quelques secondes.", { typing: false });
+    } finally {
       setTyping(false);
     }
   }
 
-  // Reset convo (si tu ajoutes un bouton qui appelle resetConversation())
-  window.resetConversation = function(){
-    messages=[];
+  // Fonction de reset
+  window.resetConversation = function () {
+    messages = [];
     localStorage.removeItem("chatHistory");
     afficherConversation();
+
+    // Réaffiche les suggestions
+    const suggestionContainer = document.getElementById('chat-suggestions');
+    if (suggestionContainer) suggestionContainer.style.display = 'block';
   };
 
-  // ===== Brancher les contrôles =====
   const sendBtn = document.getElementById("chat-send");
-  const input   = document.getElementById("chat-input");
-  if(sendBtn && input){
-    sendBtn.addEventListener("click", ()=>{
+  const input = document.getElementById("chat-input");
+  if (sendBtn && input) {
+    sendBtn.addEventListener("click", () => {
       envoyerMessage(input.value);
-      input.value="";
+      input.value = "";
       input.focus();
     });
-    input.addEventListener("keypress",(e)=>{
-      if(e.key==="Enter"){ e.preventDefault(); sendBtn.click(); }
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); sendBtn.click(); }
     });
   }
 
-  // Brancher les suggestions (si elles sont présentes au chargement)
-  document.querySelectorAll('#chat-suggestions .suggestion-bubble').forEach(btn=>{
+  document.querySelectorAll('#chat-suggestions .suggestion-bubble').forEach(btn => {
     const q = btn.dataset.question || btn.textContent.trim();
-    btn.addEventListener('click', ()=> envoyerMessage(q));
+    btn.addEventListener('click', () => envoyerMessage(q));
   });
 
-  // Styles rapides (si besoin)
-  (function injectQuickStyles(){
-    const style=document.createElement('style');
-    style.textContent=`
-      #chat-box{display:flex;flex-direction:column;gap:8px;}
-      .user-bubble{align-self:flex-end;background:#e8f0ff;padding:10px 12px;border-radius:14px;max-width:85%;}
-      .assistant-bubble{align-self:flex-start;background:#f6f6f6;padding:10px 12px;border-radius:14px;max-width:85%;}
+  (function injectQuickStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+      #chat-box {display:flex;flex-direction:column;gap:8px;}
+      .user-bubble {align-self:flex-end;background:#e8f0ff;padding:10px 12px;border-radius:14px;max-width:85%;}
+      .assistant-bubble {align-self:flex-start;background:#f6f6f6;padding:10px 12px;border-radius:14px;max-width:85%;}
     `;
     document.head.appendChild(style);
   })();
 
-  // Démarrage
   afficherConversation();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-document.getElementById("clear-chat").addEventListener("click", () => {
-  document.getElementById("chat-box").innerHTML = "";
-  localStorage.removeItem("chatHistory");
-
-  const msg = document.createElement("div");
-  msg.classList.add("assistant-bubble");
-  msg.textContent = "💬 Conversation effacée.";
-  document.getElementById("chat-box").appendChild(msg);
-});
 
   
 </body>
