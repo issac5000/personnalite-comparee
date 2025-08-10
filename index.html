@@ -4298,9 +4298,12 @@ function displayResults(results) {
             localStorage.removeItem('externalEvaluationRelation');
             // Afficher un message de confirmation
             const questionsContainer = document.getElementById('questions-container');
-            questionsContainer.innerHTML = `
-                <div class="max-w-2xl mx-auto text-center">
-                    <div class="bg-white shadow-lg rounded-lg p-8">
+            if (questionsContainer) {
+                questionsContainer.innerHTML = '';
+            }
+            const modalHTML = `
+                <div id="evaluation-modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div id="evaluation-modal" class="bg-white rounded-lg shadow-lg p-8 max-w-md w-11/12 transform opacity-0 scale-95 transition-all duration-300">
                         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                             <i class="fas fa-check text-green-600 text-xl"></i>
                         </div>
@@ -4311,12 +4314,25 @@ function displayResults(results) {
                         <p class="text-sm text-gray-500 mb-6">
                             La personne recevra ses résultats complets une fois que toutes les évaluations seront terminées.
                         </p>
-                        <button onclick="location.reload()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        <button id="close-evaluation-modal" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
                             <i class="fas fa-home mr-2"></i> Retour à l'accueil
                         </button>
                     </div>
                 </div>
             `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            const modal = document.getElementById('evaluation-modal');
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0', 'scale-95');
+                modal.classList.add('opacity-100', 'scale-100');
+            });
+            document.getElementById('close-evaluation-modal').addEventListener('click', () => {
+                const overlay = document.getElementById('evaluation-modal-overlay');
+                if (overlay) {
+                    overlay.remove();
+                }
+                window.location.href = 'index.html';
+            });
         }
 
         // Chargement de la progression au démarrage
