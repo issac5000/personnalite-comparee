@@ -49,7 +49,7 @@ Tu dois toujours tutoyer l'utilisateur sauf si il te vouvoie, emploie un ton dé
     };
 
     const payload = {
-model: "gpt-4o-mini",
+model: "gpt-5",
       messages: [systemMessage, ...messages]
     };
 
