@@ -5646,7 +5646,7 @@ function showPrivacyPolicy() {
 function addChatStyles() {
   const style = document.createElement("style");
   style.textContent = `
-    /* Bulles de suggestions style iOS ultra arrondies */
+    /* Bulles de suggestions style iOS ultra arrondies comme le bouton réinitialiser */
     .suggestion-bubble {
       display: inline-flex;
       align-items: center;
@@ -5655,11 +5655,11 @@ function addChatStyles() {
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       border: 1px solid rgba(255, 255, 255, 0.28);
-      border-radius: 9999px; /* arrondi maximum */
+      border-radius: 50px; /* même arrondi que bouton réinitialiser */
       padding: 10px 22px;
       margin: 6px;
       font-size: 14px;
-      font-weight: 500; /* moins gras */
+      font-weight: 500;
       color: rgba(0, 0, 0, 0.85);
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
