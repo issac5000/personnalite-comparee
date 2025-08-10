@@ -5655,7 +5655,7 @@ function addChatStyles() {
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       border: 1px solid rgba(255, 255, 255, 0.28);
-      border-radius: 50px; /* encore plus arrondi */
+      border-radius: 9999px; /* arrondi maximum */
       padding: 10px 22px;
       margin: 6px;
       font-size: 14px;
@@ -5664,6 +5664,7 @@ function addChatStyles() {
       cursor: pointer;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
       transition: all 0.3s ease;
+      white-space: nowrap;
     }
     .suggestion-bubble:hover {
       transform: translateY(-1px) scale(1.04);
