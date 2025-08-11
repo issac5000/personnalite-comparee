@@ -1,102 +1,106 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>📊 Dashboard Tracking — enrichi</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>📊 Dashboard Tracking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-100 text-gray-900">
-  <header class="bg-white shadow p-4 flex items-center justify-between">
-    <h1 class="text-xl md:text-2xl font-bold">📊 Dashboard Tracking</h1>
-    <div class="flex items-center gap-2 text-sm">
-      <span class="text-gray-600">Mon trafic :</span>
-      <button id="btn-exclude" class="px-3 py-1 rounded bg-red-600 text-white">Exclure</button>
-      <button id="btn-include" class="px-3 py-1 rounded bg-gray-300">Ré-inclure</button>
-      <span id="dnt-state" class="ml-2 text-gray-500"></span>
-    </div>
-  </header>
+<body class="bg-gray-100 text-gray-900 text-[14px]">
+  <div class="max-w-6xl mx-auto px-4 py-6">
 
-  <!-- Cards -->
-  <section class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <div class="bg-white rounded shadow p-4">
-      <p class="text-gray-500 text-sm">Sessions totales</p>
-      <p id="stat-total-sessions" class="text-2xl font-bold">—</p>
-    </div>
-    <div class="bg-white rounded shadow p-4">
-      <p class="text-gray-500 text-sm">Événements totaux</p>
-      <p id="stat-total-events" class="text-2xl font-bold">—</p>
-    </div>
-    <div class="bg-white rounded shadow p-4">
-      <p class="text-gray-500 text-sm">Visiteurs uniques aujourd’hui</p>
-      <p id="stat-uniques-today" class="text-2xl font-bold">—</p>
-    </div>
-    <div class="bg-white rounded shadow p-4">
-      <p class="text-gray-500 text-sm">Durée moyenne de session</p>
-      <p id="stat-avg-duration" class="text-2xl font-bold">—</p>
-    </div>
-  </section>
-
-  <!-- Charts -->
-  <section class="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-    <div class="bg-white rounded shadow p-4">
-      <h2 class="font-semibold mb-3">Événements par heure (24h)</h2>
-      <canvas id="chartEventsHour" height="140"></canvas>
-    </div>
-    <div class="bg-white rounded shadow p-4">
-      <h2 class="font-semibold mb-3">Répartition par type d’événement</h2>
-      <canvas id="chartEventTypes" height="140"></canvas>
-    </div>
-    <div class="bg-white rounded shadow p-4">
-      <h2 class="font-semibold mb-3">Top sources (utm/referrer)</h2>
-      <canvas id="chartSources" height="140"></canvas>
-    </div>
-    <div class="bg-white rounded shadow p-4">
-      <h2 class="font-semibold mb-3">Pages les plus vues</h2>
-      <canvas id="chartTopPages" height="140"></canvas>
-    </div>
-  </section>
-
-  <!-- Sessions table -->
-  <section class="p-4">
-    <div class="bg-white rounded shadow">
-      <div class="p-4 border-b flex items-center justify-between">
-        <h2 class="font-semibold">📌 Sessions récentes (humains)</h2>
-        <input id="searchInput" type="text" placeholder="Rechercher…" class="border rounded px-3 py-1 text-sm">
+    <header class="bg-white shadow p-4 rounded-lg mb-6 flex items-center justify-between">
+      <h1 class="text-xl font-bold">📊 Dashboard Tracking</h1>
+      <div class="flex items-center gap-2">
+        <span class="text-gray-600">Mon trafic :</span>
+        <button id="btn-exclude" class="px-3 py-1 rounded bg-red-600 text-white text-sm">Exclure</button>
+        <button id="btn-include" class="px-3 py-1 rounded bg-gray-300 text-sm">Ré-inclure</button>
+        <span id="dnt-state" class="ml-2 text-sm text-gray-500"></span>
       </div>
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-sm">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-3 py-2 text-left">Session</th>
-              <th class="px-3 py-2 text-left">Durée</th>
-              <th class="px-3 py-2 text-left"># Évents</th>
-              <th class="px-3 py-2 text-left"># Pages</th>
-              <th class="px-3 py-2 text-left">Source</th>
-              <th class="px-3 py-2 text-left">Navigateur / OS</th>
-              <th class="px-3 py-2 text-left">1ère visite</th>
-              <th class="px-3 py-2 text-left">Dernière activité</th>
-            </tr>
-          </thead>
-          <tbody id="sessionsBody" class="divide-y"></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
+    </header>
 
-  <!-- Debug -->
-  <section class="p-4">
-    <div class="bg-white rounded shadow p-4">
-      <button id="toggle-debug" class="px-3 py-1 rounded bg-gray-200 text-sm">Afficher Debug JSON</button>
-      <pre id="debug-json" class="hidden text-xs mt-4 bg-gray-900 text-green-400 p-3 rounded overflow-auto"></pre>
-    </div>
-  </section>
+    <!-- Cards -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded shadow p-4 text-center">
+        <p class="text-gray-500 text-xs">Sessions totales</p>
+        <p id="stat-total-sessions" class="text-xl font-bold">—</p>
+      </div>
+      <div class="bg-white rounded shadow p-4 text-center">
+        <p class="text-gray-500 text-xs">Événements totaux</p>
+        <p id="stat-total-events" class="text-xl font-bold">—</p>
+      </div>
+      <div class="bg-white rounded shadow p-4 text-center">
+        <p class="text-gray-500 text-xs">Visiteurs uniques (24h)</p>
+        <p id="stat-uniques-today" class="text-xl font-bold">—</p>
+      </div>
+      <div class="bg-white rounded shadow p-4 text-center">
+        <p class="text-gray-500 text-xs">Durée moyenne session</p>
+        <p id="stat-avg-duration" class="text-xl font-bold">—</p>
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+      <div class="bg-white rounded shadow p-4">
+        <h2 class="font-semibold mb-3 text-sm">Événements par heure (24h)</h2>
+        <div class="h-64"><canvas id="chartEventsHour"></canvas></div>
+      </div>
+      <div class="bg-white rounded shadow p-4">
+        <h2 class="font-semibold mb-3 text-sm">Répartition par type d’événement</h2>
+        <div class="h-64"><canvas id="chartEventTypes"></canvas></div>
+      </div>
+      <div class="bg-white rounded shadow p-4">
+        <h2 class="font-semibold mb-3 text-sm">Top sources (utm / referrer)</h2>
+        <div class="h-64"><canvas id="chartSources"></canvas></div>
+      </div>
+      <div class="bg-white rounded shadow p-4">
+        <h2 class="font-semibold mb-3 text-sm">Pages les plus vues</h2>
+        <div class="h-64"><canvas id="chartTopPages"></canvas></div>
+      </div>
+    </section>
+
+    <!-- Sessions table -->
+    <section class="mb-6">
+      <div class="bg-white rounded shadow">
+        <div class="p-4 border-b flex items-center justify-between">
+          <h2 class="font-semibold text-sm">📌 Sessions récentes (humains)</h2>
+          <input id="searchInput" type="text" placeholder="Rechercher…" class="border rounded px-3 py-1 text-sm">
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-3 py-2 text-left">Session</th>
+                <th class="px-3 py-2 text-left">Durée</th>
+                <th class="px-3 py-2 text-left"># Évén.</th>
+                <th class="px-3 py-2 text-left"># Pages</th>
+                <th class="px-3 py-2 text-left">Source</th>
+                <th class="px-3 py-2 text-left">Navigateur / OS</th>
+                <th class="px-3 py-2 text-left">1ère visite</th>
+                <th class="px-3 py-2 text-left">Dernière activité</th>
+              </tr>
+            </thead>
+            <tbody id="sessionsBody" class="divide-y"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Debug -->
+    <section>
+      <div class="bg-white rounded shadow p-4">
+        <button id="toggle-debug" class="px-3 py-1 rounded bg-gray-200 text-sm">Afficher Debug JSON</button>
+        <pre id="debug-json" class="hidden text-xs mt-4 bg-gray-900 text-green-400 p-3 rounded overflow-auto"></pre>
+      </div>
+    </section>
+
+  </div><!-- /container -->
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ===== Config Supabase (ta vraie URL/clé) =====
+    // ===== Config Supabase =====
     const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg";
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -114,8 +118,8 @@
     })();
 
     // ===== Helpers =====
-    const isBotUA = ua => (ua||'').toLowerCase().match(/vercel-|bot|crawler|spider|headless/);
     const H24 = 24*60*60*1000;
+    const isBotUA = ua => (ua||'').toLowerCase().match(/vercel-|bot|crawler|spider|headless/);
 
     function parseUA(ua='') {
       const s = ua.toLowerCase();
@@ -124,163 +128,106 @@
       else if (s.includes('safari') && !s.includes('chrome')) browser = 'Safari';
       else if (s.includes('firefox')) browser = 'Firefox';
       else if (s.includes('edg/')) browser = 'Edge';
-
       if (s.includes('mac os x')) os = 'macOS';
       else if (s.includes('windows')) os = 'Windows';
       else if (s.includes('android')) os = 'Android';
       else if (s.includes('iphone') || s.includes('ios')) os = 'iOS';
-      return {browser, os};
+      return { browser, os };
     }
-
-    const domainFrom = url => {
-      try { const u = new URL(url); return u.hostname.replace(/^www\./,''); }
-      catch { return url || ''; }
-    };
-
-    const utmSource = utm => {
-      if (!utm) return null;
-      try {
-        if (typeof utm === 'string') return utm;
-        if (utm.utm_source) return utm.utm_source;
-      } catch {}
-      return null;
-    };
-
-    function niceDuration(ms) {
-      if (!ms || ms < 0) return '—';
-      const m = Math.floor(ms/60000), s = Math.floor((ms%60000)/1000);
-      return m ? `${m}m ${s}s` : `${s}s`;
-    }
+    const domainFrom = url => { try { const u=new URL(url); return u.hostname.replace(/^www\./,''); } catch { return url||''; } };
+    const utmSource = utm => { try { if (!utm) return null; if (typeof utm==='string') return utm; return utm.utm_source||null; } catch { return null; } };
+    const niceDuration = ms => (!ms || ms<0) ? '—' : (Math.floor(ms/60000) ? `${Math.floor(ms/60000)}m ${Math.floor((ms%60000)/1000)}s` : `${Math.floor((ms%60000)/1000)}s`);
 
     // ===== Charts refs =====
     let chHour, chTypes, chSources, chPages;
 
-    // ===== Load & render =====
     async function loadAll() {
-      console.log('🔍 fetch data…');
-      // 1) Récup brute
-      const { data: sessionsRaw, error: eS } = await sb
-        .from('sessions')
-        .select('*')
-        .order('last_activity_at', { ascending: false })
-        .limit(200);
-      if (eS) console.error('sessions error', eS);
-
+      // 1) Get data
+      const { data: sessionsRaw } = await sb.from('sessions').select('*').order('last_activity_at',{ascending:false}).limit(200);
       const since24h = new Date(Date.now()-H24).toISOString();
-      const { data: eventsRaw, error: eE } = await sb
-        .from('events')
-        .select('*')
-        .gte('occurred_at', since24h)
-        .order('occurred_at', { ascending: false })
-        .limit(1000);
-      if (eE) console.error('events error', eE);
+      const { data: eventsRaw }   = await sb.from('events').select('*').gte('occurred_at', since24h).order('occurred_at',{ascending:false}).limit(1000);
 
-      // 2) Filtrage humains
+      // 2) Filter humans
       const sessions = (sessionsRaw||[]).filter(s => !isBotUA(s.user_agent));
-      const events   = (eventsRaw||[]).filter(e => !isBotUA(e.user_agent))
-                                     .filter(e => e.event_name !== 'debug_test');
+      const events   = (eventsRaw||[]).filter(e => !isBotUA(e.user_agent)).filter(e => e.event_name!=='debug_test');
 
-      // 3) Compteurs globaux (head count)
+      // 3) Totals
       const { count: totalSessions } = await sb.from('sessions').select('*',{count:'exact',head:true});
       const { count: totalEvents }   = await sb.from('events').select('*',{count:'exact',head:true});
 
-      // Uniques today (sessions dont first_seen_at >= 00:00 aujourd’hui OU last_activity_at >= 00:00)
-      const startDay = new Date(); startDay.setHours(0,0,0,0);
-      const uniquesToday = sessions.filter(s =>
-        new Date(s.first_seen_at||s.last_activity_at) >= startDay
-      ).length;
+      // uniques today
+      const start = new Date(); start.setHours(0,0,0,0);
+      const uniquesToday = sessions.filter(s => new Date(s.first_seen_at||s.last_activity_at) >= start).length;
 
-      // Durée moyenne = avg( last_activity_at - first_seen_at )
-      const durations = sessions
-        .map(s => (new Date(s.last_activity_at) - new Date(s.first_seen_at)))
-        .filter(v => !isNaN(v) && v >= 0);
-      const avgDuration = durations.length ? Math.round(durations.reduce((a,b)=>a+b,0)/durations.length) : 0;
+      // avg duration
+      const durations = sessions.map(s => (new Date(s.last_activity_at) - new Date(s.first_seen_at))).filter(v => !isNaN(v) && v>=0);
+      const avg = durations.length ? Math.round(durations.reduce((a,b)=>a+b,0)/durations.length) : 0;
 
-      // 4) Aggregations côté client
-      // events per hour (24h)
-      const perHour = Array.from({length:24}, (_,i)=>({h:i,c:0}));
-      events.forEach(e => { const h = new Date(e.occurred_at).getHours(); perHour[h].c++; });
+      // 4) Aggregations
+      const perHour = Array.from({length:24},(_,i)=>({h:i,c:0}));
+      events.forEach(e => perHour[new Date(e.occurred_at).getHours()].c++);
 
-      // event types distribution
       const typeCount = {};
-      events.forEach(e => { typeCount[e.event_name]=(typeCount[e.event_name]||0)+1; });
+      events.forEach(e => typeCount[e.event_name]=(typeCount[e.event_name]||0)+1);
 
-      // sources (utm_source ou referrer domain)
       const srcCount = {};
       events.forEach(e => {
         const src = utmSource(e.utm) || domainFrom(e.referrer) || 'direct/none';
         srcCount[src]=(srcCount[src]||0)+1;
       });
 
-      // top pages
       const pageCount = {};
       events.forEach(e => {
         const p = e.page_url ? e.page_url.split('?')[0] : '(inconnu)';
         pageCount[p]=(pageCount[p]||0)+1;
       });
 
-      // build maps per session: events & pages
       const evBySession = new Map();
-      events.forEach(e => {
-        if (!evBySession.has(e.session_id)) evBySession.set(e.session_id, []);
-        evBySession.get(e.session_id).push(e);
-      });
+      events.forEach(e => { if(!evBySession.has(e.session_id)) evBySession.set(e.session_id,[]); evBySession.get(e.session_id).push(e); });
 
-      // 5) Render cards
+      // 5) Cards
       document.getElementById('stat-total-sessions').textContent = totalSessions ?? 0;
       document.getElementById('stat-total-events').textContent   = totalEvents ?? 0;
       document.getElementById('stat-uniques-today').textContent  = uniquesToday;
-      document.getElementById('stat-avg-duration').textContent   = niceDuration(avgDuration);
+      document.getElementById('stat-avg-duration').textContent   = niceDuration(avg);
 
-      // 6) Render charts
-      const lblHour = perHour.map(x => `${x.h}h`);
-      const datHour = perHour.map(x => x.c);
-      const ctxH = document.getElementById('chartEventsHour').getContext('2d');
+      // 6) Charts (fixed container height + maintainAspectRatio:false)
+      const opt = { responsive:true, maintainAspectRatio:false, animation:false };
       chHour?.destroy();
-      chHour = new Chart(ctxH, {
+      chHour = new Chart(document.getElementById('chartEventsHour'), {
         type:'line',
-        data:{ labels: lblHour, datasets:[{ label:'Événements', data: datHour, borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,.15)', fill:true, tension:.3 }]},
-        options:{ responsive:true, maintainAspectRatio:false }
+        data:{ labels: perHour.map(x=>`${x.h}h`), datasets:[{ label:'Événements', data: perHour.map(x=>x.c), borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,.15)', fill:true, tension:.3 }]},
+        options: opt
       });
-
-      const lblTypes = Object.keys(typeCount);
-      const datTypes = Object.values(typeCount);
-      const ctxT = document.getElementById('chartEventTypes').getContext('2d');
       chTypes?.destroy();
-      chTypes = new Chart(ctxT, {
+      chTypes = new Chart(document.getElementById('chartEventTypes'), {
         type:'doughnut',
-        data:{ labels: lblTypes, datasets:[{ data: datTypes }]},
-        options:{ responsive:true, maintainAspectRatio:false }
+        data:{ labels:Object.keys(typeCount), datasets:[{ data:Object.values(typeCount) }]},
+        options: opt
       });
-
-      // top 8 sources
-      const srcEntries = Object.entries(srcCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
-      const ctxS = document.getElementById('chartSources').getContext('2d');
       chSources?.destroy();
-      chSources = new Chart(ctxS, {
+      const srcTop = Object.entries(srcCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+      chSources = new Chart(document.getElementById('chartSources'), {
         type:'bar',
-        data:{ labels: srcEntries.map(([k])=>k), datasets:[{ label:'Hits', data: srcEntries.map(([,v])=>v) }]},
-        options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false }
+        data:{ labels: srcTop.map(([k])=>k), datasets:[{ label:'Hits', data: srcTop.map(([,v])=>v) }]},
+        options:{ ...opt, indexAxis:'y' }
       });
-
-      // top 8 pages
-      const pageEntries = Object.entries(pageCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
-      const ctxP = document.getElementById('chartTopPages').getContext('2d');
       chPages?.destroy();
-      chPages = new Chart(ctxP, {
+      const pageTop = Object.entries(pageCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+      chPages = new Chart(document.getElementById('chartTopPages'), {
         type:'bar',
-        data:{ labels: pageEntries.map(([k])=>k), datasets:[{ label:'Vues', data: pageEntries.map(([,v])=>v) }]},
-        options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false }
+        data:{ labels: pageTop.map(([k])=>k), datasets:[{ label:'Vues', data: pageTop.map(([,v])=>v) }]},
+        options:{ ...opt, indexAxis:'y' }
       });
 
-      // 7) Render table sessions
+      // 7) Table
       const body = document.getElementById('sessionsBody');
-      const rows = sessions.map(s => {
-        const list = evBySession.get(s.session_id) || [];
-        const pages = Array.from(new Set(list.map(e=> (e.page_url||'').split('?')[0]))).filter(Boolean);
+      body.innerHTML = sessions.map(s=>{
+        const list = evBySession.get(s.session_id)||[];
+        const pages = Array.from(new Set(list.map(e=>(e.page_url||'').split('?')[0]))).filter(Boolean);
         const nEvents = list.length;
         const dur = new Date(s.last_activity_at) - new Date(s.first_seen_at);
-        const source = utmSource(s.first_utm) || domainFrom(s.first_referrer) || 'direct/none';
+        const src = (s.first_utm && (s.first_utm.utm_source||s.first_utm)) || domainFrom(s.first_referrer) || 'direct/none';
         const {browser, os} = parseUA(s.user_agent||'');
         return `
           <tr class="hover:bg-gray-50">
@@ -288,36 +235,34 @@
             <td class="px-3 py-2">${niceDuration(dur)}</td>
             <td class="px-3 py-2">${nEvents}</td>
             <td class="px-3 py-2">${pages.length}</td>
-            <td class="px-3 py-2">${source}</td>
+            <td class="px-3 py-2">${src}</td>
             <td class="px-3 py-2">${browser} / ${os}</td>
             <td class="px-3 py-2">${s.first_seen_at||'—'}</td>
             <td class="px-3 py-2">${s.last_activity_at||'—'}</td>
           </tr>`;
-      }).join('');
-      body.innerHTML = rows || '<tr><td colspan="8" class="px-3 py-6 text-center text-gray-500">Aucune session</td></tr>';
+      }).join('') || '<tr><td colspan="8" class="px-3 py-6 text-center text-gray-500">Aucune session</td></tr>';
 
-      // 8) Search filter
+      // 8) Search
       const inp = document.getElementById('searchInput');
       inp.oninput = () => {
         const q = inp.value.toLowerCase();
-        Array.from(body.querySelectorAll('tr')).forEach(tr => {
+        Array.from(body.querySelectorAll('tr')).forEach(tr=>{
           tr.style.display = tr.innerText.toLowerCase().includes(q) ? '' : 'none';
         });
       };
 
       // 9) Debug
-      const dbg = { sessions: sessions.slice(0,5), events: events.slice(0,5) };
-      document.getElementById('debug-json').textContent = JSON.stringify(dbg, null, 2);
-      console.log('✅ rendu', dbg);
+      const dbg = { sessions: (sessions||[]).slice(0,5), events: (events||[]).slice(0,5) };
+      const dbgEl = document.getElementById('debug-json');
+      dbgEl.textContent = JSON.stringify(dbg,null,2);
     }
 
     document.getElementById('toggle-debug').onclick = () => {
       document.getElementById('debug-json').classList.toggle('hidden');
     };
 
-    // Boot
+    // First load + refresh
     loadAll();
-    // refresh toutes les 10s
     setInterval(loadAll, 10000);
   </script>
 </body>
