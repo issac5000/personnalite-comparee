@@ -5646,7 +5646,7 @@ function showPrivacyPolicy() {
 function addChatStyles() {
   const style = document.createElement("style");
   style.textContent = `
-    /* ----- SCOPÉ UNIQUEMENT AU CHATBOT ----- */
+    /* SCOPÉ AU CHATBOT UNIQUEMENT */
     #profil-chatbot #chat-suggestions .suggestion-bubble {
       display: inline-flex !important;
       align-items: center !important;
@@ -5672,8 +5672,6 @@ function addChatStyles() {
       background: rgba(255, 255, 255, 0.28) !important;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
     }
-
-    /* Mobile: wrap propre, pas de chevauchement */
     @media (max-width: 768px) {
       #profil-chatbot #chat-suggestions .suggestion-bubble {
         white-space: normal !important;
@@ -5682,16 +5680,9 @@ function addChatStyles() {
     }
   `;
   document.head.appendChild(style);
-
-  // Si AOS est utilisé pour la bannière, on force un refresh
-  if (window.AOS && typeof AOS.refresh === 'function') {
-    // petit délai pour laisser le DOM se stabiliser
-    setTimeout(() => { AOS.refresh(); }, 0);
-  }
 }
 addChatStyles();
 </script>
-
 </body>
 </html>
 
