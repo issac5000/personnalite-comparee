@@ -427,7 +427,7 @@
     </header>
 
   <!-- Hero Section Premium -->
-    <section id="hero" data-aos="fade-up" class="section section-clair relative flex items-center justify-center overflow-hidden pc-hero mt-8 sm:mt-12" data-hero style="min-height: 80vh;">
+    <section id="hero" data-aos="fade-up" class="section section-clair relative flex items-center justify-center overflow-hidden pc-hero mt-4 sm:mt-6" data-hero style="min-height: 80vh;">
         <canvas id="pc-constellation" aria-hidden="true"></canvas>
         <!-- Grille subtile en arrière-plan -->
         <div class="absolute inset-0 opacity-[0.02]">
@@ -5423,7 +5423,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let MAX_LINKS = N;          // connexions maximales par point
   let BASE_OPACITY = 0.25;    // opacité maximale des lignes
   const mouse = { x:0, y:0, inside:false };
-  const DRIFT = 0.013;                  // amplitude du drift autonome
+  const DRIFT = 0.008;                  // amplitude du drift autonome
   const ALLOW_DRIFT = matchMedia('(pointer: coarse)').matches;
   let pts = [], W=0, H=0;
 
@@ -5493,7 +5493,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       // friction + clamp
       p.vx *= 0.991; p.vy *= 0.991;
-      const vmax = 1.2; // vitesse max
+      const vmax = 0.9; // vitesse max
       const sp = Math.hypot(p.vx,p.vy);
       if(sp>vmax){ p.vx = p.vx/sp*vmax; p.vy = p.vy/sp*vmax; }
 
@@ -5521,7 +5521,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.fillStyle = 'rgba(10,15,26,.62)';
     for(const p of pts){
       ctx.beginPath();
-      ctx.arc(p.x,p.y,2,0,Math.PI*2);
+      const r = (window.innerWidth <= 768) ? 1.3 : 1.6;
+      ctx.arc(p.x, p.y, r, 0, Math.PI*2);
       ctx.fill();
     }
 
