@@ -1,85 +1,59 @@
-// api/track.js
-const { createClient } = require('@supabase/supabase-js');
-const fetch = require('node-fetch');
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="login" class="flex items-center justify-center h-screen">
+    <div class="bg-white shadow-lg rounded-lg p-6 w-80">
+      <h2 class="text-2xl font-bold mb-4 text-center">Connexion Admin</h2>
+      <input id="username" type="text" placeholder="Utilisateur" class="w-full border p-2 mb-3 rounded" />
+      <input id="password" type="password" placeholder="Mot de passe" class="w-full border p-2 mb-4 rounded" />
+      <button onclick="login()" class="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700">Se connecter</button>
+      <p id="loginError" class="text-red-500 text-sm mt-2 hidden">Identifiants invalides</p>
+    </div>
+  </div>
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY // service key, pas la clé publique
-);
+  <div id="dashboard" class="hidden p-6">
+    <h1 class="text-3xl font-bold mb-6">📊 Admin Dashboard</h1>
+    <div id="stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+  </div>
 
-module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Méthode non autorisée' });
-  }
+  <script>
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
 
-  try {
-    const {
-      session_id,
-      event_name,
-      page_url,
-      referrer,
-      utm,
-      meta,
-      device_type,
-      language,
-      tz_offset,
-      viewport,
-      screen,
-      is_returning,
-      engagement_ms,
-      last_page_url
-    } = req.body;
+      const res = await fetch("/api/admin-stats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
 
-    // 📌 Récupération IP client
-    const ip =
-      req.headers['x-forwarded-for']?.split(',')[0] ||
-      req.connection?.remoteAddress ||
-      null;
-
-    // 📌 Détection pays/ville via ipapi.co
-    let country = null;
-    let city = null;
-    if (ip && ip !== '::1' && !ip.startsWith('127.')) {
-      try {
-        const geo = await fetch(`https://ipapi.co/${ip}/json/`).then(r => r.json());
-        country = geo.country_name || null;
-        city = geo.city || null;
-      } catch (err) {
-        console.warn('🌍 Erreur récupération géoloc', err);
+      if (res.status === 401) {
+        document.getElementById("loginError").classList.remove("hidden");
+        return;
       }
+
+      const data = await res.json();
+      document.getElementById("login").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
+
+      renderStats(data);
     }
 
-    // 📌 Insertion dans Supabase
-    const { error } = await supabase.from('events').insert([
-      {
-        session_id,
-        event_name,
-        page_url,
-        referrer,
-        utm,
-        meta,
-        device_type,
-        language,
-        tz_offset,
-        viewport,
-        screen,
-        country,
-        city,
-        is_returning,
-        engagement_ms,
-        last_page_url,
-        occurred_at: new Date().toISOString()
-      }
-    ]);
-
-    if (error) {
-      console.error('Erreur Supabase', error);
-      return res.status(500).json({ error: 'Insertion échouée' });
+    function renderStats(data) {
+      const statsDiv = document.getElementById("stats");
+      statsDiv.innerHTML = `
+        <div class="bg-white p-4 rounded shadow"><h2 class="text-xl font-bold">Sessions</h2><p>${data.sessions_count}</p></div>
+        <div class="bg-white p-4 rounded shadow"><h2 class="text-xl font-bold">Événements</h2><p>${data.events_count}</p></div>
+        <div class="bg-white p-4 rounded shadow"><h2 class="text-xl font-bold">Visiteurs uniques</h2><p>${data.unique_visitors}</p></div>
+        <div class="bg-white p-4 rounded shadow"><h2 class="text-xl font-bold">Dernière activité</h2><p>${data.last_activity || 'N/A'}</p></div>
+      `;
     }
-
-    res.status(200).json({ success: true });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: 'Erreur serveur' });
-  }
-};
+  </script>
+</body>
+</html>
