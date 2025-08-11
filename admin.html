@@ -11,15 +11,18 @@
   <!-- Login -->
   <form id="login-form" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
     <h2 class="text-2xl font-bold mb-6 text-center">🔐 Connexion Admin</h2>
-    <input id="username" type="text" placeholder="Nom d'utilisateur" class="w-full mb-4 p-3 border rounded-lg"/>
-    <input id="password" type="password" placeholder="Mot de passe" class="w-full mb-4 p-3 border rounded-lg"/>
+    <input id="username" type="text" autocomplete="username" placeholder="Nom d'utilisateur" class="w-full mb-4 p-3 border rounded-lg"/>
+    <input id="password" type="password" autocomplete="current-password" placeholder="Mot de passe" class="w-full mb-4 p-3 border rounded-lg"/>
     <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">Se connecter</button>
     <p id="login-error" class="text-red-500 text-sm mt-3 hidden">Identifiants incorrects</p>
   </form>
 
   <!-- Dashboard -->
   <div id="dashboard" class="hidden w-full max-w-4xl bg-white p-8 rounded-xl shadow-lg">
-    <h2 class="text-3xl font-bold mb-6">📊 Dashboard</h2>
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-3xl font-bold">📊 Dashboard</h2>
+      <button id="logout" class="text-sm px-3 py-2 rounded-lg border hover:bg-gray-50">Se déconnecter</button>
+    </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
       <div class="p-4 bg-blue-100 rounded-lg text-center">
         <p class="text-2xl font-bold" id="sessions-count">0</p>
@@ -41,11 +44,13 @@
   </div>
 
 <script>
-document.getElementById('login-form').addEventListener('submit', async function (e) {
-  e.preventDefault();
+const $ = (id) => document.getElementById(id);
 
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value.trim();
+// ---- Login flow
+$('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = $('username').value.trim();
+  const password = $('password').value.trim();
 
   try {
     const res = await fetch('/api/admin-login', {
@@ -53,46 +58,70 @@ document.getElementById('login-form').addEventListener('submit', async function 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
-
-    const data = await res.json().catch(() => ({})); // On lit UNE SEULE FOIS
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok || !data.success) {
-      document.getElementById("login-error").classList.remove("hidden");
+      $('login-error').classList.remove('hidden');
       return;
     }
 
-    // Connexion réussie
-    localStorage.setItem("adminLogged", "true");
-    document.getElementById("login-form").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-    loadStats();
+    // OK → mémoriser les creds pour la session
+    sessionStorage.setItem('admin_user', username);
+    sessionStorage.setItem('admin_pass', password);
+
+    $('login-form').classList.add('hidden');
+    $('dashboard').classList.remove('hidden');
+    await loadStats();
 
   } catch (err) {
-    console.error("Erreur connexion admin:", err);
-    document.getElementById("login-error").classList.remove("hidden");
+    console.error('Erreur connexion admin:', err);
+    $('login-error').classList.remove('hidden');
   }
 });
 
+$('logout').addEventListener('click', () => {
+  sessionStorage.removeItem('admin_user');
+  sessionStorage.removeItem('admin_pass');
+  $('dashboard').classList.add('hidden');
+  $('login-form').classList.remove('hidden');
+});
+
+// ---- Stats
 async function loadStats() {
+  const username = sessionStorage.getItem('admin_user');
+  const password = sessionStorage.getItem('admin_pass');
+  if (!username || !password) {
+    $('dashboard').classList.add('hidden');
+    $('login-form').classList.remove('hidden');
+    return;
+  }
+
   try {
-    const res = await fetch("/api/admin-stats", { method: "POST" });
+    const res = await fetch('/api/admin-stats', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
     const stats = await res.json();
 
-    if (!stats.error) {
-      document.getElementById("sessions-count").textContent = stats.sessions_count || 0;
-      document.getElementById("events-count").textContent = stats.events_count || 0;
-      document.getElementById("unique-visitors").textContent = stats.unique_visitors || 0;
-      document.getElementById("last-activity").textContent = stats.last_activity || "-";
+    if (res.ok && !stats.error) {
+      $('sessions-count').textContent = stats.sessions_count ?? 0;
+      $('events-count').textContent = stats.events_count ?? 0;
+      $('unique-visitors').textContent = stats.unique_visitors ?? 0;
+      $('last-activity').textContent = stats.last_activity ? new Date(stats.last_activity).toLocaleString() : '-';
+    } else {
+      // creds invalidés → forcer logout
+      $('logout').click();
     }
   } catch (err) {
-    console.error("Erreur chargement stats:", err);
+    console.error('Erreur chargement stats:', err);
   }
 }
 
-// Auto-login si déjà connecté
-if (localStorage.getItem("adminLogged") === "true") {
-  document.getElementById("login-form").classList.add("hidden");
-  document.getElementById("dashboard").classList.remove("hidden");
+// ---- Auto-login si creds présents
+if (sessionStorage.getItem('admin_user') && sessionStorage.getItem('admin_pass')) {
+  $('login-form').classList.add('hidden');
+  $('dashboard').classList.remove('hidden');
   loadStats();
 }
 </script>
