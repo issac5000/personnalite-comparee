@@ -1,23 +1,18 @@
 // api/admin-login.js
-
 async function readJsonBody(req) {
   try {
-    // 1) Si Next/Node nous a déjà donné un objet
     if (req.body && typeof req.body === 'object') return req.body;
+    if (typeof req.body === 'string' && req.body.trim()) return JSON.parse(req.body);
 
-    // 2) Si c'est une string JSON
-    if (typeof req.body === 'string' && req.body.trim().length) {
-      return JSON.parse(req.body);
-    }
-
-    // 3) Fallback: lire le flux brut (certains runtimes Vercel ne parsente pas)
+    // Lire le flux brut compatible Edge/Node
     const chunks = [];
     for await (const chunk of req) chunks.push(chunk);
-    const raw = Buffer.concat(chunks).toString('utf8');
-    if (!raw) return {};
-    return JSON.parse(raw);
-  } catch (e) {
-    // Body illisible → on renvoie un truc safe
+    const bytes = chunks.flat
+      ? new Uint8Array(chunks.flat())
+      : new Uint8Array(chunks.reduce((acc, c) => acc.concat(Array.from(c)), []));
+    const text = new TextDecoder().decode(bytes);
+    return text ? JSON.parse(text) : {};
+  } catch {
     return {};
   }
 }
@@ -34,10 +29,6 @@ module.exports = async function handler(req, res) {
     const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.ADMIN_PASS;
 
     if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
-      console.error('❌ ADMIN env manquants', {
-        hasUser: !!ADMIN_USERNAME,
-        hasPass: !!ADMIN_PASSWORD
-      });
       return res.status(500).json({
         success: false,
         error: 'Identifiants admin non configurés',
