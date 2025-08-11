@@ -31,7 +31,7 @@
         <p id="stat-total-events" class="text-xl font-bold">—</p>
       </div>
       <div class="bg-white rounded shadow p-4 text-center">
-        <p class="text-gray-500 text-xs">Visiteurs uniques (24h)</p>
+        <p class="text-gray-500 text-xs">Visiteurs uniques (24h glissantes)</p>
         <p id="stat-uniques-today" class="text-xl font-bold">—</p>
       </div>
       <div class="bg-white rounded shadow p-4 text-center">
@@ -100,12 +100,13 @@
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ===== Config Supabase =====
     const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg";
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // ===== Mode invisible =====
+    const H24 = 24*60*60*1000;
+    const isBotUA = ua => (ua||'').toLowerCase().match(/vercel-|bot|crawler|spider|headless/);
+
     function setDNT(v){ localStorage.setItem('pc_dnt', v ? '1' : '0'); updateDNTLabel(); }
     function updateDNTLabel(){
       const on = localStorage.getItem('pc_dnt') === '1';
@@ -116,10 +117,6 @@
     (function(){ const p=new URLSearchParams(location.search);
       if (p.has('dnt')) localStorage.setItem('pc_dnt', p.get('dnt')==='1'?'1':'0'); updateDNTLabel();
     })();
-
-    // ===== Helpers =====
-    const H24 = 24*60*60*1000;
-    const isBotUA = ua => (ua||'').toLowerCase().match(/vercel-|bot|crawler|spider|headless/);
 
     function parseUA(ua='') {
       const s = ua.toLowerCase();
@@ -138,32 +135,29 @@
     const utmSource = utm => { try { if (!utm) return null; if (typeof utm==='string') return utm; return utm.utm_source||null; } catch { return null; } };
     const niceDuration = ms => (!ms || ms<0) ? '—' : (Math.floor(ms/60000) ? `${Math.floor(ms/60000)}m ${Math.floor((ms%60000)/1000)}s` : `${Math.floor((ms%60000)/1000)}s`);
 
-    // ===== Charts refs =====
     let chHour, chTypes, chSources, chPages;
 
     async function loadAll() {
-      // 1) Get data
       const { data: sessionsRaw } = await sb.from('sessions').select('*').order('last_activity_at',{ascending:false}).limit(200);
       const since24h = new Date(Date.now()-H24).toISOString();
       const { data: eventsRaw }   = await sb.from('events').select('*').gte('occurred_at', since24h).order('occurred_at',{ascending:false}).limit(1000);
 
-      // 2) Filter humans
       const sessions = (sessionsRaw||[]).filter(s => !isBotUA(s.user_agent));
       const events   = (eventsRaw||[]).filter(e => !isBotUA(e.user_agent)).filter(e => e.event_name!=='debug_test');
 
-      // 3) Totals
       const { count: totalSessions } = await sb.from('sessions').select('*',{count:'exact',head:true});
       const { count: totalEvents }   = await sb.from('events').select('*',{count:'exact',head:true});
 
-      // uniques today
-      const start = new Date(); start.setHours(0,0,0,0);
-      const uniquesToday = sessions.filter(s => new Date(s.first_seen_at||s.last_activity_at) >= start).length;
+      // 📌 Visiteurs uniques sur les dernières 24h glissantes
+      const since24hSliding = Date.now() - H24;
+      const uniquesToday = sessions.filter(s => {
+        const firstSeen = new Date(s.first_seen_at || s.last_activity_at).getTime();
+        return firstSeen >= since24hSliding;
+      }).length;
 
-      // avg duration
       const durations = sessions.map(s => (new Date(s.last_activity_at) - new Date(s.first_seen_at))).filter(v => !isNaN(v) && v>=0);
       const avg = durations.length ? Math.round(durations.reduce((a,b)=>a+b,0)/durations.length) : 0;
 
-      // 4) Aggregations
       const perHour = Array.from({length:24},(_,i)=>({h:i,c:0}));
       events.forEach(e => perHour[new Date(e.occurred_at).getHours()].c++);
 
@@ -185,13 +179,11 @@
       const evBySession = new Map();
       events.forEach(e => { if(!evBySession.has(e.session_id)) evBySession.set(e.session_id,[]); evBySession.get(e.session_id).push(e); });
 
-      // 5) Cards
       document.getElementById('stat-total-sessions').textContent = totalSessions ?? 0;
       document.getElementById('stat-total-events').textContent   = totalEvents ?? 0;
       document.getElementById('stat-uniques-today').textContent  = uniquesToday;
       document.getElementById('stat-avg-duration').textContent   = niceDuration(avg);
 
-      // 6) Charts (fixed container height + maintainAspectRatio:false)
       const opt = { responsive:true, maintainAspectRatio:false, animation:false };
       chHour?.destroy();
       chHour = new Chart(document.getElementById('chartEventsHour'), {
@@ -220,7 +212,6 @@
         options:{ ...opt, indexAxis:'y' }
       });
 
-      // 7) Table
       const body = document.getElementById('sessionsBody');
       body.innerHTML = sessions.map(s=>{
         const list = evBySession.get(s.session_id)||[];
@@ -242,7 +233,6 @@
           </tr>`;
       }).join('') || '<tr><td colspan="8" class="px-3 py-6 text-center text-gray-500">Aucune session</td></tr>';
 
-      // 8) Search
       const inp = document.getElementById('searchInput');
       inp.oninput = () => {
         const q = inp.value.toLowerCase();
@@ -251,7 +241,6 @@
         });
       };
 
-      // 9) Debug
       const dbg = { sessions: (sessions||[]).slice(0,5), events: (events||[]).slice(0,5) };
       const dbgEl = document.getElementById('debug-json');
       dbgEl.textContent = JSON.stringify(dbg,null,2);
@@ -261,7 +250,6 @@
       document.getElementById('debug-json').classList.toggle('hidden');
     };
 
-    // First load + refresh
     loadAll();
     setInterval(loadAll, 10000);
   </script>
