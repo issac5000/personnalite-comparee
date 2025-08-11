@@ -183,7 +183,12 @@
             background-color: #fbfbfb;
         }
         #site-header {
-            position: static;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: inherit;
             height: 64px;
             display: flex;
             justify-content: space-between;
@@ -192,7 +197,7 @@
         }
 
         body {
-            padding-top: 0;
+            padding-top: 64px;
         }
 
         .mobile-menu {
@@ -5400,7 +5405,8 @@ function showPrivacyPolicy() {
 </script>
 
 <script>
-(function(){
+document.addEventListener('DOMContentLoaded', () => {
+  (function(){
   const wrap = (()=>{
     // Essaie plusieurs sélecteurs raisonnables
     return document.querySelector('section#hero, section.hero, .hero, .banner, [data-hero]') ||
@@ -5521,6 +5527,19 @@ function showPrivacyPolicy() {
         }
       }
     }
+    ctx.fillStyle = 'rgba(10,15,26,.62)';
+    for(const p of pts){
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,2,0,Math.PI*2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  })();
+});
+</script>
 
 <!-- Typed doit être chargé avant notre script pour l’effet progressif -->
 <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
