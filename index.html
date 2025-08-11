@@ -5712,86 +5712,109 @@ addChatStyles();
   let sid = localStorage.getItem(KEY);
   let engagementStart = Date.now();
 
-  // 📌 Génération de l'ID de session si absent
+  // Génération d'un ID de session si absent
   if (!sid) {
-    sid = (crypto && crypto.randomUUID)
+    sid = (typeof crypto !== 'undefined' && crypto.randomUUID)
       ? crypto.randomUUID()
-      : Date.now() + '-' + Math.random();
+      : `${Date.now()}-${Math.random()}`;
     localStorage.setItem(KEY, sid);
   }
 
-  // 📌 Récupération des paramètres UTM si présents
+  // UTM
   function getUTM() {
     const p = new URLSearchParams(location.search);
     const utm = {};
-    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(k => {
+    ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(k => {
       const v = p.get(k);
       if (v) utm[k] = v;
     });
     return Object.keys(utm).length ? utm : null;
   }
 
-  // 📌 Détection du type de device
+  // Type device
   function getDeviceType() {
-    const ua = navigator.userAgent.toLowerCase();
-    if (/mobile|android|touch|iphone|ipad/.test(ua)) return 'mobile';
+    const ua = (navigator.userAgent || '').toLowerCase();
     if (/tablet/.test(ua)) return 'tablet';
+    if (/mobile|android|iphone|ipad|ipod/.test(ua)) return 'mobile';
     return 'desktop';
   }
 
-  // 📌 Fonction d’envoi des événements
-  async function track(event_name, meta = {}) {
-    if (localStorage.getItem('pc_dnt') === '1') {
-      console.log('📌 Tracking désactivé pour cette session.');
-      return;
-    }
-
+  // Envoi générique (fetch keepalive pour éviter les warnings au unload)
+  async function sendJSON(url, payload, { useBeacon = false } = {}) {
     try {
-      await fetch('/api/track', {
+      const body = JSON.stringify(payload);
+      if (useBeacon && navigator.sendBeacon) {
+        const blob = new Blob([body], { type: 'application/json' });
+        navigator.sendBeacon(url, blob);
+        return true;
+      }
+      // fallback fetch (keepalive utile au unload)
+      await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          session_id: sid,
-          event_name,
-          page_url: location.href,
-          referrer: document.referrer || null,
-          utm: getUTM(),
-          meta,
-          // 🔹 Champs ajoutés dans Supabase
-          device_type: getDeviceType(),
-          language: navigator.language || null,
-          tz_offset: new Date().getTimezoneOffset(),
-          viewport: { width: window.innerWidth, height: window.innerHeight },
-          screen: { width: window.screen.width, height: window.screen.height },
-          country: null, // à compléter via backend avec IP
-          city: null,    // idem
-          is_returning: !!localStorage.getItem('pc_has_visited'),
-          engagement_ms: Date.now() - engagementStart,
-          last_page_url: document.referrer || null
-        })
+        body,
+        keepalive: true
       });
+      return true;
     } catch (e) {
-      console.warn('track failed', e);
+      // on ne casse jamais la navigation
+      console.warn('track send failed', e);
+      return false;
     }
   }
 
-  // 📌 Marquer la session comme déjà venue
+  // Fonction de tracking
+  async function track(event_name, meta = {}, opts = {}) {
+    // Opt-out local
+    if (localStorage.getItem('pc_dnt') === '1') {
+      // console.log('📌 Tracking désactivé pour cette session.');
+      return;
+    }
+    const payload = {
+      session_id: sid,
+      event_name,
+      page_url: location.href,
+      referrer: document.referrer || null,
+      utm: getUTM(),
+      meta,
+      // Champs sessions côté serveur
+      device_type: getDeviceType(),
+      language: navigator.language || null,
+      tz_offset: new Date().getTimezoneOffset(),
+      viewport: { width: window.innerWidth, height: window.innerHeight },
+      screen: { width: window.screen?.width || null, height: window.screen?.height || null },
+      country: null,
+      city: null,
+      is_returning: !!localStorage.getItem('pc_has_visited'),
+      engagement_ms: Date.now() - engagementStart,
+      last_page_url: document.referrer || null
+    };
+    return sendJSON('/api/track', payload, opts);
+  }
+
+  // Marqueur de visite
   if (!localStorage.getItem('pc_has_visited')) {
     localStorage.setItem('pc_has_visited', '1');
   }
 
-  // 📌 Événement "page_view" au chargement
+  // page_view au chargement
   track('page_view');
 
-  // 📌 Détection de sortie de page pour mettre à jour engagement
+  // Session end fiable (beacon)
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      track('session_end', { elapsed_ms: Date.now() - engagementStart }, { useBeacon: true });
+    }
+  });
   window.addEventListener('beforeunload', () => {
-    track('session_end', { engagement_ms: Date.now() - engagementStart });
+    track('session_end', { elapsed_ms: Date.now() - engagementStart }, { useBeacon: true });
   });
 
-  // 📌 Expose une méthode globale pour tracer d’autres événements
+  // Expose pour événements custom
   window.pcTrack = track;
 })();
 </script>
+
 
   
 </body>
