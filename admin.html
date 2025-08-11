@@ -2,103 +2,176 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Admin Tracking</title>
-<style>
-  body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
-  table { border-collapse: collapse; width: 100%; margin-bottom: 30px; background: white; }
-  th, td { padding: 8px; border: 1px solid #ccc; font-size: 14px; }
-  th { background: #eee; }
-</style>
+<title>📊 Admin Tracking</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 </head>
-<body>
-<h1>📊 Admin Tracking</h1>
+<body class="bg-gray-100 text-gray-800 p-6">
 
-<h2>Sessions</h2>
-<table id="sessions-table">
-  <thead>
-    <tr>
-      <th>Session ID</th>
-      <th>First Seen</th>
-      <th>Last Activity</th>
-      <th>Referrer</th>
-      <th>Last Event</th>
-      <th>User Agent</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<h1 class="text-3xl font-bold mb-6">📊 Dashboard Tracking</h1>
 
-<h2>Events</h2>
-<table id="events-table">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Session ID</th>
-      <th>Event Name</th>
-      <th>Page URL</th>
-      <th>Referrer</th>
-      <th>Meta</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+<!-- Statistiques -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+  <div class="bg-white rounded-lg shadow p-4 text-center">
+    <p class="text-gray-500">Utilisateurs actifs</p>
+    <p id="active-users" class="text-2xl font-bold">0</p>
+  </div>
+  <div class="bg-white rounded-lg shadow p-4 text-center">
+    <p class="text-gray-500">Total Sessions</p>
+    <p id="total-sessions" class="text-2xl font-bold">0</p>
+  </div>
+  <div class="bg-white rounded-lg shadow p-4 text-center">
+    <p class="text-gray-500">Total Events</p>
+    <p id="total-events" class="text-2xl font-bold">0</p>
+  </div>
+  <div class="bg-white rounded-lg shadow p-4 text-center">
+    <p class="text-gray-500">Dernier Rafraîchissement</p>
+    <p id="last-refresh" class="text-sm">-</p>
+  </div>
+</div>
+
+<!-- Graphique -->
+<div class="bg-white rounded-lg shadow p-4 mb-8">
+  <h2 class="text-xl font-bold mb-4">Événements par heure</h2>
+  <canvas id="eventsChart" height="80"></canvas>
+</div>
+
+<!-- Tableau Sessions -->
+<div class="bg-white rounded-lg shadow p-4 mb-8">
+  <h2 class="text-xl font-bold mb-4">Sessions</h2>
+  <table id="sessions-table" class="display w-full">
+    <thead>
+      <tr>
+        <th>Session ID</th>
+        <th>First Seen</th>
+        <th>Last Activity</th>
+        <th>Referrer</th>
+        <th>Last Event</th>
+        <th>User Agent</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- Tableau Events -->
+<div class="bg-white rounded-lg shadow p-4">
+  <h2 class="text-xl font-bold mb-4">Events</h2>
+  <table id="events-table" class="display w-full">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Session ID</th>
+        <th>Event Name</th>
+        <th>Page URL</th>
+        <th>Referrer</th>
+        <th>Meta</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
+// ⚠️ Mets ton URL et ton anon key ici
 const supabase = createClient(
-  "https://swjnpvfkloubshksobau.supabase.co", // 🔹 remplace par TON URL Supabase
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg" // 🔹 remplace par ta anon key (pas la service role)
+  "https://swjnpvfkloubshksobau.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"
 );
 
+let eventsChart;
+
 async function loadData() {
+  const now = new Date();
+  document.getElementById("last-refresh").innerText = now.toLocaleTimeString();
+
+  // Récup Sessions
   const { data: sessions } = await supabase
     .from("sessions")
     .select("*")
-    .order("last_activity_at", { ascending: false })
-    .limit(20);
+    .order("last_activity_at", { ascending: false });
 
+  // Récup Events
   const { data: events } = await supabase
     .from("events")
     .select("*")
-    .order("occurred_at", { ascending: false })
-    .limit(20);
+    .order("occurred_at", { ascending: false });
 
-  // Affiche sessions
-  const sBody = document.querySelector("#sessions-table tbody");
-  sBody.innerHTML = "";
-  sessions.forEach(s => {
-    sBody.innerHTML += `
-      <tr>
-        <td>${s.session_id}</td>
-        <td>${s.first_seen_at}</td>
-        <td>${s.last_activity_at}</td>
-        <td>${s.first_referrer || ""}</td>
-        <td>${s.last_event_name || ""}</td>
-        <td>${s.user_agent || ""}</td>
-      </tr>
-    `;
-  });
+  // Statistiques
+  const activeCount = sessions.filter(s => (new Date(s.last_activity_at) > new Date(Date.now() - 5*60*1000))).length;
+  document.getElementById("active-users").innerText = activeCount;
+  document.getElementById("total-sessions").innerText = sessions.length;
+  document.getElementById("total-events").innerText = events.length;
 
-  // Affiche events
-  const eBody = document.querySelector("#events-table tbody");
-  eBody.innerHTML = "";
+  // Graphique
+  const countsByHour = {};
   events.forEach(e => {
-    eBody.innerHTML += `
-      <tr>
-        <td>${e.occurred_at}</td>
-        <td>${e.session_id}</td>
-        <td>${e.event_name}</td>
-        <td>${e.page_url || ""}</td>
-        <td>${e.referrer || ""}</td>
-        <td>${JSON.stringify(e.meta) || ""}</td>
-      </tr>
-    `;
+    const h = new Date(e.occurred_at).getHours();
+    countsByHour[h] = (countsByHour[h] || 0) + 1;
   });
+  const labels = [...Array(24).keys()];
+  const counts = labels.map(h => countsByHour[h] || 0);
+
+  if (!eventsChart) {
+    const ctx = document.getElementById("eventsChart").getContext("2d");
+    eventsChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels.map(h => `${h}h`),
+        datasets: [{
+          label: 'Nombre d\'événements',
+          data: counts,
+          backgroundColor: '#3b82f6'
+        }]
+      }
+    });
+  } else {
+    eventsChart.data.datasets[0].data = counts;
+    eventsChart.update();
+  }
+
+  // Tableaux
+  const sTable = $("#sessions-table").DataTable();
+  sTable.clear();
+  sessions.forEach(s => {
+    sTable.row.add([
+      s.session_id,
+      s.first_seen_at,
+      s.last_activity_at,
+      s.first_referrer || "",
+      s.last_event_name || "",
+      s.user_agent || ""
+    ]);
+  });
+  sTable.draw();
+
+  const eTable = $("#events-table").DataTable();
+  eTable.clear();
+  events.forEach(e => {
+    eTable.row.add([
+      e.occurred_at,
+      e.session_id,
+      e.event_name,
+      e.page_url || "",
+      e.referrer || "",
+      JSON.stringify(e.meta) || ""
+    ]);
+  });
+  eTable.draw();
 }
 
-loadData();
-setInterval(loadData, 5000); // rafraîchit toutes les 5 sec
+// Initialisation DataTables + premier chargement
+$(document).ready(() => {
+  $("#sessions-table").DataTable();
+  $("#events-table").DataTable();
+  loadData();
+  setInterval(loadData, 5000);
+});
 </script>
 </body>
 </html>
