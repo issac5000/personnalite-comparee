@@ -5646,55 +5646,38 @@ function showPrivacyPolicy() {
 function addChatStyles() {
   const style = document.createElement("style");
   style.textContent = `
-    /* Base (mobile-first, look verre dépoli) */
-    #chat-suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
-    }
+    /* Bulles de suggestions style iOS ultra arrondies comme le bouton réinitialiser */
     .suggestion-bubble {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.18);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.28);
-      border-radius: 9999px; /* arrondi max */
-      padding: 10px 18px;
-      margin: 6px;
-      font-size: 14px;
-      font-weight: 500;
-      color: rgba(0, 0, 0, 0.85);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
-      text-align: center;
-      white-space: normal;          /* mobile: retour à la ligne OK */
-      max-width: calc(100% - 16px); /* évite de dépasser le conteneur */
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: rgba(255, 255, 255, 0.18) !important;
+      backdrop-filter: blur(20px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.28) !important;
+      border-radius: 50px !important;
+      padding: 10px 22px !important;
+      margin: 6px !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      color: rgba(0, 0, 0, 0.85) !important;
+      cursor: pointer !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
+      transition: all 0.3s ease !important;
+      white-space: nowrap !important; /* par défaut : pas de retour ligne */
     }
     .suggestion-bubble:hover {
-      transform: translateY(-1px) scale(1.03);
-      background: rgba(255, 255, 255, 0.28);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      transform: translateY(-1px) scale(1.04) !important;
+      background: rgba(255, 255, 255, 0.28) !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
     }
 
-    /* Desktop: bulles noires, taille sur le texte, pas de wrap */
-    @media (min-width: 769px) {
+    /* Sur mobile : autoriser le retour à la ligne et éviter chevauchement */
+    @media (max-width: 768px) {
       .suggestion-bubble {
-        background: #111 !important;
-        color: #fff !important;
-        border: 1px solid #000 !important;
-        white-space: nowrap;     /* pas de retour à la ligne */
-        width: fit-content;      /* s’adapte au texte */
-        max-width: none;         /* aucune limite */
-        padding: 10px 22px;      /* un peu plus de souffle */
-        box-shadow: 0 8px 22px rgba(0,0,0,.12);
-      }
-      .suggestion-bubble:hover {
-        background: #000 !important;
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 12px 28px rgba(0,0,0,.18);
+        white-space: normal !important;       /* texte peut revenir à la ligne */
+        max-width: calc(100% - 12px) !important; /* largeur max adaptée */
+        text-align: center !important;        /* centrer le texte multi-ligne */
       }
     }
   `;
@@ -5702,6 +5685,7 @@ function addChatStyles() {
 }
 addChatStyles();
 </script>
+
 </body>
 </html>
 
