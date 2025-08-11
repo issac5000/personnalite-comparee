@@ -2,207 +2,141 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>📊 Tableau de bord - Tracking</title>
-
-<!-- TailwindCSS pour le style -->
-<script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Chart.js pour le graphique -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- DataTables pour tableaux interactifs -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<title>📊 Admin Tracking</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 30px; background: white; }
+  th, td { padding: 8px; border: 1px solid #ccc; font-size: 14px; }
+  th { background: #eee; }
+  #exclude-btn {
+    background: #444;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+    border-radius: 4px;
+  }
+  #exclude-btn.active {
+    background: #b30000;
+  }
+</style>
 </head>
-<body class="bg-gray-100 text-gray-800 p-6">
+<body>
+<h1>📊 Admin Tracking</h1>
 
-<h1 class="text-3xl font-bold mb-6">📊 Tableau de bord du suivi des visites</h1>
+<button id="exclude-btn">📌 Activer le mode invisible</button>
 
-<!-- 🧮 Statistiques principales -->
-<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-  <div class="bg-white rounded-lg shadow p-4 text-center">
-    <p class="text-gray-500">Visiteurs actifs (≤ 5 min)</p>
-    <p id="active-users" class="text-2xl font-bold">0</p>
-  </div>
-  <div class="bg-white rounded-lg shadow p-4 text-center">
-    <p class="text-gray-500">Sessions humaines (filtrées)</p>
-    <p id="total-sessions" class="text-2xl font-bold">0</p>
-  </div>
-  <div class="bg-white rounded-lg shadow p-4 text-center">
-    <p class="text-gray-500">Événements humains (filtrés)</p>
-    <p id="total-events" class="text-2xl font-bold">0</p>
-  </div>
-  <div class="bg-white rounded-lg shadow p-4 text-center">
-    <p class="text-gray-500">Dernier rafraîchissement</p>
-    <p id="last-refresh" class="text-sm">-</p>
-  </div>
-</div>
+<h2>📂 Sessions (20 dernières)</h2>
+<table id="sessions-table">
+  <thead>
+    <tr>
+      <th>ID Session</th>
+      <th>Première visite</th>
+      <th>Dernière activité</th>
+      <th>Référent</th>
+      <th>Dernier événement</th>
+      <th>Navigateur / Appareil</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
-<!-- 📈 Graphique -->
-<div class="bg-white rounded-lg shadow p-4 mb-8">
-  <h2 class="text-xl font-bold mb-4">Nombre d'événements par heure (trafic humain)</h2>
-  <canvas id="eventsChart" height="80"></canvas>
-</div>
-
-<!-- 📋 Tableau des sessions -->
-<div class="bg-white rounded-lg shadow p-4 mb-8">
-  <h2 class="text-xl font-bold mb-4">Liste des sessions (humains uniquement)</h2>
-  <table id="sessions-table" class="display w-full">
-    <thead>
-      <tr>
-        <th>ID de session</th>
-        <th>Première visite</th>
-        <th>Dernière activité</th>
-        <th>Origine (referrer)</th>
-        <th>Dernier événement</th>
-        <th>Navigateur / Appareil</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
-
-<!-- 📋 Tableau des événements -->
-<div class="bg-white rounded-lg shadow p-4">
-  <h2 class="text-xl font-bold mb-4">Liste des événements (humains uniquement)</h2>
-  <table id="events-table" class="display w-full">
-    <thead>
-      <tr>
-        <th>Date / Heure</th>
-        <th>ID de session</th>
-        <th>Nom de l'événement</th>
-        <th>URL de la page</th>
-        <th>Origine (referrer)</th>
-        <th>Données associées (meta)</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
+<h2>📝 Événements (20 derniers)</h2>
+<table id="events-table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>ID Session</th>
+      <th>Nom événement</th>
+      <th>Page</th>
+      <th>Référent</th>
+      <th>Méta</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
 <script type="module">
-/**
- * Explications rapides :
- * - On lit directement les tables "sessions" et "events" dans Supabase.
- * - On filtre les robots (user-agent contenant vercel-, bot, crawler, spider).
- * - On enlève aussi les événements "debug_test".
- * - Tout est rafraîchi automatiquement toutes les 5 secondes.
- */
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
-// 🔧 CONFIG — mets ton URL & ta clé ANON (publique) ici
-const SUPABASE_URL  = "https://swjnpvfkloubshksobau.supabase.co";
-const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg";
+const supabase = createClient(
+  "https://swjnpvfkloubshksobau.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"
+);
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
+// ======== GESTION MODE INVISIBLE ========
+const excludeBtn = document.getElementById('exclude-btn');
+function updateExcludeButton() {
+  const active = localStorage.getItem('pc_dnt') === '1';
+  if (active) {
+    excludeBtn.textContent = "✅ Mode invisible activé (aucun tracking)";
+    excludeBtn.classList.add('active');
+  } else {
+    excludeBtn.textContent = "📌 Activer le mode invisible";
+    excludeBtn.classList.remove('active');
+  }
+}
+excludeBtn.addEventListener('click', () => {
+  const active = localStorage.getItem('pc_dnt') === '1';
+  if (active) {
+    localStorage.removeItem('pc_dnt');
+  } else {
+    localStorage.setItem('pc_dnt', '1');
+  }
+  updateExcludeButton();
+});
+updateExcludeButton();
 
-// 🔍 Détecteur simple de bots via le User-Agent
-const isBotUA = (ua) => (ua || '')
-  .toLowerCase()
-  .match(/vercel-|bot|crawler|spider/);
-
-// ⏱️ une session est "active" si dernière activité ≤ 5 minutes
-const ACTIVE_WINDOW_MS = 5 * 60 * 1000;
-
-let eventsChart; // instance Chart.js
-
+// ======== CHARGEMENT DONNÉES ========
 async function loadData() {
-  // Affiche l'heure du refresh
-  document.getElementById("last-refresh").innerText = new Date().toLocaleTimeString();
-
-  // Récupère toutes les sessions
-  const { data: sessions = [] } = await supabase
+  const { data: sessions } = await supabase
     .from("sessions")
     .select("*")
-    .order("last_activity_at", { ascending: false });
+    .order("last_activity_at", { ascending: false })
+    .limit(20);
 
-  // Récupère tous les événements
-  const { data: events = [] } = await supabase
+  const { data: events } = await supabase
     .from("events")
     .select("*")
-    .order("occurred_at", { ascending: false });
+    .order("occurred_at", { ascending: false })
+    .limit(20);
 
-  // 🧹 Filtrage côté admin (humains uniquement)
-  const sessionsFiltered = sessions.filter(s => !isBotUA(s.user_agent));
-  const eventsFiltered = events
-    .filter(e => !isBotUA(e.user_agent))
-    .filter(e => e.event_name !== 'debug_test');
-
-  // 📊 Statistiques
-  const activeCount = sessionsFiltered.filter(
-    s => new Date(s.last_activity_at) > new Date(Date.now() - ACTIVE_WINDOW_MS)
-  ).length;
-
-  document.getElementById("active-users").innerText  = activeCount;
-  document.getElementById("total-sessions").innerText = sessionsFiltered.length;
-  document.getElementById("total-events").innerText   = eventsFiltered.length;
-
-  // 📈 Graphe : nombre d'événements par heure (sur 24h)
-  const countsByHour = {};
-  eventsFiltered.forEach(e => {
-    const h = new Date(e.occurred_at).getHours();
-    countsByHour[h] = (countsByHour[h] || 0) + 1;
+  // Afficher les sessions
+  const sBody = document.querySelector("#sessions-table tbody");
+  sBody.innerHTML = "";
+  sessions.forEach(s => {
+    sBody.innerHTML += `
+      <tr>
+        <td>${s.session_id}</td>
+        <td>${s.first_seen_at || ''}</td>
+        <td>${s.last_activity_at || ''}</td>
+        <td>${s.first_referrer || ''}</td>
+        <td>${s.last_event_name || ''}</td>
+        <td>${s.user_agent || ''}</td>
+      </tr>
+    `;
   });
-  const labels = [...Array(24).keys()];
-  const counts = labels.map(h => countsByHour[h] || 0);
 
-  if (!eventsChart) {
-    const ctx = document.getElementById("eventsChart").getContext("2d");
-    eventsChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels.map(h => `${h}h`),
-        datasets: [{
-          label: "Nombre d'événements (humains)",
-          data: counts,
-          backgroundColor: '#3b82f6'
-        }]
-      }
-    });
-  } else {
-    eventsChart.data.datasets[0].data = counts;
-    eventsChart.update();
-  }
-
-  // 🗂️ Remplissage tableau Sessions
-  const sTable = $("#sessions-table").DataTable();
-  sTable.clear();
-  sessionsFiltered.forEach(s => {
-    sTable.row.add([
-      s.session_id,
-      s.first_seen_at,
-      s.last_activity_at,
-      s.first_referrer || "",
-      s.last_event_name || "",
-      s.user_agent || ""
-    ]);
+  // Afficher les événements
+  const eBody = document.querySelector("#events-table tbody");
+  eBody.innerHTML = "";
+  events.forEach(e => {
+    eBody.innerHTML += `
+      <tr>
+        <td>${e.occurred_at || ''}</td>
+        <td>${e.session_id}</td>
+        <td>${e.event_name}</td>
+        <td>${e.page_url || ''}</td>
+        <td>${e.referrer || ''}</td>
+        <td>${JSON.stringify(e.meta) || ''}</td>
+      </tr>
+    `;
   });
-  sTable.draw();
-
-  // 🗂️ Remplissage tableau Events
-  const eTable = $("#events-table").DataTable();
-  eTable.clear();
-  eventsFiltered.forEach(e => {
-    eTable.row.add([
-      e.occurred_at,
-      e.session_id,
-      e.event_name,
-      e.page_url || "",
-      e.referrer || "",
-      JSON.stringify(e.meta) || ""
-    ]);
-  });
-  eTable.draw();
 }
 
-// 🚀 Init DataTables + premier chargement + auto-refresh
-$(document).ready(() => {
-  $("#sessions-table").DataTable();
-  $("#events-table").DataTable();
-  loadData();
-  setInterval(loadData, 5000); // rafraîchit toutes les 5s
-});
+loadData();
+setInterval(loadData, 5000);
 </script>
 </body>
 </html>
