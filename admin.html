@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="fr">
-<style>#login-form{display:none!important}</style>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard Admin</title>
+  <meta http-equiv="Cache-Control" content="no-store, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <style>#login-form{display:none!important}</style>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
@@ -37,17 +39,18 @@
 <script>
 const $ = (id) => document.getElementById(id);
 
-// ---- Charger les stats automatiquement
 async function loadStats() {
   try {
-    const res = await fetch('/api/admin-stats');
+    const res = await fetch('/api/admin-stats', { method: 'GET', cache: 'no-store' });
     const stats = await res.json();
 
     if (res.ok && !stats.error) {
-      $('sessions-count').textContent = stats.sessions_count ?? 0;
-      $('events-count').textContent = stats.events_count ?? 0;
+      $('sessions-count').textContent  = stats.sessions_count  ?? 0;
+      $('events-count').textContent    = stats.events_count    ?? 0;
       $('unique-visitors').textContent = stats.unique_visitors ?? 0;
-      $('last-activity').textContent = stats.last_activity ? new Date(stats.last_activity).toLocaleString() : '-';
+      $('last-activity').textContent   = stats.last_activity
+        ? new Date(stats.last_activity).toLocaleString()
+        : '-';
     } else {
       console.error('Erreur récupération stats:', stats.error || stats);
     }
@@ -56,8 +59,7 @@ async function loadStats() {
   }
 }
 
-// Lancer au chargement
-loadStats();
+document.addEventListener('DOMContentLoaded', loadStats);
 </script>
 
 </body>
