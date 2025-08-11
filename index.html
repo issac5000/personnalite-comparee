@@ -5646,38 +5646,60 @@ function showPrivacyPolicy() {
 function addChatStyles() {
   const style = document.createElement("style");
   style.textContent = `
-    /* Bulles de suggestions style iOS ultra arrondies comme le bouton réinitialiser */
-    .suggestion-bubble {
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      background: rgba(255, 255, 255, 0.18) !important;
-      backdrop-filter: blur(20px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.28) !important;
-      border-radius: 50px !important;
-      padding: 10px 22px !important;
-      margin: 6px !important;
-      font-size: 14px !important;
-      font-weight: 500 !important;
-      color: rgba(0, 0, 0, 0.85) !important;
-      cursor: pointer !important;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
-      transition: all 0.3s ease !important;
-      white-space: nowrap !important; /* par défaut : pas de retour ligne */
+    /* ----- SCOPÉ UNIQUEMENT AU CHATBOT ----- */
+    #profil-chatbot #chat-suggestions{
+      display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
     }
-    .suggestion-bubble:hover {
-      transform: translateY(-1px) scale(1.04) !important;
-      background: rgba(255, 255, 255, 0.28) !important;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+    #profil-chatbot #chat-suggestions .suggestion-bubble{
+      display:inline-flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+      background:rgba(255,255,255,0.18) !important;
+      backdrop-filter:blur(20px) saturate(180%) !important;
+      -webkit-backdrop-filter:blur(20px) saturate(180%) !important;
+      border:1px solid rgba(255,255,255,0.28) !important;
+      border-radius:50px !important;
+      padding:10px 22px !important;
+      margin:6px !important;
+      font-size:14px !important;
+      font-weight:500 !important;
+      color:rgba(0,0,0,0.85) !important;
+      cursor:pointer !important;
+      box-shadow:0 4px 14px rgba(0,0,0,0.05) !important;
+      transition:all .3s ease !important;
+      white-space:nowrap !important; /* desktop par défaut */
+      text-align:center;
+    }
+    #profil-chatbot #chat-suggestions .suggestion-bubble:hover{
+      transform:translateY(-1px) scale(1.04) !important;
+      background:rgba(255,255,255,0.28) !important;
+      box-shadow:0 6px 20px rgba(0,0,0,0.08) !important;
     }
 
-    /* Sur mobile : autoriser le retour à la ligne et éviter chevauchement */
-    @media (max-width: 768px) {
-      .suggestion-bubble {
-        white-space: normal !important;       /* texte peut revenir à la ligne */
-        max-width: calc(100% - 12px) !important; /* largeur max adaptée */
-        text-align: center !important;        /* centrer le texte multi-ligne */
+    /* Mobile: éviter chevauchements */
+    @media (max-width:768px){
+      #profil-chatbot #chat-suggestions{
+        display:flex !important;flex-wrap:wrap !important;gap:8px !important;justify-content:center !important;
+      }
+      #profil-chatbot #chat-suggestions .suggestion-bubble{
+        white-space:normal !important;
+        max-width:calc(100% - 12px) !important;
+      }
+    }
+
+    /* Desktop: bulles noires si tu les veux noires */
+    @media (min-width:769px){
+      #profil-chatbot #chat-suggestions .suggestion-bubble{
+        background:#111 !important;
+        color:#fff !important;
+        border:1px solid #000 !important;
+        width:fit-content; max-width:none; white-space:nowrap;
+        box-shadow:0 8px 22px rgba(0,0,0,.12);
+      }
+      #profil-chatbot #chat-suggestions .suggestion-bubble:hover{
+        background:#000 !important;
+        transform:translateY(-2px) scale(1.05);
+        box-shadow:0 12px 28px rgba(0,0,0,.18);
       }
     }
   `;
@@ -5685,7 +5707,6 @@ function addChatStyles() {
 }
 addChatStyles();
 </script>
-
 </body>
 </html>
 
