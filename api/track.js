@@ -19,33 +19,26 @@ module.exports = async function handler(req, res) {
 
     const userAgent = req.headers['user-agent'] || null;
     const headerReferer = req.headers['referer'] || null;
+    const now = new Date().toISOString();
 
-    // 1) Lire si la session existe déjà
-    const { data: existing, error: readErr } = await supabase
+    // 🔹 1) Upsert de la session (crée ou met à jour si déjà existante)
+    const { error: sessErr } = await supabase
       .from('sessions')
-      .select('session_id')
-      .eq('session_id', session_id)
-      .maybeSingle();
-    if (readErr) throw readErr;
-
-    // 2) Créer la session si première fois
-    if (!existing) {
-      const { error: insErr } = await supabase.from('sessions').insert({
+      .upsert({
         session_id,
-        first_referrer: referrer || headerReferer,
+        first_referrer: referrer || headerReferer || null,
         first_utm: utm || null,
-        user_agent: userAgent
-      });
-      if (insErr) throw insErr;
-    } else {
-      // Sinon, juste MAJ activité
-      await supabase
-        .from('sessions')
-        .update({ last_activity_at: new Date().toISOString() })
-        .eq('session_id', session_id);
+        user_agent: userAgent,
+        last_activity_at: now,
+        last_event_name: event_name
+      }, { onConflict: 'session_id' });
+
+    if (sessErr) {
+      console.error('upsert session error', sessErr);
+      return res.status(500).json({ error: 'upsert_session_failed', detail: sessErr.message || sessErr });
     }
 
-    // 3) Enregistrer l’événement
+    // 🔹 2) Enregistrer l’événement
     const { error: evErr } = await supabase.from('events').insert({
       session_id,
       event_name,
@@ -56,15 +49,6 @@ module.exports = async function handler(req, res) {
       meta: meta || null
     });
     if (evErr) throw evErr;
-
-    // 4) Mémoriser la dernière action dans la session
-    await supabase
-      .from('sessions')
-      .update({
-        last_activity_at: new Date().toISOString(),
-        last_event_name: event_name
-      })
-      .eq('session_id', session_id);
 
     return res.status(200).json({ ok: true });
   } catch (e) {
