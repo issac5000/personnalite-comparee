@@ -5706,30 +5706,42 @@ addChatStyles();
   #pc-constellation{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none;}
 </style>
 
-  <script>
+<script>
 (() => {
   const KEY = 'pc_session_id';
   let sid = localStorage.getItem(KEY);
+
+  // 📌 Génération de l'ID de session si absent
   if (!sid) {
-    sid = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now())+'-'+Math.random();
+    sid = (crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : Date.now() + '-' + Math.random();
     localStorage.setItem(KEY, sid);
   }
 
+  // 📌 Récupération des paramètres UTM si présents
   function getUTM() {
     const p = new URLSearchParams(location.search);
     const utm = {};
-    ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(k => {
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(k => {
       const v = p.get(k);
       if (v) utm[k] = v;
     });
     return Object.keys(utm).length ? utm : null;
   }
 
+  // 📌 Fonction d'envoi des événements
   async function track(event_name, meta = {}) {
+    // 🚫 Vérifie si le mode exclusion est activé
+    if (localStorage.getItem('pc_dnt') === '1') {
+      console.log('📌 Tracking désactivé pour cette session.');
+      return;
+    }
+
     try {
       await fetch('/api/track', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           session_id: sid,
           event_name,
@@ -5744,56 +5756,13 @@ addChatStyles();
     }
   }
 
-  // Event "page_view" au chargement
+  // 📌 Événement "page_view" au chargement
   track('page_view');
 
-  // Expose pour tracer des clics plus tard : window.pcTrack('click_name', {foo:'bar'})
+  // 📌 Expose une méthode globale pour tracer d’autres événements
   window.pcTrack = track;
 })();
 </script>
-
-  <script>
-(() => {
-  const KEY = 'pc_session_id';
-  let sid = localStorage.getItem(KEY);
-  if (!sid) {
-    sid = (crypto.randomUUID) ? crypto.randomUUID() : Date.now() + '-' + Math.random();
-    localStorage.setItem(KEY, sid);
-  }
-
-  function getUTM() {
-    const p = new URLSearchParams(location.search);
-    const utm = {};
-    ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(k => {
-      if (p.get(k)) utm[k] = p.get(k);
-    });
-    return Object.keys(utm).length ? utm : null;
-  }
-
-  async function track(event_name, meta = {}) {
-    try {
-      await fetch('/api/track', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          session_id: sid,
-          event_name,
-          page_url: location.href,
-          referrer: document.referrer || null,
-          utm: getUTM(),
-          meta
-        })
-      });
-    } catch (e) {
-      console.warn('track failed', e);
-    }
-  }
-
-  // Page vue
-  track('page_view');
-})();
-</script>
-
   
 </body>
 </html>
