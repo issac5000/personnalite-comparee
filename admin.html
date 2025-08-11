@@ -2,73 +2,76 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>📊 Admin Tracking</title>
+<title>📊 Tableau de bord - Tracking</title>
+<!-- TailwindCSS pour le style -->
 <script src="https://cdn.tailwindcss.com"></script>
+<!-- Chart.js pour les graphiques -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- DataTables pour les tableaux interactifs -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 p-6">
 
-<h1 class="text-3xl font-bold mb-6">📊 Dashboard Tracking</h1>
+<h1 class="text-3xl font-bold mb-6">📊 Tableau de bord du suivi des visites</h1>
 
-<!-- Statistiques -->
+<!-- 📌 Statistiques principales -->
 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
   <div class="bg-white rounded-lg shadow p-4 text-center">
-    <p class="text-gray-500">Utilisateurs actifs</p>
+    <p class="text-gray-500">Visiteurs actifs (5 dernières minutes)</p>
     <p id="active-users" class="text-2xl font-bold">0</p>
   </div>
   <div class="bg-white rounded-lg shadow p-4 text-center">
-    <p class="text-gray-500">Total Sessions</p>
+    <p class="text-gray-500">Total des sessions</p>
     <p id="total-sessions" class="text-2xl font-bold">0</p>
   </div>
   <div class="bg-white rounded-lg shadow p-4 text-center">
-    <p class="text-gray-500">Total Events</p>
+    <p class="text-gray-500">Total des événements</p>
     <p id="total-events" class="text-2xl font-bold">0</p>
   </div>
   <div class="bg-white rounded-lg shadow p-4 text-center">
-    <p class="text-gray-500">Dernier Rafraîchissement</p>
+    <p class="text-gray-500">Dernier rafraîchissement</p>
     <p id="last-refresh" class="text-sm">-</p>
   </div>
 </div>
 
-<!-- Graphique -->
+<!-- 📈 Graphique -->
 <div class="bg-white rounded-lg shadow p-4 mb-8">
-  <h2 class="text-xl font-bold mb-4">Événements par heure</h2>
+  <h2 class="text-xl font-bold mb-4">Nombre d'événements par heure</h2>
   <canvas id="eventsChart" height="80"></canvas>
 </div>
 
-<!-- Tableau Sessions -->
+<!-- 📋 Tableau des sessions -->
 <div class="bg-white rounded-lg shadow p-4 mb-8">
-  <h2 class="text-xl font-bold mb-4">Sessions</h2>
+  <h2 class="text-xl font-bold mb-4">Liste des sessions</h2>
   <table id="sessions-table" class="display w-full">
     <thead>
       <tr>
-        <th>Session ID</th>
-        <th>First Seen</th>
-        <th>Last Activity</th>
-        <th>Referrer</th>
-        <th>Last Event</th>
-        <th>User Agent</th>
+        <th>ID de session</th>
+        <th>Première visite</th>
+        <th>Dernière activité</th>
+        <th>Origine (referrer)</th>
+        <th>Dernier événement</th>
+        <th>Navigateur / Appareil</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 </div>
 
-<!-- Tableau Events -->
+<!-- 📋 Tableau des événements -->
 <div class="bg-white rounded-lg shadow p-4">
-  <h2 class="text-xl font-bold mb-4">Events</h2>
+  <h2 class="text-xl font-bold mb-4">Liste des événements</h2>
   <table id="events-table" class="display w-full">
     <thead>
       <tr>
-        <th>Date</th>
-        <th>Session ID</th>
-        <th>Event Name</th>
-        <th>Page URL</th>
-        <th>Referrer</th>
-        <th>Meta</th>
+        <th>Date / Heure</th>
+        <th>ID de session</th>
+        <th>Nom de l'événement</th>
+        <th>URL de la page</th>
+        <th>Origine (referrer)</th>
+        <th>Données associées (meta)</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -78,37 +81,37 @@
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
-// ⚠️ Mets ton URL et ton anon key ici
+// ⚠️ Mets ton URL et ta clé Anon ici (PAS la clé service role)
 const supabase = createClient(
-  "https://swjnpvfkloubshksobau.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"
+  "https://swjnpvfkloubshksobau.supabase.co", // 🔹 URL du projet Supabase
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg" // 🔹 Clé publique "anon"
 );
 
-let eventsChart;
+let eventsChart; // Variable globale pour le graphique
 
 async function loadData() {
   const now = new Date();
   document.getElementById("last-refresh").innerText = now.toLocaleTimeString();
 
-  // Récup Sessions
+  // 📥 Récupération des sessions depuis Supabase
   const { data: sessions } = await supabase
     .from("sessions")
     .select("*")
     .order("last_activity_at", { ascending: false });
 
-  // Récup Events
+  // 📥 Récupération des événements depuis Supabase
   const { data: events } = await supabase
     .from("events")
     .select("*")
     .order("occurred_at", { ascending: false });
 
-  // Statistiques
+  // 🔢 Calcul des statistiques
   const activeCount = sessions.filter(s => (new Date(s.last_activity_at) > new Date(Date.now() - 5*60*1000))).length;
   document.getElementById("active-users").innerText = activeCount;
   document.getElementById("total-sessions").innerText = sessions.length;
   document.getElementById("total-events").innerText = events.length;
 
-  // Graphique
+  // 📊 Préparation des données pour le graphique (events par heure)
   const countsByHour = {};
   events.forEach(e => {
     const h = new Date(e.occurred_at).getHours();
@@ -117,6 +120,7 @@ async function loadData() {
   const labels = [...Array(24).keys()];
   const counts = labels.map(h => countsByHour[h] || 0);
 
+  // 🎨 Création ou mise à jour du graphique
   if (!eventsChart) {
     const ctx = document.getElementById("eventsChart").getContext("2d");
     eventsChart = new Chart(ctx, {
@@ -135,7 +139,7 @@ async function loadData() {
     eventsChart.update();
   }
 
-  // Tableaux
+  // 🗂 Remplissage du tableau Sessions
   const sTable = $("#sessions-table").DataTable();
   sTable.clear();
   sessions.forEach(s => {
@@ -150,6 +154,7 @@ async function loadData() {
   });
   sTable.draw();
 
+  // 🗂 Remplissage du tableau Events
   const eTable = $("#events-table").DataTable();
   eTable.clear();
   events.forEach(e => {
@@ -165,12 +170,12 @@ async function loadData() {
   eTable.draw();
 }
 
-// Initialisation DataTables + premier chargement
+// 🚀 Initialisation DataTables + premier chargement
 $(document).ready(() => {
   $("#sessions-table").DataTable();
   $("#events-table").DataTable();
   loadData();
-  setInterval(loadData, 5000);
+  setInterval(loadData, 5000); // Rafraîchissement auto toutes les 5 secondes
 });
 </script>
 </body>
