@@ -341,7 +341,10 @@
           --pc-dot:  rgba(10,15,26,.62);
         }
         /* le conteneur de la bannière doit déjà être positionné ; sinon: */
-        .pc-hero { position: relative; isolation: isolate; z-index: 0; }
+        .pc-hero { position: relative; isolation: isolate; z-index: 0; margin-top: 2rem; }
+        @media (min-width: 768px) {
+          .pc-hero { margin-top: 3rem; }
+        }
 
         #pc-constellation{
           position: absolute; inset: 0; width: 100%; height: 100%;
@@ -427,7 +430,7 @@
     </header>
 
   <!-- Hero Section Premium -->
-    <section id="hero" data-aos="fade-up" class="section section-clair relative flex items-center justify-center overflow-hidden pc-hero mt-4 sm:mt-6" data-hero style="min-height: 80vh;">
+    <section id="hero" data-aos="fade-up" class="section section-clair relative flex items-center justify-center overflow-hidden pc-hero mt-8 sm:mt-12" data-hero style="min-height: 80vh;">
         <canvas id="pc-constellation" aria-hidden="true"></canvas>
         <!-- Grille subtile en arrière-plan -->
         <div class="absolute inset-0 opacity-[0.02]">
@@ -5448,11 +5451,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.innerWidth <= 768) {
       LINK_DIST = 50;         // distance plus courte
       MAX_LINKS = 2;          // peu de liaisons par point
-      BASE_OPACITY = 0.35;    // opacité douce au lieu de 0.80
+      BASE_OPACITY = 0.45;    // mobile
     } else {
       LINK_DIST = 100;        // légère baisse aussi sur desktop
       MAX_LINKS = N;
-      BASE_OPACITY = 0.25;
+      BASE_OPACITY = 0.35;    // desktop
     }
   }
 
@@ -5503,7 +5506,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Lines
-    ctx.lineWidth = 0.5;
+    ctx.lineWidth = 0.6;
     const linksCount = new Array(N).fill(0);
     for(let i=0;i<N;i++){
       for(let j=i+1;j<N;j++){
