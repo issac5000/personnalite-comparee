@@ -8,20 +8,10 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-  <!-- (Optionnel) Login conservé mais caché -->
-  <form id="login-form" class="hidden bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
-    <h2 class="text-2xl font-bold mb-6 text-center">🔐 Connexion Admin</h2>
-    <input id="username" type="text" autocomplete="username" placeholder="Nom d'utilisateur" class="w-full mb-4 p-3 border rounded-lg"/>
-    <input id="password" type="password" autocomplete="current-password" placeholder="Mot de passe" class="w-full mb-4 p-3 border rounded-lg"/>
-    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">Se connecter</button>
-    <p id="login-error" class="text-red-500 text-sm mt-3 hidden">Identifiants incorrects</p>
-  </form>
-
-  <!-- Dashboard -->
+  <!-- Dashboard direct -->
   <div id="dashboard" class="w-full max-w-4xl bg-white p-8 rounded-xl shadow-lg">
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-3xl font-bold">📊 Dashboard</h2>
-      <button id="logout" class="text-sm px-3 py-2 rounded-lg border hover:bg-gray-50">Recharger</button>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
       <div class="p-4 bg-blue-100 rounded-lg text-center">
@@ -46,32 +36,27 @@
 <script>
 const $ = (id) => document.getElementById(id);
 
-// -------- Mode sans authentification --------
+// ---- Charger les stats automatiquement
 async function loadStats() {
   try {
-    const res = await fetch('/api/admin-stats', { method: 'GET' });
+    const res = await fetch('/api/admin-stats');
     const stats = await res.json();
 
     if (res.ok && !stats.error) {
-      $('sessions-count').textContent  = stats.sessions_count  ?? 0;
-      $('events-count').textContent    = stats.events_count    ?? 0;
+      $('sessions-count').textContent = stats.sessions_count ?? 0;
+      $('events-count').textContent = stats.events_count ?? 0;
       $('unique-visitors').textContent = stats.unique_visitors ?? 0;
-      $('last-activity').textContent   = stats.last_activity
-        ? new Date(stats.last_activity).toLocaleString()
-        : '-';
+      $('last-activity').textContent = stats.last_activity ? new Date(stats.last_activity).toLocaleString() : '-';
     } else {
-      console.error('Admin stats error:', stats);
+      console.error('Erreur récupération stats:', stats.error || stats);
     }
   } catch (err) {
     console.error('Erreur chargement stats:', err);
   }
 }
 
-// bouton "Recharger"
-$('logout').addEventListener('click', () => loadStats());
-
-// au chargement
-document.addEventListener('DOMContentLoaded', loadStats);
+// Lancer au chargement
+loadStats();
 </script>
 
 </body>
