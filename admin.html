@@ -9,13 +9,13 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
   <!-- Login -->
-  <div id="login-container" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
+  <form id="login-form" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
     <h2 class="text-2xl font-bold mb-6 text-center">🔐 Connexion Admin</h2>
     <input id="username" type="text" placeholder="Nom d'utilisateur" class="w-full mb-4 p-3 border rounded-lg"/>
     <input id="password" type="password" placeholder="Mot de passe" class="w-full mb-4 p-3 border rounded-lg"/>
-    <button onclick="login()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">Se connecter</button>
+    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">Se connecter</button>
     <p id="login-error" class="text-red-500 text-sm mt-3 hidden">Identifiants incorrects</p>
-  </div>
+  </form>
 
   <!-- Dashboard -->
   <div id="dashboard" class="hidden w-full max-w-4xl bg-white p-8 rounded-xl shadow-lg">
@@ -41,43 +41,62 @@
   </div>
 
 <script>
-async function login() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+document.getElementById('login-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
 
-  const res = await fetch("/api/admin-login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
-  });
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim();
 
-  const data = await res.json();
+  try {
+    const res = await fetch('/api/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
 
-  if (data.success) {
+    let data;
+    try {
+      data = await res.json(); // On tente en JSON
+    } catch {
+      const text = await res.text(); // Si ce n'est pas du JSON
+      throw new Error(text);
+    }
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Erreur inconnue');
+    }
+
+    // Connexion réussie
     localStorage.setItem("adminLogged", "true");
-    document.getElementById("login-container").classList.add("hidden");
+    document.getElementById("login-form").classList.add("hidden");
     document.getElementById("dashboard").classList.remove("hidden");
     loadStats();
-  } else {
+
+  } catch (err) {
+    console.error(err);
     document.getElementById("login-error").classList.remove("hidden");
   }
-}
+});
 
 async function loadStats() {
-  const res = await fetch("/api/admin-stats", { method: "POST" }); // API qu’on fera juste après
-  const stats = await res.json();
+  try {
+    const res = await fetch("/api/admin-stats", { method: "POST" });
+    const stats = await res.json();
 
-  if (!stats.error) {
-    document.getElementById("sessions-count").textContent = stats.sessions_count || 0;
-    document.getElementById("events-count").textContent = stats.events_count || 0;
-    document.getElementById("unique-visitors").textContent = stats.unique_visitors || 0;
-    document.getElementById("last-activity").textContent = stats.last_activity || "-";
+    if (!stats.error) {
+      document.getElementById("sessions-count").textContent = stats.sessions_count || 0;
+      document.getElementById("events-count").textContent = stats.events_count || 0;
+      document.getElementById("unique-visitors").textContent = stats.unique_visitors || 0;
+      document.getElementById("last-activity").textContent = stats.last_activity || "-";
+    }
+  } catch (err) {
+    console.error("Erreur chargement stats:", err);
   }
 }
 
 // Auto-login si déjà connecté
 if (localStorage.getItem("adminLogged") === "true") {
-  document.getElementById("login-container").classList.add("hidden");
+  document.getElementById("login-form").classList.add("hidden");
   document.getElementById("dashboard").classList.remove("hidden");
   loadStats();
 }
