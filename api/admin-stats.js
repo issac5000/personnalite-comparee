@@ -1,15 +1,15 @@
 // api/admin-stats.js
 const { createClient } = require('@supabase/supabase-js');
 
-// Connexion à Supabase avec la clé SERVICE_ROLE (cachée dans .env)
+// Connexion sécurisée à Supabase (clé service role stockée dans Vercel)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE
 );
 
-// Identifiants admin (à mettre dans .env)
-const ADMIN_USER = process.env.ADMIN_USER || "admin";
-const ADMIN_PASS = process.env.ADMIN_PASS || "motdepasse123";
+// Identifiants admin obligatoires (définis dans Vercel → Environment Variables)
+const ADMIN_USER = process.env.ADMIN_USER;
+const ADMIN_PASS = process.env.ADMIN_PASS;
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
@@ -18,33 +18,31 @@ module.exports = async function handler(req, res) {
 
   const { username, password } = req.body || {};
 
-  // Authentification basique
-  if (username && password) {
-    if (username !== ADMIN_USER || password !== ADMIN_PASS) {
-      return res.status(401).json({ error: "Accès refusé" });
-    }
+  // 🔒 Auth stricte : refuse si pas d'identifiants ou mauvais identifiants
+  if (!username || !password || username !== ADMIN_USER || password !== ADMIN_PASS) {
+    return res.status(401).json({ error: "Accès refusé" });
   }
 
   try {
-    // Récupération du nombre total de sessions
+    // 📊 Sessions
     const { count: sessions_count, error: sessionsErr } = await supabase
       .from("sessions")
       .select("*", { count: "exact", head: true });
     if (sessionsErr) throw sessionsErr;
 
-    // Récupération du nombre total d'événements
+    // 📊 Événements
     const { count: events_count, error: eventsErr } = await supabase
       .from("events")
       .select("*", { count: "exact", head: true });
     if (eventsErr) throw eventsErr;
 
-    // Récupération des visiteurs uniques
+    // 👥 Visiteurs uniques
     const { data: unique_visitors_data, error: visitorsErr } = await supabase
       .from("sessions")
       .select("session_id");
     if (visitorsErr) throw visitorsErr;
 
-    // Dernière activité
+    // ⏳ Dernière activité
     const { data: last_event, error: lastEventErr } = await supabase
       .from("events")
       .select("occurred_at")
