@@ -427,7 +427,7 @@
     </header>
 
   <!-- Hero Section Premium -->
-    <section id="hero" data-aos="fade-up" class="section section-clair relative flex items-center justify-center overflow-hidden pc-hero mt-0 pt-0" data-hero style="min-height: 80vh;">
+    <section id="hero" data-aos="fade-up" class="section section-clair relative flex items-center justify-center overflow-hidden pc-hero mt-8 sm:mt-12" data-hero style="min-height: 80vh;">
         <canvas id="pc-constellation" aria-hidden="true"></canvas>
         <!-- Grille subtile en arrière-plan -->
         <div class="absolute inset-0 opacity-[0.02]">
@@ -5418,10 +5418,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const ctx = canvas.getContext('2d', { alpha: true });
   const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
-  const N = 110;              // nombre de points
-  let LINK_DIST = 120;        // distance de connexion
+  const N = 80;               // nombre de points
+  let LINK_DIST = 100;        // distance de connexion
   let MAX_LINKS = N;          // connexions maximales par point
-  let BASE_OPACITY = 0.30;    // opacité maximale des lignes
+  let BASE_OPACITY = 0.25;    // opacité maximale des lignes
   const mouse = { x:0, y:0, inside:false };
   const DRIFT = 0.013;                  // amplitude du drift autonome
   const ALLOW_DRIFT = matchMedia('(pointer: coarse)').matches;
@@ -5445,14 +5445,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateConnectivity(){
-    if(window.innerWidth <= 768){
-      LINK_DIST = 60;      // distance divisée par 2 sur mobile
-      MAX_LINKS = 3;       // légère augmentation des connexions pour la visibilité
-      BASE_OPACITY = 0.80; // opacité renforcée pour mieux percevoir les lignes
+    if (window.innerWidth <= 768) {
+      LINK_DIST = 50;         // distance plus courte
+      MAX_LINKS = 2;          // peu de liaisons par point
+      BASE_OPACITY = 0.35;    // opacité douce au lieu de 0.80
     } else {
-      LINK_DIST = 120;     // paramètres d'origine sur desktop
+      LINK_DIST = 100;        // légère baisse aussi sur desktop
       MAX_LINKS = N;
-      BASE_OPACITY = 0.30; // opacité d'origine
+      BASE_OPACITY = 0.25;
     }
   }
 
@@ -5503,7 +5503,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Lines
-    ctx.lineWidth = 0.7;
+    ctx.lineWidth = 0.5;
     const linksCount = new Array(N).fill(0);
     for(let i=0;i<N;i++){
       for(let j=i+1;j<N;j++){
