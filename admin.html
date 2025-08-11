@@ -54,16 +54,11 @@ document.getElementById('login-form').addEventListener('submit', async function 
       body: JSON.stringify({ username, password })
     });
 
-    let data;
-    try {
-      data = await res.json(); // On tente en JSON
-    } catch {
-      const text = await res.text(); // Si ce n'est pas du JSON
-      throw new Error(text);
-    }
+    const data = await res.json().catch(() => ({})); // On lit UNE SEULE FOIS
 
-    if (!res.ok) {
-      throw new Error(data.error || 'Erreur inconnue');
+    if (!res.ok || !data.success) {
+      document.getElementById("login-error").classList.remove("hidden");
+      return;
     }
 
     // Connexion réussie
@@ -73,7 +68,7 @@ document.getElementById('login-form').addEventListener('submit', async function 
     loadStats();
 
   } catch (err) {
-    console.error(err);
+    console.error("Erreur connexion admin:", err);
     document.getElementById("login-error").classList.remove("hidden");
   }
 });
