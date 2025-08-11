@@ -1,8 +1,6 @@
 // /api/text.js
 const fetch = require('node-fetch');
 
-console.log("🔑 OPENAI_API_KEY depuis Vercel:", process.env.OPENAI_API_KEY ? "OK" : "NON DÉFINIE");
-
 // Estimation simple: ~4 caractères ≈ 1 token
 function estimateTokens(str) {
   if (!str) return 0;
