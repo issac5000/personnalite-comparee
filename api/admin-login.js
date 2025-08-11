@@ -1,5 +1,6 @@
 // api/admin-login.js
-export default function handler(req, res) {
+
+module.exports = function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
@@ -7,12 +8,16 @@ export default function handler(req, res) {
   try {
     const { username, password } = req.body || {};
 
-    // Compatibilité des noms d’ENV
+    // Compat noms d’ENV
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME || process.env.ADMIN_USER;
     const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.ADMIN_PASS;
 
     if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
-      return res.status(500).json({ error: 'Identifiants admin non configurés' });
+      console.error('❌ ADMIN env manquants');
+      return res.status(500).json({
+        error: 'Identifiants admin non configurés',
+        error_code: 'ADMIN_ENV_MISSING'
+      });
     }
 
     if (!username || !password) {
@@ -28,4 +33,4 @@ export default function handler(req, res) {
     console.error('Erreur dans admin-login.js:', error);
     return res.status(500).json({ error: 'Erreur interne du serveur' });
   }
-}
+};
