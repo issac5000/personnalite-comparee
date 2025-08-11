@@ -5714,9 +5714,10 @@ addChatStyles();
 
   // Génération d'un ID de session si absent
   if (!sid) {
-    sid = (typeof crypto !== 'undefined' && crypto.randomUUID)
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random()}`;
+    sid =
+      typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`;
     localStorage.setItem(KEY, sid);
   }
 
@@ -5724,10 +5725,12 @@ addChatStyles();
   function getUTM() {
     const p = new URLSearchParams(location.search);
     const utm = {};
-    ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(k => {
-      const v = p.get(k);
-      if (v) utm[k] = v;
-    });
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(
+      (k) => {
+        const v = p.get(k);
+        if (v) utm[k] = v;
+      },
+    );
     return Object.keys(utm).length ? utm : null;
   }
 
@@ -5753,7 +5756,7 @@ addChatStyles();
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body,
-        keepalive: true
+        keepalive: true,
       });
       return true;
     } catch (e) {
@@ -5782,17 +5785,20 @@ addChatStyles();
       language: navigator.language || null,
       tz_offset: new Date().getTimezoneOffset(),
       viewport: { width: window.innerWidth, height: window.innerHeight },
-      screen: { width: window.screen?.width || null, height: window.screen?.height || null },
+      screen: {
+        width: window.screen && window.screen.width ? window.screen.width : null,
+        height: window.screen && window.screen.height ? window.screen.height : null,
+      },
       country: null,
       city: null,
       is_returning: !!localStorage.getItem('pc_has_visited'),
       engagement_ms: Date.now() - engagementStart,
-      last_page_url: document.referrer || null
+      last_page_url: document.referrer || null,
     };
     return sendJSON('/api/track', payload, opts);
   }
 
-  // Marqueur de visite
+  // Marqueur de première visite
   if (!localStorage.getItem('pc_has_visited')) {
     localStorage.setItem('pc_has_visited', '1');
   }
@@ -5803,14 +5809,22 @@ addChatStyles();
   // Session end fiable (beacon)
   window.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
-      track('session_end', { elapsed_ms: Date.now() - engagementStart }, { useBeacon: true });
+      track(
+        'session_end',
+        { elapsed_ms: Date.now() - engagementStart },
+        { useBeacon: true },
+      );
     }
   });
   window.addEventListener('beforeunload', () => {
-    track('session_end', { elapsed_ms: Date.now() - engagementStart }, { useBeacon: true });
+    track(
+      'session_end',
+      { elapsed_ms: Date.now() - engagementStart },
+      { useBeacon: true },
+    );
   });
 
-  // Expose pour événements custom
+  // Expose pour événements custom (ex. clics, conversions)
   window.pcTrack = track;
 })();
 </script>
