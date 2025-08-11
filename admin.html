@@ -3,11 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <title>📊 Tableau de bord - Tracking</title>
+
 <!-- TailwindCSS pour le style -->
 <script src="https://cdn.tailwindcss.com"></script>
-<!-- Chart.js pour les graphiques -->
+
+<!-- Chart.js pour le graphique -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- DataTables pour les tableaux interactifs -->
+
+<!-- DataTables pour tableaux interactifs -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
@@ -16,18 +19,18 @@
 
 <h1 class="text-3xl font-bold mb-6">📊 Tableau de bord du suivi des visites</h1>
 
-<!-- 📌 Statistiques principales -->
+<!-- 🧮 Statistiques principales -->
 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
   <div class="bg-white rounded-lg shadow p-4 text-center">
-    <p class="text-gray-500">Visiteurs actifs (5 dernières minutes)</p>
+    <p class="text-gray-500">Visiteurs actifs (≤ 5 min)</p>
     <p id="active-users" class="text-2xl font-bold">0</p>
   </div>
   <div class="bg-white rounded-lg shadow p-4 text-center">
-    <p class="text-gray-500">Total des sessions</p>
+    <p class="text-gray-500">Sessions humaines (filtrées)</p>
     <p id="total-sessions" class="text-2xl font-bold">0</p>
   </div>
   <div class="bg-white rounded-lg shadow p-4 text-center">
-    <p class="text-gray-500">Total des événements</p>
+    <p class="text-gray-500">Événements humains (filtrés)</p>
     <p id="total-events" class="text-2xl font-bold">0</p>
   </div>
   <div class="bg-white rounded-lg shadow p-4 text-center">
@@ -38,13 +41,13 @@
 
 <!-- 📈 Graphique -->
 <div class="bg-white rounded-lg shadow p-4 mb-8">
-  <h2 class="text-xl font-bold mb-4">Nombre d'événements par heure</h2>
+  <h2 class="text-xl font-bold mb-4">Nombre d'événements par heure (trafic humain)</h2>
   <canvas id="eventsChart" height="80"></canvas>
 </div>
 
 <!-- 📋 Tableau des sessions -->
 <div class="bg-white rounded-lg shadow p-4 mb-8">
-  <h2 class="text-xl font-bold mb-4">Liste des sessions</h2>
+  <h2 class="text-xl font-bold mb-4">Liste des sessions (humains uniquement)</h2>
   <table id="sessions-table" class="display w-full">
     <thead>
       <tr>
@@ -62,7 +65,7 @@
 
 <!-- 📋 Tableau des événements -->
 <div class="bg-white rounded-lg shadow p-4">
-  <h2 class="text-xl font-bold mb-4">Liste des événements</h2>
+  <h2 class="text-xl font-bold mb-4">Liste des événements (humains uniquement)</h2>
   <table id="events-table" class="display w-full">
     <thead>
       <tr>
@@ -79,48 +82,71 @@
 </div>
 
 <script type="module">
+/**
+ * Explications rapides :
+ * - On lit directement les tables "sessions" et "events" dans Supabase.
+ * - On filtre les robots (user-agent contenant vercel-, bot, crawler, spider).
+ * - On enlève aussi les événements "debug_test".
+ * - Tout est rafraîchi automatiquement toutes les 5 secondes.
+ */
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
-// ⚠️ Mets ton URL et ta clé Anon ici (PAS la clé service role)
-const supabase = createClient(
-  "https://swjnpvfkloubshksobau.supabase.co", // 🔹 URL du projet Supabase
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg" // 🔹 Clé publique "anon"
-);
+// 🔧 CONFIG — mets ton URL & ta clé ANON (publique) ici
+const SUPABASE_URL  = "https://swjnpvfkloubshksobau.supabase.co";
+const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg";
 
-let eventsChart; // Variable globale pour le graphique
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// 🔍 Détecteur simple de bots via le User-Agent
+const isBotUA = (ua) => (ua || '')
+  .toLowerCase()
+  .match(/vercel-|bot|crawler|spider/);
+
+// ⏱️ une session est "active" si dernière activité ≤ 5 minutes
+const ACTIVE_WINDOW_MS = 5 * 60 * 1000;
+
+let eventsChart; // instance Chart.js
 
 async function loadData() {
-  const now = new Date();
-  document.getElementById("last-refresh").innerText = now.toLocaleTimeString();
+  // Affiche l'heure du refresh
+  document.getElementById("last-refresh").innerText = new Date().toLocaleTimeString();
 
-  // 📥 Récupération des sessions depuis Supabase
-  const { data: sessions } = await supabase
+  // Récupère toutes les sessions
+  const { data: sessions = [] } = await supabase
     .from("sessions")
     .select("*")
     .order("last_activity_at", { ascending: false });
 
-  // 📥 Récupération des événements depuis Supabase
-  const { data: events } = await supabase
+  // Récupère tous les événements
+  const { data: events = [] } = await supabase
     .from("events")
     .select("*")
     .order("occurred_at", { ascending: false });
 
-  // 🔢 Calcul des statistiques
-  const activeCount = sessions.filter(s => (new Date(s.last_activity_at) > new Date(Date.now() - 5*60*1000))).length;
-  document.getElementById("active-users").innerText = activeCount;
-  document.getElementById("total-sessions").innerText = sessions.length;
-  document.getElementById("total-events").innerText = events.length;
+  // 🧹 Filtrage côté admin (humains uniquement)
+  const sessionsFiltered = sessions.filter(s => !isBotUA(s.user_agent));
+  const eventsFiltered = events
+    .filter(e => !isBotUA(e.user_agent))
+    .filter(e => e.event_name !== 'debug_test');
 
-  // 📊 Préparation des données pour le graphique (events par heure)
+  // 📊 Statistiques
+  const activeCount = sessionsFiltered.filter(
+    s => new Date(s.last_activity_at) > new Date(Date.now() - ACTIVE_WINDOW_MS)
+  ).length;
+
+  document.getElementById("active-users").innerText  = activeCount;
+  document.getElementById("total-sessions").innerText = sessionsFiltered.length;
+  document.getElementById("total-events").innerText   = eventsFiltered.length;
+
+  // 📈 Graphe : nombre d'événements par heure (sur 24h)
   const countsByHour = {};
-  events.forEach(e => {
+  eventsFiltered.forEach(e => {
     const h = new Date(e.occurred_at).getHours();
     countsByHour[h] = (countsByHour[h] || 0) + 1;
   });
   const labels = [...Array(24).keys()];
   const counts = labels.map(h => countsByHour[h] || 0);
 
-  // 🎨 Création ou mise à jour du graphique
   if (!eventsChart) {
     const ctx = document.getElementById("eventsChart").getContext("2d");
     eventsChart = new Chart(ctx, {
@@ -128,7 +154,7 @@ async function loadData() {
       data: {
         labels: labels.map(h => `${h}h`),
         datasets: [{
-          label: 'Nombre d\'événements',
+          label: "Nombre d'événements (humains)",
           data: counts,
           backgroundColor: '#3b82f6'
         }]
@@ -139,10 +165,10 @@ async function loadData() {
     eventsChart.update();
   }
 
-  // 🗂 Remplissage du tableau Sessions
+  // 🗂️ Remplissage tableau Sessions
   const sTable = $("#sessions-table").DataTable();
   sTable.clear();
-  sessions.forEach(s => {
+  sessionsFiltered.forEach(s => {
     sTable.row.add([
       s.session_id,
       s.first_seen_at,
@@ -154,10 +180,10 @@ async function loadData() {
   });
   sTable.draw();
 
-  // 🗂 Remplissage du tableau Events
+  // 🗂️ Remplissage tableau Events
   const eTable = $("#events-table").DataTable();
   eTable.clear();
-  events.forEach(e => {
+  eventsFiltered.forEach(e => {
     eTable.row.add([
       e.occurred_at,
       e.session_id,
@@ -170,12 +196,12 @@ async function loadData() {
   eTable.draw();
 }
 
-// 🚀 Initialisation DataTables + premier chargement
+// 🚀 Init DataTables + premier chargement + auto-refresh
 $(document).ready(() => {
   $("#sessions-table").DataTable();
   $("#events-table").DataTable();
   loadData();
-  setInterval(loadData, 5000); // Rafraîchissement auto toutes les 5 secondes
+  setInterval(loadData, 5000); // rafraîchit toutes les 5s
 });
 </script>
 </body>
