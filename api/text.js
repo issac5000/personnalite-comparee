@@ -1,5 +1,4 @@
 // /api/text.js
-const fetch = require('node-fetch');
 
 // Estimation simple: ~4 caractères ≈ 1 token
 function estimateTokens(str) {
@@ -91,7 +90,6 @@ Si la question sort du cadre: refuse poliment et recentre.
       body: JSON.stringify(payload),
     });
 
-    // Vérification si erreur API
     if (!response.ok) {
       const errorText = await response.text();
       console.error("❌ Erreur API OpenAI:", errorText);
@@ -101,16 +99,7 @@ Si la question sort du cadre: refuse poliment et recentre.
       });
     }
 
-    let data;
-    try {
-      data = await response.json();
-    } catch (jsonError) {
-      console.error("❌ Réponse non-JSON d'OpenAI:", jsonError);
-      return res.status(500).json({
-        error: "Réponse invalide d'OpenAI",
-        details: jsonError.message
-      });
-    }
+    const data = await response.json();
 
     res.status(200).json({
       message: data.choices?.[0]?.message?.content || null,
