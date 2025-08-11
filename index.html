@@ -5437,7 +5437,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let pts = [], W=0, H=0;
 
   function resize(){
-    const r = canvas.getBoundingClientRect();
+    const r = wrap.getBoundingClientRect();
     W = canvas.width  = Math.floor(r.width * DPR);
     H = canvas.height = Math.floor(r.height * DPR);
     canvas.style.width  = r.width + 'px';
