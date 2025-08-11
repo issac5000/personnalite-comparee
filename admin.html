@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Admin Tracking</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 30px; background: white; }
+  th, td { padding: 8px; border: 1px solid #ccc; font-size: 14px; }
+  th { background: #eee; }
+</style>
+</head>
+<body>
+<h1>📊 Admin Tracking</h1>
+
+<h2>Sessions</h2>
+<table id="sessions-table">
+  <thead>
+    <tr>
+      <th>Session ID</th>
+      <th>First Seen</th>
+      <th>Last Activity</th>
+      <th>Referrer</th>
+      <th>Last Event</th>
+      <th>User Agent</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<h2>Events</h2>
+<table id="events-table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Session ID</th>
+      <th>Event Name</th>
+      <th>Page URL</th>
+      <th>Referrer</th>
+      <th>Meta</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js";
+
+const supabase = createClient(
+  "https://swjnpvfkloubshksobau.supabase.co", // 🔹 remplace par TON URL Supabase
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg" // 🔹 remplace par ta anon key (pas la service role)
+);
+
+async function loadData() {
+  const { data: sessions } = await supabase
+    .from("sessions")
+    .select("*")
+    .order("last_activity_at", { ascending: false })
+    .limit(20);
+
+  const { data: events } = await supabase
+    .from("events")
+    .select("*")
+    .order("occurred_at", { ascending: false })
+    .limit(20);
+
+  // Affiche sessions
+  const sBody = document.querySelector("#sessions-table tbody");
+  sBody.innerHTML = "";
+  sessions.forEach(s => {
+    sBody.innerHTML += `
+      <tr>
+        <td>${s.session_id}</td>
+        <td>${s.first_seen_at}</td>
+        <td>${s.last_activity_at}</td>
+        <td>${s.first_referrer || ""}</td>
+        <td>${s.last_event_name || ""}</td>
+        <td>${s.user_agent || ""}</td>
+      </tr>
+    `;
+  });
+
+  // Affiche events
+  const eBody = document.querySelector("#events-table tbody");
+  eBody.innerHTML = "";
+  events.forEach(e => {
+    eBody.innerHTML += `
+      <tr>
+        <td>${e.occurred_at}</td>
+        <td>${e.session_id}</td>
+        <td>${e.event_name}</td>
+        <td>${e.page_url || ""}</td>
+        <td>${e.referrer || ""}</td>
+        <td>${JSON.stringify(e.meta) || ""}</td>
+      </tr>
+    `;
+  });
+}
+
+loadData();
+setInterval(loadData, 5000); // rafraîchit toutes les 5 sec
+</script>
+</body>
+</html>
