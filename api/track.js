@@ -26,12 +26,8 @@ module.exports = async function handler(req, res) {
     // ===============================
     const clientDNT = req.headers['dnt'] === '1';
     const metaDNT = meta?.dnt === 1;
-
-    // Option : exclusion par IP
     const ip = (req.headers['x-forwarded-for'] || '').split(',')[0]?.trim() || null;
-    const MY_IPS = []; // ex: ['1.2.3.4', '5.6.7.8']
-
-    // Option : exclusion des previews Vercel
+    const MY_IPS = []; // ex: ['1.2.3.4']
     const isPreview = (headerReferer || '').includes('vercel.app');
 
     if (clientDNT || metaDNT || (ip && MY_IPS.includes(ip)) || isPreview) {
@@ -40,24 +36,52 @@ module.exports = async function handler(req, res) {
     }
     // ===============================
 
-    // 🔹 1) Upsert de la session
-    const { error: sessErr } = await supabase
+    // 🔹 1) Vérifier si la session existe déjà
+    const { data: existingSession, error: checkErr } = await supabase
       .from('sessions')
-      .upsert({
+      .select('session_id')
+      .eq('session_id', session_id)
+      .maybeSingle();
+
+    if (checkErr) {
+      console.error('check session error', checkErr);
+      return res.status(500).json({ error: 'check_session_failed', detail: checkErr.message || checkErr });
+    }
+
+    // 🔹 2) Construire les données session
+    let sessionData;
+    if (!existingSession) {
+      // 👉 Nouvelle session : on définit toutes les infos de départ
+      sessionData = {
         session_id,
         first_referrer: referrer || headerReferer || null,
         first_utm: utm || null,
+        first_seen_at: now,
         user_agent: userAgent,
         last_activity_at: now,
         last_event_name: event_name
-      }, { onConflict: 'session_id' });
+      };
+    } else {
+      // 👉 Session existante : on met juste à jour l'activité
+      sessionData = {
+        session_id,
+        last_activity_at: now,
+        last_event_name: event_name,
+        user_agent: userAgent
+      };
+    }
+
+    // 🔹 3) Upsert session
+    const { error: sessErr } = await supabase
+      .from('sessions')
+      .upsert(sessionData, { onConflict: 'session_id' });
 
     if (sessErr) {
       console.error('upsert session error', sessErr);
       return res.status(500).json({ error: 'upsert_session_failed', detail: sessErr.message || sessErr });
     }
 
-    // 🔹 2) Enregistrer l’événement
+    // 🔹 4) Enregistrer l’événement
     const { error: evErr } = await supabase.from('events').insert({
       session_id,
       event_name,
@@ -65,14 +89,19 @@ module.exports = async function handler(req, res) {
       referrer: referrer || headerReferer || null,
       utm: utm || null,
       user_agent: userAgent,
-      meta: meta || null
+      meta: meta || null,
+      occurred_at: now // 🔹 Pour éviter tout problème de timestamp
     });
 
-    if (evErr) throw evErr;
+    if (evErr) {
+      console.error('insert event error', evErr);
+      return res.status(500).json({ error: 'insert_event_failed', detail: evErr.message || evErr });
+    }
 
     return res.status(200).json({ ok: true });
+
   } catch (e) {
     console.error('track error', e);
-    return res.status(500).json({ error: 'tracking_failed' });
+    return res.status(500).json({ error: 'tracking_failed', detail: e.message || e });
   }
 };
