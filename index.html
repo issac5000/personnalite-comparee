@@ -5449,12 +5449,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateConnectivity(){
     if (window.innerWidth <= 768) {
-      LINK_DIST = 50;         // distance plus courte
+      LINK_DIST = 65;         // distance de connexion augmentée
       MAX_LINKS = 3;          // un peu plus de liaisons par point
       BASE_OPACITY = 0.55;    // mobile
     } else {
-      LINK_DIST = 100;        // légère baisse aussi sur desktop
-      MAX_LINKS = N;
+      LINK_DIST = 120;        // distance de connexion augmentée
+      MAX_LINKS = N;          // inchangé pour desktop
       BASE_OPACITY = 0.45;    // desktop
     }
   }
