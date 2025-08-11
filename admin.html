@@ -90,10 +90,9 @@
   })();
 
   // ----- Connexion Supabase -----
-  const supabase = window.supabase.createClient(
-    window.location.origin.includes('localhost') ? "https://swjnpvfkloubshksobau.supabase.co" : window.location.origin,
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"
-  );
+  const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   async function loadDashboard() {
     console.log("🔍 Chargement du dashboard...");
@@ -110,34 +109,41 @@
     let { data: events, error: errEvents } = await supabase
       .from('events')
       .select('*')
-      .order('created_at', { ascending: false })
+      .order('occurred_at', { ascending: false })
       .limit(20);
     if (errEvents) console.error("Erreur events:", errEvents);
 
-    // Compteurs
+    // Compteurs totaux
     const { count: totalSessions } = await supabase.from('sessions').select('*', { count: 'exact', head: true });
     const { count: totalEvents } = await supabase.from('events').select('*', { count: 'exact', head: true });
 
+    // Compteurs du jour
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const sessionsToday = sessions?.filter(s => new Date(s.last_activity_at) >= today).length || 0;
+    const eventsToday = events?.filter(e => new Date(e.occurred_at) >= today).length || 0;
+
     // Affichage compteurs
-    document.getElementById('count-sessions').textContent = totalSessions || 0;
-    document.getElementById('count-events').textContent = totalEvents || 0;
+    document.getElementById('count-sessions').textContent = totalSessions ?? 0;
+    document.getElementById('count-events').textContent = totalEvents ?? 0;
+    document.getElementById('count-sessions-today').textContent = sessionsToday;
+    document.getElementById('count-events-today').textContent = eventsToday;
 
     // Sessions list
     const sList = document.getElementById('sessions-list');
     sList.innerHTML = sessions?.length
-      ? sessions.map(s => `<tr><td class="px-4 py-2">${s.session_id}</td><td class="px-4 py-2">${s.last_event_name || '-'}</td><td class="px-4 py-2">${s.last_activity_at}</td></tr>`).join('')
+      ? sessions.map(s => `<tr><td class="px-4 py-2">${s.session_id}</td><td class="px-4 py-2">${s.last_event_name || '-'}</td><td class="px-4 py-2">${s.last_activity_at || '-'}</td></tr>`).join('')
       : '<tr><td colspan="3" class="px-4 py-2 text-center text-gray-500">Aucune session</td></tr>';
 
     // Events list
     const eList = document.getElementById('events-list');
     eList.innerHTML = events?.length
-      ? events.map(e => `<tr><td class="px-4 py-2">${e.event_name}</td><td class="px-4 py-2">${e.page_url || '-'}</td><td class="px-4 py-2">${e.created_at}</td></tr>`).join('')
+      ? events.map(e => `<tr><td class="px-4 py-2">${e.event_name}</td><td class="px-4 py-2">${e.page_url || '-'}</td><td class="px-4 py-2">${e.occurred_at || '-'}</td></tr>`).join('')
       : '<tr><td colspan="3" class="px-4 py-2 text-center text-gray-500">Aucun événement</td></tr>';
 
     // Debug JSON
-    const debugData = { sessions, events };
-    document.getElementById('debug-json').textContent = JSON.stringify(debugData, null, 2);
-    console.log("✅ Données chargées:", debugData);
+    document.getElementById('debug-json').textContent = JSON.stringify({ sessions, events }, null, 2);
+    console.log("✅ Données chargées:", { sessions, events });
   }
 
   document.getElementById('toggle-debug').onclick = () => {
