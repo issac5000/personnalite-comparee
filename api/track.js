@@ -21,7 +21,26 @@ module.exports = async function handler(req, res) {
     const headerReferer = req.headers['referer'] || null;
     const now = new Date().toISOString();
 
-    // 🔹 1) Upsert de la session (crée ou met à jour si déjà existante)
+    // ===============================
+    // 🚫 Exclusion du tracking (double sécurité)
+    // ===============================
+    const clientDNT = req.headers['dnt'] === '1';
+    const metaDNT = meta?.dnt === 1;
+
+    // Option : exclusion par IP
+    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0]?.trim() || null;
+    const MY_IPS = []; // ex: ['1.2.3.4', '5.6.7.8']
+
+    // Option : exclusion des previews Vercel
+    const isPreview = (headerReferer || '').includes('vercel.app');
+
+    if (clientDNT || metaDNT || (ip && MY_IPS.includes(ip)) || isPreview) {
+      console.log('📌 Tracking ignoré pour cette requête (self-excluded)');
+      return res.status(200).json({ ok: true, skipped: 'self-excluded' });
+    }
+    // ===============================
+
+    // 🔹 1) Upsert de la session
     const { error: sessErr } = await supabase
       .from('sessions')
       .upsert({
@@ -48,6 +67,7 @@ module.exports = async function handler(req, res) {
       user_agent: userAgent,
       meta: meta || null
     });
+
     if (evErr) throw evErr;
 
     return res.status(200).json({ ok: true });
