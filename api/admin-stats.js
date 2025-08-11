@@ -13,25 +13,14 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE, {
   auth: { persistSession: false, autoRefreshToken: false }
 });
 
-// --- Identifiants admin (compat plusieurs noms d’ENV)
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || process.env.ADMIN_USER;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.ADMIN_PASS;
-
 module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') {
+  // Autoriser GET (et POST si tu veux appeler depuis fetch POST)
+  if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
 
+  // Pas d’auth ici (bypass complet)
   try {
-    // --- Auth stricte par body (envoyé depuis admin.html)
-    const { username, password } = req.body || {};
-    if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
-      return res.status(500).json({ error: 'Identifiants admin non configurés sur le serveur' });
-    }
-    if (!username || !password || username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
-      return res.status(401).json({ error: 'Accès refusé' });
-    }
-
     // --- Compter les sessions (équiv. visiteurs uniques, session_id est unique)
     const { count: sessions_count, error: sessionsErr } = await supabase
       .from('sessions')
@@ -52,7 +41,10 @@ module.exports = async function handler(req, res) {
       .limit(1);
     if (lastEventErr) throw lastEventErr;
 
-    res.status(200).json({
+    // Pas de cache pour avoir des stats fraîches
+    res.setHeader('Cache-Control', 'no-store');
+
+    return res.status(200).json({
       sessions_count: sessions_count || 0,
       events_count: events_count || 0,
       unique_visitors: sessions_count || 0,
@@ -60,6 +52,6 @@ module.exports = async function handler(req, res) {
     });
   } catch (err) {
     console.error('Erreur dashboard admin:', err);
-    res.status(500).json({ error: 'Erreur serveur', details: err.message || String(err) });
+    return res.status(500).json({ error: 'Erreur serveur', details: err.message || String(err) });
   }
 };
