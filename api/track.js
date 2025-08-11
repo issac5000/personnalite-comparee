@@ -22,7 +22,7 @@ module.exports = async function handler(req, res) {
     const now = new Date().toISOString();
 
     // ===============================
-    // 🚫 Exclusion du tracking (double sécurité)
+    // 🚫 Exclusion du tracking
     // ===============================
     const clientDNT = req.headers['dnt'] === '1';
     const metaDNT = meta?.dnt === 1;
@@ -31,38 +31,32 @@ module.exports = async function handler(req, res) {
     const isPreview = (headerReferer || '').includes('vercel.app');
 
     if (clientDNT || metaDNT || (ip && MY_IPS.includes(ip)) || isPreview) {
-      console.log('📌 Tracking ignoré pour cette requête (self-excluded)');
+      console.log('📌 Tracking ignoré (self-excluded)');
       return res.status(200).json({ ok: true, skipped: 'self-excluded' });
     }
-    // ===============================
 
     // 🔹 1) Vérifier si la session existe déjà
-    const { data: existingSession, error: checkErr } = await supabase
+    const { data: existingSession } = await supabase
       .from('sessions')
       .select('session_id')
       .eq('session_id', session_id)
       .maybeSingle();
 
-    if (checkErr) {
-      console.error('check session error', checkErr);
-      return res.status(500).json({ error: 'check_session_failed', detail: checkErr.message || checkErr });
-    }
-
-    // 🔹 2) Construire les données session
+    // 🔹 2) Construire les données
     let sessionData;
     if (!existingSession) {
-      // 👉 Nouvelle session : on définit toutes les infos de départ
+      // Nouvelle session
       sessionData = {
         session_id,
         first_referrer: referrer || headerReferer || null,
         first_utm: utm || null,
-        first_seen_at: now,
+        first_seen_at: now, // 🔹 Important
         user_agent: userAgent,
         last_activity_at: now,
         last_event_name: event_name
       };
     } else {
-      // 👉 Session existante : on met juste à jour l'activité
+      // Session existante
       sessionData = {
         session_id,
         last_activity_at: now,
@@ -71,7 +65,7 @@ module.exports = async function handler(req, res) {
       };
     }
 
-    // 🔹 3) Upsert session
+    // 🔹 3) Upsert
     const { error: sessErr } = await supabase
       .from('sessions')
       .upsert(sessionData, { onConflict: 'session_id' });
@@ -81,7 +75,7 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: 'upsert_session_failed', detail: sessErr.message || sessErr });
     }
 
-    // 🔹 4) Enregistrer l’événement
+    // 🔹 4) Insérer l’événement
     const { error: evErr } = await supabase.from('events').insert({
       session_id,
       event_name,
@@ -90,7 +84,7 @@ module.exports = async function handler(req, res) {
       utm: utm || null,
       user_agent: userAgent,
       meta: meta || null,
-      occurred_at: now // 🔹 Pour éviter tout problème de timestamp
+      occurred_at: now
     });
 
     if (evErr) {
@@ -98,7 +92,7 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: 'insert_event_failed', detail: evErr.message || evErr });
     }
 
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, version: "track-2025-08-11-final" });
 
   } catch (e) {
     console.error('track error', e);
