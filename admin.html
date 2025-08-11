@@ -2,58 +2,86 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
-  <div id="login" class="flex items-center justify-center h-screen">
-    <div class="bg-white shadow-lg rounded-lg p-6 w-80">
-      <h2 class="text-2xl font-bold mb-4 text-center">Connexion Admin</h2>
-      <input id="username" type="text" placeholder="Utilisateur" class="w-full border p-2 mb-3 rounded" />
-      <input id="password" type="password" placeholder="Mot de passe" class="w-full border p-2 mb-4 rounded" />
-      <button onclick="login()" class="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700">Se connecter</button>
-      <p id="loginError" class="text-red-500 text-sm mt-2 hidden">Identifiants invalides</p>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <!-- Login -->
+  <div id="login-container" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
+    <h2 class="text-2xl font-bold mb-6 text-center">🔐 Connexion Admin</h2>
+    <input id="username" type="text" placeholder="Nom d'utilisateur" class="w-full mb-4 p-3 border rounded-lg"/>
+    <input id="password" type="password" placeholder="Mot de passe" class="w-full mb-4 p-3 border rounded-lg"/>
+    <button onclick="login()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">Se connecter</button>
+    <p id="login-error" class="text-red-500 text-sm mt-3 hidden">Identifiants incorrects</p>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="hidden w-full max-w-4xl bg-white p-8 rounded-xl shadow-lg">
+    <h2 class="text-3xl font-bold mb-6">📊 Dashboard</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="p-4 bg-blue-100 rounded-lg text-center">
+        <p class="text-2xl font-bold" id="sessions-count">0</p>
+        <p class="text-gray-700">Sessions</p>
+      </div>
+      <div class="p-4 bg-green-100 rounded-lg text-center">
+        <p class="text-2xl font-bold" id="events-count">0</p>
+        <p class="text-gray-700">Événements</p>
+      </div>
+      <div class="p-4 bg-purple-100 rounded-lg text-center">
+        <p class="text-2xl font-bold" id="unique-visitors">0</p>
+        <p class="text-gray-700">Visiteurs uniques</p>
+      </div>
+      <div class="p-4 bg-yellow-100 rounded-lg text-center">
+        <p class="text-2xl font-bold" id="last-activity">-</p>
+        <p class="text-gray-700">Dernière activité</p>
+      </div>
     </div>
   </div>
 
-  <div id="dashboard" class="hidden p-6">
-    <h1 class="text-3xl font-bold mb-6">📊 Admin Dashboard</h1>
-    <div id="stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-  </div>
+<script>
+async function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  <script>
-    async function login() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
+  const res = await fetch("/api/admin-login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
 
-      const res = await fetch("/api/admin-stats", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
+  const data = await res.json();
 
-      if (res.status === 401) {
-        document.getElementById("loginError").classList.remove("hidden");
-        return;
-      }
+  if (data.success) {
+    localStorage.setItem("adminLogged", "true");
+    document.getElementById("login-container").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+    loadStats();
+  } else {
+    document.getElementById("login-error").classList.remove("hidden");
+  }
+}
 
-      const data = await res.json();
-      document.getElementById("login").classList.add("hidden");
-      document.getElementById("dashboard").classList.remove("hidden");
+async function loadStats() {
+  const res = await fetch("/api/admin-stats", { method: "POST" }); // API qu’on fera juste après
+  const stats = await res.json();
 
-      renderStats(data);
-    }
+  if (!stats.error) {
+    document.getElementById("sessions-count").textContent = stats.sessions_count || 0;
+    document.getElementById("events-count").textContent = stats.events_count || 0;
+    document.getElementById("unique-visitors").textContent = stats.unique_visitors || 0;
+    document.getElementById("last-activity").textContent = stats.last_activity || "-";
+  }
+}
 
-    function renderStats(data) {
-      const statsDiv = document.getElementById("stats");
-      statsDiv.innerHTML = `
-        <div class="bg-white p-4 rounded shadow"><h2 class="text-xl font-bold">Sessions</h2><p>${data.sessions_count}</p></div>
-        <div class="bg-white p-4 rounded shadow"><h2 class="text-xl font-bold">Événements</h2><p>${data.events_count}</p></div>
-        <div class="bg-white p-4 rounded shadow"><h2 class="text-xl font-bold">Visiteurs uniques</h2><p>${data.unique_visitors}</p></div>
-        <div class="bg-white p-4 rounded shadow"><h2 class="text-xl font-bold">Dernière activité</h2><p>${data.last_activity || 'N/A'}</p></div>
-      `;
-    }
-  </script>
+// Auto-login si déjà connecté
+if (localStorage.getItem("adminLogged") === "true") {
+  document.getElementById("login-container").classList.add("hidden");
+  document.getElementById("dashboard").classList.remove("hidden");
+  loadStats();
+}
+</script>
+
 </body>
 </html>
