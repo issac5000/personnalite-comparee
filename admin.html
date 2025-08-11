@@ -1,143 +1,150 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📊 Admin Tracking</title>
+  <meta charset="UTF-8">
+  <title>Dashboard Tracking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-100 p-6">
+  <h1 class="text-2xl font-bold mb-6">📊 Dashboard Tracking</h1>
 
-  <header class="bg-white shadow p-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold flex items-center gap-2">
-      📊 Tableau de suivi
-    </h1>
-    <button id="toggleInvisible" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
-      Activer le mode invisible
-    </button>
-  </header>
+  <!-- Mode exclusion -->
+  <div class="bg-white rounded-lg shadow p-4 mb-6 flex items-center gap-3">
+    <span class="text-sm text-gray-600">Mon trafic :</span>
+    <button id="btn-exclude" class="px-3 py-1 rounded bg-red-600 text-white text-sm">Exclure</button>
+    <button id="btn-include" class="px-3 py-1 rounded bg-gray-300 text-sm">Ré-inclure</button>
+    <span id="dnt-state" class="ml-2 text-sm text-gray-500"></span>
+  </div>
 
-  <!-- Stats globales -->
-  <section class="p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <div class="bg-white p-4 rounded shadow">
-      <h2 class="text-sm text-gray-500">Sessions totales</h2>
-      <p id="statSessions" class="text-2xl font-bold">—</p>
+  <!-- Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white p-4 rounded-lg shadow text-center">
+      <p class="text-gray-500 text-sm">Sessions totales</p>
+      <p id="count-sessions" class="text-2xl font-bold">0</p>
     </div>
-    <div class="bg-white p-4 rounded shadow">
-      <h2 class="text-sm text-gray-500">Événements totaux</h2>
-      <p id="statEvents" class="text-2xl font-bold">—</p>
+    <div class="bg-white p-4 rounded-lg shadow text-center">
+      <p class="text-gray-500 text-sm">Événements totaux</p>
+      <p id="count-events" class="text-2xl font-bold">0</p>
     </div>
-    <div class="bg-white p-4 rounded shadow">
-      <h2 class="text-sm text-gray-500">Visiteurs uniques (24h)</h2>
-      <p id="statUniques" class="text-2xl font-bold">—</p>
+    <div class="bg-white p-4 rounded-lg shadow text-center">
+      <p class="text-gray-500 text-sm">Sessions aujourd’hui</p>
+      <p id="count-sessions-today" class="text-2xl font-bold">0</p>
     </div>
-  </section>
-
-  <!-- Graphique -->
-  <section class="p-4">
-    <div class="bg-white p-4 rounded shadow">
-      <h2 class="text-lg font-bold mb-4">Activité des 24 dernières heures</h2>
-      <canvas id="activityChart" height="100"></canvas>
+    <div class="bg-white p-4 rounded-lg shadow text-center">
+      <p class="text-gray-500 text-sm">Événements aujourd’hui</p>
+      <p id="count-events-today" class="text-2xl font-bold">0</p>
     </div>
-  </section>
+  </div>
 
-  <!-- Tableau -->
-  <section class="p-4">
-    <div class="bg-white p-4 rounded shadow">
-      <h2 class="text-lg font-bold mb-4">📋 Dernières sessions</h2>
-      <input type="text" id="searchInput" placeholder="🔍 Rechercher..." class="mb-4 p-2 border rounded w-full" />
+  <!-- Sessions récentes -->
+  <div class="bg-white rounded-lg shadow mb-6 overflow-x-auto">
+    <h2 class="text-lg font-semibold p-4 border-b">📌 Sessions récentes</h2>
+    <table class="min-w-full text-sm text-left">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-2">Session ID</th>
+          <th class="px-4 py-2">Dernier event</th>
+          <th class="px-4 py-2">Dernière activité</th>
+        </tr>
+      </thead>
+      <tbody id="sessions-list"></tbody>
+    </table>
+  </div>
 
-      <div class="overflow-x-auto">
-        <table class="min-w-full border text-sm">
-          <thead class="bg-gray-200">
-            <tr>
-              <th class="p-2 border">ID Session</th>
-              <th class="p-2 border">Première visite</th>
-              <th class="p-2 border">Dernière activité</th>
-              <th class="p-2 border">Référent</th>
-              <th class="p-2 border">Dernier événement</th>
-              <th class="p-2 border">Navigateur / Appareil</th>
-            </tr>
-          </thead>
-          <tbody id="sessionsTable" class="divide-y">
-            <!-- Rempli en JS -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
+  <!-- Événements récents -->
+  <div class="bg-white rounded-lg shadow mb-6 overflow-x-auto">
+    <h2 class="text-lg font-semibold p-4 border-b">📜 Événements récents</h2>
+    <table class="min-w-full text-sm text-left">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-2">Event</th>
+          <th class="px-4 py-2">Page</th>
+          <th class="px-4 py-2">Date</th>
+        </tr>
+      </thead>
+      <tbody id="events-list"></tbody>
+    </table>
+  </div>
 
-  <script>
-    const ADMIN_API_URL = '/api/admin-tracking';
-    let modeInvisible = false;
-    const sessionID = localStorage.getItem('pc_session_id');
+  <!-- Debug JSON -->
+  <div class="bg-white rounded-lg shadow mb-6 p-4">
+    <button id="toggle-debug" class="px-3 py-1 rounded bg-gray-300 text-sm">Afficher Debug JSON</button>
+    <pre id="debug-json" class="hidden text-xs mt-4 bg-gray-900 text-green-400 p-3 rounded overflow-auto"></pre>
+  </div>
 
-    document.getElementById('toggleInvisible').addEventListener('click', () => {
-      modeInvisible = !modeInvisible;
-      alert(modeInvisible ? "Mode invisible activé" : "Mode invisible désactivé");
-    });
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ----- Mode exclusion -----
+  function setDNT(v){ localStorage.setItem('pc_dnt', v ? '1' : '0'); updateDNTLabel(); }
+  function updateDNTLabel(){
+    const on = localStorage.getItem('pc_dnt') === '1';
+    document.getElementById('dnt-state').textContent = on ? 'Exclusion ACTIVE' : 'Exclusion désactivée';
+  }
+  document.getElementById('btn-exclude').onclick = () => setDNT(1);
+  document.getElementById('btn-include').onclick = () => setDNT(0);
+  (function(){
+    const p = new URLSearchParams(location.search);
+    if (p.has('dnt')) localStorage.setItem('pc_dnt', p.get('dnt') === '1' ? '1' : '0');
+    updateDNTLabel();
+  })();
 
-    async function fetchData() {
-      const res = await fetch(ADMIN_API_URL);
-      const data = await res.json();
+  // ----- Connexion Supabase -----
+  const supabase = window.supabase.createClient(
+    window.location.origin.includes('localhost') ? "https://swjnpvfkloubshksobau.supabase.co" : window.location.origin,
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"
+  );
 
-      // Filtrer mes propres sessions
-      const filtered = data.sessions.filter(s => s.session_id !== sessionID);
+  async function loadDashboard() {
+    console.log("🔍 Chargement du dashboard...");
 
-      // Stats
-      document.getElementById('statSessions').textContent = filtered.length;
-      document.getElementById('statEvents').textContent = data.eventsCount || '—';
-      document.getElementById('statUniques').textContent = data.uniques24h || '—';
+    // Sessions
+    let { data: sessions, error: errSessions } = await supabase
+      .from('sessions')
+      .select('*')
+      .order('last_activity_at', { ascending: false })
+      .limit(20);
+    if (errSessions) console.error("Erreur sessions:", errSessions);
 
-      // Graphique
-      const ctx = document.getElementById('activityChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: data.activity.labels,
-          datasets: [{
-            label: 'Événements',
-            data: data.activity.counts,
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.2)',
-            fill: true
-          }]
-        },
-        options: { responsive: true, maintainAspectRatio: false }
-      });
+    // Events
+    let { data: events, error: errEvents } = await supabase
+      .from('events')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (errEvents) console.error("Erreur events:", errEvents);
 
-      // Tableau
-      const tbody = document.getElementById('sessionsTable');
-      tbody.innerHTML = '';
-      filtered.forEach(s => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td class="p-2 border">${s.session_id}</td>
-          <td class="p-2 border">${s.first_visit}</td>
-          <td class="p-2 border">${s.last_activity}</td>
-          <td class="p-2 border">${s.referrer || '—'}</td>
-          <td class="p-2 border">
-            <span class="px-2 py-1 rounded text-white ${s.last_event === 'page_view' ? 'bg-blue-500' : 'bg-green-500'}">
-              ${s.last_event}
-            </span>
-          </td>
-          <td class="p-2 border">${s.user_agent}</td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
+    // Compteurs
+    const { count: totalSessions } = await supabase.from('sessions').select('*', { count: 'exact', head: true });
+    const { count: totalEvents } = await supabase.from('events').select('*', { count: 'exact', head: true });
 
-    // Recherche
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      document.querySelectorAll('#sessionsTable tr').forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
-      });
-    });
+    // Affichage compteurs
+    document.getElementById('count-sessions').textContent = totalSessions || 0;
+    document.getElementById('count-events').textContent = totalEvents || 0;
 
-    fetchData();
-  </script>
+    // Sessions list
+    const sList = document.getElementById('sessions-list');
+    sList.innerHTML = sessions?.length
+      ? sessions.map(s => `<tr><td class="px-4 py-2">${s.session_id}</td><td class="px-4 py-2">${s.last_event_name || '-'}</td><td class="px-4 py-2">${s.last_activity_at}</td></tr>`).join('')
+      : '<tr><td colspan="3" class="px-4 py-2 text-center text-gray-500">Aucune session</td></tr>';
 
+    // Events list
+    const eList = document.getElementById('events-list');
+    eList.innerHTML = events?.length
+      ? events.map(e => `<tr><td class="px-4 py-2">${e.event_name}</td><td class="px-4 py-2">${e.page_url || '-'}</td><td class="px-4 py-2">${e.created_at}</td></tr>`).join('')
+      : '<tr><td colspan="3" class="px-4 py-2 text-center text-gray-500">Aucun événement</td></tr>';
+
+    // Debug JSON
+    const debugData = { sessions, events };
+    document.getElementById('debug-json').textContent = JSON.stringify(debugData, null, 2);
+    console.log("✅ Données chargées:", debugData);
+  }
+
+  document.getElementById('toggle-debug').onclick = () => {
+    document.getElementById('debug-json').classList.toggle('hidden');
+  };
+
+  loadDashboard();
+</script>
 </body>
 </html>
