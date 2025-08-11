@@ -1,5 +1,6 @@
 // api/track.js
 const { createClient } = require('@supabase/supabase-js');
+const fetch = require('node-fetch');
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -12,7 +13,23 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { session_id, event_name, page_url, referrer, utm, meta } = req.body || {};
+    const {
+      session_id,
+      event_name,
+      page_url,
+      referrer,
+      utm,
+      meta,
+      device_type,
+      language,
+      tz_offset,
+      viewport,
+      screen,
+      is_returning,
+      engagement_ms,
+      last_page_url
+    } = req.body || {};
+
     if (!session_id || !event_name) {
       return res.status(400).json({ error: 'session_id et event_name requis' });
     }
@@ -35,6 +52,21 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ ok: true, skipped: 'self-excluded' });
     }
 
+    // ===============================
+    // 🌍 Détection pays/ville via IP
+    // ===============================
+    let country = null;
+    let city = null;
+    if (ip && ip !== '::1' && !ip.startsWith('127.')) {
+      try {
+        const geo = await fetch(`https://ipapi.co/${ip}/json/`).then(r => r.json());
+        country = geo.country_name || null;
+        city = geo.city || null;
+      } catch (err) {
+        console.warn('🌍 Erreur récupération géoloc', err);
+      }
+    }
+
     // 🔹 1) Vérifier si la session existe déjà
     const { data: existingSession } = await supabase
       .from('sessions')
@@ -42,7 +74,7 @@ module.exports = async function handler(req, res) {
       .eq('session_id', session_id)
       .maybeSingle();
 
-    // 🔹 2) Construire les données
+    // 🔹 2) Construire les données pour sessions
     let sessionData;
     if (!existingSession) {
       // Nouvelle session
@@ -50,22 +82,42 @@ module.exports = async function handler(req, res) {
         session_id,
         first_referrer: referrer || headerReferer || null,
         first_utm: utm || null,
-        first_seen_at: now, // 🔹 Important
+        first_seen_at: now,
         user_agent: userAgent,
+        device_type: device_type || null,
+        language: language || null,
+        tz_offset: tz_offset || null,
+        viewport: viewport || null,
+        screen: screen || null,
+        country,
+        city,
+        is_returning: false,
+        engagement_ms: engagement_ms || 0,
+        last_page_url: last_page_url || page_url || null,
         last_activity_at: now,
         last_event_name: event_name
       };
     } else {
-      // Session existante
+      // Session existante → mise à jour
       sessionData = {
         session_id,
         last_activity_at: now,
         last_event_name: event_name,
-        user_agent: userAgent
+        user_agent: userAgent,
+        device_type: device_type || null,
+        language: language || null,
+        tz_offset: tz_offset || null,
+        viewport: viewport || null,
+        screen: screen || null,
+        country,
+        city,
+        is_returning: true,
+        engagement_ms: engagement_ms || 0,
+        last_page_url: last_page_url || page_url || null
       };
     }
 
-    // 🔹 3) Upsert
+    // 🔹 3) Upsert sessions
     const { error: sessErr } = await supabase
       .from('sessions')
       .upsert(sessionData, { onConflict: 'session_id' });
@@ -75,7 +127,7 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: 'upsert_session_failed', detail: sessErr.message || sessErr });
     }
 
-    // 🔹 4) Insérer l’événement
+    // 🔹 4) Insérer l’événement enrichi
     const { error: evErr } = await supabase.from('events').insert({
       session_id,
       event_name,
@@ -84,6 +136,19 @@ module.exports = async function handler(req, res) {
       utm: utm || null,
       user_agent: userAgent,
       meta: meta || null,
+      category: meta?.category || null,
+      value: meta?.value || null,
+      elapsed_ms: meta?.elapsed_ms || null,
+      device_type: device_type || null,
+      language: language || null,
+      tz_offset: tz_offset || null,
+      viewport: viewport || null,
+      screen: screen || null,
+      country,
+      city,
+      is_returning: !!existingSession,
+      engagement_ms: engagement_ms || 0,
+      last_page_url: last_page_url || page_url || null,
       occurred_at: now
     });
 
@@ -92,7 +157,7 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: 'insert_event_failed', detail: evErr.message || evErr });
     }
 
-    return res.status(200).json({ ok: true, version: "track-2025-08-11-final" });
+    return res.status(200).json({ ok: true, version: "track-2025-08-11-enriched" });
 
   } catch (e) {
     console.error('track error', e);
