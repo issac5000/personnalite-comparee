@@ -34,13 +34,13 @@ module.exports = async function gestionnaire(req, res) {
 
   try {
     const {
-      messages = [],        // ← envoie tout l’historique depuis le client
+      messages = [],
       max_tokens,
-      model = 'gpt-4o-mini', // ← modèle éco par défaut
+      model = 'gpt-4o-mini',
       system_overrides
     } = req.body || {};
 
-    // System prompt propre (typos fixées, règles resserrées)
+    // System prompt
     const systemMessage = {
       role: 'system',
       content: `
@@ -48,21 +48,17 @@ Tu es Psycho'Bot, l’assistant du site www.personnalitecomparee.com.
 
 Règles:
 - Ne perds jamais le fil: ta réponse doit rester cohérente avec l’historique fourni.
-- Tu ne salues et ne te présentes JAMAIS plus d’une fois; tu ne te présentes que si l’utilisateur le demande.
-- Tu réponds avec un total de 100 mots maximum (condense intelligemment).
-- Tu tutoies l’utilisateur sauf s’il vouvoie.
-- Tu restes sur psychologie/personnalité/MBTI/Ennéagramme et le site Personnalité Comparée.
-- Tu poses toujours une question à la fin de ta réponse en lien avec le dernier message de l'utilisateur et dans le contexte de celle-ci afin de relancer l'utilisateur.
-- Va droit au but, répond en substance à la question de l'utilisateur et poses lui une question en lien avec celle-ci.
+- Tu ne salues et ne te présentes JAMAIS plus d’une fois; uniquement si l’utilisateur le demande.
+- 100 mots max par réponse (condense intelligemment).
+- Tutoiement sauf si l’utilisateur vouvoie.
+- Reste sur psychologie/personnalité/MBTI/Ennéagramme et le site Personnalité Comparée.
+- Pose toujours une question en lien avec le dernier message.
+- Va droit au but.
 
-Contexte du site:
-- Analyse croisée: auto-évaluation + jusqu’à 3 évaluations externes (famille, ami, partenaire, collègue).
+Contexte:
+- Analyse croisée: auto-évaluation + 3 évaluations externes (famille, ami, partenaire, collègue).
 - Modèles: MBTI et Ennéagramme.
-- Rôle: expliquer le site/le test, le calcul (pondérations, certitude) et interpréter les résultats.
-
-Pondérations (profil final):
-- Auto-évaluation: 0% (indicative uniquement)
-- Famille: 30% | Partenaire: 25% | Ami: 25% | Collègue: 15%
+- Pondérations: Auto-éval 0%, Famille 30%, Partenaire 25%, Ami 25%, Collègue 15%.
 
 Si la question sort du cadre: refuse poliment et recentre.
       `.trim()
@@ -74,11 +70,9 @@ Si la question sort du cadre: refuse poliment et recentre.
       history = [system_overrides ? { role: 'system', content: system_overrides } : systemMessage, ...history];
     }
 
-    // Budgets (économie): contexte et réponse
-    const MAX_CONTEXT_TOKENS = 2000;                  // budget contexte envoyé au modèle
-    const RESPONSE_TOKENS = Math.min(500, max_tokens || 500); // budget réponse
+    const MAX_CONTEXT_TOKENS = 2000;
+    const RESPONSE_TOKENS = Math.min(500, max_tokens || 500);
 
-    // Trim (on garde le plus récent)
     const [first, ...rest] = history;
     const trimmedRest = trimHistory(rest, MAX_CONTEXT_TOKENS);
     const finalMessages = [first, ...trimmedRest];
@@ -99,13 +93,26 @@ Si la question sort du cadre: refuse poliment et recentre.
       body: JSON.stringify(payload),
     });
 
+    // Vérification si erreur API
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Erreur API OpenAI:", errorText);
-      return res.status(500).json({ error: "Erreur de l'API OpenAI", details: errorText });
+      console.error("❌ Erreur API OpenAI:", errorText);
+      return res.status(500).json({
+        error: "Erreur de l'API OpenAI",
+        details: errorText
+      });
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      console.error("❌ Réponse non-JSON d'OpenAI:", jsonError);
+      return res.status(500).json({
+        error: "Réponse invalide d'OpenAI",
+        details: jsonError.message
+      });
+    }
 
     res.status(200).json({
       message: data.choices?.[0]?.message?.content || null,
@@ -113,7 +120,9 @@ Si la question sort du cadre: refuse poliment et recentre.
     });
 
   } catch (error) {
-    console.error("Erreur API OpenAI:", error.response?.data || error.message || error);
-    res.status(500).json({ error: error.response?.data || error.message || 'Erreur serveur' });
+    console.error("❌ Erreur serveur:", error);
+    res.status(500).json({
+      error: error.message || 'Erreur serveur'
+    });
   }
 };
