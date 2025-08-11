@@ -2763,7 +2763,7 @@ function displayResults(results) {
                             </div>
                             
                             <div class="mt-8 flex flex-wrap justify-center gap-4">
-                                <button onclick="shareResults()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+                                <button onclick="shareCode()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                                     <i class="fas fa-share mr-2"></i> Partager
                                 </button>
                                 <button class="download-pdf-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
@@ -2805,13 +2805,6 @@ function displayResults(results) {
                 el.textContent = '0' + suffix;
                 observer.observe(el);
             });
-        }
-
-        function shareResults() {
-            const mbti = document.querySelector('#results-modal .personality-badge.bg-green-100')?.textContent.trim() || '';
-            const enneagram = document.querySelector('#results-modal .personality-badge.bg-blue-100')?.textContent.trim() || '';
-            const description = document.getElementById('ai-summary-content')?.innerText.trim() || '';
-            shareProfile(mbti, enneagram, description);
         }
 
         function copyCode(code) {
@@ -4601,21 +4594,27 @@ function showPrivacyPolicy() {
             }
         }
 
-        function shareProfileCode() {
-            const code = document.getElementById('display-code').textContent;
+        function shareCode() {
+            const code = document.getElementById('display-code')?.textContent ||
+                         document.getElementById('unique-code')?.textContent ||
+                         (typeof userCode !== 'undefined' ? userCode : '');
+
+            if (!code) {
+                alert('Aucun code à partager');
+                return;
+            }
+
             const shareText = `Salut ! Peux-tu m'aider à mieux comprendre ma personnalité ? Utilise ce code ${code} sur https://personnalitecomparee.com pour m'évaluer. Merci ! 😊`;
-            
+
             if (navigator.share) {
                 navigator.share({
                     title: 'Évaluation de personnalité',
                     text: shareText
                 });
             } else {
-                // Fallback: copier dans le presse-papiers
                 navigator.clipboard.writeText(shareText).then(() => {
                     alert('Message copié dans le presse-papiers ! Vous pouvez le partager avec vos proches.');
                 }).catch(() => {
-                    // Fallback ultime: afficher le texte
                     prompt('Copiez ce message pour le partager:', shareText);
                 });
             }
@@ -5289,7 +5288,7 @@ function showPrivacyPolicy() {
 
                     <!-- Actions -->
                     <div class="flex space-x-3">
-                        <button onclick="shareProfileCode()" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <button onclick="shareCode()" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                             <i class="fas fa-share mr-2"></i>
                             Partager mon code
                         </button>
