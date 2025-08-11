@@ -1,142 +1,143 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>📊 Admin Tracking</title>
-<style>
-  body { font-family: sans-serif; padding: 20px; background: #f9f9f9; }
-  table { border-collapse: collapse; width: 100%; margin-bottom: 30px; background: white; }
-  th, td { padding: 8px; border: 1px solid #ccc; font-size: 14px; }
-  th { background: #eee; }
-  #exclude-btn {
-    background: #444;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 20px;
-    border-radius: 4px;
-  }
-  #exclude-btn.active {
-    background: #b30000;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📊 Admin Tracking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-<h1>📊 Admin Tracking</h1>
+<body class="bg-gray-100 text-gray-800">
 
-<button id="exclude-btn">📌 Activer le mode invisible</button>
+  <header class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold flex items-center gap-2">
+      📊 Tableau de suivi
+    </h1>
+    <button id="toggleInvisible" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+      Activer le mode invisible
+    </button>
+  </header>
 
-<h2>📂 Sessions (20 dernières)</h2>
-<table id="sessions-table">
-  <thead>
-    <tr>
-      <th>ID Session</th>
-      <th>Première visite</th>
-      <th>Dernière activité</th>
-      <th>Référent</th>
-      <th>Dernier événement</th>
-      <th>Navigateur / Appareil</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+  <!-- Stats globales -->
+  <section class="p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="bg-white p-4 rounded shadow">
+      <h2 class="text-sm text-gray-500">Sessions totales</h2>
+      <p id="statSessions" class="text-2xl font-bold">—</p>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <h2 class="text-sm text-gray-500">Événements totaux</h2>
+      <p id="statEvents" class="text-2xl font-bold">—</p>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <h2 class="text-sm text-gray-500">Visiteurs uniques (24h)</h2>
+      <p id="statUniques" class="text-2xl font-bold">—</p>
+    </div>
+  </section>
 
-<h2>📝 Événements (20 derniers)</h2>
-<table id="events-table">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>ID Session</th>
-      <th>Nom événement</th>
-      <th>Page</th>
-      <th>Référent</th>
-      <th>Méta</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+  <!-- Graphique -->
+  <section class="p-4">
+    <div class="bg-white p-4 rounded shadow">
+      <h2 class="text-lg font-bold mb-4">Activité des 24 dernières heures</h2>
+      <canvas id="activityChart" height="100"></canvas>
+    </div>
+  </section>
 
-<script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js";
+  <!-- Tableau -->
+  <section class="p-4">
+    <div class="bg-white p-4 rounded shadow">
+      <h2 class="text-lg font-bold mb-4">📋 Dernières sessions</h2>
+      <input type="text" id="searchInput" placeholder="🔍 Rechercher..." class="mb-4 p-2 border rounded w-full" />
 
-const supabase = createClient(
-  "https://swjnpvfkloubshksobau.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"
-);
+      <div class="overflow-x-auto">
+        <table class="min-w-full border text-sm">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="p-2 border">ID Session</th>
+              <th class="p-2 border">Première visite</th>
+              <th class="p-2 border">Dernière activité</th>
+              <th class="p-2 border">Référent</th>
+              <th class="p-2 border">Dernier événement</th>
+              <th class="p-2 border">Navigateur / Appareil</th>
+            </tr>
+          </thead>
+          <tbody id="sessionsTable" class="divide-y">
+            <!-- Rempli en JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
-// ======== GESTION MODE INVISIBLE ========
-const excludeBtn = document.getElementById('exclude-btn');
-function updateExcludeButton() {
-  const active = localStorage.getItem('pc_dnt') === '1';
-  if (active) {
-    excludeBtn.textContent = "✅ Mode invisible activé (aucun tracking)";
-    excludeBtn.classList.add('active');
-  } else {
-    excludeBtn.textContent = "📌 Activer le mode invisible";
-    excludeBtn.classList.remove('active');
-  }
-}
-excludeBtn.addEventListener('click', () => {
-  const active = localStorage.getItem('pc_dnt') === '1';
-  if (active) {
-    localStorage.removeItem('pc_dnt');
-  } else {
-    localStorage.setItem('pc_dnt', '1');
-  }
-  updateExcludeButton();
-});
-updateExcludeButton();
+  <script>
+    const ADMIN_API_URL = '/api/admin-tracking';
+    let modeInvisible = false;
+    const sessionID = localStorage.getItem('pc_session_id');
 
-// ======== CHARGEMENT DONNÉES ========
-async function loadData() {
-  const { data: sessions } = await supabase
-    .from("sessions")
-    .select("*")
-    .order("last_activity_at", { ascending: false })
-    .limit(20);
+    document.getElementById('toggleInvisible').addEventListener('click', () => {
+      modeInvisible = !modeInvisible;
+      alert(modeInvisible ? "Mode invisible activé" : "Mode invisible désactivé");
+    });
 
-  const { data: events } = await supabase
-    .from("events")
-    .select("*")
-    .order("occurred_at", { ascending: false })
-    .limit(20);
+    async function fetchData() {
+      const res = await fetch(ADMIN_API_URL);
+      const data = await res.json();
 
-  // Afficher les sessions
-  const sBody = document.querySelector("#sessions-table tbody");
-  sBody.innerHTML = "";
-  sessions.forEach(s => {
-    sBody.innerHTML += `
-      <tr>
-        <td>${s.session_id}</td>
-        <td>${s.first_seen_at || ''}</td>
-        <td>${s.last_activity_at || ''}</td>
-        <td>${s.first_referrer || ''}</td>
-        <td>${s.last_event_name || ''}</td>
-        <td>${s.user_agent || ''}</td>
-      </tr>
-    `;
-  });
+      // Filtrer mes propres sessions
+      const filtered = data.sessions.filter(s => s.session_id !== sessionID);
 
-  // Afficher les événements
-  const eBody = document.querySelector("#events-table tbody");
-  eBody.innerHTML = "";
-  events.forEach(e => {
-    eBody.innerHTML += `
-      <tr>
-        <td>${e.occurred_at || ''}</td>
-        <td>${e.session_id}</td>
-        <td>${e.event_name}</td>
-        <td>${e.page_url || ''}</td>
-        <td>${e.referrer || ''}</td>
-        <td>${JSON.stringify(e.meta) || ''}</td>
-      </tr>
-    `;
-  });
-}
+      // Stats
+      document.getElementById('statSessions').textContent = filtered.length;
+      document.getElementById('statEvents').textContent = data.eventsCount || '—';
+      document.getElementById('statUniques').textContent = data.uniques24h || '—';
 
-loadData();
-setInterval(loadData, 5000);
-</script>
+      // Graphique
+      const ctx = document.getElementById('activityChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.activity.labels,
+          datasets: [{
+            label: 'Événements',
+            data: data.activity.counts,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.2)',
+            fill: true
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      // Tableau
+      const tbody = document.getElementById('sessionsTable');
+      tbody.innerHTML = '';
+      filtered.forEach(s => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="p-2 border">${s.session_id}</td>
+          <td class="p-2 border">${s.first_visit}</td>
+          <td class="p-2 border">${s.last_activity}</td>
+          <td class="p-2 border">${s.referrer || '—'}</td>
+          <td class="p-2 border">
+            <span class="px-2 py-1 rounded text-white ${s.last_event === 'page_view' ? 'bg-blue-500' : 'bg-green-500'}">
+              ${s.last_event}
+            </span>
+          </td>
+          <td class="p-2 border">${s.user_agent}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Recherche
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('#sessionsTable tr').forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(term) ? '' : 'none';
+      });
+    });
+
+    fetchData();
+  </script>
+
 </body>
 </html>
