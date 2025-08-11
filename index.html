@@ -5706,6 +5706,52 @@ addChatStyles();
   #pc-constellation{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none;}
 </style>
 
+  <script>
+(() => {
+  const KEY = 'pc_session_id';
+  let sid = localStorage.getItem(KEY);
+  if (!sid) {
+    sid = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now())+'-'+Math.random();
+    localStorage.setItem(KEY, sid);
+  }
+
+  function getUTM() {
+    const p = new URLSearchParams(location.search);
+    const utm = {};
+    ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(k => {
+      const v = p.get(k);
+      if (v) utm[k] = v;
+    });
+    return Object.keys(utm).length ? utm : null;
+  }
+
+  async function track(event_name, meta = {}) {
+    try {
+      await fetch('/api/track', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          session_id: sid,
+          event_name,
+          page_url: location.href,
+          referrer: document.referrer || null,
+          utm: getUTM(),
+          meta
+        })
+      });
+    } catch (e) {
+      console.warn('track failed', e);
+    }
+  }
+
+  // Event "page_view" au chargement
+  track('page_view');
+
+  // Expose pour tracer des clics plus tard : window.pcTrack('click_name', {foo:'bar'})
+  window.pcTrack = track;
+})();
+</script>
+
   
 </body>
 </html>
