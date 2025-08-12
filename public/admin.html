@@ -1,298 +1,487 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="h-full">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tableau de bord – Personnalité Comparée</title>
+
   <!-- Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet">
+
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Tooltips minimalistes */
+    .hint { position: relative; cursor: help; }
+    .hint:hover .hint-bubble { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .hint-bubble {
+      position: absolute; top: 100%; left: 0; transform: translateY(4px);
+      background: #111827; color: #fff; font-size: .75rem; line-height: 1.1;
+      padding: .5rem .6rem; border-radius: .5rem; max-width: 18rem;
+      opacity: 0; transition: .15s ease; pointer-events: none; z-index: 40;
+      box-shadow: 0 6px 18px rgba(0,0,0,.18);
+    }
+    /* Squelette de chargement */
+    .skeleton { animation: pulse 1.4s ease-in-out infinite; background: linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 37%,#e5e7eb 63%); background-size: 400% 100%; }
+    @keyframes pulse { 0% {background-position: 100% 0} 100% {background-position: 0 0} }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <!-- En‑tête -->
-  <header class="bg-white shadow px-6 py-4 flex items-center justify-between">
-    <h1 class="text-2xl font-bold">Tableau de bord de suivi</h1>
-    <button id="refresh-btn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none">
-      Actualiser
-    </button>
+
+<body class="h-full bg-gray-50 text-gray-800">
+  <!-- Topbar -->
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm">
+    <div class="max-w-7xl mx-auto px-5 py-4 flex items-center gap-4">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-blue-600 text-white font-bold">PC</span>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold leading-5">Dashboard Analytics</h1>
+          <p id="last-updated" class="text-xs text-gray-500 mt-1">Dernière mise à jour — …</p>
+        </div>
+      </div>
+      <div class="ml-auto flex items-center gap-2">
+        <span class="text-xs text-gray-500 hidden sm:inline">Auto-refresh : 5 min</span>
+        <button id="refresh-btn" class="px-3.5 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700 focus:outline-none">
+          Actualiser
+        </button>
+      </div>
+    </div>
   </header>
 
-  <!-- Contenu principal -->
-  <main id="dashboard-container" class="p-6 space-y-8"></main>
+  <!-- Conteneur -->
+  <main class="max-w-7xl mx-auto px-5 py-6 space-y-8" id="root">
+    <!-- KPIs -->
+    <section id="kpi-row" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Squelettes initialement, remplacés au rendu -->
+      <div class="bg-white rounded-xl shadow p-5">
+        <div class="h-4 w-28 skeleton rounded mb-4"></div>
+        <div class="h-8 w-24 skeleton rounded"></div>
+        <div class="h-3 w-40 skeleton rounded mt-4"></div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5">
+        <div class="h-4 w-36 skeleton rounded mb-4"></div>
+        <div class="h-8 w-24 skeleton rounded"></div>
+        <div class="h-3 w-40 skeleton rounded mt-4"></div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5">
+        <div class="h-4 w-32 skeleton rounded mb-4"></div>
+        <div class="h-8 w-24 skeleton rounded"></div>
+        <div class="h-3 w-40 skeleton rounded mt-4"></div>
+      </div>
+      <div class="bg-white rounded-xl shadow p-5">
+        <div class="h-4 w-40 skeleton rounded mb-4"></div>
+        <div class="h-8 w-24 skeleton rounded"></div>
+        <div class="h-3 w-40 skeleton rounded mt-4"></div>
+      </div>
+    </section>
+
+    <!-- Sections dynamiques -->
+    <section id="dashboard-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></section>
+
+    <!-- Zone messages -->
+    <section id="dashboard-messages"></section>
+  </main>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // Configuration Supabase (service_role nécessaire pour lire les vues)
+    // ====== Supabase (identique à ton code) ======
     const supabaseUrl = 'https://swjnpvfkloubshksobau.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDA5NTEzMSwiZXhwIjoyMDY5NjcxMTMxfQ.rNwvk8XijCdB6HmX-OTfj8BXH4y88NP58yfUJB7G_YI';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Récupère et prépare les données depuis Supabase
+    // ====== Utils ======
+    const fmt = {
+      int: (n) => (n ?? 0).toLocaleString('fr-FR'),
+      sec: (s) => (s ?? 0).toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' s',
+      date: (d) => new Date(d).toLocaleDateString('fr-FR')
+    };
+
+    function setUpdatedNow() {
+      const el = document.getElementById('last-updated');
+      el.textContent = 'Dernière mise à jour — ' + new Date().toLocaleString('fr-FR');
+    }
+
+    function sectionShell({ title, description, hint }) {
+      const wrap = document.createElement('div');
+      wrap.className = 'bg-white rounded-xl shadow p-6 flex flex-col';
+
+      const head = document.createElement('div');
+      head.className = 'flex items-start justify-between gap-3 mb-4';
+
+      const left = document.createElement('div');
+      const h2 = document.createElement('h2');
+      h2.className = 'text-lg font-semibold';
+      h2.textContent = title || '';
+      const p = document.createElement('p');
+      p.className = 'text-sm text-gray-500 mt-1';
+      p.textContent = description || '';
+      left.appendChild(h2);
+      if (description) left.appendChild(p);
+
+      head.appendChild(left);
+
+      if (hint) {
+        const info = document.createElement('div');
+        info.className = 'hint text-gray-400 text-sm';
+        info.innerHTML = 'ℹ️<span class="hint-bubble">'+hint+'</span>';
+        head.appendChild(info);
+      }
+
+      wrap.appendChild(head);
+      return wrap;
+    }
+
+    function addChart({ grid, title, description, hint, type, labels, datasets, height='h-64' }) {
+      const s = sectionShell({ title, description, hint });
+      const box = document.createElement('div');
+      box.className = height;
+      const canvas = document.createElement('canvas');
+      canvas.className = 'w-full h-full';
+      box.appendChild(canvas);
+      s.appendChild(box);
+      grid.appendChild(s);
+
+      new Chart(canvas, {
+        type,
+        data: { labels, datasets },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, boxHeight: 12 } },
+            tooltip: { intersect: false, mode: 'index' }
+          },
+          elements: { line: { tension: 0.3 } },
+          scales: (type === 'line' || type === 'bar') ? { x: { grid: { display:false } }, y: { beginAtZero: true } } : {}
+        }
+      });
+    }
+
+    function addTable({ grid, title, description, hint, columns, rows, height='max-h-80' }) {
+      const s = sectionShell({ title, description, hint });
+      const wrap = document.createElement('div');
+      wrap.className = height + ' overflow-auto rounded border border-gray-100';
+
+      const table = document.createElement('table');
+      table.className = 'min-w-full text-sm';
+      const thead = document.createElement('thead');
+      thead.className = 'bg-gray-50';
+      thead.innerHTML = '<tr>' + columns.map(c => `<th class="px-3 py-2 text-left font-semibold text-gray-600">${c}</th>`).join('') + '</tr>';
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      rows.forEach((r,i) => {
+        const tr = document.createElement('tr');
+        tr.className = (i%2 ? 'bg-white' : 'bg-gray-50');
+        tr.innerHTML = r.map((cell, j) =>
+          `<td class="px-3 py-2 ${j===r.length-1 ? 'text-right' : 'text-left'} break-all">${cell}</td>`
+        ).join('');
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      wrap.appendChild(table);
+      s.appendChild(wrap);
+      grid.appendChild(s);
+    }
+
+    function showMessage(kind, text) {
+      const zone = document.getElementById('dashboard-messages');
+      const base = 'rounded-xl p-4 border';
+      const cls = kind === 'error'
+        ? 'bg-red-50 border-red-200 text-red-800'
+        : 'bg-yellow-50 border-yellow-200 text-yellow-800';
+      const div = document.createElement('div');
+      div.className = base + ' ' + cls;
+      div.textContent = text;
+      zone.innerHTML = '';
+      zone.appendChild(div);
+    }
+
+    // ====== Fetch ======
     async function fetchStats() {
-      const { data: sessionsParJour }  = await supabase.from('stats_sessions_par_jour').select('jour,sessions').order('jour', { ascending: true });
-      const { data: eventsParJour }    = await supabase.from('stats_events_par_jour').select('jour,events').order('jour', { ascending: true });
-      const { data: deviceTypes }      = await supabase.from('stats_device_type').select('device_type,sessions');
-      const { data: countries }        = await supabase.from('stats_pays').select('country,sessions');
-      const { data: topPages }         = await supabase.from('stats_top_pages').select('page_url,vues');
-      const { data: entryPages }       = await supabase.from('stats_pages_entree').select('first_page_url,nb');
-      const { data: exitPages }        = await supabase.from('stats_pages_sortie').select('last_page_url,nb');
-      const { data: newVsReturning }   = await supabase.from('stats_nouveaux_vs_revenants').select('is_returning,sessions');
-      const { data: categories }       = await supabase.from('stats_categories_events').select('category,nb');
-      const { data: clicks }           = await supabase.from('stats_elements_cliques').select('element_selector,clics');
-      const { data: avgEngagement }    = await supabase.from('stats_engagement_moyen').select('engagement_sec');
-      const { data: dailyGlobal }      = await supabase.from('stats_daily_global').select('jour,sessions_uniques,total_events').order('jour', { ascending: true });
+      // On récupère tout en parallèle
+      const queries = [
+        supabase.from('stats_sessions_par_jour').select('jour,sessions').order('jour', { ascending: true }),
+        supabase.from('stats_events_par_jour').select('jour,events').order('jour', { ascending: true }),
+        supabase.from('stats_device_type').select('device_type,sessions'),
+        supabase.from('stats_pays').select('country,sessions'),
+        supabase.from('stats_top_pages').select('page_url,vues'),
+        supabase.from('stats_pages_entree').select('first_page_url,nb'),
+        supabase.from('stats_pages_sortie').select('last_page_url,nb'),
+        supabase.from('stats_nouveaux_vs_revenants').select('is_returning,sessions'),
+        supabase.from('stats_categories_events').select('category,nb'),
+        supabase.from('stats_elements_cliques').select('element_selector,clics'),
+        supabase.from('stats_engagement_moyen').select('engagement_sec'),
+        supabase.from('stats_daily_global').select('jour,sessions_uniques,total_events').order('jour',{ascending:true})
+      ];
+
+      const [
+        { data: sessionsParJour, error: e1 },
+        { data: eventsParJour, error: e2 },
+        { data: deviceTypes, error: e3 },
+        { data: countries, error: e4 },
+        { data: topPages, error: e5 },
+        { data: entryPages, error: e6 },
+        { data: exitPages, error: e7 },
+        { data: newVsReturning, error: e8 },
+        { data: categories, error: e9 },
+        { data: clicks, error: e10 },
+        { data: avgEngagement, error: e11 },
+        { data: dailyGlobal, error: e12 },
+      ] = await Promise.all(queries);
+
+      const errs = [e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12].filter(Boolean);
+      if (errs.length) {
+        console.error('Erreurs Supabase:', errs);
+        showMessage('error', 'Certaines données n’ont pas pu être chargées. Réessaie plus tard ou clique sur “Actualiser”.');
+      } else {
+        document.getElementById('dashboard-messages').innerHTML = '';
+      }
+
       return { sessionsParJour, eventsParJour, deviceTypes, countries, topPages, entryPages, exitPages, newVsReturning, categories, clicks, avgEngagement, dailyGlobal };
     }
 
-    // Fonction utilitaire pour créer une carte élégante avec un titre, un paragraphe et un conteneur enfant
-    function createSection(title, description) {
-      const section = document.createElement('div');
-      section.className = 'bg-white rounded-lg shadow-md p-6';
-      if (title) {
-        const h2 = document.createElement('h2');
-        h2.textContent = title;
-        h2.className = 'text-xl font-semibold mb-2';
-        section.appendChild(h2);
-      }
-      if (description) {
-        const p = document.createElement('p');
-        p.textContent = description;
-        p.className = 'text-sm text-gray-500 mb-4';
-        section.appendChild(p);
-      }
-      return section;
+    // ====== KPI ======
+    function renderKPIs(stats) {
+      const box = document.getElementById('kpi-row');
+      box.innerHTML = '';
+
+      // Petits calculs utiles
+      const totalSessions = (stats.sessionsParJour ?? []).reduce((a,b)=>a+(b.sessions||0),0);
+      const totalEvents = (stats.eventsParJour ?? []).reduce((a,b)=>a+(b.events||0),0);
+      const engagement = stats.avgEngagement?.[0]?.engagement_sec ?? 0;
+      const topCountry = (stats.countries ?? []).slice().sort((a,b)=>(b.sessions||0)-(a.sessions||0))[0]?.country ?? '—';
+
+      const kpis = [
+        {
+          label: 'Sessions (période)',
+          value: fmt.int(totalSessions),
+          sub: 'Visiteurs uniques cumulés.',
+          hint: 'Nombre de sessions distinctes comptabilisées sur la période affichée (une session ≈ une visite d’un utilisateur).'
+        },
+        {
+          label: 'Événements (période)',
+          value: fmt.int(totalEvents),
+          sub: 'Pages vues, clics, etc.',
+          hint: 'Total des interactions trackées : pages vues, clics sur éléments, etc. Plus c’est haut, plus il y a d’activité.'
+        },
+        {
+          label: 'Engagement moyen',
+          value: fmt.sec(engagement),
+          sub: 'Temps actif par session.',
+          hint: 'Durée moyenne pendant laquelle un utilisateur est réellement actif sur le site pendant une session.'
+        },
+        {
+          label: 'Pays #1',
+          value: topCountry,
+          sub: 'Origine la plus fréquente.',
+          hint: 'Pays le plus représenté parmi tes visiteurs (basé sur l’IP).'
+        }
+      ];
+
+      kpis.forEach(k => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl shadow p-5';
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-gray-500">${k.label}</p>
+              <p class="mt-2 text-2xl font-bold">${k.value}</p>
+              <p class="mt-1 text-xs text-gray-500">${k.sub}</p>
+            </div>
+            <div class="hint text-gray-400">ℹ️
+              <span class="hint-bubble">${k.hint}</span>
+            </div>
+          </div>
+        `;
+        box.appendChild(card);
+      });
     }
 
-    // Rendu du tableau de bord
+    // ====== Render principal ======
     function renderDashboard(stats) {
-      const container = document.getElementById('dashboard-container');
-      container.innerHTML = '';
+      setUpdatedNow();
+      renderKPIs(stats);
 
-      // Grille responsive
-      const grid = document.createElement('div');
-      grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
-      container.appendChild(grid);
-
-      // Helper pour créer un graphique
-      function addChartSection({ title, description, type, labels, datasets }) {
-        const section = createSection(title, description);
-        const canvas = document.createElement('canvas');
-        section.appendChild(canvas);
-        grid.appendChild(section);
-        new Chart(canvas, {
-          type: type,
-          data: { labels, datasets },
-          options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-        });
-      }
-
-      // Helper pour créer un tableau
-      function addTableSection({ title, description, rows }) {
-        const section = createSection(title, description);
-        const table = document.createElement('table');
-        table.className = 'min-w-full divide-y divide-gray-200 text-sm';
-        const thead = document.createElement('thead');
-        thead.innerHTML = '<tr><th class="px-3 py-1 text-left">Élément</th><th class="px-3 py-1 text-right">Nombre</th></tr>';
-        table.appendChild(thead);
-        const tbody = document.createElement('tbody');
-        rows.forEach(r => {
-          const tr = document.createElement('tr');
-          tr.className = 'odd:bg-gray-50';
-          tr.innerHTML = `<td class="px-3 py-1 break-all">${r.element}</td><td class="px-3 py-1 text-right">${r.count}</td>`;
-          tbody.appendChild(tr);
-        });
-        table.appendChild(tbody);
-        section.appendChild(table);
-        grid.appendChild(section);
-      }
+      const grid = document.getElementById('dashboard-container');
+      grid.innerHTML = '';
 
       // 1. Sessions par jour
       if (stats.sessionsParJour?.length) {
-        addChartSection({
+        addChart({
+          grid,
           title: 'Sessions par jour',
           description: 'Nombre de visiteurs uniques enregistrés chaque jour.',
+          hint: 'Lecture : un pic = afflux de nouveaux visiteurs ce jour-là.',
           type: 'bar',
-          labels: stats.sessionsParJour.map(r => new Date(r.jour).toLocaleDateString('fr-FR')),
-          datasets: [{
-            label: 'Sessions',
-            data: stats.sessionsParJour.map(r => r.sessions),
-            backgroundColor: '#3b82f6'
-          }]
+          labels: stats.sessionsParJour.map(r => fmt.date(r.jour)),
+          datasets: [{ label:'Sessions', data: stats.sessionsParJour.map(r=>r.sessions), backgroundColor:'#3b82f6' }]
         });
       }
 
       // 2. Événements par jour
       if (stats.eventsParJour?.length) {
-        addChartSection({
+        addChart({
+          grid,
           title: 'Événements par jour',
-          description: 'Nombre total d’événements (page vues, clics…) enregistrés chaque jour.',
+          description: 'Total des interactions (page vues, clics…) par jour.',
+          hint: 'Si la courbe grimpe alors que les sessions stagnent, tes visiteurs interagissent plus.',
           type: 'line',
-          labels: stats.eventsParJour.map(r => new Date(r.jour).toLocaleDateString('fr-FR')),
+          labels: stats.eventsParJour.map(r => fmt.date(r.jour)),
           datasets: [{
-            label: 'Événements',
-            data: stats.eventsParJour.map(r => r.events),
-            borderColor: '#10b981',
-            backgroundColor: 'rgba(16,185,129,0.2)',
-            tension: 0.3,
-            fill: true
+            label:'Événements', data: stats.eventsParJour.map(r=>r.events),
+            borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.2)', fill:true
           }]
         });
       }
 
       // 3. Type d’appareil
       if (stats.deviceTypes?.length) {
-        addChartSection({
+        addChart({
+          grid,
           title: 'Répartition par type d’appareil',
-          description: 'Proportion des sessions selon le type d’appareil (ordinateur, mobile, tablette…).',
+          description: 'Ordinateur, mobile, tablette…',
+          hint: 'Optimise d’abord pour l’appareil le plus utilisé par tes visiteurs.',
           type: 'doughnut',
           labels: stats.deviceTypes.map(r => r.device_type ?? 'Inconnu'),
-          datasets: [{
-            label: 'Sessions',
-            data: stats.deviceTypes.map(r => r.sessions),
-            backgroundColor: ['#60a5fa','#fb923c','#84cc16','#c084fc','#10b981']
-          }]
+          datasets: [{ label:'Sessions', data: stats.deviceTypes.map(r=>r.sessions),
+            backgroundColor:['#60a5fa','#fb923c','#84cc16','#c084fc','#10b981'] }]
         });
       }
 
       // 4. Répartition par pays
       if (stats.countries?.length) {
-        addChartSection({
+        addChart({
+          grid,
           title: 'Répartition par pays',
-          description: 'Pays d’origine des visiteurs (basé sur l’adresse IP).',
+          description: 'Origine géographique des visiteurs.',
+          hint: 'Utile pour choisir la langue par défaut, ou réfléchir à des traductions.',
           type: 'doughnut',
           labels: stats.countries.map(r => r.country ?? 'Inconnu'),
-          datasets: [{
-            label: 'Sessions',
-            data: stats.countries.map(r => r.sessions),
-            backgroundColor: ['#facc15','#38bdf8','#f472b6','#34d399','#f87171']
-          }]
+          datasets: [{ label:'Sessions', data: stats.countries.map(r=>r.sessions),
+            backgroundColor:['#facc15','#38bdf8','#f472b6','#34d399','#f87171'] }]
         });
       }
 
       // 5. Nouveaux vs revenants
       if (stats.newVsReturning?.length) {
-        addChartSection({
+        addChart({
+          grid,
           title: 'Nouveaux vs revenants',
-          description: 'Distinction entre les visiteurs qui découvrent le site et ceux qui reviennent.',
+          description: 'Découverte vs fidélisation.',
+          hint: 'Plus de revenants = communauté qui revient. Plus de nouveaux = acquisition qui marche.',
           type: 'pie',
           labels: stats.newVsReturning.map(r => r.is_returning ? 'Revenants' : 'Nouveaux'),
-          datasets: [{
-            label: 'Sessions',
-            data: stats.newVsReturning.map(r => r.sessions),
-            backgroundColor: ['#6366f1','#d946ef']
-          }]
+          datasets: [{ label:'Sessions', data: stats.newVsReturning.map(r=>r.sessions),
+            backgroundColor:['#6366f1','#d946ef'] }]
         });
       }
 
       // 6. Catégories d’événements
       if (stats.categories?.length) {
-        addChartSection({
+        addChart({
+          grid,
           title: 'Catégories d’événements',
-          description: 'Répartition des événements enregistrés par type d’interaction.',
+          description: 'Types d’interactions.',
+          hint: 'Repère les catégories dominantes pour prioriser tes optimisations UX.',
           type: 'pie',
           labels: stats.categories.map(r => r.category ?? 'Inconnu'),
-          datasets: [{
-            label: 'Événements',
-            data: stats.categories.map(r => r.nb),
-            backgroundColor: ['#fbbf24','#34d399','#f87171','#a78bfa','#f472b6']
-          }]
+          datasets: [{ label:'Événements', data: stats.categories.map(r=>r.nb),
+            backgroundColor:['#fbbf24','#34d399','#f87171','#a78bfa','#f472b6'] }]
         });
       }
 
       // 7. Pages populaires
       if (stats.topPages?.length) {
-        addTableSection({
+        addTable({
+          grid,
           title: 'Pages les plus visitées',
-          description: 'Classement des pages par nombre de vues.',
-          rows: stats.topPages.map(r => ({ element: r.page_url, count: r.vues }))
+          description: 'Classement par nombre de vues.',
+          hint: 'Ces pages méritent un soin particulier (perf, design, CTA).',
+          columns: ['URL', 'Vues'],
+          rows: stats.topPages.map(r => [r.page_url, fmt.int(r.vues)])
         });
       }
 
       // 8. Pages d’entrée
       if (stats.entryPages?.length) {
-        addTableSection({
+        addTable({
+          grid,
           title: 'Pages d’entrée',
-          description: 'Premières pages consultées au début des sessions.',
-          rows: stats.entryPages.map(r => ({ element: r.first_page_url, count: r.nb }))
+          description: 'Première page vue dans une session.',
+          hint: 'Optimise ces pages pour la première impression (clarté, vitesse, message).',
+          columns: ['URL', 'Entrées'],
+          rows: stats.entryPages.map(r => [r.first_page_url, fmt.int(r.nb)])
         });
       }
 
       // 9. Pages de sortie
       if (stats.exitPages?.length) {
-        addTableSection({
+        addTable({
+          grid,
           title: 'Pages de sortie',
-          description: 'Dernières pages vues avant que les visiteurs ne quittent le site.',
-          rows: stats.exitPages.map(r => ({ element: r.last_page_url, count: r.nb }))
+          description: 'Dernière page vue avant de quitter.',
+          hint: 'Si une page sort trop souvent, vérifie le contenu/CTA (y a-t-il une suite logique proposée ?).',
+          columns: ['URL', 'Sorties'],
+          rows: stats.exitPages.map(r => [r.last_page_url, fmt.int(r.nb)])
         });
       }
 
       // 10. Éléments cliqués
       if (stats.clicks?.length) {
-        addTableSection({
+        addTable({
+          grid,
           title: 'Éléments les plus cliqués',
-          description: 'Sélecteurs HTML des éléments le plus souvent cliqués.',
-          rows: stats.clicks.map(r => ({ element: r.element_selector, count: r.clics }))
+          description: 'Sélecteurs HTML les plus cliqués.',
+          hint: 'Comprends où les gens cliquent pour ajuster la hiérarchie visuelle.',
+          columns: ['Sélecteur', 'Clics'],
+          rows: stats.clicks.map(r => [r.element_selector, fmt.int(r.clics)])
         });
       }
 
-      // 11. Engagement moyen
-      if (stats.avgEngagement?.length) {
-        const section = createSection('Engagement moyen', 'Durée moyenne d’engagement par session (en secondes).');
-        const value = stats.avgEngagement[0].engagement_sec ?? 0;
-        const p = document.createElement('p');
-        p.className = 'text-3xl font-bold text-blue-600';
-        p.textContent = value.toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' s';
-        section.appendChild(p);
-        grid.appendChild(section);
-      }
-
-      // 12. Sessions et événements quotidiens
+      // 11. Sessions & événements quotidiens (comparatif)
       if (stats.dailyGlobal?.length) {
-        addChartSection({
+        addChart({
+          grid,
           title: 'Sessions & événements quotidiens',
-          description: 'Comparaison du nombre de sessions uniques et du nombre total d’événements par jour.',
+          description: 'Comparaison sessions uniques vs total événements.',
+          hint: 'Si les événements montent plus vite que les sessions : meilleure interaction moyenne par visite.',
           type: 'line',
-          labels: stats.dailyGlobal.map(r => new Date(r.jour).toLocaleDateString('fr-FR')),
+          labels: stats.dailyGlobal.map(r => fmt.date(r.jour)),
           datasets: [
-            {
-              label: 'Sessions uniques',
-              data: stats.dailyGlobal.map(r => r.sessions_uniques),
-              borderColor: '#3b82f6',
-              backgroundColor: 'rgba(59,130,246,0.2)',
-              tension: 0.3,
-              fill: true
-            },
-            {
-              label: 'Total événements',
-              data: stats.dailyGlobal.map(r => r.total_events),
-              borderColor: '#f97316',
-              backgroundColor: 'rgba(249,115,22,0.2)',
-              tension: 0.3,
-              fill: true
-            }
-          ]
+            { label:'Sessions uniques', data: stats.dailyGlobal.map(r=>r.sessions_uniques), borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.2)', fill:true },
+            { label:'Total événements', data: stats.dailyGlobal.map(r=>r.total_events), borderColor:'#f97316', backgroundColor:'rgba(249,115,22,0.2)', fill:true }
+          ],
+          height: 'h-72'
         });
       }
 
-      // Si aucun jeu de données n’a été récupéré
-      if (!stats.sessionsParJour?.length && !stats.eventsParJour?.length) {
-        const notice = document.createElement('p');
-        notice.className = 'text-center text-gray-500';
-        notice.textContent = 'Aucune donnée enregistrée pour le moment. Visitez le site principal pour générer des sessions et des événements.';
-        container.appendChild(notice);
+      // Empty state
+      if (
+        !stats.sessionsParJour?.length &&
+        !stats.eventsParJour?.length &&
+        !stats.dailyGlobal?.length
+      ) {
+        const notice = document.createElement('div');
+        notice.className = 'col-span-full bg-white rounded-xl shadow p-8 text-center text-gray-600';
+        notice.innerHTML = `
+          <p class="text-lg font-medium">Aucune donnée pour le moment</p>
+          <p class="text-sm mt-2">Visite le site principal pour générer des sessions et des événements, puis reviens ici.</p>
+        `;
+        grid.appendChild(notice);
       }
     }
 
-    // Gestion du bouton et initialisation
-    document.getElementById('refresh-btn').addEventListener('click', () => {
-      fetchStats().then(renderDashboard);
-    });
+    // ====== Init & Refresh ======
+    async function boot() {
+      const stats = await fetchStats();
+      renderDashboard(stats);
+    }
 
-    // Chargement initial et rafraîchissement périodique
-    fetchStats().then(renderDashboard);
-    setInterval(() => fetchStats().then(renderDashboard), 5 * 60 * 1000);
+    document.getElementById('refresh-btn').addEventListener('click', boot);
+
+    boot();
+    setInterval(boot, 5 * 60 * 1000);
   </script>
 </body>
 </html>
