@@ -5,8 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tableau de bord – Personnalité Comparée</title>
 
-  <!-- Tailwind CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet">
+  <!-- ✅ Tailwind via Play CDN (remplace l'ancien <link> cassé) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          boxShadow: {
+            soft: '0 10px 30px rgba(0,0,0,.06)'
+          }
+        }
+      }
+    }
+  </script>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -53,22 +64,22 @@
     <!-- KPIs -->
     <section id="kpi-row" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- Squelettes initialement, remplacés au rendu -->
-      <div class="bg-white rounded-xl shadow p-5">
+      <div class="bg-white rounded-xl shadow-soft p-5">
         <div class="h-4 w-28 skeleton rounded mb-4"></div>
         <div class="h-8 w-24 skeleton rounded"></div>
         <div class="h-3 w-40 skeleton rounded mt-4"></div>
       </div>
-      <div class="bg-white rounded-xl shadow p-5">
+      <div class="bg-white rounded-xl shadow-soft p-5">
         <div class="h-4 w-36 skeleton rounded mb-4"></div>
         <div class="h-8 w-24 skeleton rounded"></div>
         <div class="h-3 w-40 skeleton rounded mt-4"></div>
       </div>
-      <div class="bg-white rounded-xl shadow p-5">
+      <div class="bg-white rounded-xl shadow-soft p-5">
         <div class="h-4 w-32 skeleton rounded mb-4"></div>
         <div class="h-8 w-24 skeleton rounded"></div>
         <div class="h-3 w-40 skeleton rounded mt-4"></div>
       </div>
-      <div class="bg-white rounded-xl shadow p-5">
+      <div class="bg-white rounded-xl shadow-soft p-5">
         <div class="h-4 w-40 skeleton rounded mb-4"></div>
         <div class="h-8 w-24 skeleton rounded"></div>
         <div class="h-3 w-40 skeleton rounded mt-4"></div>
@@ -85,7 +96,7 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // ====== Supabase (identique à ton code) ======
+    // ====== Supabase ======
     const supabaseUrl = 'https://swjnpvfkloubshksobau.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDA5NTEzMSwiZXhwIjoyMDY5NjcxMTMxfQ.rNwvk8XijCdB6HmX-OTfj8BXH4y88NP58yfUJB7G_YI';
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -104,7 +115,7 @@
 
     function sectionShell({ title, description, hint }) {
       const wrap = document.createElement('div');
-      wrap.className = 'bg-white rounded-xl shadow p-6 flex flex-col';
+      wrap.className = 'bg-white rounded-xl shadow-soft p-6 flex flex-col';
 
       const head = document.createElement('div');
       head.className = 'flex items-start justify-between gap-3 mb-4';
@@ -199,7 +210,6 @@
 
     // ====== Fetch ======
     async function fetchStats() {
-      // On récupère tout en parallèle
       const queries = [
         supabase.from('stats_sessions_par_jour').select('jour,sessions').order('jour', { ascending: true }),
         supabase.from('stats_events_par_jour').select('jour,events').order('jour', { ascending: true }),
@@ -246,7 +256,6 @@
       const box = document.getElementById('kpi-row');
       box.innerHTML = '';
 
-      // Petits calculs utiles
       const totalSessions = (stats.sessionsParJour ?? []).reduce((a,b)=>a+(b.sessions||0),0);
       const totalEvents = (stats.eventsParJour ?? []).reduce((a,b)=>a+(b.events||0),0);
       const engagement = stats.avgEngagement?.[0]?.engagement_sec ?? 0;
@@ -281,7 +290,7 @@
 
       kpis.forEach(k => {
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-xl shadow p-5';
+        card.className = 'bg-white rounded-xl shadow-soft p-5';
         card.innerHTML = `
           <div class="flex items-start justify-between">
             <div>
@@ -457,13 +466,9 @@
       }
 
       // Empty state
-      if (
-        !stats.sessionsParJour?.length &&
-        !stats.eventsParJour?.length &&
-        !stats.dailyGlobal?.length
-      ) {
+      if (!stats.sessionsParJour?.length && !stats.eventsParJour?.length && !stats.dailyGlobal?.length) {
         const notice = document.createElement('div');
-        notice.className = 'col-span-full bg-white rounded-xl shadow p-8 text-center text-gray-600';
+        notice.className = 'col-span-full bg-white rounded-xl shadow-soft p-8 text-center text-gray-600';
         notice.innerHTML = `
           <p class="text-lg font-medium">Aucune donnée pour le moment</p>
           <p class="text-sm mt-2">Visite le site principal pour générer des sessions et des événements, puis reviens ici.</p>
