@@ -1,227 +1,298 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tableau de bord – Personnalité Comparée</title>
+  <!-- Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-50 min-h-screen">
-  <header class="bg-white shadow p-4">
-    <h1 class="text-xl font-bold">Tableau de bord – Personnalité Comparée</h1>
+<body class="bg-gray-100 text-gray-800">
+  <!-- En‑tête -->
+  <header class="bg-white shadow px-6 py-4 flex items-center justify-between">
+    <h1 class="text-2xl font-bold">Tableau de bord de suivi</h1>
+    <button id="refresh-btn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none">
+      Actualiser
+    </button>
   </header>
-  <main class="p-4">
-    <button id="refresh-btn" class="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Actualiser</button>
-    <div id="dashboard-container" class="p-4 space-y-6"></div>
-  </main>
+
+  <!-- Contenu principal -->
+  <main id="dashboard-container" class="p-6 space-y-8"></main>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
+    // Configuration Supabase (service_role nécessaire pour lire les vues)
     const supabaseUrl = 'https://swjnpvfkloubshksobau.supabase.co';
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg';
-    const supabaseServiceRoleKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDA5NTEzMSwiZXhwIjoyMDY5NjcxMTMxfQ.rNwvk8XijCdB6HmX-OTfj8BXH4y88NP58yfUJB7G_YI';
-    // On utilise la clé service_role pour lire les statistiques protégées.
-    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDA5NTEzMSwiZXhwIjoyMDY5NjcxMTMxfQ.rNwvk8XijCdB6HmX-OTfj8BXH4y88NP58yfUJB7G_YI';
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Récupère toutes les vues statistiques.
+    // Récupère et prépare les données depuis Supabase
     async function fetchStats() {
-      const { data: sessionsParJour, error: err1 } = await supabase.from('stats_sessions_par_jour').select('*');
-      const { data: eventsParJour,   error: err2 } = await supabase.from('stats_events_par_jour').select('*');
-      const { data: deviceTypes,     error: err3 } = await supabase.from('stats_device_type').select('*');
-      const { data: countries,       error: err4 } = await supabase.from('stats_pays').select('*');
-      const { data: topPages,        error: err5 } = await supabase.from('stats_top_pages').select('*');
-      const { data: entryPages,      error: err6 } = await supabase.from('stats_pages_entree').select('*');
-      const { data: exitPages,       error: err7 } = await supabase.from('stats_pages_sortie').select('*');
-      const { data: newVsReturning,  error: err8 } = await supabase.from('stats_nouveaux_vs_revenants').select('*');
-      const { data: categories,      error: err9 } = await supabase.from('stats_categories_events').select('*');
-      const { data: clicks,          error: err10} = await supabase.from('stats_elements_cliques').select('*');
-      const { data: avgEngagement,   error: err11} = await supabase.from('stats_engagement_moyen').select('*');
-      const { data: dailyGlobal,     error: err12} = await supabase.from('stats_daily_global').select('*');
-      if (err1 || err2 || err3 || err4 || err5 || err6 || err7 || err8 || err9 || err10 || err11 || err12) {
-        console.error('Erreur lors de la récupération des statistiques', err1 || err2 || err3 || err4 || err5 || err6 || err7 || err8 || err9 || err10 || err11 || err12);
-      }
+      const { data: sessionsParJour }  = await supabase.from('stats_sessions_par_jour').select('jour,sessions').order('jour', { ascending: true });
+      const { data: eventsParJour }    = await supabase.from('stats_events_par_jour').select('jour,events').order('jour', { ascending: true });
+      const { data: deviceTypes }      = await supabase.from('stats_device_type').select('device_type,sessions');
+      const { data: countries }        = await supabase.from('stats_pays').select('country,sessions');
+      const { data: topPages }         = await supabase.from('stats_top_pages').select('page_url,vues');
+      const { data: entryPages }       = await supabase.from('stats_pages_entree').select('first_page_url,nb');
+      const { data: exitPages }        = await supabase.from('stats_pages_sortie').select('last_page_url,nb');
+      const { data: newVsReturning }   = await supabase.from('stats_nouveaux_vs_revenants').select('is_returning,sessions');
+      const { data: categories }       = await supabase.from('stats_categories_events').select('category,nb');
+      const { data: clicks }           = await supabase.from('stats_elements_cliques').select('element_selector,clics');
+      const { data: avgEngagement }    = await supabase.from('stats_engagement_moyen').select('engagement_sec');
+      const { data: dailyGlobal }      = await supabase.from('stats_daily_global').select('jour,sessions_uniques,total_events').order('jour', { ascending: true });
       return { sessionsParJour, eventsParJour, deviceTypes, countries, topPages, entryPages, exitPages, newVsReturning, categories, clicks, avgEngagement, dailyGlobal };
     }
 
-    // Crée et retourne une carte Tailwind.
-    function createCard(title) {
-      const card = document.createElement('div');
-      card.className = 'bg-white rounded shadow p-4';
+    // Fonction utilitaire pour créer une carte élégante avec un titre, un paragraphe et un conteneur enfant
+    function createSection(title, description) {
+      const section = document.createElement('div');
+      section.className = 'bg-white rounded-lg shadow-md p-6';
       if (title) {
         const h2 = document.createElement('h2');
         h2.textContent = title;
-        h2.className = 'text-lg font-semibold mb-2';
-        card.appendChild(h2);
+        h2.className = 'text-xl font-semibold mb-2';
+        section.appendChild(h2);
       }
-      return card;
+      if (description) {
+        const p = document.createElement('p');
+        p.textContent = description;
+        p.className = 'text-sm text-gray-500 mb-4';
+        section.appendChild(p);
+      }
+      return section;
     }
 
+    // Rendu du tableau de bord
     function renderDashboard(stats) {
       const container = document.getElementById('dashboard-container');
       container.innerHTML = '';
 
+      // Grille responsive
       const grid = document.createElement('div');
       grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
       container.appendChild(grid);
 
-      // Sessions par jour - graphique barres
-      if (stats.sessionsParJour?.length) {
-        const card = createCard('Sessions par jour');
+      // Helper pour créer un graphique
+      function addChartSection({ title, description, type, labels, datasets }) {
+        const section = createSection(title, description);
         const canvas = document.createElement('canvas');
-        card.appendChild(canvas);
-        grid.appendChild(card);
+        section.appendChild(canvas);
+        grid.appendChild(section);
         new Chart(canvas, {
-          type: 'bar',
-          data: {
-            labels: stats.sessionsParJour.map(r => r.jour),
-            datasets: [{ label: 'Sessions', data: stats.sessionsParJour.map(r => r.sessions), backgroundColor: '#3b82f6' }]
-          }
+          type: type,
+          data: { labels, datasets },
+          options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
         });
       }
 
-      // Événements par jour - graphique lignes
-      if (stats.eventsParJour?.length) {
-        const card = createCard('Événements par jour');
-        const canvas = document.createElement('canvas');
-        card.appendChild(canvas);
-        grid.appendChild(card);
-        new Chart(canvas, {
-          type: 'line',
-          data: {
-            labels: stats.eventsParJour.map(r => r.jour),
-            datasets: [{ label: 'Événements', data: stats.eventsParJour.map(r => r.events), borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.2)' }]
-          }
-        });
-      }
-
-      // Type d'appareil - graphique circulaire
-      if (stats.deviceTypes?.length) {
-        const card = createCard('Type d\'appareil');
-        const canvas = document.createElement('canvas');
-        card.appendChild(canvas);
-        grid.appendChild(card);
-        new Chart(canvas, {
-          type: 'pie',
-          data: {
-            labels: stats.deviceTypes.map(r => r.device_type),
-            datasets: [{ data: stats.deviceTypes.map(r => r.sessions) }]
-          }
-        });
-      }
-
-      // Pays - graphique circulaire
-      if (stats.countries?.length) {
-        const card = createCard('Pays');
-        const canvas = document.createElement('canvas');
-        card.appendChild(canvas);
-        grid.appendChild(card);
-        new Chart(canvas, {
-          type: 'doughnut',
-          data: {
-            labels: stats.countries.map(r => r.country),
-            datasets: [{ data: stats.countries.map(r => r.sessions) }]
-          }
-        });
-      }
-
-      // Nouveaux vs revenants - graphique circulaire
-      if (stats.newVsReturning?.length) {
-        const card = createCard('Nouveaux vs revenants');
-        const canvas = document.createElement('canvas');
-        card.appendChild(canvas);
-        grid.appendChild(card);
-        new Chart(canvas, {
-          type: 'doughnut',
-          data: {
-            labels: stats.newVsReturning.map(r => r.is_returning ? 'Revenant' : 'Nouveau'),
-            datasets: [{ data: stats.newVsReturning.map(r => r.sessions) }]
-          }
-        });
-      }
-
-      // Catégories d'événements - graphique circulaire
-      if (stats.categories?.length) {
-        const card = createCard('Catégories d\'événements');
-        const canvas = document.createElement('canvas');
-        card.appendChild(canvas);
-        grid.appendChild(card);
-        new Chart(canvas, {
-          type: 'pie',
-          data: {
-            labels: stats.categories.map(r => r.category),
-            datasets: [{ data: stats.categories.map(r => r.nb) }]
-          }
-        });
-      }
-
-      // Fonctions utilitaires pour les tableaux
-      function addTable(title, rows) {
-        const card = createCard(title);
+      // Helper pour créer un tableau
+      function addTableSection({ title, description, rows }) {
+        const section = createSection(title, description);
         const table = document.createElement('table');
-        table.className = 'min-w-full divide-y divide-gray-200';
+        table.className = 'min-w-full divide-y divide-gray-200 text-sm';
         const thead = document.createElement('thead');
-        thead.innerHTML = '<tr><th class="px-2 py-1 text-left">Élément</th><th class="px-2 py-1 text-right">Nombre</th></tr>';
+        thead.innerHTML = '<tr><th class="px-3 py-1 text-left">Élément</th><th class="px-3 py-1 text-right">Nombre</th></tr>';
         table.appendChild(thead);
         const tbody = document.createElement('tbody');
         rows.forEach(r => {
           const tr = document.createElement('tr');
-          tr.innerHTML = `<td class="px-2 py-1">${r.element}</td><td class="px-2 py-1 text-right">${r.count}</td>`;
+          tr.className = 'odd:bg-gray-50';
+          tr.innerHTML = `<td class="px-3 py-1 break-all">${r.element}</td><td class="px-3 py-1 text-right">${r.count}</td>`;
           tbody.appendChild(tr);
         });
         table.appendChild(tbody);
-        card.appendChild(table);
-        grid.appendChild(card);
+        section.appendChild(table);
+        grid.appendChild(section);
       }
 
-      if (stats.topPages?.length) addTable('Pages populaires', stats.topPages.map(r => ({ element: r.page_url, count: r.vues })));
-      if (stats.entryPages?.length) addTable('Pages d\'entrée', stats.entryPages.map(r => ({ element: r.first_page_url, count: r.nb })));
-      if (stats.exitPages?.length) addTable('Pages de sortie', stats.exitPages.map(r => ({ element: r.last_page_url, count: r.nb })));
-      if (stats.clicks?.length) addTable('Éléments cliqués', stats.clicks.map(r => ({ element: r.element_selector, count: r.clics })));
-
-      // Engagement moyen - texte
-      if (stats.avgEngagement?.length) {
-        const card = createCard('Engagement moyen');
-        const p = document.createElement('p');
-        p.textContent = `${stats.avgEngagement[0].engagement_sec} sec`; // suppose une seule ligne
-        card.appendChild(p);
-        grid.appendChild(card);
-      }
-
-      // Daily global - graphique à deux séries
-      if (stats.dailyGlobal?.length) {
-        const card = createCard('Sessions & événements quotidiens');
-        const canvas = document.createElement('canvas');
-        card.appendChild(canvas);
-        grid.appendChild(card);
-        new Chart(canvas, {
-          type: 'line',
-          data: {
-            labels: stats.dailyGlobal.map(r => r.jour),
-            datasets: [
-              { label: 'Sessions', data: stats.dailyGlobal.map(r => r.sessions_uniques), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.2)' },
-              { label: 'Événements', data: stats.dailyGlobal.map(r => r.total_events), borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.2)' }
-            ]
-          }
+      // 1. Sessions par jour
+      if (stats.sessionsParJour?.length) {
+        addChartSection({
+          title: 'Sessions par jour',
+          description: 'Nombre de visiteurs uniques enregistrés chaque jour.',
+          type: 'bar',
+          labels: stats.sessionsParJour.map(r => new Date(r.jour).toLocaleDateString('fr-FR')),
+          datasets: [{
+            label: 'Sessions',
+            data: stats.sessionsParJour.map(r => r.sessions),
+            backgroundColor: '#3b82f6'
+          }]
         });
+      }
+
+      // 2. Événements par jour
+      if (stats.eventsParJour?.length) {
+        addChartSection({
+          title: 'Événements par jour',
+          description: 'Nombre total d’événements (page vues, clics…) enregistrés chaque jour.',
+          type: 'line',
+          labels: stats.eventsParJour.map(r => new Date(r.jour).toLocaleDateString('fr-FR')),
+          datasets: [{
+            label: 'Événements',
+            data: stats.eventsParJour.map(r => r.events),
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16,185,129,0.2)',
+            tension: 0.3,
+            fill: true
+          }]
+        });
+      }
+
+      // 3. Type d’appareil
+      if (stats.deviceTypes?.length) {
+        addChartSection({
+          title: 'Répartition par type d’appareil',
+          description: 'Proportion des sessions selon le type d’appareil (ordinateur, mobile, tablette…).',
+          type: 'doughnut',
+          labels: stats.deviceTypes.map(r => r.device_type ?? 'Inconnu'),
+          datasets: [{
+            label: 'Sessions',
+            data: stats.deviceTypes.map(r => r.sessions),
+            backgroundColor: ['#60a5fa','#fb923c','#84cc16','#c084fc','#10b981']
+          }]
+        });
+      }
+
+      // 4. Répartition par pays
+      if (stats.countries?.length) {
+        addChartSection({
+          title: 'Répartition par pays',
+          description: 'Pays d’origine des visiteurs (basé sur l’adresse IP).',
+          type: 'doughnut',
+          labels: stats.countries.map(r => r.country ?? 'Inconnu'),
+          datasets: [{
+            label: 'Sessions',
+            data: stats.countries.map(r => r.sessions),
+            backgroundColor: ['#facc15','#38bdf8','#f472b6','#34d399','#f87171']
+          }]
+        });
+      }
+
+      // 5. Nouveaux vs revenants
+      if (stats.newVsReturning?.length) {
+        addChartSection({
+          title: 'Nouveaux vs revenants',
+          description: 'Distinction entre les visiteurs qui découvrent le site et ceux qui reviennent.',
+          type: 'pie',
+          labels: stats.newVsReturning.map(r => r.is_returning ? 'Revenants' : 'Nouveaux'),
+          datasets: [{
+            label: 'Sessions',
+            data: stats.newVsReturning.map(r => r.sessions),
+            backgroundColor: ['#6366f1','#d946ef']
+          }]
+        });
+      }
+
+      // 6. Catégories d’événements
+      if (stats.categories?.length) {
+        addChartSection({
+          title: 'Catégories d’événements',
+          description: 'Répartition des événements enregistrés par type d’interaction.',
+          type: 'pie',
+          labels: stats.categories.map(r => r.category ?? 'Inconnu'),
+          datasets: [{
+            label: 'Événements',
+            data: stats.categories.map(r => r.nb),
+            backgroundColor: ['#fbbf24','#34d399','#f87171','#a78bfa','#f472b6']
+          }]
+        });
+      }
+
+      // 7. Pages populaires
+      if (stats.topPages?.length) {
+        addTableSection({
+          title: 'Pages les plus visitées',
+          description: 'Classement des pages par nombre de vues.',
+          rows: stats.topPages.map(r => ({ element: r.page_url, count: r.vues }))
+        });
+      }
+
+      // 8. Pages d’entrée
+      if (stats.entryPages?.length) {
+        addTableSection({
+          title: 'Pages d’entrée',
+          description: 'Premières pages consultées au début des sessions.',
+          rows: stats.entryPages.map(r => ({ element: r.first_page_url, count: r.nb }))
+        });
+      }
+
+      // 9. Pages de sortie
+      if (stats.exitPages?.length) {
+        addTableSection({
+          title: 'Pages de sortie',
+          description: 'Dernières pages vues avant que les visiteurs ne quittent le site.',
+          rows: stats.exitPages.map(r => ({ element: r.last_page_url, count: r.nb }))
+        });
+      }
+
+      // 10. Éléments cliqués
+      if (stats.clicks?.length) {
+        addTableSection({
+          title: 'Éléments les plus cliqués',
+          description: 'Sélecteurs HTML des éléments le plus souvent cliqués.',
+          rows: stats.clicks.map(r => ({ element: r.element_selector, count: r.clics }))
+        });
+      }
+
+      // 11. Engagement moyen
+      if (stats.avgEngagement?.length) {
+        const section = createSection('Engagement moyen', 'Durée moyenne d’engagement par session (en secondes).');
+        const value = stats.avgEngagement[0].engagement_sec ?? 0;
+        const p = document.createElement('p');
+        p.className = 'text-3xl font-bold text-blue-600';
+        p.textContent = value.toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' s';
+        section.appendChild(p);
+        grid.appendChild(section);
+      }
+
+      // 12. Sessions et événements quotidiens
+      if (stats.dailyGlobal?.length) {
+        addChartSection({
+          title: 'Sessions & événements quotidiens',
+          description: 'Comparaison du nombre de sessions uniques et du nombre total d’événements par jour.',
+          type: 'line',
+          labels: stats.dailyGlobal.map(r => new Date(r.jour).toLocaleDateString('fr-FR')),
+          datasets: [
+            {
+              label: 'Sessions uniques',
+              data: stats.dailyGlobal.map(r => r.sessions_uniques),
+              borderColor: '#3b82f6',
+              backgroundColor: 'rgba(59,130,246,0.2)',
+              tension: 0.3,
+              fill: true
+            },
+            {
+              label: 'Total événements',
+              data: stats.dailyGlobal.map(r => r.total_events),
+              borderColor: '#f97316',
+              backgroundColor: 'rgba(249,115,22,0.2)',
+              tension: 0.3,
+              fill: true
+            }
+          ]
+        });
+      }
+
+      // Si aucun jeu de données n’a été récupéré
+      if (!stats.sessionsParJour?.length && !stats.eventsParJour?.length) {
+        const notice = document.createElement('p');
+        notice.className = 'text-center text-gray-500';
+        notice.textContent = 'Aucune donnée enregistrée pour le moment. Visitez le site principal pour générer des sessions et des événements.';
+        container.appendChild(notice);
       }
     }
 
-    // Bouton d'actualisation
+    // Gestion du bouton et initialisation
     document.getElementById('refresh-btn').addEventListener('click', () => {
       fetchStats().then(renderDashboard);
     });
 
-    // Rendu initial
+    // Chargement initial et rafraîchissement périodique
     fetchStats().then(renderDashboard);
-
-    // Rafraîchissement automatique toutes les 5 minutes
     setInterval(() => fetchStats().then(renderDashboard), 5 * 60 * 1000);
-
-    // Cette page est destinée à un usage interne. Ajouter/modifier des statistiques:
-    // - Ajouter la requête dans fetchStats.
-    // - Créer l'affichage approprié dans renderDashboard.
   </script>
 </body>
 </html>
