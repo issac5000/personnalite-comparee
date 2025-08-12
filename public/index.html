@@ -5706,6 +5706,113 @@ addChatStyles();
   #pc-constellation{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none;}
 </style>
 
+<!-- Tracking Supabase : sessions + events -->
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+  // Supabase (ton projet)
+  const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co'
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg'
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+  // ---------- Session ID (persistée navigateur) ----------
+  let sessionId = localStorage.getItem('pc_session_id')
+  if (!sessionId) {
+    sessionId = crypto.randomUUID()
+    localStorage.setItem('pc_session_id', sessionId)
+  }
+
+  // ---------- Helpers ----------
+  const getDeviceType = () => {
+    const ua = navigator.userAgent
+    if (/Tablet|iPad/i.test(ua)) return 'tablet'
+    if (/Mobi|Android/i.test(ua)) return 'mobile'
+    return 'desktop'
+  }
+  const getScreenData = () => ({ width: screen.width, height: screen.height })
+  const getViewportData = () => ({ width: window.innerWidth, height: window.innerHeight })
+
+  async function getLocationData() {
+    try {
+      const res = await fetch('https://ipapi.co/json/')
+      if (!res.ok) throw new Error('ipapi error')
+      const data = await res.json()
+      return { country: data.country_name || null, city: data.city || null }
+    } catch {
+      return { country: null, city: null }
+    }
+  }
+
+  // ---------- Track session (upsert) ----------
+  async function trackSession() {
+    try {
+      const { country, city } = await getLocationData()
+      const payload = {
+        session_id: sessionId,
+        device_type: getDeviceType(),
+        language: navigator.language,
+        tz_offset: new Date().getTimezoneOffset(),
+        viewport: getViewportData(),
+        screen: getScreenData(),
+        country, city,
+        is_returning: !!localStorage.getItem('pc_has_visited'),
+        first_referrer: document.referrer || null,
+        last_page_url: location.href
+      }
+      localStorage.setItem('pc_has_visited', 'true')
+      const { error } = await supabase.from('sessions').upsert(payload, { onConflict: 'session_id' })
+      if (error) console.error('[sessions] insert error:', error)
+    } catch (e) {
+      console.error('[sessions] unexpected error:', e)
+    }
+  }
+
+  // ---------- Track event ----------
+  async function trackEvent({ event_name, page_url, referrer, category = null, value = null, element_selector = null, meta = {} }) {
+    try {
+      const payload = {
+        session_id: sessionId,
+        event_name,
+        page_url: page_url || location.href,
+        referrer: referrer ?? document.referrer || null,
+        category,
+        value,
+        element_selector,
+        meta
+      }
+      const { error } = await supabase.from('events').insert(payload)
+      if (error) console.error('[events] insert error:', error)
+    } catch (e) {
+      console.error('[events] unexpected error:', e)
+    }
+  }
+
+  // ---------- Boot ----------
+  trackSession()
+
+  // page_view auto
+  trackEvent({ event_name: 'page_view', page_url: location.href, referrer: document.referrer })
+
+  // clicks auto (simple)
+  document.addEventListener('click', (e) => {
+    const t = e.target
+    const selector =
+      t.tagName.toLowerCase() +
+      (t.id ? `#${t.id}` : '') +
+      (t.className ? `.${t.className.toString().replace(/\s+/g, '.')}` : '')
+    trackEvent({
+      event_name: 'click',
+      element_selector: selector,
+      category: 'interaction',
+      meta: { text: t.innerText?.trim().slice(0, 50) || null }
+    })
+  })
+
+  // Expose une fonction globale si tu veux logger des events custom:
+  window.pcTrack = (args) => trackEvent(args)
+</script>
+
+
 </body>
 </html>
 
