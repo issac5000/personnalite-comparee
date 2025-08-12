@@ -251,61 +251,80 @@
       return { sessionsParJour, eventsParJour, deviceTypes, countries, topPages, entryPages, exitPages, newVsReturning, categories, clicks, avgEngagement, dailyGlobal };
     }
 
-    // ====== KPI ======
-    function renderKPIs(stats) {
-      const box = document.getElementById('kpi-row');
-      box.innerHTML = '';
+ // ====== KPI ======
+function renderKPIs(stats) {
+  const box = document.getElementById('kpi-row');
+  box.innerHTML = '';
 
-      const totalSessions = (stats.sessionsParJour ?? []).reduce((a,b)=>a+(b.sessions||0),0);
-      const totalEvents = (stats.eventsParJour ?? []).reduce((a,b)=>a+(b.events||0),0);
-      const engagement = stats.avgEngagement?.[0]?.engagement_sec ?? 0;
-      const topCountry = (stats.countries ?? []).slice().sort((a,b)=>(b.sessions||0)-(a.sessions||0))[0]?.country ?? '—';
+  const totalSessions = (stats.sessionsParJour ?? []).reduce((a,b)=>a+(b.sessions||0),0);
+  const totalEvents = (stats.eventsParJour ?? []).reduce((a,b)=>a+(b.events||0),0);
+  const engagement = stats.avgEngagement?.[0]?.engagement_sec ?? 0;
+  const topCountry = (stats.countries ?? []).slice().sort((a,b)=>(b.sessions||0)-(a.sessions||0))[0]?.country ?? '—';
 
-      const kpis = [
-        {
-          label: 'Sessions (période)',
-          value: fmt.int(totalSessions),
-          sub: 'Visiteurs uniques cumulés.',
-          hint: 'Nombre de sessions distinctes comptabilisées sur la période affichée (une session ≈ une visite d’un utilisateur).'
-        },
-        {
-          label: 'Événements (période)',
-          value: fmt.int(totalEvents),
-          sub: 'Pages vues, clics, etc.',
-          hint: 'Total des interactions trackées : pages vues, clics sur éléments, etc. Plus c’est haut, plus il y a d’activité.'
-        },
-        {
-          label: 'Engagement moyen',
-          value: fmt.sec(engagement),
-          sub: 'Temps actif par session.',
-          hint: 'Durée moyenne pendant laquelle un utilisateur est réellement actif sur le site pendant une session.'
-        },
-        {
-          label: 'Pays #1',
-          value: topCountry,
-          sub: 'Origine la plus fréquente.',
-          hint: 'Pays le plus représenté parmi tes visiteurs (basé sur l’IP).'
-        }
-      ];
+  // Calcul % nouveaux / revenants
+  let pctNew = null;
+  if (stats.newVsReturning?.length) {
+    const total = stats.newVsReturning.reduce((a,b)=>a+(b.sessions||0),0);
+    const newCount = stats.newVsReturning.find(r => !r.is_returning)?.sessions || 0;
+    pctNew = total ? Math.round((newCount / total) * 100) : 0;
+  }
 
-      kpis.forEach(k => {
-        const card = document.createElement('div');
-        card.className = 'bg-white rounded-xl shadow-soft p-5';
-        card.innerHTML = `
-          <div class="flex items-start justify-between">
-            <div>
-              <p class="text-sm text-gray-500">${k.label}</p>
-              <p class="mt-2 text-2xl font-bold">${k.value}</p>
-              <p class="mt-1 text-xs text-gray-500">${k.sub}</p>
-            </div>
-            <div class="hint text-gray-400">ℹ️
-              <span class="hint-bubble">${k.hint}</span>
-            </div>
-          </div>
-        `;
-        box.appendChild(card);
-      });
+  const kpis = [
+    {
+      label: 'Sessions (période)',
+      value: fmt.int(totalSessions),
+      sub: 'Visiteurs uniques cumulés.',
+      hint: 'Nombre de sessions distinctes comptabilisées sur la période affichée (une session ≈ une visite d’un utilisateur).'
+    },
+    {
+      label: 'Événements (période)',
+      value: fmt.int(totalEvents),
+      sub: 'Pages vues, clics, etc.',
+      hint: 'Total des interactions trackées : pages vues, clics sur éléments, etc. Plus c’est haut, plus il y a d’activité.'
+    },
+    {
+      label: 'Engagement moyen',
+      value: fmt.sec(engagement),
+      sub: 'Temps actif par session.',
+      hint: 'Durée moyenne pendant laquelle un utilisateur est réellement actif sur le site pendant une session.'
+    },
+    {
+      label: 'Pays #1',
+      value: topCountry,
+      sub: 'Origine la plus fréquente.',
+      hint: 'Pays le plus représenté parmi tes visiteurs (basé sur l’IP).'
     }
+  ];
+
+  // Ajout KPI Nouveaux visiteurs si dispo
+  if (pctNew !== null) {
+    kpis.push({
+      label: 'Nouveaux visiteurs',
+      value: pctNew + '%',
+      sub: 'Proportion de nouveaux sur la période.',
+      hint: 'Pourcentage de sessions réalisées par de nouveaux visiteurs par rapport au total.'
+    });
+  }
+
+  kpis.forEach(k => {
+    const card = document.createElement('div');
+    card.className = 'bg-white rounded-xl shadow-soft p-5';
+    card.innerHTML = `
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-sm text-gray-500">${k.label}</p>
+          <p class="mt-2 text-2xl font-bold">${k.value}</p>
+          <p class="mt-1 text-xs text-gray-500">${k.sub}</p>
+        </div>
+        <div class="hint text-gray-400">ℹ️
+          <span class="hint-bubble">${k.hint}</span>
+        </div>
+      </div>
+    `;
+    box.appendChild(card);
+  });
+}
+
 
     // ====== Render principal ======
     function renderDashboard(stats) {
