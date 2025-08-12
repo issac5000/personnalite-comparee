@@ -5443,31 +5443,35 @@ const viewport = { width: window.innerWidth, height: window.innerHeight };
 const screenSize = { width: screen.width, height: screen.height };
 const tzOffset = new Date().getTimezoneOffset();
 
-// Crée la session dans Supabase
+// Crée ou met à jour la session dans Supabase
 async function createSession() {
   try {
-    await supabase.from('sessions').insert({
-      session_id: sessionId,
-      first_referrer: document.referrer || null,
-      first_utm: utmParams,
-      user_agent: navigator.userAgent,
-      last_event_name: 'page_view',
-      device_type: deviceType,
-      language: navigator.language,
-      tz_offset: tzOffset,
-      viewport,
-      screen: screenSize,
-      is_returning: isReturning,
-      last_page_url: window.location.href
-    });
+    await supabase
+      .from('sessions')
+      .upsert({
+        session_id: sessionId,
+        first_referrer: document.referrer || null,
+        first_utm: utmParams,
+        user_agent: navigator.userAgent,
+        last_event_name: 'page_view',
+        device_type: deviceType,
+        language: navigator.language,
+        tz_offset: tzOffset,
+        viewport,
+        screen: screenSize,
+        is_returning: isReturning,
+        last_page_url: window.location.href,
+        last_activity_at: new Date().toISOString()
+      }, { onConflict: ['session_id'] }); // Évite l'erreur si déjà existant
   } catch (err) {
-    console.error('Erreur lors de la création de la session :', err);
+    console.error('Erreur lors de la création/mise à jour de la session :', err);
   }
 }
 
-// Envoie un événement
+// Envoie un événement et met à jour l'activité de la session
 async function trackEvent(eventName, meta = {}) {
   try {
+    // 1. Insère l'événement
     await supabase.from('events').insert({
       session_id: sessionId,
       event_name: eventName,
@@ -5478,6 +5482,17 @@ async function trackEvent(eventName, meta = {}) {
       meta,
       element_selector: meta.element || null
     });
+
+    // 2. Met à jour last_activity_at dans sessions
+    await supabase
+      .from('sessions')
+      .update({
+        last_activity_at: new Date().toISOString(),
+        last_event_name: eventName,
+        last_page_url: window.location.href
+      })
+      .eq('session_id', sessionId);
+
   } catch (err) {
     console.error('Erreur lors de l’enregistrement de l’événement :', err);
   }
