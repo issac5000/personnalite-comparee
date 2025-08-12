@@ -5401,15 +5401,13 @@ function showPrivacyPolicy() {
 <script src="https://unpkg.com/@supabase/supabase-js"></script>
 <script type="module">
   // ====== CONFIG SUPABASE ======
-  const SUPABASE_URL = 'https://eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg.supabase.co'; // <-- ton URL Supabase
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg'; // <-- ta clé anon publique
+  const SUPABASE_URL = 'https://eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg';
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // Génère un UUID pour la session
+  // UUID session
   function generateSessionId() {
-    if (window.crypto?.randomUUID) {
-      return crypto.randomUUID();
-    }
+    if (window.crypto?.randomUUID) return crypto.randomUUID();
     return 'xxxxxxxxyxxxxxxx'.replace(/[xy]/g, c => {
       const r = (Math.random() * 16) | 0;
       const v = c === 'x' ? r : (r & 0x3) | 0x8;
@@ -5417,7 +5415,7 @@ function showPrivacyPolicy() {
     });
   }
 
-  // Récupère ou crée le session_id
+  // Session locale
   let sessionId = localStorage.getItem('session_id');
   const hasVisited = localStorage.getItem('hasVisited');
   const isReturning = hasVisited === 'true';
@@ -5429,7 +5427,7 @@ function showPrivacyPolicy() {
     localStorage.setItem('hasVisited', 'true');
   }
 
-  // Paramètres UTM
+  // UTM
   function parseUTM() {
     const params = new URLSearchParams(window.location.search);
     const utm = {};
@@ -5440,15 +5438,26 @@ function showPrivacyPolicy() {
   }
   const utmParams = parseUTM();
 
-  // Infos device et viewport
+  // Infos device
   const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
   const viewport = { width: window.innerWidth, height: window.innerHeight };
   const screenSize = { width: screen.width, height: screen.height };
   const tzOffset = new Date().getTimezoneOffset();
 
-  // Crée ou met à jour la session
+  // Récupération pays/ville via IP
+  async function getGeoData() {
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      return await res.json();
+    } catch {
+      return {};
+    }
+  }
+
+  // Création / MAJ session
   async function createSession() {
     try {
+      const geo = await getGeoData();
       await supabase
         .from('sessions')
         .upsert({
@@ -5464,19 +5473,23 @@ function showPrivacyPolicy() {
           screen: screenSize,
           is_returning: isReturning,
           last_page_url: window.location.href,
-          last_activity_at: new Date().toISOString()
+          last_activity_at: new Date().toISOString(),
+          country: geo.country_name || null,
+          city: geo.city || null
         }, { onConflict: ['session_id'] });
     } catch (err) {
       console.error('❌ Erreur lors de la création/mise à jour de la session :', err);
     }
   }
 
-  // Envoie un événement et met à jour la session
+  // Tracking événement
   async function trackEvent(eventName, meta = {}) {
     try {
+      const category = eventName.includes('click') ? 'Interaction' : 'Navigation';
       await supabase.from('events').insert({
         session_id: sessionId,
         event_name: eventName,
+        event_category: category,
         page_url: window.location.href,
         referrer: document.referrer || null,
         utm: utmParams,
@@ -5499,12 +5512,12 @@ function showPrivacyPolicy() {
     }
   }
 
-  // Création session + premier event
+  // Init
   createSession().then(() => {
     trackEvent('page_view');
   });
 
-  // Suivi des clics
+  // Clics
   document.addEventListener('click', (e) => {
     let selector = '';
     if (e.target.id) {
@@ -5517,6 +5530,7 @@ function showPrivacyPolicy() {
     trackEvent('click', { element: selector });
   });
 </script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script>
