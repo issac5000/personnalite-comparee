@@ -1,54 +1,18 @@
-
 <!DOCTYPE html>
 <html lang="fr" class="h-full">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Analytics Dashboard - Personnalité Comparée</title>
+  <title>Tableau de bord – Personnalité Comparée</title>
 
-  <!-- Tailwind CSS -->
+  <!-- ✅ Tailwind via Play CDN (remplace l'ancien <link> cassé) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          animation: {
-            'float': 'float 6s ease-in-out infinite',
-            'glow': 'glow 2s ease-in-out infinite alternate',
-            'slide-up': 'slide-up 0.6s ease-out',
-            'fade-in': 'fade-in 0.8s ease-out',
-            'scale-in': 'scale-in 0.5s ease-out',
-            'gradient-shift': 'gradient-shift 8s ease-in-out infinite',
-          },
-          keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-10px)' }
-            },
-            glow: {
-              '0%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' },
-              '100%': { boxShadow: '0 0 30px rgba(59, 130, 246, 0.8)' }
-            },
-            'slide-up': {
-              '0%': { transform: 'translateY(20px)', opacity: '0' },
-              '100%': { transform: 'translateY(0)', opacity: '1' }
-            },
-            'fade-in': {
-              '0%': { opacity: '0' },
-              '100%': { opacity: '1' }
-            },
-            'scale-in': {
-              '0%': { transform: 'scale(0.9)', opacity: '0' },
-              '100%': { transform: 'scale(1)', opacity: '1' }
-            },
-            'gradient-shift': {
-              '0%, 100%': { backgroundPosition: '0% 50%' },
-              '50%': { backgroundPosition: '100% 50%' }
-            }
-          },
-          backgroundImage: {
-            'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-            'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+          boxShadow: {
+            soft: '0 10px 30px rgba(0,0,0,.06)'
           }
         }
       }
@@ -59,230 +23,89 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    body {
-      background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
-      background-size: 400% 400%;
-      animation: gradient-shift 15s ease infinite;
+    /* Tooltips minimalistes */
+    .hint { position: relative; cursor: help; }
+    .hint:hover .hint-bubble { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .hint-bubble {
+      position: absolute; top: 100%; left: 0; transform: translateY(4px);
+      background: #111827; color: #fff; font-size: .75rem; line-height: 1.1;
+      padding: .5rem .6rem; border-radius: .5rem; max-width: 18rem;
+      opacity: 0; transition: .15s ease; pointer-events: none; z-index: 40;
+      box-shadow: 0 6px 18px rgba(0,0,0,.18);
     }
-    
-    .glass-morphism {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .card-hover {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .card-hover:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    }
-    
-    .metric-glow {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
-      border: 1px solid rgba(59, 130, 246, 0.2);
-    }
-    
-    .metric-glow:hover {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 51, 234, 0.2));
-      border: 1px solid rgba(59, 130, 246, 0.4);
-    }
-    
-    .tooltip-modern {
-      position: relative;
-      cursor: help;
-    }
-    
-    .tooltip-modern:hover .tooltip-content {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-    }
-    
-    .tooltip-content {
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%) translateY(8px) scale(0.9);
-      background: linear-gradient(135deg, #1f2937, #374151);
-      color: #f9fafb;
-      font-size: 0.75rem;
-      padding: 0.75rem 1rem;
-      border-radius: 0.75rem;
-      max-width: 20rem;
-      opacity: 0;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      pointer-events: none;
-      z-index: 50;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-    
-    .tooltip-content::before {
-      content: '';
-      position: absolute;
-      top: -4px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 8px;
-      height: 8px;
-      background: #1f2937;
-      border-radius: 2px;
-      rotate: 45deg;
-    }
-    
-    .pulse-ring {
-      animation: pulse-ring 2s infinite;
-    }
-    
-    @keyframes pulse-ring {
-      0% {
-        transform: scale(0.8);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1.2);
-        opacity: 0;
-      }
-    }
-    
-    .chart-container {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .loading-shimmer {
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 37%, #f0f0f0 63%);
-      background-size: 400% 100%;
-      animation: shimmer 1.5s ease-in-out infinite;
-    }
-    
-    @keyframes shimmer {
-      0% { background-position: 100% 0; }
-      100% { background-position: 0 0; }
-    }
-    
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #10b981;
-      animation: pulse 2s infinite;
-    }
-    
-    .gradient-text {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+    /* Squelette de chargement */
+    .skeleton { animation: pulse 1.4s ease-in-out infinite; background: linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 37%,#e5e7eb 63%); background-size: 400% 100%; }
+    @keyframes pulse { 0% {background-position: 100% 0} 100% {background-position: 0 0} }
   </style>
 </head>
 
-<body class="h-full text-gray-800 overflow-x-hidden">
-  <!-- Header avec effet glassmorphism -->
-  <header class="sticky top-0 z-50 glass-morphism">
-    <div class="max-w-7xl mx-auto px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-4 animate-fade-in">
-          <div class="relative">
-            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
-              <span class="text-white font-bold text-lg">PC</span>
-            </div>
-            <div class="absolute -top-1 -right-1 status-dot"></div>
-          </div>
-          
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-bold gradient-text">
-              Analytics Dashboard
-            </h1>
-            <div class="flex items-center space-x-2 mt-1">
-              <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-              <p id="last-updated" class="text-sm text-white/80">
-                Dernière mise à jour — …
-              </p>
-            </div>
-          </div>
+<body class="h-full bg-gray-50 text-gray-800">
+  <!-- Topbar -->
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm">
+    <div class="max-w-7xl mx-auto px-5 py-4 flex items-center gap-4">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-blue-600 text-white font-bold">PC</span>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold leading-5">Dashboard Analytics</h1>
+          <p id="last-updated" class="text-xs text-gray-500 mt-1">Dernière mise à jour — …</p>
         </div>
-        
-        <div class="flex items-center space-x-4 animate-fade-in">
-          <div class="hidden sm:flex items-center space-x-2 text-white/70">
-            <div class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></div>
-            <span class="text-sm">Auto-refresh : 5 min</span>
-          </div>
-          
-          <button id="refresh-btn" 
-                  class="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-            <span class="flex items-center space-x-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-              </svg>
-              <span>Actualiser</span>
-            </span>
-          </button>
-        </div>
+      </div>
+      <div class="ml-auto flex items-center gap-2">
+        <span class="text-xs text-gray-500 hidden sm:inline">Auto-refresh : 5 min</span>
+        <button id="refresh-btn" class="px-3.5 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700 focus:outline-none">
+          Actualiser
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- Conteneur principal -->
-  <main class="max-w-7xl mx-auto px-6 py-8 space-y-8" id="root">
-    <!-- KPI Cards avec animations -->
-    <section id="kpi-row" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-slide-up">
-      <!-- Squelettes de chargement avec effet shimmer -->
-      <div class="glass-morphism rounded-2xl p-6 card-hover animate-scale-in">
-        <div class="h-4 w-32 loading-shimmer rounded-lg mb-4"></div>
-        <div class="h-8 w-24 loading-shimmer rounded-lg mb-2"></div>
-        <div class="h-3 w-40 loading-shimmer rounded-lg"></div>
+  <!-- Conteneur -->
+  <main class="max-w-7xl mx-auto px-5 py-6 space-y-8" id="root">
+    <!-- KPIs -->
+    <section id="kpi-row" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Squelettes initialement, remplacés au rendu -->
+      <div class="bg-white rounded-xl shadow-soft p-5">
+        <div class="h-4 w-28 skeleton rounded mb-4"></div>
+        <div class="h-8 w-24 skeleton rounded"></div>
+        <div class="h-3 w-40 skeleton rounded mt-4"></div>
       </div>
-      <div class="glass-morphism rounded-2xl p-6 card-hover animate-scale-in" style="animation-delay: 0.1s;">
-        <div class="h-4 w-36 loading-shimmer rounded-lg mb-4"></div>
-        <div class="h-8 w-24 loading-shimmer rounded-lg mb-2"></div>
-        <div class="h-3 w-40 loading-shimmer rounded-lg"></div>
+      <div class="bg-white rounded-xl shadow-soft p-5">
+        <div class="h-4 w-36 skeleton rounded mb-4"></div>
+        <div class="h-8 w-24 skeleton rounded"></div>
+        <div class="h-3 w-40 skeleton rounded mt-4"></div>
       </div>
-      <div class="glass-morphism rounded-2xl p-6 card-hover animate-scale-in" style="animation-delay: 0.2s;">
-        <div class="h-4 w-32 loading-shimmer rounded-lg mb-4"></div>
-        <div class="h-8 w-24 loading-shimmer rounded-lg mb-2"></div>
-        <div class="h-3 w-40 loading-shimmer rounded-lg"></div>
+      <div class="bg-white rounded-xl shadow-soft p-5">
+        <div class="h-4 w-32 skeleton rounded mb-4"></div>
+        <div class="h-8 w-24 skeleton rounded"></div>
+        <div class="h-3 w-40 skeleton rounded mt-4"></div>
       </div>
-      <div class="glass-morphism rounded-2xl p-6 card-hover animate-scale-in" style="animation-delay: 0.3s;">
-        <div class="h-4 w-40 loading-shimmer rounded-lg mb-4"></div>
-        <div class="h-8 w-24 loading-shimmer rounded-lg mb-2"></div>
-        <div class="h-3 w-40 loading-shimmer rounded-lg"></div>
+      <div class="bg-white rounded-xl shadow-soft p-5">
+        <div class="h-4 w-40 skeleton rounded mb-4"></div>
+        <div class="h-8 w-24 skeleton rounded"></div>
+        <div class="h-3 w-40 skeleton rounded mt-4"></div>
       </div>
     </section>
 
-    <!-- Graphiques et tableaux -->
-    <section id="dashboard-container" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8"></section>
+    <!-- Sections dynamiques -->
+    <section id="dashboard-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></section>
 
     <!-- Zone messages -->
-    <section id="dashboard-messages" class="animate-fade-in"></section>
+    <section id="dashboard-messages"></section>
   </main>
-
-  <!-- Particules flottantes pour l'ambiance -->
-  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-white/20 rounded-full animate-float" style="animation-delay: 0s;"></div>
-    <div class="absolute top-3/4 right-1/4 w-1 h-1 bg-white/30 rounded-full animate-float" style="animation-delay: 2s;"></div>
-    <div class="absolute top-1/2 left-3/4 w-1.5 h-1.5 bg-white/25 rounded-full animate-float" style="animation-delay: 4s;"></div>
-  </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    // ====== Supabase Configuration ======
+    // ====== Supabase ======
     const supabaseUrl = 'https://swjnpvfkloubshksobau.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDA5NTEzMSwiZXhwIjoyMDY5NjcxMTMxfQ.rNwvk8XijCdB6HmX-OTfj8BXH4y88NP58yfUJB7G_YI';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // ====== Utilitaires ======
+    // ====== Utils ======
     const fmt = {
       int: (n) => (n ?? 0).toLocaleString('fr-FR'),
-      sec: (s) => (s ?? 0).toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 's',
-      date: (d) => new Date(d).toLocaleDateString('fr-FR'),
-      percent: (n) => Math.round(n ?? 0) + '%'
+      sec: (s) => (s ?? 0).toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' s',
+      date: (d) => new Date(d).toLocaleDateString('fr-FR')
     };
 
     function setUpdatedNow() {
@@ -290,202 +113,102 @@
       el.textContent = 'Dernière mise à jour — ' + new Date().toLocaleString('fr-FR');
     }
 
-    function createModernCard({ title, description, hint, icon = '📊' }) {
-      const card = document.createElement('div');
-      card.className = 'chart-container p-6 card-hover animate-scale-in';
-      
-      const header = document.createElement('div');
-      header.className = 'flex items-start justify-between mb-6';
-      
-      const titleSection = document.createElement('div');
-      titleSection.className = 'flex items-center space-x-3';
-      
-      const iconDiv = document.createElement('div');
-      iconDiv.className = 'text-2xl';
-      iconDiv.textContent = icon;
-      
-      const textDiv = document.createElement('div');
-      const h3 = document.createElement('h3');
-      h3.className = 'text-lg font-semibold text-gray-800';
-      h3.textContent = title;
-      
+    function sectionShell({ title, description, hint }) {
+      const wrap = document.createElement('div');
+      wrap.className = 'bg-white rounded-xl shadow-soft p-6 flex flex-col';
+
+      const head = document.createElement('div');
+      head.className = 'flex items-start justify-between gap-3 mb-4';
+
+      const left = document.createElement('div');
+      const h2 = document.createElement('h2');
+      h2.className = 'text-lg font-semibold';
+      h2.textContent = title || '';
       const p = document.createElement('p');
-      p.className = 'text-sm text-gray-600 mt-1';
-      p.textContent = description;
-      
-      textDiv.appendChild(h3);
-      if (description) textDiv.appendChild(p);
-      
-      titleSection.appendChild(iconDiv);
-      titleSection.appendChild(textDiv);
-      header.appendChild(titleSection);
-      
+      p.className = 'text-sm text-gray-500 mt-1';
+      p.textContent = description || '';
+      left.appendChild(h2);
+      if (description) left.appendChild(p);
+
+      head.appendChild(left);
+
       if (hint) {
-        const tooltip = document.createElement('div');
-        tooltip.className = 'tooltip-modern';
-        tooltip.innerHTML = `
-          <div class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-300 transition-colors cursor-help">
-            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
-            </svg>
-          </div>
-          <div class="tooltip-content">${hint}</div>
-        `;
-        header.appendChild(tooltip);
+        const info = document.createElement('div');
+        info.className = 'hint text-gray-400 text-sm';
+        info.innerHTML = 'ℹ️<span class="hint-bubble">'+hint+'</span>';
+        head.appendChild(info);
       }
-      
-      card.appendChild(header);
-      return card;
+
+      wrap.appendChild(head);
+      return wrap;
     }
 
-    function addModernChart({ grid, title, description, hint, type, labels, datasets, height = 'h-80', icon = '📊' }) {
-      const card = createModernCard({ title, description, hint, icon });
-      
-      const chartDiv = document.createElement('div');
-      chartDiv.className = height + ' relative';
-      
+    function addChart({ grid, title, description, hint, type, labels, datasets, height='h-64' }) {
+      const s = sectionShell({ title, description, hint });
+      const box = document.createElement('div');
+      box.className = height;
       const canvas = document.createElement('canvas');
       canvas.className = 'w-full h-full';
-      chartDiv.appendChild(canvas);
-      
-      card.appendChild(chartDiv);
-      grid.appendChild(card);
+      box.appendChild(canvas);
+      s.appendChild(box);
+      grid.appendChild(s);
 
-      // Configuration Chart.js moderne
-      const config = {
+      new Chart(canvas, {
         type,
         data: { labels, datasets },
         options: {
-          responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { 
-              position: 'bottom',
-              labels: { 
-                usePointStyle: true,
-                padding: 20,
-                font: { size: 12, weight: '500' }
-              }
-            },
-            tooltip: { 
-              backgroundColor: 'rgba(17, 24, 39, 0.95)',
-              titleColor: '#f9fafb',
-              bodyColor: '#f9fafb',
-              borderColor: 'rgba(59, 130, 246, 0.5)',
-              borderWidth: 1,
-              cornerRadius: 8,
-              displayColors: true,
-              intersect: false,
-              mode: 'index'
-            }
+            legend: { position: 'bottom', labels: { boxWidth: 12, boxHeight: 12 } },
+            tooltip: { intersect: false, mode: 'index' }
           },
-          elements: { 
-            line: { tension: 0.4, borderWidth: 3 },
-            point: { radius: 6, hoverRadius: 8 }
-          },
-          scales: (type === 'line' || type === 'bar') ? {
-            x: { 
-              grid: { display: false },
-              ticks: { font: { size: 11 } }
-            },
-            y: { 
-              beginAtZero: true,
-              grid: { color: 'rgba(0,0,0,0.05)' },
-              ticks: { font: { size: 11 } }
-            }
-          } : {},
-          animation: {
-            duration: 1500,
-            easing: 'easeInOutCubic'
-          }
+          elements: { line: { tension: 0.3 } },
+          scales: (type === 'line' || type === 'bar') ? { x: { grid: { display:false } }, y: { beginAtZero: true } } : {}
         }
-      };
-
-      // Couleurs modernes pour les datasets
-      if (datasets) {
-        const modernColors = [
-          'rgba(59, 130, 246, 0.8)',
-          'rgba(16, 185, 129, 0.8)', 
-          'rgba(245, 158, 11, 0.8)',
-          'rgba(239, 68, 68, 0.8)',
-          'rgba(139, 92, 246, 0.8)',
-          'rgba(236, 72, 153, 0.8)'
-        ];
-        
-        datasets.forEach((dataset, index) => {
-          if (!dataset.backgroundColor) {
-            dataset.backgroundColor = modernColors[index % modernColors.length];
-          }
-          if (!dataset.borderColor && (type === 'line' || type === 'bar')) {
-            dataset.borderColor = modernColors[index % modernColors.length].replace('0.8', '1');
-          }
-        });
-      }
-
-      new Chart(canvas, config);
+      });
     }
 
-    function addModernTable({ grid, title, description, hint, columns, rows, height = 'max-h-96', icon = '📋' }) {
-      const card = createModernCard({ title, description, hint, icon });
-      
-      const tableContainer = document.createElement('div');
-      tableContainer.className = height + ' overflow-auto rounded-xl border border-gray-100';
-      
+    function addTable({ grid, title, description, hint, columns, rows, height='max-h-80' }) {
+      const s = sectionShell({ title, description, hint });
+      const wrap = document.createElement('div');
+      wrap.className = height + ' overflow-auto rounded border border-gray-100';
+
       const table = document.createElement('table');
       table.className = 'min-w-full text-sm';
-      
       const thead = document.createElement('thead');
-      thead.className = 'bg-gradient-to-r from-gray-50 to-gray-100 sticky top-0';
-      thead.innerHTML = '<tr>' + columns.map(c => 
-        `<th class="px-4 py-3 text-left font-semibold text-gray-700 border-b border-gray-200">${c}</th>`
-      ).join('') + '</tr>';
+      thead.className = 'bg-gray-50';
+      thead.innerHTML = '<tr>' + columns.map(c => `<th class="px-3 py-2 text-left font-semibold text-gray-600">${c}</th>`).join('') + '</tr>';
       table.appendChild(thead);
-      
+
       const tbody = document.createElement('tbody');
-      rows.forEach((row, index) => {
+      rows.forEach((r,i) => {
         const tr = document.createElement('tr');
-        tr.className = `${index % 2 ? 'bg-white' : 'bg-gray-50/50'} hover:bg-blue-50 transition-colors duration-200`;
-        tr.innerHTML = row.map((cell, j) => 
-          `<td class="px-4 py-3 ${j === row.length - 1 ? 'text-right font-medium text-blue-600' : 'text-left'} border-b border-gray-100">${cell}</td>`
+        tr.className = (i%2 ? 'bg-white' : 'bg-gray-50');
+        tr.innerHTML = r.map((cell, j) =>
+          `<td class="px-3 py-2 ${j===r.length-1 ? 'text-right' : 'text-left'} break-all">${cell}</td>`
         ).join('');
         tbody.appendChild(tr);
       });
       table.appendChild(tbody);
-      
-      tableContainer.appendChild(table);
-      card.appendChild(tableContainer);
-      grid.appendChild(card);
+      wrap.appendChild(table);
+      s.appendChild(wrap);
+      grid.appendChild(s);
     }
 
-    function showModernMessage(type, text) {
+    function showMessage(kind, text) {
       const zone = document.getElementById('dashboard-messages');
-      const isError = type === 'error';
-      
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `
-        rounded-2xl p-6 border backdrop-blur-sm animate-slide-up
-        ${isError 
-          ? 'bg-red-50/90 border-red-200 text-red-800' 
-          : 'bg-yellow-50/90 border-yellow-200 text-yellow-800'
-        }
-      `;
-      
-      const icon = isError ? '⚠️' : 'ℹ️';
-      messageDiv.innerHTML = `
-        <div class="flex items-center space-x-3">
-          <div class="text-2xl">${icon}</div>
-          <div>
-            <h4 class="font-semibold">${isError ? 'Erreur de chargement' : 'Information'}</h4>
-            <p class="text-sm mt-1">${text}</p>
-          </div>
-        </div>
-      `;
-      
+      const base = 'rounded-xl p-4 border';
+      const cls = kind === 'error'
+        ? 'bg-red-50 border-red-200 text-red-800'
+        : 'bg-yellow-50 border-yellow-200 text-yellow-800';
+      const div = document.createElement('div');
+      div.className = base + ' ' + cls;
+      div.textContent = text;
       zone.innerHTML = '';
-      zone.appendChild(messageDiv);
+      zone.appendChild(div);
     }
 
-    // ====== Récupération des données ======
+    // ====== Fetch ======
     async function fetchStats() {
       const queries = [
         supabase.from('stats_sessions_par_jour').select('jour,sessions').order('jour', { ascending: true }),
@@ -502,421 +225,268 @@
         supabase.from('stats_daily_global').select('jour,sessions_uniques,total_events').order('jour',{ascending:true})
       ];
 
-      const results = await Promise.all(queries);
-      const errors = results.filter(r => r.error);
-      
-      if (errors.length > 0) {
-        console.error('Erreurs Supabase:', errors);
-        showModernMessage('error', 'Certaines données n'ont pas pu être chargées. Veuillez réessayer.');
+      const [
+        { data: sessionsParJour, error: e1 },
+        { data: eventsParJour, error: e2 },
+        { data: deviceTypes, error: e3 },
+        { data: countries, error: e4 },
+        { data: topPages, error: e5 },
+        { data: entryPages, error: e6 },
+        { data: exitPages, error: e7 },
+        { data: newVsReturning, error: e8 },
+        { data: categories, error: e9 },
+        { data: clicks, error: e10 },
+        { data: avgEngagement, error: e11 },
+        { data: dailyGlobal, error: e12 },
+      ] = await Promise.all(queries);
+
+      const errs = [e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12].filter(Boolean);
+      if (errs.length) {
+        console.error('Erreurs Supabase:', errs);
+        showMessage('error', 'Certaines données n’ont pas pu être chargées. Réessaie plus tard ou clique sur “Actualiser”.');
       } else {
         document.getElementById('dashboard-messages').innerHTML = '';
       }
 
-      const [
-        { data: sessionsParJour },
-        { data: eventsParJour },
-        { data: deviceTypes },
-        { data: countries },
-        { data: topPages },
-        { data: entryPages },
-        { data: exitPages },
-        { data: newVsReturning },
-        { data: categories },
-        { data: clicks },
-        { data: avgEngagement },
-        { data: dailyGlobal }
-      ] = results;
-
-      return { 
-        sessionsParJour, eventsParJour, deviceTypes, countries, 
-        topPages, entryPages, exitPages, newVsReturning, 
-        categories, clicks, avgEngagement, dailyGlobal 
-      };
+      return { sessionsParJour, eventsParJour, deviceTypes, countries, topPages, entryPages, exitPages, newVsReturning, categories, clicks, avgEngagement, dailyGlobal };
     }
 
-    // ====== Rendu des KPIs modernes ======
-    function renderModernKPIs(stats) {
-      const container = document.getElementById('kpi-row');
-      container.innerHTML = '';
+    // ====== KPI ======
+    function renderKPIs(stats) {
+      const box = document.getElementById('kpi-row');
+      box.innerHTML = '';
 
-      const totalSessions = (stats.sessionsParJour ?? []).reduce((a,b) => a + (b.sessions || 0), 0);
-      const totalEvents = (stats.eventsParJour ?? []).reduce((a,b) => a + (b.events || 0), 0);
+      const totalSessions = (stats.sessionsParJour ?? []).reduce((a,b)=>a+(b.sessions||0),0);
+      const totalEvents = (stats.eventsParJour ?? []).reduce((a,b)=>a+(b.events||0),0);
       const engagement = stats.avgEngagement?.[0]?.engagement_sec ?? 0;
-      const topCountry = (stats.countries ?? []).sort((a,b) => (b.sessions||0) - (a.sessions||0))[0]?.country ?? '—';
+      const topCountry = (stats.countries ?? []).slice().sort((a,b)=>(b.sessions||0)-(a.sessions||0))[0]?.country ?? '—';
 
       const kpis = [
         {
-          label: 'Sessions Totales',
+          label: 'Sessions (période)',
           value: fmt.int(totalSessions),
-          subtitle: 'Visiteurs uniques',
-          icon: '👥',
-          color: 'from-blue-500 to-cyan-500',
-          hint: 'Nombre total de sessions distinctes sur la période. Une session représente une visite d\'un utilisateur.'
+          sub: 'Visiteurs uniques cumulés.',
+          hint: 'Nombre de sessions distinctes comptabilisées sur la période affichée (une session ≈ une visite d’un utilisateur).'
         },
         {
-          label: 'Événements',
+          label: 'Événements (période)',
           value: fmt.int(totalEvents),
-          subtitle: 'Interactions trackées',
-          icon: '⚡',
-          color: 'from-emerald-500 to-teal-500',
-          hint: 'Total des interactions : pages vues, clics, scrolls, etc. Plus c\'est élevé, plus vos visiteurs sont actifs.'
+          sub: 'Pages vues, clics, etc.',
+          hint: 'Total des interactions trackées : pages vues, clics sur éléments, etc. Plus c’est haut, plus il y a d’activité.'
         },
         {
-          label: 'Engagement',
+          label: 'Engagement moyen',
           value: fmt.sec(engagement),
-          subtitle: 'Temps moyen par session',
-          icon: '⏱️',
-          color: 'from-orange-500 to-red-500',
-          hint: 'Durée moyenne d\'activité réelle d\'un utilisateur pendant sa visite sur votre site.'
+          sub: 'Temps actif par session.',
+          hint: 'Durée moyenne pendant laquelle un utilisateur est réellement actif sur le site pendant une session.'
         },
         {
-          label: 'Top Pays',
+          label: 'Pays #1',
           value: topCountry,
-          subtitle: 'Origine principale',
-          icon: '🌍',
-          color: 'from-purple-500 to-pink-500',
-          hint: 'Pays le plus représenté parmi vos visiteurs, basé sur leur géolocalisation IP.'
+          sub: 'Origine la plus fréquente.',
+          hint: 'Pays le plus représenté parmi tes visiteurs (basé sur l’IP).'
         }
       ];
 
-      kpis.forEach((kpi, index) => {
+      kpis.forEach(k => {
         const card = document.createElement('div');
-        card.className = `glass-morphism rounded-2xl p-6 card-hover animate-scale-in`;
-        card.style.animationDelay = `${index * 0.1}s`;
-        
+        card.className = 'bg-white rounded-xl shadow-soft p-5';
         card.innerHTML = `
           <div class="flex items-start justify-between">
-            <div class="flex-1">
-              <div class="flex items-center space-x-3 mb-4">
-                <div class="text-2xl">${kpi.icon}</div>
-                <div>
-                  <p class="text-sm font-medium text-white/80">${kpi.label}</p>
-                  <p class="text-xs text-white/60">${kpi.subtitle}</p>
-                </div>
-              </div>
-              
-              <div class="mb-4">
-                <p class="text-3xl font-bold text-white mb-1">${kpi.value}</p>
-                <div class="h-1 w-full bg-white/20 rounded-full overflow-hidden">
-                  <div class="h-full bg-gradient-to-r ${kpi.color} rounded-full w-3/4 animate-pulse"></div>
-                </div>
-              </div>
+            <div>
+              <p class="text-sm text-gray-500">${k.label}</p>
+              <p class="mt-2 text-2xl font-bold">${k.value}</p>
+              <p class="mt-1 text-xs text-gray-500">${k.sub}</p>
             </div>
-            
-            <div class="tooltip-modern ml-4">
-              <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white/70 hover:bg-white/30 transition-colors cursor-help">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-              <div class="tooltip-content">${kpi.hint}</div>
+            <div class="hint text-gray-400">ℹ️
+              <span class="hint-bubble">${k.hint}</span>
             </div>
           </div>
         `;
-        
-        container.appendChild(card);
+        box.appendChild(card);
       });
     }
 
-    // ====== Rendu principal du dashboard ======
+    // ====== Render principal ======
     function renderDashboard(stats) {
       setUpdatedNow();
-      renderModernKPIs(stats);
+      renderKPIs(stats);
 
       const grid = document.getElementById('dashboard-container');
       grid.innerHTML = '';
 
       // 1. Sessions par jour
       if (stats.sessionsParJour?.length) {
-        addModernChart({
+        addChart({
           grid,
-          title: 'Évolution des Sessions',
-          description: 'Tendance quotidienne des visiteurs uniques',
-          hint: 'Identifiez les pics de trafic pour comprendre l\'impact de vos campagnes ou événements.',
-          type: 'line',
+          title: 'Sessions par jour',
+          description: 'Nombre de visiteurs uniques enregistrés chaque jour.',
+          hint: 'Lecture : un pic = afflux de nouveaux visiteurs ce jour-là.',
+          type: 'bar',
           labels: stats.sessionsParJour.map(r => fmt.date(r.jour)),
-          datasets: [{
-            label: 'Sessions quotidiennes',
-            data: stats.sessionsParJour.map(r => r.sessions),
-            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-            borderColor: 'rgba(59, 130, 246, 1)',
-            fill: true,
-            tension: 0.4
-          }],
-          icon: '📈'
+          datasets: [{ label:'Sessions', data: stats.sessionsParJour.map(r=>r.sessions), backgroundColor:'#3b82f6' }]
         });
       }
 
       // 2. Événements par jour
       if (stats.eventsParJour?.length) {
-        addModernChart({
+        addChart({
           grid,
-          title: 'Activité Quotidienne',
-          description: 'Volume d\'interactions par jour',
-          hint: 'Si les événements augmentent plus vite que les sessions, vos visiteurs interagissent davantage.',
-          type: 'bar',
+          title: 'Événements par jour',
+          description: 'Total des interactions (page vues, clics…) par jour.',
+          hint: 'Si la courbe grimpe alors que les sessions stagnent, tes visiteurs interagissent plus.',
+          type: 'line',
           labels: stats.eventsParJour.map(r => fmt.date(r.jour)),
           datasets: [{
-            label: 'Événements',
-            data: stats.eventsParJour.map(r => r.events),
-            backgroundColor: 'rgba(16, 185, 129, 0.8)',
-            borderRadius: 6
-          }],
-          icon: '⚡'
+            label:'Événements', data: stats.eventsParJour.map(r=>r.events),
+            borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.2)', fill:true
+          }]
         });
       }
 
-      // 3. Comparaison Sessions vs Événements
-      if (stats.dailyGlobal?.length) {
-        addModernChart({
+      // 3. Type d’appareil
+      if (stats.deviceTypes?.length) {
+        addChart({
           grid,
-          title: 'Performance Comparative',
-          description: 'Sessions vs Événements quotidiens',
-          hint: 'Ratio événements/sessions = niveau d\'engagement. Plus il est élevé, mieux c\'est !',
+          title: 'Répartition par type d’appareil',
+          description: 'Ordinateur, mobile, tablette…',
+          hint: 'Optimise d’abord pour l’appareil le plus utilisé par tes visiteurs.',
+          type: 'doughnut',
+          labels: stats.deviceTypes.map(r => r.device_type ?? 'Inconnu'),
+          datasets: [{ label:'Sessions', data: stats.deviceTypes.map(r=>r.sessions),
+            backgroundColor:['#60a5fa','#fb923c','#84cc16','#c084fc','#10b981'] }]
+        });
+      }
+
+      // 4. Répartition par pays
+      if (stats.countries?.length) {
+        addChart({
+          grid,
+          title: 'Répartition par pays',
+          description: 'Origine géographique des visiteurs.',
+          hint: 'Utile pour choisir la langue par défaut, ou réfléchir à des traductions.',
+          type: 'doughnut',
+          labels: stats.countries.map(r => r.country ?? 'Inconnu'),
+          datasets: [{ label:'Sessions', data: stats.countries.map(r=>r.sessions),
+            backgroundColor:['#facc15','#38bdf8','#f472b6','#34d399','#f87171'] }]
+        });
+      }
+
+      // 5. Nouveaux vs revenants
+      if (stats.newVsReturning?.length) {
+        addChart({
+          grid,
+          title: 'Nouveaux vs revenants',
+          description: 'Découverte vs fidélisation.',
+          hint: 'Plus de revenants = communauté qui revient. Plus de nouveaux = acquisition qui marche.',
+          type: 'pie',
+          labels: stats.newVsReturning.map(r => r.is_returning ? 'Revenants' : 'Nouveaux'),
+          datasets: [{ label:'Sessions', data: stats.newVsReturning.map(r=>r.sessions),
+            backgroundColor:['#6366f1','#d946ef'] }]
+        });
+      }
+
+      // 6. Catégories d’événements
+      if (stats.categories?.length) {
+        addChart({
+          grid,
+          title: 'Catégories d’événements',
+          description: 'Types d’interactions.',
+          hint: 'Repère les catégories dominantes pour prioriser tes optimisations UX.',
+          type: 'pie',
+          labels: stats.categories.map(r => r.category ?? 'Inconnu'),
+          datasets: [{ label:'Événements', data: stats.categories.map(r=>r.nb),
+            backgroundColor:['#fbbf24','#34d399','#f87171','#a78bfa','#f472b6'] }]
+        });
+      }
+
+      // 7. Pages populaires
+      if (stats.topPages?.length) {
+        addTable({
+          grid,
+          title: 'Pages les plus visitées',
+          description: 'Classement par nombre de vues.',
+          hint: 'Ces pages méritent un soin particulier (perf, design, CTA).',
+          columns: ['URL', 'Vues'],
+          rows: stats.topPages.map(r => [r.page_url, fmt.int(r.vues)])
+        });
+      }
+
+      // 8. Pages d’entrée
+      if (stats.entryPages?.length) {
+        addTable({
+          grid,
+          title: 'Pages d’entrée',
+          description: 'Première page vue dans une session.',
+          hint: 'Optimise ces pages pour la première impression (clarté, vitesse, message).',
+          columns: ['URL', 'Entrées'],
+          rows: stats.entryPages.map(r => [r.first_page_url, fmt.int(r.nb)])
+        });
+      }
+
+      // 9. Pages de sortie
+      if (stats.exitPages?.length) {
+        addTable({
+          grid,
+          title: 'Pages de sortie',
+          description: 'Dernière page vue avant de quitter.',
+          hint: 'Si une page sort trop souvent, vérifie le contenu/CTA (y a-t-il une suite logique proposée ?).',
+          columns: ['URL', 'Sorties'],
+          rows: stats.exitPages.map(r => [r.last_page_url, fmt.int(r.nb)])
+        });
+      }
+
+      // 10. Éléments cliqués
+      if (stats.clicks?.length) {
+        addTable({
+          grid,
+          title: 'Éléments les plus cliqués',
+          description: 'Sélecteurs HTML les plus cliqués.',
+          hint: 'Comprends où les gens cliquent pour ajuster la hiérarchie visuelle.',
+          columns: ['Sélecteur', 'Clics'],
+          rows: stats.clicks.map(r => [r.element_selector, fmt.int(r.clics)])
+        });
+      }
+
+      // 11. Sessions & événements quotidiens (comparatif)
+      if (stats.dailyGlobal?.length) {
+        addChart({
+          grid,
+          title: 'Sessions & événements quotidiens',
+          description: 'Comparaison sessions uniques vs total événements.',
+          hint: 'Si les événements montent plus vite que les sessions : meilleure interaction moyenne par visite.',
           type: 'line',
           labels: stats.dailyGlobal.map(r => fmt.date(r.jour)),
           datasets: [
-            {
-              label: 'Sessions Uniques',
-              data: stats.dailyGlobal.map(r => r.sessions_uniques),
-              borderColor: 'rgba(59, 130, 246, 1)',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              fill: true
-            },
-            {
-              label: 'Total Événements', 
-              data: stats.dailyGlobal.map(r => r.total_events),
-              borderColor: 'rgba(245, 158, 11, 1)',
-              backgroundColor: 'rgba(245, 158, 11, 0.1)',
-              fill: true
-            }
+            { label:'Sessions uniques', data: stats.dailyGlobal.map(r=>r.sessions_uniques), borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.2)', fill:true },
+            { label:'Total événements', data: stats.dailyGlobal.map(r=>r.total_events), borderColor:'#f97316', backgroundColor:'rgba(249,115,22,0.2)', fill:true }
           ],
-          height: 'h-96',
-          icon: '📊'
+          height: 'h-72'
         });
       }
 
-      // 4. Types d'appareils
-      if (stats.deviceTypes?.length) {
-        addModernChart({
-          grid,
-          title: 'Répartition des Appareils',
-          description: 'Desktop, mobile, tablette...',
-          hint: 'Optimisez en priorité pour l\'appareil le plus utilisé par vos visiteurs.',
-          type: 'doughnut',
-          labels: stats.deviceTypes.map(r => r.device_type ?? 'Inconnu'),
-          datasets: [{
-            label: 'Sessions',
-            data: stats.deviceTypes.map(r => r.sessions),
-            backgroundColor: [
-              'rgba(59, 130, 246, 0.9)',
-              'rgba(16, 185, 129, 0.9)',
-              'rgba(245, 158, 11, 0.9)',
-              'rgba(239, 68, 68, 0.9)',
-              'rgba(139, 92, 246, 0.9)'
-            ]
-          }],
-          icon: '📱'
-        });
-      }
-
-      // 5. Répartition géographique
-      if (stats.countries?.length) {
-        addModernChart({
-          grid,
-          title: 'Origine Géographique',
-          description: 'Pays de provenance des visiteurs',
-          hint: 'Informations utiles pour la localisation, les fuseaux horaires et les langues.',
-          type: 'pie',
-          labels: stats.countries.map(r => r.country ?? 'Inconnu'),
-          datasets: [{
-            label: 'Sessions',
-            data: stats.countries.map(r => r.sessions),
-            backgroundColor: [
-              'rgba(251, 191, 36, 0.9)',
-              'rgba(56, 189, 248, 0.9)',
-              'rgba(244, 114, 182, 0.9)',
-              'rgba(52, 211, 153, 0.9)',
-              'rgba(248, 113, 113, 0.9)',
-              'rgba(168, 85, 247, 0.9)'
-            ]
-          }],
-          icon: '🌍'
-        });
-      }
-
-      // 6. Nouveaux vs Anciens visiteurs
-      if (stats.newVsReturning?.length) {
-        addModernChart({
-          grid,
-          title: 'Acquisition vs Rétention',
-          description: 'Nouveaux visiteurs vs visiteurs récurrents',
-          hint: 'Plus de récurrents = fidélisation réussie. Plus de nouveaux = acquisition efficace.',
-          type: 'doughnut',
-          labels: stats.newVsReturning.map(r => r.is_returning ? 'Visiteurs Récurrents' : 'Nouveaux Visiteurs'),
-          datasets: [{
-            label: 'Sessions',
-            data: stats.newVsReturning.map(r => r.sessions),
-            backgroundColor: [
-              'rgba(99, 102, 241, 0.9)',
-              'rgba(217, 70, 239, 0.9)'
-            ]
-          }],
-          icon: '🔄'
-        });
-      }
-
-      // 7. Catégories d'événements
-      if (stats.categories?.length) {
-        addModernChart({
-          grid,
-          title: 'Types d\'Interactions',
-          description: 'Catégories d\'événements trackés',
-          hint: 'Identifiez les types d\'interactions les plus fréquents pour optimiser l\'UX.',
-          type: 'bar',
-          labels: stats.categories.map(r => r.category ?? 'Inconnu'),
-          datasets: [{
-            label: 'Nombre d\'événements',
-            data: stats.categories.map(r => r.nb),
-            backgroundColor: 'rgba(139, 92, 246, 0.8)',
-            borderRadius: 8
-          }],
-          icon: '🎯'
-        });
-      }
-
-      // 8. Pages populaires
-      if (stats.topPages?.length) {
-        addModernTable({
-          grid,
-          title: 'Pages les Plus Visitées',
-          description: 'Classement par nombre de vues',
-          hint: 'Ces pages génèrent le plus de trafic. Assurez-vous qu\'elles offrent une expérience optimale.',
-          columns: ['Page', 'Vues'],
-          rows: stats.topPages.slice(0, 10).map(r => [
-            r.page_url.length > 40 ? r.page_url.substring(0, 40) + '...' : r.page_url,
-            fmt.int(r.vues)
-          ]),
-          icon: '🏆'
-        });
-      }
-
-      // 9. Pages d'entrée
-      if (stats.entryPages?.length) {
-        addModernTable({
-          grid,
-          title: 'Pages d\'Atterrissage',
-          description: 'Premières pages visitées',
-          hint: 'Première impression cruciale ! Ces pages doivent être parfaitement optimisées.',
-          columns: ['Page d\'entrée', 'Visites'],
-          rows: stats.entryPages.slice(0, 10).map(r => [
-            r.first_page_url.length > 40 ? r.first_page_url.substring(0, 40) + '...' : r.first_page_url,
-            fmt.int(r.nb)
-          ]),
-          icon: '🚪'
-        });
-      }
-
-      // 10. Pages de sortie
-      if (stats.exitPages?.length) {
-        addModernTable({
-          grid,
-          title: 'Pages de Sortie',
-          description: 'Dernières pages avant départ',
-          hint: 'Analysez pourquoi les visiteurs quittent depuis ces pages. Manque-t-il un CTA ?',
-          columns: ['Page de sortie', 'Sorties'],
-          rows: stats.exitPages.slice(0, 10).map(r => [
-            r.last_page_url.length > 40 ? r.last_page_url.substring(0, 40) + '...' : r.last_page_url,
-            fmt.int(r.nb)
-          ]),
-          icon: '🚪'
-        });
-      }
-
-      // 11. Éléments les plus cliqués
-      if (stats.clicks?.length) {
-        addModernTable({
-          grid,
-          title: 'Éléments Populaires',
-          description: 'Sélecteurs HTML les plus cliqués',
-          hint: 'Comprenez où vos visiteurs cliquent pour optimiser la hiérarchie visuelle.',
-          columns: ['Élément', 'Clics'],
-          rows: stats.clicks.slice(0, 10).map(r => [
-            r.element_selector.length > 35 ? r.element_selector.substring(0, 35) + '...' : r.element_selector,
-            fmt.int(r.clics)
-          ]),
-          icon: '🖱️'
-        });
-      }
-
-      // État vide si aucune donnée
+      // Empty state
       if (!stats.sessionsParJour?.length && !stats.eventsParJour?.length && !stats.dailyGlobal?.length) {
-        const emptyState = document.createElement('div');
-        emptyState.className = 'col-span-full chart-container p-12 text-center animate-fade-in';
-        
-        emptyState.innerHTML = `
-          <div class="max-w-md mx-auto">
-            <div class="text-6xl mb-6 animate-bounce">📊</div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">Aucune donnée disponible</h3>
-            <p class="text-gray-600 mb-6">
-              Les données d'analyse apparaîtront ici une fois que votre site aura reçu des visiteurs.
-            </p>
-            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 text-sm text-gray-700">
-              <p><strong>💡 Conseil :</strong> Visitez votre site principal pour générer des sessions et événements, puis revenez ici pour voir vos statistiques.</p>
-            </div>
-          </div>
+        const notice = document.createElement('div');
+        notice.className = 'col-span-full bg-white rounded-xl shadow-soft p-8 text-center text-gray-600';
+        notice.innerHTML = `
+          <p class="text-lg font-medium">Aucune donnée pour le moment</p>
+          <p class="text-sm mt-2">Visite le site principal pour générer des sessions et des événements, puis reviens ici.</p>
         `;
-        
-        grid.appendChild(emptyState);
+        grid.appendChild(notice);
       }
     }
 
-    // ====== Initialisation et actualisation ======
-    let isLoading = false;
-
-    async function loadDashboard() {
-      if (isLoading) return;
-      
-      isLoading = true;
-      const refreshBtn = document.getElementById('refresh-btn');
-      const originalText = refreshBtn.innerHTML;
-      
-      // Animation de chargement
-      refreshBtn.innerHTML = `
-        <span class="flex items-center space-x-2">
-          <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <span>Chargement...</span>
-        </span>
-      `;
-      refreshBtn.disabled = true;
-
-      try {
-        const stats = await fetchStats();
-        renderDashboard(stats);
-      } catch (error) {
-        console.error('Erreur lors du chargement:', error);
-        showModernMessage('error', 'Impossible de charger les données. Vérifiez votre connexion.');
-      } finally {
-        // Restaurer le bouton après un délai minimum pour l'UX
-        setTimeout(() => {
-          refreshBtn.innerHTML = originalText;
-          refreshBtn.disabled = false;
-          isLoading = false;
-        }, 1000);
-      }
+    // ====== Init & Refresh ======
+    async function boot() {
+      const stats = await fetchStats();
+      renderDashboard(stats);
     }
 
-    // Event listeners
-    document.getElementById('refresh-btn').addEventListener('click', loadDashboard);
+    document.getElementById('refresh-btn').addEventListener('click', boot);
 
-    // Chargement initial
-    loadDashboard();
-
-    // Auto-refresh toutes les 5 minutes
-    setInterval(loadDashboard, 5 * 60 * 1000);
+    boot();
+    setInterval(boot, 5 * 60 * 1000);
   </script>
 </body>
 </html>
