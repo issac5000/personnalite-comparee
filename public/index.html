@@ -5398,124 +5398,124 @@ function showPrivacyPolicy() {
   }
 </script>
 
+<script src="https://unpkg.com/@supabase/supabase-js"></script>
 <script type="module">
-const supabase = window.supabase;
+  // ====== CONFIG SUPABASE ======
+  const SUPABASE_URL = 'https://eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg.supabase.co'; // <-- ton URL Supabase
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg'; // <-- ta clé anon publique
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Génère un UUID pour la session
-function generateSessionId() {
-  if (window.crypto?.randomUUID) {
-    return crypto.randomUUID();
-  }
-  // Fallback simple si randomUUID n’est pas disponible
-  return 'xxxxxxxxyxxxxxxx'.replace(/[xy]/g, c => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-// Récupère ou crée le session_id
-let sessionId = localStorage.getItem('session_id');
-const hasVisited = localStorage.getItem('hasVisited');
-const isReturning = hasVisited === 'true';
-if (!sessionId) {
-  sessionId = generateSessionId();
-  localStorage.setItem('session_id', sessionId);
-}
-if (!hasVisited) {
-  localStorage.setItem('hasVisited', 'true');
-}
-
-// Paramètres UTM
-function parseUTM() {
-  const params = new URLSearchParams(window.location.search);
-  const utm = {};
-  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach((key) => {
-    if (params.get(key)) utm[key] = params.get(key);
-  });
-  return Object.keys(utm).length ? utm : null;
-}
-const utmParams = parseUTM();
-
-// Infos device et viewport
-const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
-const viewport = { width: window.innerWidth, height: window.innerHeight };
-const screenSize = { width: screen.width, height: screen.height };
-const tzOffset = new Date().getTimezoneOffset();
-
-// Crée ou met à jour la session dans Supabase
-async function createSession() {
-  try {
-    await supabase
-      .from('sessions')
-      .upsert({
-        session_id: sessionId,
-        first_referrer: document.referrer || null,
-        first_utm: utmParams,
-        user_agent: navigator.userAgent,
-        last_event_name: 'page_view',
-        device_type: deviceType,
-        language: navigator.language,
-        tz_offset: tzOffset,
-        viewport,
-        screen: screenSize,
-        is_returning: isReturning,
-        last_page_url: window.location.href,
-        last_activity_at: new Date().toISOString()
-      }, { onConflict: ['session_id'] }); // Évite l'erreur si déjà existant
-  } catch (err) {
-    console.error('Erreur lors de la création/mise à jour de la session :', err);
-  }
-}
-
-// Envoie un événement et met à jour l'activité de la session
-async function trackEvent(eventName, meta = {}) {
-  try {
-    // 1. Insère l'événement
-    await supabase.from('events').insert({
-      session_id: sessionId,
-      event_name: eventName,
-      page_url: window.location.href,
-      referrer: document.referrer || null,
-      utm: utmParams,
-      user_agent: navigator.userAgent,
-      meta,
-      element_selector: meta.element || null
+  // Génère un UUID pour la session
+  function generateSessionId() {
+    if (window.crypto?.randomUUID) {
+      return crypto.randomUUID();
+    }
+    return 'xxxxxxxxyxxxxxxx'.replace(/[xy]/g, c => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
     });
-
-    // 2. Met à jour last_activity_at dans sessions
-    await supabase
-      .from('sessions')
-      .update({
-        last_activity_at: new Date().toISOString(),
-        last_event_name: eventName,
-        last_page_url: window.location.href
-      })
-      .eq('session_id', sessionId);
-
-  } catch (err) {
-    console.error('Erreur lors de l’enregistrement de l’événement :', err);
   }
-}
 
-// Création de la session et enregistrement de la page vue
-createSession().then(() => {
-  trackEvent('page_view');
-});
-
-// Suivi des clics
-document.addEventListener('click', (e) => {
-  // Détermine un sélecteur simple pour l’élément cliqué
-  let selector = '';
-  if (e.target.id) {
-    selector = '#' + e.target.id;
-  } else if (e.target.className) {
-    selector = e.target.tagName.toLowerCase() + '.' + e.target.className.toString().replace(/\s+/g, '.');
-  } else {
-    selector = e.target.tagName.toLowerCase();
+  // Récupère ou crée le session_id
+  let sessionId = localStorage.getItem('session_id');
+  const hasVisited = localStorage.getItem('hasVisited');
+  const isReturning = hasVisited === 'true';
+  if (!sessionId) {
+    sessionId = generateSessionId();
+    localStorage.setItem('session_id', sessionId);
   }
-  trackEvent('click', { element: selector });
-});
+  if (!hasVisited) {
+    localStorage.setItem('hasVisited', 'true');
+  }
+
+  // Paramètres UTM
+  function parseUTM() {
+    const params = new URLSearchParams(window.location.search);
+    const utm = {};
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach((key) => {
+      if (params.get(key)) utm[key] = params.get(key);
+    });
+    return Object.keys(utm).length ? utm : null;
+  }
+  const utmParams = parseUTM();
+
+  // Infos device et viewport
+  const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+  const viewport = { width: window.innerWidth, height: window.innerHeight };
+  const screenSize = { width: screen.width, height: screen.height };
+  const tzOffset = new Date().getTimezoneOffset();
+
+  // Crée ou met à jour la session
+  async function createSession() {
+    try {
+      await supabase
+        .from('sessions')
+        .upsert({
+          session_id: sessionId,
+          first_referrer: document.referrer || null,
+          first_utm: utmParams,
+          user_agent: navigator.userAgent,
+          last_event_name: 'page_view',
+          device_type: deviceType,
+          language: navigator.language,
+          tz_offset: tzOffset,
+          viewport,
+          screen: screenSize,
+          is_returning: isReturning,
+          last_page_url: window.location.href,
+          last_activity_at: new Date().toISOString()
+        }, { onConflict: ['session_id'] });
+    } catch (err) {
+      console.error('❌ Erreur lors de la création/mise à jour de la session :', err);
+    }
+  }
+
+  // Envoie un événement et met à jour la session
+  async function trackEvent(eventName, meta = {}) {
+    try {
+      await supabase.from('events').insert({
+        session_id: sessionId,
+        event_name: eventName,
+        page_url: window.location.href,
+        referrer: document.referrer || null,
+        utm: utmParams,
+        user_agent: navigator.userAgent,
+        meta,
+        element_selector: meta.element || null
+      });
+
+      await supabase
+        .from('sessions')
+        .update({
+          last_activity_at: new Date().toISOString(),
+          last_event_name: eventName,
+          last_page_url: window.location.href
+        })
+        .eq('session_id', sessionId);
+
+    } catch (err) {
+      console.error('❌ Erreur lors de l’enregistrement de l’événement :', err);
+    }
+  }
+
+  // Création session + premier event
+  createSession().then(() => {
+    trackEvent('page_view');
+  });
+
+  // Suivi des clics
+  document.addEventListener('click', (e) => {
+    let selector = '';
+    if (e.target.id) {
+      selector = '#' + e.target.id;
+    } else if (e.target.className) {
+      selector = e.target.tagName.toLowerCase() + '.' + e.target.className.toString().replace(/\s+/g, '.');
+    } else {
+      selector = e.target.tagName.toLowerCase();
+    }
+    trackEvent('click', { element: selector });
+  });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
