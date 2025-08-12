@@ -2184,10 +2184,9 @@ function displayQuestion(index) {
             return false;
         }
 
-        // === Configuration Supabase ===
-      
-        // 🔐 Génére un code aléatoire
+      // === Configuration Supabase ===
 
+// 🔐 Génère un code aléatoire
 function generateUniqueCode(length = 6) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let code = '';
@@ -2197,48 +2196,36 @@ function generateUniqueCode(length = 6) {
   return code;
 }
 
-
-        const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg';
-
-// Le client Supabase sera initialisé après le chargement du script
-
-
-        /**
-         * Enregistre le profil utilisateur (auto‑évaluation) dans Supabase.
-         * Cette fonction insère un enregistrement dans la table "users".
-         * @param {Object} userProfile Contient le code unique, les types MBTI/Ennéagramme,
-         * les scores détaillés et le niveau de certitude.
-         */
-         async function saveUserProfileToSupabase(userProfile) {
+/**
+ * Enregistre le profil utilisateur (auto-évaluation) dans Supabase
+ * en le liant à la session actuelle via pcSaveUserResult().
+ * @param {Object} userProfile Contient le code unique, les types MBTI/Ennéagramme,
+ * les scores détaillés et éventuellement d'autres infos.
+ */
+async function saveUserProfileToSupabase(userProfile) {
   try {
-    const { data, error } = await supabase
-      .from('users')
-      .insert({
-        code: userProfile.code,
-        mbti_scores: userProfile.mbtiScores,
-        enneagram_scores: userProfile.enneagramScores,
-        mbti_type: userProfile.mbtiType,
-        enneagram_type: userProfile.enneagramType,
-        certainty_score: 0
-      })
-      .select()
-      .single();
+    const { data, error } = await pcSaveUserResult({
+      code: userProfile.code,
+      mbti_scores: userProfile.mbtiScores,
+      enneagram_scores: userProfile.enneagramScores,
+      mbti_type: userProfile.mbtiType
+    });
 
     if (error) {
-      console.error('Erreur lors de l\'enregistrement du profil utilisateur :', error);
-    } else {
-      console.log('Profil enregistré dans Supabase', data);
+      console.error('Erreur lors de l’enregistrement du profil utilisateur :', error);
+      return;
+    }
 
-      if (testType === "auto") {
-        enregistrerQuestionsPourProches(answers, userProfile.code);
-      }
+    console.log('Profil enregistré dans Supabase avec session_id', data);
+
+    // Si c'est l'auto-évaluation, on enregistre aussi les questions pour les proches
+    if (typeof testType !== 'undefined' && testType === "auto") {
+      enregistrerQuestionsPourProches(answers, userProfile.code);
     }
   } catch (err) {
-    console.error('Exception lors de l\'enregistrement du profil utilisateur :', err);
+    console.error('Exception lors de l’enregistrement du profil utilisateur :', err);
   }
 }
-
 
 
         /**
@@ -5706,23 +5693,23 @@ addChatStyles();
   #pc-constellation{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none;}
 </style>
 
-<!-- Tracking Supabase : sessions + events -->
+<!-- Tracking Supabase : sessions + events + lien users -->
 <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-  // Supabase (ton projet)
+  // ===== Supabase
   const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co'
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg'
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-  // ---------- Session ID (persistée navigateur) ----------
+  // ===== Session ID persistée
   let sessionId = localStorage.getItem('pc_session_id')
   if (!sessionId) {
     sessionId = crypto.randomUUID()
     localStorage.setItem('pc_session_id', sessionId)
   }
 
-  // ---------- Helpers ----------
+  // ===== Helpers
   const getDeviceType = () => {
     const ua = navigator.userAgent
     if (/Tablet|iPad/i.test(ua)) return 'tablet'
@@ -5731,6 +5718,20 @@ addChatStyles();
   }
   const getScreenData = () => ({ width: screen.width, height: screen.height })
   const getViewportData = () => ({ width: window.innerWidth, height: window.innerHeight })
+
+  const getUTM = () => {
+    const p = new URLSearchParams(location.search)
+    const utm = {
+      source: p.get('utm_source'),
+      medium: p.get('utm_medium'),
+      campaign: p.get('utm_campaign'),
+      term: p.get('utm_term'),
+      content: p.get('utm_content')
+    }
+    // retire les clés vides
+    Object.keys(utm).forEach(k => utm[k] === null && delete utm[k])
+    return Object.keys(utm).length ? utm : null
+  }
 
   async function getLocationData() {
     try {
@@ -5743,7 +5744,7 @@ addChatStyles();
     }
   }
 
-  // ---------- Track session (upsert) ----------
+  // ===== Track session (INSERT; ignore doublon)
   async function trackSession() {
     try {
       const { country, city } = await getLocationData()
@@ -5755,19 +5756,23 @@ addChatStyles();
         viewport: getViewportData(),
         screen: getScreenData(),
         country, city,
+        first_utm: getUTM(),
+        user_agent: navigator.userAgent,
         is_returning: !!localStorage.getItem('pc_has_visited'),
         first_referrer: document.referrer || null,
         last_page_url: location.href
       }
       localStorage.setItem('pc_has_visited', 'true')
-      const { error } = await supabase.from('sessions').upsert(payload, { onConflict: 'session_id' })
-      if (error) console.error('[sessions] insert error:', error)
+
+      const { error } = await supabase.from('sessions').insert(payload)
+      // si doublon (clé unique session_id) on ignore
+      if (error && error.code !== '23505') console.error('[sessions] insert error:', error)
     } catch (e) {
       console.error('[sessions] unexpected error:', e)
     }
   }
 
-  // ---------- Track event ----------
+  // ===== Track event
   async function trackEvent({ event_name, page_url, referrer, category = null, value = null, element_selector = null, meta = {} }) {
     try {
       const payload = {
@@ -5778,6 +5783,7 @@ addChatStyles();
         category,
         value,
         element_selector,
+        utm: getUTM(),
         meta
       }
       const { error } = await supabase.from('events').insert(payload)
@@ -5787,13 +5793,33 @@ addChatStyles();
     }
   }
 
-  // ---------- Boot ----------
+  // ===== Lier résultat "users" à la session (code + scores + session_id)
+  // ⚠️ Assure-toi d'avoir ajouté la colonne:  ALTER TABLE public.users ADD COLUMN IF NOT EXISTS session_id text;
+  async function pcSaveUserResult({ code, mbti_scores, enneagram_scores, mbti_type }) {
+    try {
+      const { data, error } = await supabase.from('users').insert({
+        code,
+        mbti_scores,
+        enneagram_scores,
+        mbti_type,
+        session_id: sessionId
+      })
+      if (error) console.error('[users] insert error:', error)
+      else localStorage.setItem('pc_last_code', code)
+      return { data, error }
+    } catch (e) {
+      console.error('[users] unexpected error:', e)
+      return { data: null, error: e }
+    }
+  }
+
+  // ===== Boot
   trackSession()
 
   // page_view auto
   trackEvent({ event_name: 'page_view', page_url: location.href, referrer: document.referrer })
 
-  // clicks auto (simple)
+  // clicks auto
   document.addEventListener('click', (e) => {
     const t = e.target
     const selector =
@@ -5808,10 +5834,10 @@ addChatStyles();
     })
   })
 
-  // Expose une fonction globale si tu veux logger des events custom:
+  // Expose au global
   window.pcTrack = (args) => trackEvent(args)
+  window.pcSaveUserResult = pcSaveUserResult
 </script>
-
 
 </body>
 </html>
