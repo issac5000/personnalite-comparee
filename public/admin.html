@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tableau de bord – Personnalité Comparée</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
   <header class="bg-white shadow p-4">
@@ -15,7 +16,6 @@
     <div id="dashboard-container" class="p-4 space-y-6"></div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
@@ -76,7 +76,7 @@
           type: 'bar',
           data: {
             labels: stats.sessionsParJour.map(r => r.jour),
-            datasets: [{ label: 'Sessions', data: stats.sessionsParJour.map(r => r.count), backgroundColor: '#3b82f6' }]
+            datasets: [{ label: 'Sessions', data: stats.sessionsParJour.map(r => r.sessions), backgroundColor: '#3b82f6' }]
           }
         });
       }
@@ -91,7 +91,7 @@
           type: 'line',
           data: {
             labels: stats.eventsParJour.map(r => r.jour),
-            datasets: [{ label: 'Événements', data: stats.eventsParJour.map(r => r.count), borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.2)' }]
+            datasets: [{ label: 'Événements', data: stats.eventsParJour.map(r => r.events), borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.2)' }]
           }
         });
       }
@@ -106,7 +106,7 @@
           type: 'pie',
           data: {
             labels: stats.deviceTypes.map(r => r.device_type),
-            datasets: [{ data: stats.deviceTypes.map(r => r.count) }]
+            datasets: [{ data: stats.deviceTypes.map(r => r.sessions) }]
           }
         });
       }
@@ -121,7 +121,7 @@
           type: 'doughnut',
           data: {
             labels: stats.countries.map(r => r.country),
-            datasets: [{ data: stats.countries.map(r => r.count) }]
+            datasets: [{ data: stats.countries.map(r => r.sessions) }]
           }
         });
       }
@@ -135,8 +135,8 @@
         new Chart(canvas, {
           type: 'doughnut',
           data: {
-            labels: stats.newVsReturning.map(r => r.type),
-            datasets: [{ data: stats.newVsReturning.map(r => r.count) }]
+            labels: stats.newVsReturning.map(r => r.is_returning ? 'Revenant' : 'Nouveau'),
+            datasets: [{ data: stats.newVsReturning.map(r => r.sessions) }]
           }
         });
       }
@@ -151,7 +151,7 @@
           type: 'pie',
           data: {
             labels: stats.categories.map(r => r.category),
-            datasets: [{ data: stats.categories.map(r => r.count) }]
+            datasets: [{ data: stats.categories.map(r => r.nb) }]
           }
         });
       }
@@ -167,7 +167,7 @@
         const tbody = document.createElement('tbody');
         rows.forEach(r => {
           const tr = document.createElement('tr');
-          tr.innerHTML = `<td class="px-2 py-1">${r.element || r.page || r.name}</td><td class="px-2 py-1 text-right">${r.count}</td>`;
+          tr.innerHTML = `<td class="px-2 py-1">${r.element}</td><td class="px-2 py-1 text-right">${r.count}</td>`;
           tbody.appendChild(tr);
         });
         table.appendChild(tbody);
@@ -175,10 +175,10 @@
         grid.appendChild(card);
       }
 
-      if (stats.topPages?.length) addTable('Pages populaires', stats.topPages);
-      if (stats.entryPages?.length) addTable('Pages d\'entrée', stats.entryPages);
-      if (stats.exitPages?.length) addTable('Pages de sortie', stats.exitPages);
-      if (stats.clicks?.length) addTable('Éléments cliqués', stats.clicks);
+      if (stats.topPages?.length) addTable('Pages populaires', stats.topPages.map(r => ({ element: r.page_url, count: r.vues })));
+      if (stats.entryPages?.length) addTable('Pages d\'entrée', stats.entryPages.map(r => ({ element: r.first_page_url, count: r.nb })));
+      if (stats.exitPages?.length) addTable('Pages de sortie', stats.exitPages.map(r => ({ element: r.last_page_url, count: r.nb })));
+      if (stats.clicks?.length) addTable('Éléments cliqués', stats.clicks.map(r => ({ element: r.element_selector, count: r.clics })));
 
       // Engagement moyen - texte
       if (stats.avgEngagement?.length) {
@@ -200,8 +200,8 @@
           data: {
             labels: stats.dailyGlobal.map(r => r.jour),
             datasets: [
-              { label: 'Sessions', data: stats.dailyGlobal.map(r => r.sessions), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.2)' },
-              { label: 'Événements', data: stats.dailyGlobal.map(r => r.events), borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.2)' }
+              { label: 'Sessions', data: stats.dailyGlobal.map(r => r.sessions_uniques), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.2)' },
+              { label: 'Événements', data: stats.dailyGlobal.map(r => r.total_events), borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.2)' }
             ]
           }
         });
