@@ -61,7 +61,7 @@
   <!-- Conteneur -->
   <main class="max-w-7xl mx-auto px-5 py-6 space-y-8" id="root">
     <!-- KPIs -->
-    <section id="kpi-row" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <section id="kpi-row" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
       <div class="bg-white rounded-xl shadow-soft p-5">
         <div class="h-4 w-28 skeleton rounded mb-4"></div>
         <div class="h-8 w-24 skeleton rounded"></div>
@@ -69,6 +69,16 @@
       </div>
       <div class="bg-white rounded-xl shadow-soft p-5">
         <div class="h-4 w-36 skeleton rounded mb-4"></div>
+        <div class="h-8 w-24 skeleton rounded"></div>
+        <div class="h-3 w-40 skeleton rounded mt-4"></div>
+      </div>
+      <div class="bg-white rounded-xl shadow-soft p-5">
+        <div class="h-4 w-32 skeleton rounded mb-4"></div>
+        <div class="h-8 w-24 skeleton rounded"></div>
+        <div class="h-3 w-40 skeleton rounded mt-4"></div>
+      </div>
+      <div class="bg-white rounded-xl shadow-soft p-5">
+        <div class="h-4 w-40 skeleton rounded mb-4"></div>
         <div class="h-8 w-24 skeleton rounded"></div>
         <div class="h-3 w-40 skeleton rounded mt-4"></div>
       </div>
@@ -256,10 +266,16 @@
         clicks: [],
         avgEngagement: [],
         dailyGlobal: [],
-        recentSessions: []
+        recentSessions: [],
+        chatMessagesSent: 0,
+        chatMessagesReceived: 0,
+        chatMessagesDaily: []
       };
 
       try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
         const queries = [
           supabase.from('stats_sessions_par_jour').select('jour,sessions').order('jour', { ascending: true }),
           supabase.from('stats_events_par_jour').select('jour,events').order('jour', { ascending: true }),
@@ -272,7 +288,10 @@
           supabase.from('stats_categories_events').select('category,nb'),
           supabase.from('stats_elements_cliques').select('element_selector,clics'),
           supabase.from('stats_engagement_moyen').select('engagement_sec'),
-          supabase.from('stats_daily_global').select('jour,sessions_uniques,total_events').order('jour',{ascending:true})
+          supabase.from('stats_daily_global').select('jour,sessions_uniques,total_events').order('jour',{ascending:true}),
+          supabase.from('events').select('*', { count: 'exact', head: true }).eq('event_name','chat_message_sent'),
+          supabase.from('events').select('*', { count: 'exact', head: true }).eq('event_name','chat_message_received'),
+          supabase.from('events').select('event_name,occurred_at').gte('occurred_at', thirtyDaysAgo.toISOString()).in('event_name',['chat_message_sent','chat_message_received'])
         ];
 
         const res = await Promise.allSettled(queries);
@@ -296,6 +315,25 @@
         result.clicks = res[9].value?.data ?? [];
         result.avgEngagement = res[10].value?.data ?? [];
         result.dailyGlobal = res[11].value?.data ?? [];
+        result.chatMessagesSent = res[12].value?.count ?? 0;
+        result.chatMessagesReceived = res[13].value?.count ?? 0;
+
+        const chatRows = res[14].value?.data ?? [];
+        const dailyMap = {};
+        chatRows.forEach(ev => {
+          const day = ev.occurred_at?.slice(0,10);
+          if (!day) return;
+          if (!dailyMap[day]) dailyMap[day] = { sent:0, received:0 };
+          if (ev.event_name === 'chat_message_sent') dailyMap[day].sent++;
+          else if (ev.event_name === 'chat_message_received') dailyMap[day].received++;
+        });
+        const daily = [];
+        for (let i=29;i>=0;i--) {
+          const d=new Date(); d.setDate(d.getDate()-i);
+          const key=d.toISOString().slice(0,10);
+          daily.push({ jour:key, sent: dailyMap[key]?.sent || 0, received: dailyMap[key]?.received || 0 });
+        }
+        result.chatMessagesDaily = daily;
 
         if (!countries.length) {
           const { data: sess, error } = await supabase
@@ -335,6 +373,8 @@
       const totalEvents = (stats.eventsParJour ?? []).reduce((a,b)=>a+(b.events||0),0);
       const engagement = stats.avgEngagement?.[0]?.engagement_sec ?? 0;
       const topCountry = (stats.countries ?? []).slice().sort((a,b)=>(b.sessions||0)-(a.sessions||0))[0]?.country ?? '—';
+      const chatSent = stats.chatMessagesSent ?? 0;
+      const chatReceived = stats.chatMessagesReceived ?? 0;
 
       // % nouveaux
       let pctNew = null;
@@ -368,6 +408,18 @@
           value: topCountry,
           sub: 'Origine la plus fréquente.',
           hint: 'Basé sur sessions.country (détecté via IP).'
+        },
+        {
+          label: 'Messages envoyés',
+          value: fmt.int(chatSent),
+          sub: 'Total des messages utilisateurs.',
+          hint: 'Nombre de messages transmis au chatbot.'
+        },
+        {
+          label: 'Réponses du bot',
+          value: fmt.int(chatReceived),
+          sub: 'Total des réponses générées.',
+          hint: 'Nombre de messages renvoyés par le chatbot.'
         }
       ];
       if (pctNew !== null) {
@@ -432,6 +484,22 @@
             label:'Événements', data: stats.eventsParJour.map(r=>r.events),
             borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.2)', fill:true
           }]
+        });
+      }
+
+      // Messages chatbot par jour (30 derniers jours)
+      if (stats.chatMessagesDaily?.length) {
+        addChart({
+          grid,
+          title: 'Messages chatbot par jour',
+          description: 'Évolution des messages envoyés et reçus.',
+          hint: 'Comparaison des messages utilisateurs et réponses IA.',
+          type: 'line',
+          labels: stats.chatMessagesDaily.map(r => fmt.date(r.jour)),
+          datasets: [
+            { label:'Envoyés', data: stats.chatMessagesDaily.map(r=>r.sent), borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.2)', fill:true },
+            { label:'Reçus', data: stats.chatMessagesDaily.map(r=>r.received), borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.2)', fill:true }
+          ]
         });
       }
 
