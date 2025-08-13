@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ennéagramme - Personnalité Comparée</title>
+  <link rel="icon" type="image/jpeg" href="/flavicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+  <style>
+    .mobile-menu { position: absolute; top: 100%; left: 0; right: 0; z-index:1100; display:none; }
+    .mobile-menu.active { display:block; }
+  </style>
+</head>
+<body class="font-sans bg-white text-gray-900">
+<header class="sticky-header">
+  <div class="flex items-center">
+    <div class="flex-shrink-0 flex items-center">
+      <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span class="ml-3 text-xl font-bold text-black">Personnalité Comparée</span>
+    </div>
+  </div>
+  <nav class="desktop-nav hidden md:ml-6 md:flex md:items-center md:space-x-8">
+    <a href="/index.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Accueil</a>
+    <a href="/mbti.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">MBTI</a>
+    <a href="/enneagramme.html" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-blue-500 text-sm font-medium">Ennéagramme</a>
+    <a href="/blog.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Blog</a>
+  </nav>
+  <div class="-mr-2 flex items-center md:hidden">
+    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
+      <span class="sr-only">Ouvrir le menu principal</span>
+      <i class="fas fa-bars" id="menu-icon"></i>
+    </button>
+  </div>
+  <div class="mobile-menu md:hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+      <a href="/index.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-blue-50">Accueil</a>
+      <a href="/mbti.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-gray-700">MBTI</a>
+      <a href="/enneagramme.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-gray-700">Ennéagramme</a>
+      <a href="/blog.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-gray-700">Blog</a>
+    </div>
+  </div>
+</header>
+
+<section class="py-16 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto text-center">
+    <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl mb-4">Découvrir l'ennéagramme</h1>
+    <p class="text-lg text-gray-700">L'ennéagramme est un modèle de personnalité fondé sur 9 types, centré sur nos motivations profondes et nos blessures originelles.</p>
+  </div>
+</section>
+
+<section class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">Un peu d'histoire</h2>
+    <p class="text-gray-700">Ses origines remontent à des traditions anciennes, mais il a été formalisé dans les années 70 par des chercheurs comme Oscar Ichazo et Claudio Naranjo.</p>
+  </div>
+</section>
+
+
+    <div id="enneagram" data-aos="fade-left" class="section section-fonce py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                    Les 9 types de l'Ennéagramme
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+                    Découvrez les motivations profondes qui influencent votre personnalité
+                </p>
+            </div>
+            
+            <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Type 1 -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-red-500 rounded-full h-12 w-12 flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">1</span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">Le Perfectionniste</h3>
+                                <p class="text-sm text-gray-500">Le Réformateur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Motivés par le besoin de vivre correctement, d'améliorer le monde et d'éviter la colère. Ils sont idéalistes, responsables et ont un fort sens moral.
+                            </p>
+                        </div>
+                        <div class="mt-4">
+                            <div class="text-xs text-gray-500">
+                                <strong>Peur fondamentale :</strong> Être corrompu, défectueux ou mauvais<br>
+                                <strong>Désir fondamental :</strong> Être bon, vertueux et parfait
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showEnneagramDetails('1')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Type 2 -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-green-500 rounded-full h-12 w-12 flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">2</span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">L'Altruiste</h3>
+                                <p class="text-sm text-gray-500">L'Aidant</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Motivés par le besoin d'être aimés et appréciés, et d'exprimer leurs sentiments positifs envers les autres. Ils sont empathiques, sincères et chaleureux.
+                            </p>
+                        </div>
+                        <div class="mt-4">
+                            <div class="text-xs text-gray-500">
+                                <strong>Peur fondamentale :</strong> Être indigne d'amour<br>
+                                <strong>Désir fondamental :</strong> Se sentir aimé et apprécié
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showEnneagramDetails('2')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Type 3 -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-yellow-500 rounded-full h-12 w-12 flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">3</span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">Le Bâtisseur</h3>
+                                <p class="text-sm text-gray-500">Le Performeur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Motivés par le besoin d'être productifs, d'atteindre le succès et d'éviter l'échec. Ils sont adaptables, ambitieux et orientés vers les objectifs.
+                            </p>
+                        </div>
+                        <div class="mt-4">
+                            <div class="text-xs text-gray-500">
+                                <strong>Peur fondamentale :</strong> Être sans valeur en dehors de leurs réalisations<br>
+                                <strong>Désir fondamental :</strong> Se sentir valorisé et digne d'amour
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showEnneagramDetails('3')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Type 4 -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-blue-500 rounded-full h-12 w-12 flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">4</span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">L'Artiste</h3>
+                                <p class="text-sm text-gray-500">L'Individualiste</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Motivés par le besoin de s'exprimer et d'être compris pour qui ils sont vraiment. Ils sont créatifs, émotionnellement honnêtes et personnels.
+                            </p>
+                        </div>
+                        <div class="mt-4">
+                            <div class="text-xs text-gray-500">
+                                <strong>Peur fondamentale :</strong> N'avoir ni identité ni importance personnelle<br>
+                                <strong>Désir fondamental :</strong> Trouver leur vrai moi et leur importance
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showEnneagramDetails('4')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Type 5 -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-blue-500 rounded-full h-12 w-12 flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">5</span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">L'Investigateur</h3>
+                                <p class="text-sm text-gray-500">Le Penseur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Motivés par le besoin de comprendre le monde qui les entoure. Ils sont intenses, cérébraux, perceptifs et indépendants.
+                            </p>
+                        </div>
+                        <div class="mt-4">
+                            <div class="text-xs text-gray-500">
+                                <strong>Peur fondamentale :</strong> Être inutile, incapable ou envahi<br>
+                                <strong>Désir fondamental :</strong> Être compétent et comprendre l'environnement
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showEnneagramDetails('5')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Type 6 -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-indigo-500 rounded-full h-12 w-12 flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">6</span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">Le Loyaliste</h3>
+                                <p class="text-sm text-gray-500">Le Sceptique</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Motivés par le besoin de sécurité et de soutien. Ils sont engagés, responsables, anxieux et soupçonneux.
+                            </p>
+                        </div>
+                        <div class="mt-4">
+                            <div class="text-xs text-gray-500">
+                                <strong>Peur fondamentale :</strong> Être sans soutien ou sans guidance<br>
+                                <strong>Désir fondamental :</strong> Avoir sécurité et soutien
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showEnneagramDetails('6')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Type 7 -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-orange-500 rounded-full h-12 w-12 flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">7</span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">L'Enthousiaste</h3>
+                                <p class="text-sm text-gray-500">L'Épicurien</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Motivés par le besoin de maintenir leur bonheur et leur enthousiasme. Ils sont spontanés, polyvalents, distractibles et dispersés.
+                            </p>
+                        </div>
+                        <div class="mt-4">
+                            <div class="text-xs text-gray-500">
+                                <strong>Peur fondamentale :</strong> Être piégé dans la douleur ou la privation<br>
+                                <strong>Désir fondamental :</strong> Maintenir leur bonheur et leur satisfaction
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showEnneagramDetails('7')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Type 8 -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-red-600 rounded-full h-12 w-12 flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">8</span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">Le Challenger</h3>
+                                <p class="text-sm text-gray-500">Le Protecteur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Motivés par le besoin d'être autonomes et de contrôler leur propre vie. Ils sont puissants, dominants, confiants et confrontants.
+                            </p>
+                        </div>
+                        <div class="mt-4">
+                            <div class="text-xs text-gray-500">
+                                <strong>Peur fondamentale :</strong> Être contrôlé ou vulnérable aux autres<br>
+                                <strong>Désir fondamental :</strong> Être autonome et contrôler leur propre vie
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showEnneagramDetails('8')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Type 9 -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-teal-600 rounded-full h-12 w-12 flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">9</span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">Le Médiateur</h3>
+                                <p class="text-sm text-gray-500">Le Pacificateur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Motivés par le besoin de maintenir leur paix intérieure et extérieure. Ils sont réceptifs, rassurants, agréables et complaisants.
+                            </p>
+                        </div>
+                        <div class="mt-4">
+                            <div class="text-xs text-gray-500">
+                                <strong>Peur fondamentale :</strong> Perte de connexion et fragmentation<br>
+                                <strong>Désir fondamental :</strong> Maintenir leur paix intérieure et extérieure
+                            </div>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showEnneagramDetails('9')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="bg-gray-800">
+  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div>
+        <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Personnalité Comparée</h3>
+        <ul class="mt-4 space-y-4">
+          <li><a href="/index.html" class="text-base text-gray-300 hover:text-white transition-colors">Accueil</a></li>
+          <li><a href="/mbti.html" class="text-base text-gray-300 hover:text-white transition-colors">MBTI</a></li>
+          <li><a href="/enneagramme.html" class="text-base text-gray-300 hover:text-white transition-colors">Ennéagramme</a></li>
+          <li><a href="/blog.html" class="text-base text-gray-300 hover:text-white transition-colors">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Légal</h3>
+        <ul class="mt-4 space-y-4">
+          <li><a href="#" class="text-base text-gray-300 hover:text-white transition-colors">Confidentialité</a></li>
+          <li><a href="#" class="text-base text-gray-300 hover:text-white transition-colors">Conditions d'utilisation</a></li>
+          <li><a href="#" class="text-base text-gray-300 hover:text-white transition-colors">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-8 border-t border-gray-700 pt-8">
+      <p class="text-base text-gray-400 text-center">&copy; 2025 Personnalité Comparée. Tous droits réservés.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuIcon = document.getElementById('menu-icon');
+
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener('click', function() {
+      const isOpen = mobileMenu.classList.contains('active');
+      if (isOpen) {
+        mobileMenu.classList.remove('active');
+        menuIcon.classList.remove('fa-times');
+        menuIcon.classList.add('fa-bars');
+        mobileMenuButton.setAttribute('aria-expanded', 'false');
+      } else {
+        mobileMenu.classList.add('active');
+        menuIcon.classList.remove('fa-bars');
+        menuIcon.classList.add('fa-times');
+        mobileMenuButton.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    const mobileLinks = mobileMenu.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        menuIcon.classList.remove('fa-times');
+        menuIcon.classList.add('fa-bars');
+        mobileMenuButton.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+</script>
+</body>
+</html>
