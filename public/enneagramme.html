@@ -404,7 +404,7 @@
             <a href="enneagramme.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Ennéagramme</a>
             <a href="blog.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Blog</a>
             <a href="index.html#profil-chatbot" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">IA spécialisée</a>
-            <a href="index.html#faq" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">FAQ</a>
+            <a href="#faq" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">FAQ</a>
             <button id="profile-btn-desktop" onclick="openProfileModal()" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                 Mon profil
             </button>
@@ -423,7 +423,7 @@
                 <a href="enneagramme.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Ennéagramme</a>
                 <a href="blog.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Blog</a>
                 <a href="index.html#profil-chatbot" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">IA spécialisée</a>
-                <a href="index.html#faq" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">FAQ</a>
+                <a href="#faq" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">FAQ</a>
                 <button id="profile-btn-mobile" onclick="openProfileModal()" class="w-full mt-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800">
                     Mon profil
                 </button>
@@ -785,6 +785,111 @@
 
 
     </main>
+        <div id="faq" data-aos="fade-up" class="section section-clair py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                    Questions fréquentes
+                </h2>
+                <p class="mt-4 text-xl text-gray-500">
+                    Trouvez des réponses aux questions les plus courantes
+                </p>
+            </div>
+
+            <div class="mt-12 space-y-6">
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-ennea-1" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-1-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">En quoi l’Ennéagramme diffère-t-il du MBTI ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-ennea-1-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-1" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Le MBTI décrit des préférences cognitives ; l’Ennéagramme décrit surtout des motivations profondes, peurs de base et mécanismes de défense. Ils sont complémentaires : l’un parle de “comment tu fonctionnes”, l’autre de “pourquoi tu fonctionnes comme ça”.
+                            </p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-ennea-2" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-2-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">C’est spirituel ou psychologique ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-ennea-2-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-2" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Historiquement, l’Ennéagramme a des racines spirituelles ; aujourd’hui il est utilisé dans un cadre de développement personnel et de coaching. Ce n’est pas un outil clinique, son socle scientifique est limité.
+                            </p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-ennea-3" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-3-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">Que sont les “ailes” et les “sous-types” ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-ennea-3-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-3" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Les ailes sont les types adjacents qui colorent ton type principal (ex. 4w3, 4w5). Les sous-types (instincts : conservation, social, sexuel) modulent l’expression du type et expliquent des variations fortes au sein d’un même type.
+                            </p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-ennea-4" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-4-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">Peut-on “changer” de type ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-ennea-4-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-4" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Le type de base reste généralement stable ; ce qui change, c’est ton niveau de santé/ressources et la manière dont tu gères ta peur centrale. On parle d’intégration/désintégration plutôt que de changement de type.
+                            </p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-ennea-5" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-5-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">Pourquoi je me reconnais dans plusieurs types ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-ennea-5-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-5" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Les comportements se recoupent. La clé, c’est la motivation profonde et la peur de base. Les tests peuvent aider, mais l’auto-enquête (exemples concrets, réactions sous stress, désirs non négociables) est déterminante.
+                            </p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-ennea-6" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-6-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">Comment utiliser l’Ennéagramme sans tomber dans les étiquettes ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-ennea-6-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-6" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Comme une carte : un repère pour le langage et la compréhension de soi/autrui, pas une prison. Évite les jugements rapides, privilégie la curiosité, l’empathie et le travail sur les schémas récurrents.
+                            </p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-gray-600">
+                    Vous avez d'autres questions ? <a href="mailto:contact@personnalitecomparee.com" class="text-blue-600 hover:text-blue-500 font-medium">Contactez-nous</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-gray-800">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -796,7 +901,7 @@
                         <li><a href="enneagramme.html" class="text-base text-gray-300 hover:text-white transition-colors">Ennéagramme</a></li>
                         <li><a href="blog.html" class="text-base text-gray-300 hover:text-white transition-colors">Blog</a></li>
                        <li><a href="index.html#profil-chatbot" class="text-base text-gray-300 hover:text-white transition-colors">IA spécialisée</a></li>
-                        <li><a href="index.html#faq" class="text-base text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#faq" class="text-base text-gray-300 hover:text-white transition-colors">FAQ</a></li>
 
                     </ul>
                 </div>
@@ -1134,8 +1239,8 @@ if (window.location.href.includes("external")) {
                 button.addEventListener('click', function() {
                     const content = this.querySelector('.faq-content');
                     const icon = this.querySelector('i');
-                    const isOpen = !content.classList.contains('hidden');
-                    
+                    const isOpen = this.getAttribute('aria-expanded') === 'true';
+
                     // Fermer toutes les autres FAQ
                     faqButtons.forEach(otherButton => {
                         if (otherButton !== this) {
@@ -1143,16 +1248,22 @@ if (window.location.href.includes("external")) {
                             const otherIcon = otherButton.querySelector('i');
                             otherContent.classList.add('hidden');
                             otherIcon.classList.remove('rotate-180');
+                            otherButton.setAttribute('aria-expanded', 'false');
+                            otherContent.setAttribute('aria-hidden', 'true');
                         }
                     });
-                    
+
                     // Toggle la FAQ actuelle
                     if (isOpen) {
                         content.classList.add('hidden');
                         icon.classList.remove('rotate-180');
+                        this.setAttribute('aria-expanded', 'false');
+                        content.setAttribute('aria-hidden', 'true');
                     } else {
                         content.classList.remove('hidden');
                         icon.classList.add('rotate-180');
+                        this.setAttribute('aria-expanded', 'true');
+                        content.setAttribute('aria-hidden', 'false');
                     }
                 });
             });
