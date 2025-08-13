@@ -72,7 +72,7 @@
           current.button.setAttribute('aria-expanded','true');
           current.caret.classList.add('rotate-180');
         }
-      });
+      },{capture:true});
     });
 
     document.addEventListener('click',e=>{
