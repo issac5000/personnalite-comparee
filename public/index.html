@@ -5397,8 +5397,8 @@ function showPrivacyPolicy() {
   }
 </script>
 
-<script src="https://unpkg.com/@supabase/supabase-js"></script>
-<script type="module">
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
   // ====== CONFIG SUPABASE ======
   const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg';
@@ -5443,30 +5443,13 @@ function showPrivacyPolicy() {
   const screenSize = { width: screen.width, height: screen.height };
   const tzOffset = new Date().getTimezoneOffset();
 
-  // 🌍 Récupération pays/ville via IP avec fallback
+  // Récupération pays/ville via IP
   async function getGeoData() {
     try {
-      const res = await fetch('https://ipapi.co/json/');
-      if (!res.ok) throw new Error('Erreur IPAPI');
-      const data = await res.json();
-      return {
-        country: data.country_name || 'Inconnu',
-        city: data.city || 'Inconnue'
-      };
-    } catch (err) {
-      console.warn('🌍 Échec IPAPI, tentative fallback...', err);
-      try {
-        const res2 = await fetch('https://ipwho.is/');
-        if (!res2.ok) throw new Error('Erreur IPWHO.IS');
-        const data2 = await res2.json();
-        return {
-          country: data2.country || 'Inconnu',
-          city: data2.city || 'Inconnue'
-        };
-      } catch (err2) {
-        console.error('❌ Impossible de récupérer la localisation', err2);
-        return { country: 'Inconnu', city: 'Inconnue' };
-      }
+      const res = await fetch('https://get.geojs.io/v1/ip/geo.json');
+      return await res.json();
+    } catch {
+      return {};
     }
   }
 
@@ -5490,8 +5473,8 @@ function showPrivacyPolicy() {
           is_returning: isReturning,
           last_page_url: window.location.href,
           last_activity_at: new Date().toISOString(),
-          country: geo.country,
-          city: geo.city
+          country: geo.country || geo.country_code || null,
+          city: geo.city || geo.region || null
         }, { onConflict: ['session_id'] });
     } catch (err) {
       console.error('❌ Erreur lors de la création/mise à jour de la session :', err);
@@ -5546,7 +5529,6 @@ function showPrivacyPolicy() {
     trackEvent('click', { element: selector });
   });
 </script>
-
 
 
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
