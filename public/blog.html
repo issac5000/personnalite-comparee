@@ -403,8 +403,8 @@
             <a href="mbti.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">MBTI</a>
             <a href="enneagramme.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Ennéagramme</a>
             <a href="blog.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Blog</a>
-            <a href="#profil-chatbot" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">IA spécialisée</a>
-            <a href="#faq" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">FAQ</a>
+            <a href="index.html#profil-chatbot" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">IA spécialisée</a>
+            <a href="index.html#faq" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">FAQ</a>
             <button id="profile-btn-desktop" onclick="openProfileModal()" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                 Mon profil
             </button>
@@ -422,8 +422,8 @@
                 <a href="mbti.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">MBTI</a>
                 <a href="enneagramme.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Ennéagramme</a>
                 <a href="blog.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Blog</a>
-                <a href="#profil-chatbot" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">IA spécialisée</a>
-                <a href="#faq" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">FAQ</a>
+                <a href="index.html#profil-chatbot" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">IA spécialisée</a>
+                <a href="index.html#faq" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">FAQ</a>
                 <button id="profile-btn-mobile" onclick="openProfileModal()" class="w-full mt-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800">
                     Mon profil
                 </button>
@@ -432,7 +432,7 @@
     </header>
 
     <main>
-        <div class="relative max-w-5xl mx-auto px-6 pb-8 text-center">
+        <div class="relative max-w-5xl mx-auto px-6 pb-16 text-center">
             <img src="/logobanniere.jpeg" alt="Nouveau logo" class="mx-auto mb-8 w-36 sm:w-40 h-auto">
         </div>
 
@@ -469,17 +469,17 @@
                         <li><a href="mbti.html" class="text-base text-gray-300 hover:text-white transition-colors">MBTI</a></li>
                         <li><a href="enneagramme.html" class="text-base text-gray-300 hover:text-white transition-colors">Ennéagramme</a></li>
                         <li><a href="blog.html" class="text-base text-gray-300 hover:text-white transition-colors">Blog</a></li>
-                       <li><a href="#profil-chatbot" class="text-base text-gray-300 hover:text-white transition-colors">IA spécialisée</a></li>
-                        <li><a href="#faq" class="text-base text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+                       <li><a href="index.html#profil-chatbot" class="text-base text-gray-300 hover:text-white transition-colors">IA spécialisée</a></li>
+                        <li><a href="index.html#faq" class="text-base text-gray-300 hover:text-white transition-colors">FAQ</a></li>
 
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Tests</h3>
                     <ul class="mt-4 space-y-4">
-                        <li><a href="#auto-evaluation" class="text-base text-gray-300 hover:text-white transition-colors">Auto-évaluation</a></li>
-                        <li><a href="#evaluation-proche" class="text-base text-gray-300 hover:text-white transition-colors">Évaluer un proche</a></li>
-                        <li><a href="#retourver-profil" class="text-base text-gray-300 hover:text-white transition-colors">Mon profil</a></li>
+                        <li><a href="index.html#auto-evaluation" class="text-base text-gray-300 hover:text-white transition-colors">Auto-évaluation</a></li>
+                        <li><a href="index.html#evaluation-proche" class="text-base text-gray-300 hover:text-white transition-colors">Évaluer un proche</a></li>
+                        <li><a href="index.html#retourver-profil" class="text-base text-gray-300 hover:text-white transition-colors">Mon profil</a></li>
                     </ul>
                 </div>
                 <div>
@@ -519,47 +519,125 @@
             </div>
         </div>
     </footer>
+    <div id="modal-container"></div>
 
-<script>
-  const mobileMenuButton = document.getElementById('mobile-menu-button');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const menuIcon = document.getElementById('menu-icon');
+    <!-- Modale Espace Personnel -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-xl font-bold text-gray-900">Mon Espace Personnel</h2>
+                <span class="close" onclick="closeProfileModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Étape 1: Saisie du code -->
+                <div id="code-input-step" class="profile-step">
+                    <div class="text-center mb-6">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
+                            <i class="fas fa-key text-blue-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Accédez à votre profil</h3>
+                        <p class="text-sm text-gray-500">Entrez votre code unique pour consulter vos résultats</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label for="profile-code" class="block text-sm font-medium text-gray-700 mb-2">Code unique</label>
+                            <input type="text" id="profile-code" placeholder="Entrez votre code (ex: ABC123)" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-mono tracking-wider uppercase">
+                        </div>
+                        <button onclick="checkProfileCode()" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            Accéder à mon profil
+                        </button>
+                    </div>
+                </div>
 
-  if (mobileMenuButton && mobileMenu) {
-    mobileMenuButton.addEventListener('click', function() {
-      const isOpen = mobileMenu.classList.contains('active');
-      if (isOpen) {
-        mobileMenu.classList.remove('active');
-        menuIcon.classList.remove('fa-times');
-        menuIcon.classList.add('fa-bars');
-        mobileMenuButton.setAttribute('aria-expanded', 'false');
-      } else {
-        mobileMenu.classList.add('active');
-        menuIcon.classList.remove('fa-bars');
-        menuIcon.classList.add('fa-times');
-        mobileMenuButton.setAttribute('aria-expanded', 'true');
-      }
-    });
+                <!-- Étape 2: Statut des évaluations -->
+                <div id="profile-status-step" class="profile-step" style="display: none;">
+                    <div class="text-center mb-6">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
+                            <i class="fas fa-user-circle text-blue-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Profil de <span id="profile-name"></span></h3>
+                        <p class="text-sm text-gray-500">Code: <span id="display-code" class="font-mono font-bold"></span></p>
+                    </div>
 
-    const mobileLinks = mobileMenu.querySelectorAll('a');
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.remove('active');
-        menuIcon.classList.remove('fa-times');
-        menuIcon.classList.add('fa-bars');
-        mobileMenuButton.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
-</script>
+                    <!-- Statut des évaluations -->
+                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <h4 class="font-medium text-gray-900 mb-3">Statut des évaluations</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Votre auto-évaluation</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check mr-1"></i> Terminée
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Évaluations des proches</span>
+                                <span id="evaluations-status" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                                    <!-- Sera rempli dynamiquement -->
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Barre de progression -->
+                        <div class="mt-4">
+                            <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                <span>Progression globale</span>
+                                <span id="progress-text">0/4 terminé</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Message selon le statut -->
+                    <div id="status-message" class="rounded-lg p-4 mb-4">
+                        <!-- Sera rempli dynamiquement -->
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex space-x-3">
+                        <button onclick="shareCode()" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            <i class="fas fa-share mr-2"></i>
+                            Partager mon code
+                        </button>
+                        <button id="view-results-btn" onclick="viewResults()" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800" style="display: none;">
+                            <i class="fas fa-chart-pie mr-2"></i>
+                            Voir mes résultats
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Message d'erreur -->
+                <div id="error-message" class="profile-step" style="display: none;">
+                    <div class="text-center">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Code introuvable</h3>
+                        <p class="text-sm text-gray-500 mb-4">Le code que vous avez entré n'existe pas ou est incorrect.</p>
+                        <button onclick="resetProfileModal()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
+                            Réessayer
+                        </button>
+                    </div>
+                </div>
+    </div>
+        </div>
+    </div>
+
+
+
+
+<script src="common.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script>
   AOS.init({
     duration: 600,
-    easing: 'ease-out',
+    easing: "ease-out",
     once: true
   });
-  function openProfileModal() {}
 </script>
 </body>
 </html>
