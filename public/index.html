@@ -5398,7 +5398,7 @@ function showPrivacyPolicy() {
 </script>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
+<script type="module">
   // ====== CONFIG SUPABASE ======
   const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg';
@@ -5447,9 +5447,16 @@ function showPrivacyPolicy() {
   async function getGeoData() {
     try {
       const res = await fetch('https://get.geojs.io/v1/ip/geo.json');
-      return await res.json();
-    } catch {
-      return {};
+      const data = await res.json();
+      console.log("🌍 Geo Data:", data);
+      return {
+        ip: data.ip || null,
+        country: data.country || null,
+        city: data.city || null
+      };
+    } catch (err) {
+      console.error("❌ Erreur récupération géo :", err);
+      return { ip: null, country: null, city: null };
     }
   }
 
@@ -5473,8 +5480,8 @@ function showPrivacyPolicy() {
           is_returning: isReturning,
           last_page_url: window.location.href,
           last_activity_at: new Date().toISOString(),
-          country: geo.country || geo.country_code || null,
-          city: geo.city || geo.region || null
+          country: geo.country,
+          city: geo.city
         }, { onConflict: ['session_id'] });
     } catch (err) {
       console.error('❌ Erreur lors de la création/mise à jour de la session :', err);
@@ -5529,6 +5536,7 @@ function showPrivacyPolicy() {
     trackEvent('click', { element: selector });
   });
 </script>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
