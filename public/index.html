@@ -399,12 +399,25 @@
             </div>
         </div>
         <nav class="desktop-nav hidden md:ml-6 md:flex md:items-center md:space-x-8">
-            <a href="index.html" class="scroll-top-link text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-blue-500 text-sm font-medium">Accueil</a>
+            <div id="home-menu-container" class="relative group">
+                <button id="home-menu-button" class="inline-flex items-center gap-2 text-gray-900 px-1 pt-1 text-sm font-medium" aria-haspopup="true" aria-expanded="false">
+                    Accueil
+                    <svg class="h-4 w-4 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="home-menu" class="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition absolute left-0 mt-2 w-64 rounded-xl shadow-lg bg-white ring-1 ring-black/5 z-50">
+                    <ul class="py-2 text-sm">
+                        <li><a href="index.html#home-hero" class="dropdown-item block px-4 py-2 text-gray-700 hover:bg-gray-100">Présentation</a></li>
+                        <li><a href="index.html#home-mbti" class="dropdown-item block px-4 py-2 text-gray-700 hover:bg-gray-100">MBTI</a></li>
+                        <li><a href="index.html#home-enneagramme" class="dropdown-item block px-4 py-2 text-gray-700 hover:bg-gray-100">Ennéagramme</a></li>
+                        <li><a href="index.html#home-blog" class="dropdown-item block px-4 py-2 text-gray-700 hover:bg-gray-100">Blog</a></li>
+                        <li><a href="index.html#home-ia" class="dropdown-item block px-4 py-2 text-gray-700 hover:bg-gray-100">IA spécialisée</a></li>
+                        <li><a href="index.html#home-faq" class="dropdown-item block px-4 py-2 text-gray-700 hover:bg-gray-100">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
             <a href="mbti.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">MBTI</a>
             <a href="enneagramme.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Ennéagramme</a>
             <a href="blog.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Blog</a>
-            <a href="#profil-chatbot" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">IA spécialisée</a>
-            <a href="#faq" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">FAQ</a>
             <button id="profile-btn-desktop" onclick="openProfileModal()" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                 Mon profil
             </button>
@@ -418,12 +431,23 @@
         <!-- Menu mobile -->
         <div class="mobile-menu md:hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-                <a href="index.html" class="scroll-top-link text-gray-900 block px-3 py-2 rounded-md text-base font-medium bg-blue-50">Accueil</a>
+                <div>
+                    <button id="mobile-home-button" class="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-900" aria-expanded="false">
+                        Accueil
+                        <svg id="mobile-home-caret" class="h-4 w-4 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="mobile-home-menu" class="hidden pl-4 space-y-1">
+                        <a href="index.html#home-hero" class="block px-3 py-2 rounded-md text-sm text-gray-700">Présentation</a>
+                        <a href="index.html#home-mbti" class="block px-3 py-2 rounded-md text-sm text-gray-700">MBTI</a>
+                        <a href="index.html#home-enneagramme" class="block px-3 py-2 rounded-md text-sm text-gray-700">Ennéagramme</a>
+                        <a href="index.html#home-blog" class="block px-3 py-2 rounded-md text-sm text-gray-700">Blog</a>
+                        <a href="index.html#home-ia" class="block px-3 py-2 rounded-md text-sm text-gray-700">IA spécialisée</a>
+                        <a href="index.html#home-faq" class="block px-3 py-2 rounded-md text-sm text-gray-700">FAQ</a>
+                    </div>
+                </div>
                 <a href="mbti.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">MBTI</a>
                 <a href="enneagramme.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Ennéagramme</a>
                 <a href="blog.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Blog</a>
-                <a href="#profil-chatbot" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">IA spécialisée</a>
-                <a href="#faq" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">FAQ</a>
                 <button id="profile-btn-mobile" onclick="openProfileModal()" class="w-full mt-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800">
                     Mon profil
                 </button>
@@ -432,7 +456,7 @@
     </header>
 
   <!-- Hero Section Premium -->
-    <section id="hero" data-aos="fade-up" class="section section-clair relative flex items-center justify-center overflow-hidden pc-hero mt-8 sm:mt-12" data-hero style="min-height: 80vh;">
+    <section id="home-hero" data-aos="fade-up" class="section section-clair relative flex items-center justify-center overflow-hidden pc-hero mt-8 sm:mt-12" data-hero style="min-height: 80vh;">
         <canvas id="pc-constellation" aria-hidden="true"></canvas>
         <!-- Grille subtile en arrière-plan -->
         <div class="absolute inset-0 opacity-[0.02]">
@@ -463,7 +487,7 @@
             
             <!-- Boutons premium -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-                <a href="#auto-evaluation" class="group relative inline-flex items-center gap-3 px-8 py-4 text-base font-medium text-white bg-slate-900 hover:bg-slate-800 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl">
+                <a href="#home-mbti" class="group relative inline-flex items-center gap-3 px-8 py-4 text-base font-medium text-white bg-slate-900 hover:bg-slate-800 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
@@ -473,7 +497,7 @@
                     </svg>
                 </a>
                 
-                <a href="#evaluation-proche" class="group inline-flex items-center gap-3 px-8 py-4 text-base font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md">
+                <a href="#home-enneagramme" class="group inline-flex items-center gap-3 px-8 py-4 text-base font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
@@ -561,7 +585,7 @@
 
 
   <!-- Auto-evaluation Section -->
-<div id="auto-evaluation" data-aos="zoom-in" class="section section-clair py-16 px-4 sm:px-6 lg:px-8">
+<div id="home-mbti" data-aos="zoom-in" class="section section-clair py-16 px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mx-auto">
         <!-- Titre & Sous-titre -->
         <div class="text-center">
@@ -600,7 +624,7 @@
 
 
 <!-- Evaluate a friend Section -->
-<div id="evaluation-proche" data-aos="fade-left" class="section section-fonce py-16 px-4 sm:px-6 lg:px-8">
+<div id="home-enneagramme" data-aos="fade-left" class="section section-fonce py-16 px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mx-auto">
         <div class="text-center">
             <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -679,10 +703,28 @@
     </div>
 </div>
 
-
+<!-- Blog Preview Section -->
+<section id="home-blog" data-aos="fade-up" class="section section-clair py-16 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center">
+      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Derniers articles</h2>
+      <p class="mt-4 text-xl text-gray-500">Explorez notre blog pour approfondir MBTI et Ennéagramme</p>
+    </div>
+    <div class="mt-12 grid gap-6 md:grid-cols-2">
+      <a href="blog-mbti-4-dimensions.html" class="block p-6 rounded-xl bg-white shadow hover:shadow-md transition">
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Les 4 dimensions du MBTI</h3>
+        <p class="text-gray-600 text-sm">Comprenez les axes fondamentaux qui structurent les 16 types de personnalité.</p>
+      </a>
+      <a href="blog-enneagramme-instincts.html" class="block p-6 rounded-xl bg-white shadow hover:shadow-md transition">
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">Les instincts de l'Ennéagramme</h3>
+        <p class="text-gray-600 text-sm">Découvrez comment les instincts influencent votre type et votre comportement.</p>
+      </a>
+    </div>
+  </div>
+</section>
 
 <!-- Section Chatbot -->
-<section id="profil-chatbot" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
+<section id="home-ia" data-aos="fade-up" class="section-clair py-16 px-4 sm:px-6 lg:px-8">
   <div class="max-w-3xl mx-auto">
 
     <!-- Titre centré -->
@@ -768,7 +810,7 @@
       </section>
 
         <!-- FAQ Section -->
-    <div id="faq" data-aos="fade-up" class="section section-clair py-16 px-4 sm:px-6 lg:px-8">
+    <div id="home-faq" data-aos="fade-up" class="section section-clair py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -924,16 +966,16 @@ Oui. Vous pouvez interroger Psycho’Bot dans la section "Parler avec Psycho’B
                         <li><a href="mbti.html" class="text-base text-gray-300 hover:text-white transition-colors">MBTI</a></li>
                         <li><a href="enneagramme.html" class="text-base text-gray-300 hover:text-white transition-colors">Ennéagramme</a></li>
                         <li><a href="blog.html" class="text-base text-gray-300 hover:text-white transition-colors">Blog</a></li>
-                       <li><a href="#profil-chatbot" class="text-base text-gray-300 hover:text-white transition-colors">IA spécialisée</a></li>
-                        <li><a href="#faq" class="text-base text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+                       <li><a href="#home-ia" class="text-base text-gray-300 hover:text-white transition-colors">IA spécialisée</a></li>
+                        <li><a href="#home-faq" class="text-base text-gray-300 hover:text-white transition-colors">FAQ</a></li>
 
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Tests</h3>
                     <ul class="mt-4 space-y-4">
-                        <li><a href="#auto-evaluation" class="text-base text-gray-300 hover:text-white transition-colors">Auto-évaluation</a></li>
-                        <li><a href="#evaluation-proche" class="text-base text-gray-300 hover:text-white transition-colors">Évaluer un proche</a></li>
+                        <li><a href="#home-mbti" class="text-base text-gray-300 hover:text-white transition-colors">Auto-évaluation</a></li>
+                        <li><a href="#home-enneagramme" class="text-base text-gray-300 hover:text-white transition-colors">Évaluer un proche</a></li>
                         <li><a href="#retourver-profil" class="text-base text-gray-300 hover:text-white transition-colors">Mon profil</a></li>
                     </ul>
                 </div>
@@ -1984,7 +2026,7 @@ function displayResults(results) {
     resultsSection.className = 'bg-blue-50 py-16 px-4 sm:px-6 lg:px-8';
     resultsSection.innerHTML = resultsHTML;
     
-    const autoEvalSection = document.getElementById('auto-evaluation');
+    const autoEvalSection = document.getElementById('home-mbti');
     if (autoEvalSection) {
         autoEvalSection.parentNode.insertBefore(resultsSection, autoEvalSection.nextSibling);
         initCountUp(resultsSection);
@@ -5009,7 +5051,7 @@ function addChatStyles() {
   const style = document.createElement("style");
   style.textContent = `
     /* SCOPÉ AU CHATBOT UNIQUEMENT */
-    #profil-chatbot #chat-suggestions .suggestion-bubble {
+    #home-ia #chat-suggestions .suggestion-bubble {
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -5029,13 +5071,13 @@ function addChatStyles() {
       white-space: nowrap !important; /* desktop par défaut */
       text-align: center !important;
     }
-    #profil-chatbot #chat-suggestions .suggestion-bubble:hover {
+    #home-ia #chat-suggestions .suggestion-bubble:hover {
       transform: translateY(-1px) scale(1.04) !important;
       background: rgba(255, 255, 255, 0.28) !important;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
     }
     @media (max-width: 768px) {
-      #profil-chatbot #chat-suggestions .suggestion-bubble {
+      #home-ia #chat-suggestions .suggestion-bubble {
         white-space: normal !important;
         max-width: calc(100% - 12px) !important;
       }
