@@ -5630,15 +5630,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     toggleSuggestions(); // les cacher si ce n’est pas déjà le cas
     appendMessage('user',q);
+    // Tracking : message utilisateur envoyé
+    trackEvent('chat_message_sent', { messageLength: q.length });
     setTyping(true);
 
     try{
       const res=await fetch("/api/text",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages})});
       const data=await res.json();
-      appendMessage('assistant', data.message || "(pas de réponse)", {typing:true});
+      const botMsg = data.message || "(pas de réponse)";
+      appendMessage('assistant', botMsg, {typing:true});
+      // Tracking : réponse du bot
+      trackEvent('chat_message_received', { messageLength: botMsg.length });
     }catch(e){
       console.error(e);
-      appendMessage('assistant',"Oups, problème de connexion. Réessaye dans quelques secondes.",{typing:false});
+      const errMsg = "Oups, problème de connexion. Réessaye dans quelques secondes.";
+      appendMessage('assistant', errMsg,{typing:false});
+      // Tracking même en cas d'erreur réseau
+      trackEvent('chat_message_received', { messageLength: errMsg.length });
     }finally{
       setTyping(false);
     }
