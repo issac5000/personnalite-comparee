@@ -275,6 +275,12 @@ if (!countriesFixed?.length) {
     .sort((a,b) => b.sessions - a.sessions)
     .slice(0, 20);
 }
+// Correction des valeurs NULL ou vides pour les pays
+const countriesFixed = (countries || []).map(c => ({
+  ...c,
+  country: c.country || 'Inconnu'
+}));
+
 // et dans le return de fetchStats, remplace `countries` par `countries: countriesFixed`
 return {
   sessionsParJour, eventsParJour, deviceTypes, countries: countriesFixed,
@@ -282,25 +288,25 @@ return {
   categories, clicks, avgEngagement, dailyGlobal,
   recentSessions
 };
-      
-      // sessions récentes (debug)
-      const recentSessions = await fetchRecentSessions();
 
-      const errs = [e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12].filter(Boolean);
-      if (errs.length) {
-        console.error('Erreurs Supabase:', errs);
-        showMessage('error', 'Certaines données n’ont pas pu être chargées. Réessaie plus tard ou clique sur “Actualiser”.');
-      } else {
-        document.getElementById('dashboard-messages').innerHTML = '';
-      }
+// sessions récentes (debug)
+const recentSessions = await fetchRecentSessions();
 
-      return {
-        sessionsParJour, eventsParJour, deviceTypes, countries,
-        topPages, entryPages, exitPages, newVsReturning,
-        categories, clicks, avgEngagement, dailyGlobal,
-        recentSessions
-      };
-    }
+const errs = [e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12].filter(Boolean);
+if (errs.length) {
+  console.error('Erreurs Supabase:', errs);
+  showMessage('error', 'Certaines données n’ont pas pu être chargées. Réessaie plus tard ou clique sur “Actualiser”.');
+} else {
+  document.getElementById('dashboard-messages').innerHTML = '';
+}
+
+return {
+  sessionsParJour, eventsParJour, deviceTypes, countries: countriesFixed,
+  topPages, entryPages, exitPages, newVsReturning,
+  categories, clicks, avgEngagement, dailyGlobal,
+  recentSessions
+};
+
 
     // ====== KPI ======
     function renderKPIs(stats) {
