@@ -26,6 +26,45 @@ if (mobileMenuButton && mobileMenu) {
   });
 }
 
+const homeMenuContainer = document.getElementById('home-menu-container');
+const homeMenuButton = document.getElementById('home-menu-button');
+const homeMenu = document.getElementById('home-menu');
+if (homeMenuContainer && homeMenuButton && homeMenu) {
+  const openMenu = () => {
+    homeMenu.classList.remove('invisible', 'opacity-0');
+    homeMenuButton.setAttribute('aria-expanded', 'true');
+  };
+  const closeMenu = () => {
+    homeMenu.classList.add('invisible', 'opacity-0');
+    homeMenuButton.setAttribute('aria-expanded', 'false');
+  };
+  homeMenuContainer.addEventListener('mouseenter', openMenu);
+  homeMenuContainer.addEventListener('mouseleave', closeMenu);
+  homeMenuButton.addEventListener('focus', openMenu);
+  homeMenuButton.addEventListener('blur', e => { if (!homeMenu.contains(e.relatedTarget)) closeMenu(); });
+  document.addEventListener('click', e => { if (!homeMenuContainer.contains(e.target)) closeMenu(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+}
+
+const mobileHomeButton = document.getElementById('mobile-home-button');
+const mobileHomeMenu = document.getElementById('mobile-home-menu');
+const mobileHomeCaret = document.getElementById('mobile-home-caret');
+if (mobileHomeButton && mobileHomeMenu && mobileHomeCaret) {
+  mobileHomeButton.addEventListener('click', () => {
+    const expanded = mobileHomeButton.getAttribute('aria-expanded') === 'true';
+    mobileHomeButton.setAttribute('aria-expanded', String(!expanded));
+    mobileHomeMenu.classList.toggle('hidden', expanded);
+    mobileHomeCaret.classList.toggle('rotate-180', !expanded);
+  });
+  document.addEventListener('click', e => {
+    if (!mobileHomeButton.contains(e.target) && !mobileHomeMenu.contains(e.target)) {
+      mobileHomeMenu.classList.add('hidden');
+      mobileHomeButton.setAttribute('aria-expanded', 'false');
+      mobileHomeCaret.classList.remove('rotate-180');
+    }
+  });
+}
+
 function showModal(title, content) {
   const modalContainer = document.getElementById('modal-container');
   modalContainer.innerHTML = `
