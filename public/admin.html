@@ -44,25 +44,27 @@
   </style>
 </head>
 
-  <body class="h-full bg-white text-gray-800">
-  <!-- Topbar -->
-  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm">
-    <div class="max-w-7xl mx-auto px-5 py-4 flex items-center gap-4">
-      <div class="flex items-center gap-3">
-        <img src="/logotitre.png" alt="Logo Personnalité Comparée" class="w-10 h-10 rounded-xl">
-        <div>
-          <h1 class="text-xl sm:text-2xl font-bold leading-5">Dashboard Analytics</h1>
-          <p id="last-updated" class="text-xs text-gray-500 mt-1">Dernière mise à jour — …</p>
-        </div>
-      </div>
-      <div class="ml-auto flex items-center gap-2">
-        <span class="text-xs text-gray-500 hidden sm:inline">Auto-refresh : 5 min</span>
-        <button id="refresh-btn" class="px-3.5 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700 focus:outline-none">
-          Actualiser
-        </button>
+ <!-- Topbar -->
+<header class="sticky top-0 z-30 bg-white/90 backdrop-blur shadow-sm">
+  <div class="max-w-7xl mx-auto px-5 py-4 flex items-center gap-4">
+    <div class="flex items-center gap-3">
+      <img src="/logotitre.png" alt="Logo Personnalité Comparée" class="w-10 h-10 rounded-xl">
+      <div>
+        <h1 class="text-xl sm:text-2xl font-bold leading-5">Dashboard Analytics</h1>
+        <p id="last-updated" class="text-xs text-gray-500 mt-1">Dernière mise à jour — …</p>
       </div>
     </div>
-  </header>
+    <div class="ml-auto flex items-center gap-2">
+      <span class="text-xs text-gray-500 hidden sm:inline">Auto-refresh : 5 min</span>
+      <button id="refresh-btn" class="px-3.5 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700 focus:outline-none">
+        Actualiser
+      </button>
+      <button onclick="logoutAdmin()" class="px-3.5 py-2 rounded-lg bg-red-600 text-white text-sm hover:bg-red-700 focus:outline-none">
+        Déconnexion
+      </button>
+    </div>
+  </div>
+</header>
 
   <img src="/logobanniere.jpeg" alt="Nouveau logo" class="mx-auto my-8 w-36 sm:w-40 h-auto">
 
@@ -672,5 +674,14 @@
     boot();
     setInterval(boot, 5 * 60 * 1000);
   </script>
+  
+<script>
+  function logoutAdmin() {
+    localStorage.removeItem("isAdminLogged");
+    window.location.href = "/login.html";
+  }
+</script>
+
+  
 </body>
 </html>
