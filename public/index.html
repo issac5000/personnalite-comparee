@@ -5397,150 +5397,6 @@ function showPrivacyPolicy() {
   }
 </script>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script type="module">
-  // ====== CONFIG SUPABASE ======
-  const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg';
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  // UUID session
-  function generateSessionId() {
-    if (window.crypto?.randomUUID) return crypto.randomUUID();
-    return 'xxxxxxxxyxxxxxxx'.replace(/[xy]/g, c => {
-      const r = (Math.random() * 16) | 0;
-      const v = c === 'x' ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
-
-  // Session locale
-  let sessionId = localStorage.getItem('session_id');
-  const hasVisited = localStorage.getItem('hasVisited');
-  const isReturning = hasVisited === 'true';
-  if (!sessionId) {
-    sessionId = generateSessionId();
-    localStorage.setItem('session_id', sessionId);
-  }
-  if (!hasVisited) {
-    localStorage.setItem('hasVisited', 'true');
-  }
-
-  // UTM
-  function parseUTM() {
-    const params = new URLSearchParams(window.location.search);
-    const utm = {};
-    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach((key) => {
-      if (params.get(key)) utm[key] = params.get(key);
-    });
-    return Object.keys(utm).length ? utm : null;
-  }
-  const utmParams = parseUTM();
-
-  // Infos device
-  const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
-  const viewport = { width: window.innerWidth, height: window.innerHeight };
-  const screenSize = { width: screen.width, height: screen.height };
-  const tzOffset = new Date().getTimezoneOffset();
-
-  // Récupération pays/ville/IP via GeoJS
-  async function getGeoData() {
-    try {
-      const res = await fetch('https://get.geojs.io/v1/ip/geo.json');
-      const data = await res.json();
-      console.log("🌍 Geo Data:", data);
-      return {
-        ip: data.ip || null,
-        country: data.country || null,
-        city: data.city || null
-      };
-    } catch (err) {
-      console.error("❌ Erreur récupération géo :", err);
-      return { ip: null, country: null, city: null };
-    }
-  }
-
-  // Création / MAJ session
-  async function createSession() {
-    try {
-      const geo = await getGeoData();
-      await supabase
-        .from('sessions')
-        .upsert({
-          session_id: sessionId,
-          first_referrer: document.referrer || null,
-          first_utm: utmParams,
-          user_agent: navigator.userAgent,
-          last_event_name: 'page_view',
-          device_type: deviceType,
-          language: navigator.language,
-          tz_offset: tzOffset,
-          viewport,
-          screen: screenSize,
-          is_returning: isReturning,
-          last_page_url: window.location.href,
-          last_activity_at: new Date().toISOString(),
-          ip: geo.ip,          // ⬅ Ajout IP
-          country: geo.country,
-          city: geo.city
-        }, { onConflict: ['session_id'] });
-    } catch (err) {
-      console.error('❌ Erreur lors de la création/mise à jour de la session :', err);
-    }
-  }
-
-  // Tracking événement
-  async function trackEvent(eventName, meta = {}) {
-    try {
-      const category = eventName.includes('click') ? 'Interaction' : 'Navigation';
-      await supabase.from('events').insert({
-        session_id: sessionId,
-        event_name: eventName,
-        event_category: category,
-        page_url: window.location.href,
-        referrer: document.referrer || null,
-        utm: utmParams,
-        user_agent: navigator.userAgent,
-        meta,
-        element_selector: meta.element || null
-      });
-
-      await supabase
-        .from('sessions')
-        .update({
-          last_activity_at: new Date().toISOString(),
-          last_event_name: eventName,
-          last_page_url: window.location.href
-        })
-        .eq('session_id', sessionId);
-
-    } catch (err) {
-      console.error('❌ Erreur lors de l’enregistrement de l’événement :', err);
-    }
-  }
-
-  // Init
-  createSession().then(() => {
-    trackEvent('page_view');
-  });
-
-  // Clics
-  document.addEventListener('click', (e) => {
-    let selector = '';
-    if (e.target.id) {
-      selector = '#' + e.target.id;
-    } else if (e.target.className) {
-      selector = e.target.tagName.toLowerCase() + '.' + e.target.className.toString().replace(/\s+/g, '.');
-    } else {
-      selector = e.target.tagName.toLowerCase();
-    }
-    trackEvent('click', { element: selector });
-  });
-</script>
-
-
-
-
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script>
   AOS.init({
@@ -5859,68 +5715,171 @@ addChatStyles();
   #pc-constellation{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none;}
 </style>
 
-  // 🔑 Initialisation Supabase (frontend)
-const { createClient } = supabase;
-const supabaseClient = createClient(
-  'https://swjnpvfkloubshksobau.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL3N1cGFiYXNlLnYwL2FkbWluX2NsYWltcyI6eyJyb2xlIjoibWFpbiJ9LCJpYXQiOjE2OTM5Njg4MDAsImV4cCI6MjAwOTU0NDgwMH0.i3TnndvWNa2FfsryYBoJ2gqj07PqsnPjUNToBGogIdQ'
-);
+ <!-- Supabase UMD (expose window.supabase) -->
+<script src="https://unpkg.com/@supabase/supabase-js"></script>
 
-// 🔄 Récupère ou crée l'ID de session dans localStorage
-let sessionId = localStorage.getItem('pc_session_id');
-if (!sessionId) {
-  sessionId = crypto.randomUUID();
-  localStorage.setItem('pc_session_id', sessionId);
+<script>
+/* ========================
+   Analytics – Personnalité Comparée
+   ======================== */
+
+// ====== CONFIG SUPABASE ======
+const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ====== Utils ======
+function generateSessionId() {
+  if (window.crypto?.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxxyxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }
 
-// 🛠 Fonction pour créer ou mettre à jour la session avec la géoloc
-async function trackSession() {
+function parseUTM() {
+  const params = new URLSearchParams(window.location.search);
+  const utm = {};
+  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach((k) => {
+    const v = params.get(k);
+    if (v) utm[k] = v;
+  });
+  return Object.keys(utm).length ? utm : null;
+}
+
+// ====== Session locale ======
+let sessionId = localStorage.getItem('session_id');
+const hasVisited = localStorage.getItem('hasVisited');
+const isReturning = hasVisited === 'true';
+if (!sessionId) {
+  sessionId = generateSessionId();
+  localStorage.setItem('session_id', sessionId);
+}
+if (!hasVisited) localStorage.setItem('hasVisited', 'true');
+
+// ====== Contexte navigateur ======
+const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+const viewport = { width: window.innerWidth, height: window.innerHeight };
+const screenSize = { width: screen.width, height: screen.height };
+const tzOffset = new Date().getTimezoneOffset();
+const utmParams = parseUTM();
+
+// ====== Geo (CORS OK) + cache local 10 min ======
+async function getGeoData() {
+  const cacheKey = 'geo_cache_json';
+  const cacheTsKey = 'geo_cache_ts';
+  const now = Date.now();
+  const ts = Number(localStorage.getItem(cacheTsKey) || 0);
+
+  if (now - ts < 10 * 60 * 1000) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(cacheKey) || '{}');
+      if (cached && (cached.country || cached.city)) return cached;
+    } catch (_) {}
+  }
+
   try {
-    // 1️⃣ Récupère infos IP & géolocalisation
-    const geo = await fetch('https://get.geojs.io/v1/ip/geo.json').then(res => res.json());
-
-    // 2️⃣ Prépare les données à stocker
-    const sessionData = {
-      session_id: sessionId,
-      last_activity_at: new Date().toISOString(),
-      device_type: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
-      language: navigator.language,
-      ip: geo.ip,
-      country: geo.country,
-      city: geo.city,
-      last_event_name: 'page_view',
-      last_page_url: window.location.href,
+    const res = await fetch('https://get.geojs.io/v1/ip/geo.json', { cache: 'no-store' });
+    const data = await res.json();
+    const geo = {
+      country: data.country || data.country_code || null,
+      city: data.city || null
     };
-
-    // 3️⃣ Vérifie si la session existe déjà
-    const { data: existing } = await supabaseClient
-      .from('sessions')
-      .select('session_id')
-      .eq('session_id', sessionId)
-      .single();
-
-    if (existing) {
-      // Met à jour la session
-      await supabaseClient
-        .from('sessions')
-        .update(sessionData)
-        .eq('session_id', sessionId);
-    } else {
-      // Crée une nouvelle session
-      await supabaseClient
-        .from('sessions')
-        .insert([sessionData]);
-    }
-
-    console.log('✅ Session enregistrée avec géoloc:', sessionData);
-
-  } catch (err) {
-    console.error('❌ Erreur tracking session:', err);
+    localStorage.setItem(cacheKey, JSON.stringify(geo));
+    localStorage.setItem(cacheTsKey, String(now));
+    return geo;
+  } catch {
+    return { country: null, city: null };
   }
 }
 
-// 🚀 Lancer le tracking
-trackSession();
+// ====== Création / MAJ de la session ======
+async function upsertSession(initialEventName = 'page_view') {
+  const geo = await getGeoData();
+
+  const payload = {
+    session_id: sessionId,
+    first_referrer: document.referrer || null,
+    first_utm: utmParams,
+    user_agent: navigator.userAgent,
+    device_type: deviceType,
+    language: navigator.language,
+    tz_offset: tzOffset,
+    viewport,
+    screen: screenSize,
+    is_returning: isReturning,
+    last_page_url: window.location.href,
+    last_event_name: initialEventName,
+    last_activity_at: new Date().toISOString(),
+    country: geo.country || null,
+    city: geo.city || null
+  };
+
+  const { error } = await supabase
+    .from('sessions')
+    .upsert(payload, { onConflict: ['session_id'] });
+
+  if (error) {
+    console.error('❌ Session upsert error:', error);
+  }
+}
+
+// ====== Envoi d’événements ======
+async function trackEvent(eventName, meta = {}) {
+  try {
+    const event_category = eventName.includes('click') ? 'Interaction' : 'Navigation';
+
+    // 1) insérer l’événement
+    const { error: e1 } = await supabase.from('events').insert({
+      session_id: sessionId,
+      event_name: eventName,
+      event_category,
+      page_url: window.location.href,
+      referrer: document.referrer || null,
+      utm: utmParams,
+      user_agent: navigator.userAgent,
+      meta,
+      element_selector: meta.element || null
+    });
+    if (e1) console.error('❌ Event insert error:', e1);
+
+    // 2) mettre à jour l’activité de la session
+    const { error: e2 } = await supabase
+      .from('sessions')
+      .update({
+        last_activity_at: new Date().toISOString(),
+        last_event_name: eventName,
+        last_page_url: window.location.href
+      })
+      .eq('session_id', sessionId);
+
+    if (e2) console.error('❌ Session update error:', e2);
+  } catch (err) {
+    console.error('❌ trackEvent exception:', err);
+  }
+}
+
+// ====== Init ======
+(async () => {
+  // crée/MAJ la session avec pays/ville
+  await upsertSession('page_view');
+  // log la page vue
+  await trackEvent('page_view');
+
+  // Suivi des clics
+  document.addEventListener('click', (e) => {
+    let selector = '';
+    if (e.target.id) selector = '#'+e.target.id;
+    else if (e.target.className) {
+      selector = e.target.tagName.toLowerCase()+'.'+e.target.className.toString().replace(/\s+/g,'.');
+    } else selector = e.target.tagName.toLowerCase();
+
+    trackEvent('click', { element: selector });
+  });
+})();
+</script>
 
   
 </body>
