@@ -11,7 +11,9 @@
       menu:document.getElementById(cfg.m)
     })).filter(obj=>obj.container&&obj.button&&obj.menu);
     desktopMenus.forEach(current=>{
+      let closeTimeout;
       const openMenu=()=>{
+        clearTimeout(closeTimeout);
         desktopMenus.forEach(other=>{
           if(other!==current){
             other.menu.classList.add('invisible','opacity-0');
@@ -25,10 +27,16 @@
         current.menu.classList.add('invisible','opacity-0');
         current.button.setAttribute('aria-expanded','false');
       };
-      current.container.addEventListener('mouseenter',openMenu);
-      current.container.addEventListener('mouseleave',closeMenu);
+      const scheduleClose=()=>{
+        clearTimeout(closeTimeout);
+        closeTimeout=setTimeout(closeMenu,250);
+      };
+      current.button.addEventListener('mouseenter',openMenu);
+      current.menu.addEventListener('mouseenter',openMenu);
+      current.button.addEventListener('mouseleave',scheduleClose);
+      current.menu.addEventListener('mouseleave',scheduleClose);
       current.button.addEventListener('focus',openMenu);
-      current.button.addEventListener('blur',e=>{if(!current.menu.contains(e.relatedTarget)) closeMenu();});
+      current.button.addEventListener('blur',e=>{if(!current.menu.contains(e.relatedTarget)) scheduleClose();});
       document.addEventListener('click',e=>{if(!current.container.contains(e.target)) closeMenu();});
       document.addEventListener('keydown',e=>{if(e.key==='Escape') closeMenu();});
     });
