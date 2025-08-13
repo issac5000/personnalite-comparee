@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr" class="h-full">
 <head>
+
+<script>
+  // 🚫 Protection : redirection si pas connecté
+  if (localStorage.getItem("isAdminLogged") !== "true") {
+    window.location.href = "/login.html";
+  }
+</script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tableau de bord – Personnalité Comparée</title>
