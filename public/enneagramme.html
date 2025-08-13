@@ -3,44 +3,438 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ennéagramme - Personnalité Comparée</title>
-  <link rel="icon" type="image/jpeg" href="/flavicon.png">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
-  <style>
-    .mobile-menu { position: absolute; top: 100%; left: 0; right: 0; z-index:1100; display:none; }
-    .mobile-menu.active { display:block; }
-  </style>
+  <title>Ennéagramme — Personnalité Comparée</title>
+
+  <!-- Supabase JS -->
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Plongez dans l'Ennéagramme et ses neuf types de personnalité.">
+  <meta name="keywords" content="test personnalité, MBTI, ennéagramme, psychologie, 16 types, auto-évaluation, gratuit">
+  <meta name="author" content="Personnalité Comparée">
+  <meta name="robots" content="index, follow">
+
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="">
+  <meta property="og:title" content="Personnalité Comparée | Test MBTI & Ennéagramme Gratuit">
+  <meta property="og:description" content="Découvrez votre vraie personnalité avec notre test MBTI et Ennéagramme gratuit. Analyse objective combinant votre auto-évaluation et l'avis de vos proches.">
+    <meta property="og:image" content="logo.jpg">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="Personnalité Comparée | Test MBTI & Ennéagramme Gratuit">
+    <meta property="twitter:description" content="Découvrez votre vraie personnalité avec notre test MBTI et Ennéagramme gratuit. Analyse objective combinant votre auto-évaluation et l'avis de vos proches.">
+      <meta property="twitter:image" content="logo.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/flavicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Supabase JS library -->
+   
+    <style>
+        html, body {
+            overflow-x: hidden;
+        }
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        button,
+        [class*="card"] {
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: rotateX(3deg) rotateY(3deg) scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        [class*="card"]:hover {
+            transform: perspective(600px) rotateX(3deg) rotateY(-3deg) scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        .question-card {
+            min-height: 300px;
+        }
+        .floating-btn {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .personality-badge {
+            border-radius: 50px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        /* Styles pour les modales */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .close {
+            color: #9ca3af;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: #374151;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes modalSlideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px) scale(0.95);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .desktop-nav {
+                display: none;
+            }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .question-container {
+            display: none;
+        }
+        .question-container.active {
+            display: block;
+        }
+
+        .section-clair {
+            background-color: #ffffff;
+        }
+
+        .section-fonce {
+            background-color: #fbfbfb;
+        }
+        #site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: inherit;
+            height: 64px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        body {
+            padding-top: 64px;
+        }
+
+        .mobile-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 1100;
+            display: none;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            #site-header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                background: inherit;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+                height: 56px;
+            }
+            body {
+                padding-top: 56px;
+            }
+            [id],
+            .section {
+                scroll-margin-top: 64px;
+            }
+        }
+
+        .scroll-highlight {
+            animation: scrollHighlight 1s ease;
+        }
+        @keyframes scrollHighlight {
+            from { background-color: #fef3c7; }
+            to { background-color: #ffffff; }
+        }
+
+        /* Chat styles */
+        .chat-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        .chat-row.user {
+            justify-content: flex-end;
+        }
+        .chat-row.assistant {
+            justify-content: flex-start;
+        }
+        .chat-bubble {
+            display: inline-block;
+            padding: 10px 14px;
+            font-size: 15px;
+        }
+        .assistant-bubble {
+            background: #e0f0ff;
+            color: #003b5c;
+            border-radius: 16px 16px 16px 4px;
+        }
+        .user-bubble {
+            background: #d1ffe0;
+            color: #084d28;
+            border-radius: 16px 16px 4px 16px;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .assistant-bubble.limit-error {
+            background: #ffe5e5;
+            border: 1px solid #ff0000;
+            color: #b30000;
+            font-weight: bold;
+            animation: shake 0.4s;
+        }
+        .question-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            margin-top: auto;
+            padding: 12px;
+        }
+        .question-buttons button {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background-color: #e7f1fb;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .question-buttons button:hover {
+            background-color: #d0e7f7;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .pc-typing {
+            position: sticky;
+            bottom: 0;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.04);
+            backdrop-filter: blur(2px);
+            border-top: 1px solid rgba(0,0,0,0.06);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .pc-typing[hidden] { display: none; }
+        .pc-dots span {
+            animation: pc-blink 1.2s infinite;
+            display: inline-block;
+            padding-left: 2px;
+        }
+        .pc-dots span:nth-child(2) { animation-delay: .2s; }
+        .pc-dots span:nth-child(3) { animation-delay: .4s; }
+        @keyframes pc-blink {
+            0% { opacity: 0.2; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-1px); }
+            100% { opacity: 0.2; transform: translateY(0); }
+        }
+        .spinner {
+            border: 3px solid #e5e7eb;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: -2px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+        :root{
+          --pc-line: rgba(59,130,246,.30);  /* bleu doux (#3B82F6) */
+          --pc-dot:  rgba(10,15,26,.62);
+        }
+        /* le conteneur de la bannière doit déjà être positionné ; sinon: */
+        .pc-hero { position: relative; isolation: isolate; z-index: 0; margin-top: 2rem; }
+        @media (min-width: 768px) {
+          .pc-hero { margin-top: 3rem; }
+        }
+
+        #pc-constellation{
+          position: absolute; inset: 0; width: 100%; height: 100%;
+          pointer-events: none; z-index: -1; /* contenu texte reste au-dessus */
+        }
+
+        @media (prefers-reduced-motion: reduce){
+          #pc-constellation{ display:none !important; }
+        }
+
+        .pc-info-banner{
+          background:#eef2ff;
+          color:#0f172a;
+          border:1px solid rgba(59,130,246,.25);
+          border-radius:12px;
+          padding:14px 16px;
+          margin:16px 0 12px;
+          line-height:1.5;
+          font-size:.95rem;
+        }
+        @media (max-width:768px){
+          .pc-info-banner{ margin:12px 0; font-size:.93rem; }
+        }
+
+       /* Styles spécifiques au chatbot Psycho'Bot */
+#chat-window {
+  border-radius: 32px !important;
+  overflow: hidden !important;
+}
+
+#chat-input {
+  border-top-left-radius: 9999px !important;
+  border-bottom-left-radius: 9999px !important;
+  border: none !important;
+}
+
+#chat-send {
+  border-top-right-radius: 9999px !important;
+  border-bottom-right-radius: 9999px !important;
+  border: none !important;
+}
+
+    </style>
+
 </head>
-<body class="font-sans bg-white text-gray-900">
-<header class="sticky-header">
-  <div class="flex items-center">
-    <div class="flex-shrink-0 flex items-center">
-      <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span class="ml-3 text-xl font-bold text-black">Personnalité Comparée</span>
-    </div>
-  </div>
-  <nav class="desktop-nav hidden md:ml-6 md:flex md:items-center md:space-x-8">
-    <a href="/index.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Accueil</a>
-    <a href="/mbti.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">MBTI</a>
-    <a href="/enneagramme.html" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-blue-500 text-sm font-medium">Ennéagramme</a>
-    <a href="/blog.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Blog</a>
-  </nav>
-  <div class="-mr-2 flex items-center md:hidden">
-    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
-      <span class="sr-only">Ouvrir le menu principal</span>
-      <i class="fas fa-bars" id="menu-icon"></i>
-    </button>
-  </div>
-  <div class="mobile-menu md:hidden" id="mobile-menu">
-    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-      <a href="/index.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-blue-50">Accueil</a>
-      <a href="/mbti.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-gray-700">MBTI</a>
-      <a href="/enneagramme.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-gray-700">Ennéagramme</a>
-      <a href="/blog.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-gray-700">Blog</a>
-    </div>
-  </div>
-</header>
+<body id="top" class="font-sans bg-white text-gray-900">
+<!-- Navigation -->
+<header id="site-header" class="sticky-header">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 flex items-center">
+                <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span id="brand-home" class="ml-3 text-xl font-bold text-black">Personnalité Comparée</span>
+            </div>
+        </div>
+        <nav class="desktop-nav hidden md:ml-6 md:flex md:items-center md:space-x-8">
+            <a href="index.html" class="scroll-top-link text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-blue-500 text-sm font-medium">Accueil</a>
+            <a href="mbti.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">MBTI</a>
+            <a href="enneagramme.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Ennéagramme</a>
+            <a href="blog.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Blog</a>
+            <a href="#profil-chatbot" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">IA spécialisée</a>
+            <a href="#faq" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">FAQ</a>
+            <button id="profile-btn-desktop" onclick="openProfileModal()" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+                Mon profil
+            </button>
+        </nav>
+        <div class="-mr-2 flex items-center md:hidden">
+            <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
+                <span class="sr-only">Ouvrir le menu principal</span>
+                <i class="fas fa-bars" id="menu-icon"></i>
+            </button>
+        </div>
+        <!-- Menu mobile -->
+        <div class="mobile-menu md:hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+                <a href="index.html" class="scroll-top-link text-gray-900 block px-3 py-2 rounded-md text-base font-medium bg-blue-50">Accueil</a>
+                <a href="mbti.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">MBTI</a>
+                <a href="enneagramme.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Ennéagramme</a>
+                <a href="blog.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Blog</a>
+                <a href="#profil-chatbot" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">IA spécialisée</a>
+                <a href="#faq" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">FAQ</a>
+                <button id="profile-btn-mobile" onclick="openProfileModal()" class="w-full mt-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800">
+                    Mon profil
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="relative max-w-5xl mx-auto px-6 pb-8 text-center">
+            <img src="/logobanniere.jpeg" alt="Nouveau logo" class="mx-auto mb-8 w-36 sm:w-40 h-auto">
+        </div>
 
 <section class="py-16 px-4 sm:px-6 lg:px-8">
   <div class="max-w-3xl mx-auto text-center">
@@ -352,32 +746,67 @@
     </div>
 
 
-    <footer class="bg-gray-800">
-  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-      <div>
-        <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Personnalité Comparée</h3>
-        <ul class="mt-4 space-y-4">
-          <li><a href="/index.html" class="text-base text-gray-300 hover:text-white transition-colors">Accueil</a></li>
-          <li><a href="/mbti.html" class="text-base text-gray-300 hover:text-white transition-colors">MBTI</a></li>
-          <li><a href="/enneagramme.html" class="text-base text-gray-300 hover:text-white transition-colors">Ennéagramme</a></li>
-          <li><a href="/blog.html" class="text-base text-gray-300 hover:text-white transition-colors">Blog</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Légal</h3>
-        <ul class="mt-4 space-y-4">
-          <li><a href="#" class="text-base text-gray-300 hover:text-white transition-colors">Confidentialité</a></li>
-          <li><a href="#" class="text-base text-gray-300 hover:text-white transition-colors">Conditions d'utilisation</a></li>
-          <li><a href="#" class="text-base text-gray-300 hover:text-white transition-colors">Mentions légales</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="mt-8 border-t border-gray-700 pt-8">
-      <p class="text-base text-gray-400 text-center">&copy; 2025 Personnalité Comparée. Tous droits réservés.</p>
-    </div>
-  </div>
-</footer>
+    </main>
+<footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Personnalité Comparée</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="index.html" class="text-base text-gray-300 hover:text-white transition-colors">Accueil</a></li>
+                        <li><a href="mbti.html" class="text-base text-gray-300 hover:text-white transition-colors">MBTI</a></li>
+                        <li><a href="enneagramme.html" class="text-base text-gray-300 hover:text-white transition-colors">Ennéagramme</a></li>
+                        <li><a href="blog.html" class="text-base text-gray-300 hover:text-white transition-colors">Blog</a></li>
+                       <li><a href="#profil-chatbot" class="text-base text-gray-300 hover:text-white transition-colors">IA spécialisée</a></li>
+                        <li><a href="#faq" class="text-base text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Tests</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#auto-evaluation" class="text-base text-gray-300 hover:text-white transition-colors">Auto-évaluation</a></li>
+                        <li><a href="#evaluation-proche" class="text-base text-gray-300 hover:text-white transition-colors">Évaluer un proche</a></li>
+                        <li><a href="#retourver-profil" class="text-base text-gray-300 hover:text-white transition-colors">Mon profil</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Légal</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" onclick="showPrivacyPolicy(); return false;" class="text-base text-gray-300 hover:text-white transition-colors">Confidentialité</a></li>
+                        <li><a href="#" onclick="showTermsOfService(); return false;" class="text-base text-gray-300 hover:text-white transition-colors">Conditions d'utilisation</a></li>
+                        <li><a href="#" onclick="showLegalNotices(); return false;" class="text-base text-gray-300 hover:text-white transition-colors">Mentions légales</a></li>
+                        <li><a href="#" onclick="showLegalNotices(); return false;" class="text-base text-gray-300 hover:text-white transition-colors">Cookies</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Contact</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" onclick="showContact(); return false;" class="text-base text-gray-300 hover:text-white transition-colors">Support</a></li>
+                        <li class="flex space-x-6 pt-2">
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                                <span class="sr-only">Facebook</span>
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                                <span class="sr-only">Instagram</span>
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                                <span class="sr-only">TikTok</span>
+                                <i class="fab fa-tiktok"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-700 pt-8">
+                <p class="text-base text-gray-400 text-center">
+                    &copy; 2025 Personnalité Comparée. Tous droits réservés.
+                </p>
+            </div>
+        </div>
+    </footer>
 
 <script>
   const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -410,6 +839,15 @@
       });
     });
   }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 600,
+    easing: 'ease-out',
+    once: true
+  });
+  function openProfileModal() {}
 </script>
 </body>
 </html>
