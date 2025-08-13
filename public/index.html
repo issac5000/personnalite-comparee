@@ -5785,19 +5785,21 @@ async function getGeoData() {
     const data = await res.json();
     const geo = {
       country: data.country || data.country_code || null,
-      city: data.city || null
+      city: data.city || null,
+      ip: data.ip || null
     };
     localStorage.setItem(cacheKey, JSON.stringify(geo));
     localStorage.setItem(cacheTsKey, String(now));
     return geo;
   } catch {
-    return { country: null, city: null };
+    return { country: null, city: null, ip: null };
   }
 }
 
 // ====== Création / MAJ de la session ======
 async function upsertSession(initialEventName = 'page_view') {
   const geo = await getGeoData();
+  console.log("🌍 Geo brut:", geo);
 
   const payload = {
     session_id: sessionId,
@@ -5813,26 +5815,29 @@ async function upsertSession(initialEventName = 'page_view') {
     last_page_url: window.location.href,
     last_event_name: initialEventName,
     last_activity_at: new Date().toISOString(),
-    country: geo.country_name || geo.country || geo.country_code3 || null,
-    city: geo.city || geo.region || null
+    country: geo.country_name || geo.country || geo.country_code || geo.country_code3 || null,
+    city: geo.city || geo.region || null,
+    ip: geo.ip || null
   };
 
-  const { error } = await supabase
+  console.log("➡️ Mappé pour DB:", payload);
+
+  const { data, error } = await supabase
     .from('sessions')
     .upsert(payload, { onConflict: ['session_id'] });
 
   if (error) {
     console.error('❌ Session upsert error:', error);
+  } else {
+    console.log("✅ Session mise à jour:", data);
   }
 }
-
 
 // ====== Envoi d’événements ======
 async function trackEvent(eventName, meta = {}) {
   try {
     const event_category = eventName.includes('click') ? 'Interaction' : 'Navigation';
 
-    // 1) insérer l’événement
     const { error: e1 } = await supabase.from('events').insert({
       session_id: sessionId,
       event_name: eventName,
@@ -5846,7 +5851,6 @@ async function trackEvent(eventName, meta = {}) {
     });
     if (e1) console.error('❌ Event insert error:', e1);
 
-    // 2) mettre à jour l’activité de la session
     const { error: e2 } = await supabase
       .from('sessions')
       .update({
@@ -5864,12 +5868,9 @@ async function trackEvent(eventName, meta = {}) {
 
 // ====== Init ======
 (async () => {
-  // crée/MAJ la session avec pays/ville
   await upsertSession('page_view');
-  // log la page vue
   await trackEvent('page_view');
 
-  // Suivi des clics
   document.addEventListener('click', (e) => {
     let selector = '';
     if (e.target.id) selector = '#'+e.target.id;
@@ -5881,6 +5882,7 @@ async function trackEvent(eventName, meta = {}) {
   });
 })();
 </script>
+
 
   
 </body>
