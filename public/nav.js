@@ -52,15 +52,21 @@
       caret:document.getElementById(cfg.c)
     })).filter(obj=>obj.button&&obj.menu&&obj.caret);
 
+    const isMobile=()=>window.matchMedia('(max-width: 768px)').matches;
+
     mobileMenus.forEach(current=>{
       current.button.addEventListener('click',e=>{
+        if(!isMobile()) return;
         const expanded=current.button.getAttribute('aria-expanded')==='true';
         if(!expanded){
           e.preventDefault();
+          e.stopImmediatePropagation();
           mobileMenus.forEach(other=>{
-            other.menu.classList.add('hidden');
-            other.button.setAttribute('aria-expanded','false');
-            other.caret.classList.remove('rotate-180');
+            if(other!==current){
+              other.menu.classList.add('hidden');
+              other.button.setAttribute('aria-expanded','false');
+              other.caret.classList.remove('rotate-180');
+            }
           });
           current.menu.classList.remove('hidden');
           current.button.setAttribute('aria-expanded','true');
@@ -70,6 +76,7 @@
     });
 
     document.addEventListener('click',e=>{
+      if(!isMobile()) return;
       mobileMenus.forEach(m=>{
         if(!m.button.contains(e.target) && !m.menu.contains(e.target)){
           m.menu.classList.add('hidden');
