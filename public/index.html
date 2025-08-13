@@ -5742,10 +5742,7 @@ function generateSessionId() {
 function parseUTM() {
   const params = new URLSearchParams(window.location.search);
   const utm = {};
-  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach((k) => {
-    const v = params.get(k);
-    if (v) utm[k] = v;
-  });
+  ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(k=>{ const v=params.get(k); if(v) utm[k]=v; });
   return Object.keys(utm).length ? utm : null;
 }
 
@@ -5757,109 +5754,104 @@ if (!sessionId) {
   sessionId = generateSessionId();
   localStorage.setItem('session_id', sessionId);
 }
-if (!hasVisited) localStorage.setItem('hasVisited', 'true');
+if (!hasVisited) localStorage.setItem('hasVisited','true');
+
+const firstRefKey = 'pc_first_referrer';
+let firstReferrer = localStorage.getItem(firstRefKey);
+if (!firstReferrer && document.referrer) {
+  firstReferrer = document.referrer;
+  localStorage.setItem(firstRefKey, firstReferrer);
+}
+const firstUtmKey = 'pc_first_utm';
+let firstUtm = null;
+try { firstUtm = JSON.parse(localStorage.getItem(firstUtmKey) || 'null'); } catch {}
+const currentUtm = parseUTM();
+if (!firstUtm && currentUtm) {
+  firstUtm = currentUtm;
+  localStorage.setItem(firstUtmKey, JSON.stringify(firstUtm));
+}
 
 // ====== Contexte navigateur ======
 const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
 const viewport = { width: window.innerWidth, height: window.innerHeight };
 const screenSize = { width: screen.width, height: screen.height };
 const tzOffset = new Date().getTimezoneOffset();
-const utmParams = parseUTM();
 
-// ====== Geo (CORS OK) + cache local 10 min ======
+// ====== Geo sans cache ======
 async function getGeoData() {
-  const cacheKey = 'geo_cache_json';
-  const cacheTsKey = 'geo_cache_ts';
-  const now = Date.now();
-  const ts = Number(localStorage.getItem(cacheTsKey) || 0);
-
-  if (now - ts < 10 * 60 * 1000) {
-    try {
-      const cached = JSON.parse(localStorage.getItem(cacheKey) || '{}');
-      if (cached && (cached.country || cached.city)) return cached;
-    } catch (_) {}
-  }
-
   try {
     const res = await fetch('https://get.geojs.io/v1/ip/geo.json', { cache: 'no-store' });
     const data = await res.json();
-    const geo = {
-      country: data.country || data.country_code || null,
-      city: data.city || null,
+    console.log('🌍 Geo brut:', data);
+    return {
+      country: data.country_name || data.country || data.country_code || data.country_code3 || 'Inconnu',
+      city: data.city || data.region || 'Inconnu',
       ip: data.ip || null
     };
-    localStorage.setItem(cacheKey, JSON.stringify(geo));
-    localStorage.setItem(cacheTsKey, String(now));
-    return geo;
-  } catch {
-    return { country: null, city: null, ip: null };
+  } catch (err) {
+    console.error('❌ Geo fetch error:', err);
+    return { country: 'Inconnu', city: 'Inconnu', ip: null };
   }
 }
 
 // ====== Création / MAJ de la session ======
 async function upsertSession(initialEventName = 'page_view') {
-  const geo = await getGeoData();
-  console.log("🌍 Geo brut:", geo);
-
-  const payload = {
-    session_id: sessionId,
-    first_referrer: document.referrer || null,
-    first_utm: utmParams,
-    user_agent: navigator.userAgent,
-    device_type: deviceType,
-    language: navigator.language,
-    tz_offset: tzOffset,
-    viewport,
-    screen: screenSize,
-    is_returning: isReturning,
-    last_page_url: window.location.href,
-    last_event_name: initialEventName,
-    last_activity_at: new Date().toISOString(),
-    country: geo.country_name || geo.country || geo.country_code || geo.country_code3 || null,
-    city: geo.city || geo.region || null,
-    ip: geo.ip || null
-  };
-
-  console.log("➡️ Mappé pour DB:", payload);
-
-  const { data, error } = await supabase
-    .from('sessions')
-    .upsert(payload, { onConflict: ['session_id'] });
-
-  if (error) {
-    console.error('❌ Session upsert error:', error);
-  } else {
-    console.log("✅ Session mise à jour:", data);
+  if (!supabase) return;
+  try {
+    const geo = await getGeoData();
+    const payload = {
+      session_id: sessionId,
+      first_referrer: firstReferrer || null,
+      first_utm: firstUtm,
+      user_agent: navigator.userAgent,
+      device_type: deviceType,
+      language: navigator.language,
+      tz_offset: tzOffset,
+      viewport,
+      screen: screenSize,
+      is_returning: isReturning,
+      last_page_url: location.href,
+      last_event_name: initialEventName,
+      last_activity_at: new Date().toISOString(),
+      country: geo.country,
+      city: geo.city,
+      ip: geo.ip
+    };
+    console.log('➡️ Session upsert payload:', payload);
+    const { error } = await supabase
+      .from('sessions')
+      .upsert(payload, { onConflict: ['session_id'] });
+    if (error) console.error('❌ Session upsert error:', error);
+  } catch (err) {
+    console.error('❌ upsertSession exception:', err);
   }
 }
 
 // ====== Envoi d’événements ======
 async function trackEvent(eventName, meta = {}) {
+  if (!supabase) return;
   try {
     const event_category = eventName.includes('click') ? 'Interaction' : 'Navigation';
-
     const { error: e1 } = await supabase.from('events').insert({
       session_id: sessionId,
       event_name: eventName,
       event_category,
-      page_url: window.location.href,
+      page_url: location.href,
       referrer: document.referrer || null,
-      utm: utmParams,
+      utm: currentUtm,
       user_agent: navigator.userAgent,
       meta,
       element_selector: meta.element || null
     });
     if (e1) console.error('❌ Event insert error:', e1);
-
     const { error: e2 } = await supabase
       .from('sessions')
       .update({
         last_activity_at: new Date().toISOString(),
         last_event_name: eventName,
-        last_page_url: window.location.href
+        last_page_url: location.href
       })
       .eq('session_id', sessionId);
-
     if (e2) console.error('❌ Session update error:', e2);
   } catch (err) {
     console.error('❌ trackEvent exception:', err);
@@ -5873,11 +5865,10 @@ async function trackEvent(eventName, meta = {}) {
 
   document.addEventListener('click', (e) => {
     let selector = '';
-    if (e.target.id) selector = '#'+e.target.id;
+    if (e.target.id) selector = '#' + e.target.id;
     else if (e.target.className) {
-      selector = e.target.tagName.toLowerCase()+'.'+e.target.className.toString().replace(/\s+/g,'.');
+      selector = e.target.tagName.toLowerCase() + '.' + e.target.className.toString().trim().replace(/\s+/g, '.');
     } else selector = e.target.tagName.toLowerCase();
-
     trackEvent('click', { element: selector });
   });
 })();

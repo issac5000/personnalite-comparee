@@ -205,109 +205,107 @@
 
     // ====== Fetch (inclut un panneau "Sessions récentes") ======
     async function fetchRecentSessions() {
-      // On essaie avec ip ; si erreur (colonne absente), on retombe sans ip
-      let recent = [];
-      let q = await supabase
-        .from('sessions')
-        .select('session_id,country,city,device_type,last_activity_at,ip')
-        .order('last_activity_at', { ascending: false })
-        .limit(20);
-      if (q.error) {
-        const q2 = await supabase
+      try {
+        const q = await supabase
           .from('sessions')
-          .select('session_id,country,city,device_type,last_activity_at')
+          .select('session_id,country,city,device_type,last_activity_at,ip')
           .order('last_activity_at', { ascending: false })
           .limit(20);
-        if (!q2.error) recent = q2.data || [];
-      } else {
-        recent = q.data || [];
+        if (q.error) {
+          console.warn('recent sessions with ip failed', q.error);
+          const q2 = await supabase
+            .from('sessions')
+            .select('session_id,country,city,device_type,last_activity_at')
+            .order('last_activity_at', { ascending: false })
+            .limit(20);
+          if (!q2.error) return q2.data || [];
+          console.error('recent sessions fallback error', q2.error);
+          return [];
+        }
+        return q.data || [];
+      } catch (err) {
+        console.error('recent sessions exception', err);
+        return [];
       }
-      return recent;
     }
 
     async function fetchStats() {
-      const queries = [
-        supabase.from('stats_sessions_par_jour').select('jour,sessions').order('jour', { ascending: true }),
-        supabase.from('stats_events_par_jour').select('jour,events').order('jour', { ascending: true }),
-        supabase.from('stats_device_type').select('device_type,sessions'),
-        supabase.from('stats_pays').select('country,sessions'),
-        supabase.from('stats_top_pages').select('page_url,vues'),
-        supabase.from('stats_pages_entree').select('first_page_url,nb'),
-        supabase.from('stats_pages_sortie').select('last_page_url,nb'),
-        supabase.from('stats_nouveaux_vs_revenants').select('is_returning,sessions'),
-        supabase.from('stats_categories_events').select('category,nb'),
-        supabase.from('stats_elements_cliques').select('element_selector,clics'),
-        supabase.from('stats_engagement_moyen').select('engagement_sec'),
-        supabase.from('stats_daily_global').select('jour,sessions_uniques,total_events').order('jour',{ascending:true})
-      ];
+      const result = {
+        sessionsParJour: [],
+        eventsParJour: [],
+        deviceTypes: [],
+        countries: [],
+        topPages: [],
+        entryPages: [],
+        exitPages: [],
+        newVsReturning: [],
+        categories: [],
+        clicks: [],
+        avgEngagement: [],
+        dailyGlobal: [],
+        recentSessions: []
+      };
 
-      const [
-        { data: sessionsParJour, error: e1 },
-        { data: eventsParJour, error: e2 },
-        { data: deviceTypes, error: e3 },
-        { data: countries, error: e4 },
-        { data: topPages, error: e5 },
-        { data: entryPages, error: e6 },
-        { data: exitPages, error: e7 },
-        { data: newVsReturning, error: e8 },
-        { data: categories, error: e9 },
-        { data: clicks, error: e10 },
-        { data: avgEngagement, error: e11 },
-        { data: dailyGlobal, error: e12 },
-      ] = await Promise.all(queries);
+      try {
+        const queries = [
+          supabase.from('stats_sessions_par_jour').select('jour,sessions').order('jour', { ascending: true }),
+          supabase.from('stats_events_par_jour').select('jour,events').order('jour', { ascending: true }),
+          supabase.from('stats_device_type').select('device_type,sessions'),
+          supabase.from('stats_pays').select('country,sessions'),
+          supabase.from('stats_top_pages').select('page_url,vues'),
+          supabase.from('stats_pages_entree').select('first_page_url,nb'),
+          supabase.from('stats_pages_sortie').select('last_page_url,nb'),
+          supabase.from('stats_nouveaux_vs_revenants').select('is_returning,sessions'),
+          supabase.from('stats_categories_events').select('category,nb'),
+          supabase.from('stats_elements_cliques').select('element_selector,clics'),
+          supabase.from('stats_engagement_moyen').select('engagement_sec'),
+          supabase.from('stats_daily_global').select('jour,sessions_uniques,total_events').order('jour',{ascending:true})
+        ];
 
-// après le Promise.all(...)
-let countriesFixed = countries || [];
-if (!countriesFixed?.length) {
-  // fallback: on agrège depuis public.sessions
-  const { data: sess } = await supabase
-    .from('sessions')
-    .select('country')
-    .not('country', 'is', null);
+        const res = await Promise.allSettled(queries);
+        result.sessionsParJour = res[0].value?.data ?? [];
+        result.eventsParJour = res[1].value?.data ?? [];
+        result.deviceTypes = res[2].value?.data ?? [];
+        let countries = res[3].value?.data ?? [];
+        result.topPages = res[4].value?.data ?? [];
+        result.entryPages = res[5].value?.data ?? [];
+        result.exitPages = res[6].value?.data ?? [];
+        result.newVsReturning = res[7].value?.data ?? [];
+        result.categories = res[8].value?.data ?? [];
+        result.clicks = res[9].value?.data ?? [];
+        result.avgEngagement = res[10].value?.data ?? [];
+        result.dailyGlobal = res[11].value?.data ?? [];
 
-  const map = {};
-  (sess || []).forEach(r => {
-    const c = r.country || 'Inconnu';
-    map[c] = (map[c] || 0) + 1;
-  });
-  countriesFixed = Object.entries(map)
-    .map(([country, sessions]) => ({ country, sessions }))
-    .sort((a,b) => b.sessions - a.sessions)
-    .slice(0, 20);
-}
-// Correction des valeurs NULL ou vides pour les pays
-const countriesFixed = (countries || []).map(c => ({
-  ...c,
-  country: c.country || 'Inconnu'
-}));
+        if (!countries.length) {
+          const { data: sess, error } = await supabase
+            .from('sessions')
+            .select('country')
+            .not('country', 'is', null);
+          if (!error && sess) {
+            const map = {};
+            (sess || []).forEach(r => {
+              const c = r.country || 'Inconnu';
+              map[c] = (map[c] || 0) + 1;
+            });
+            countries = Object.entries(map)
+              .map(([country, sessions]) => ({ country, sessions }))
+              .sort((a, b) => b.sessions - a.sessions)
+              .slice(0, 20);
+          }
+        }
+        result.countries = (countries || []).map(c => ({ ...c, country: c.country || 'Inconnu' }));
+      } catch (err) {
+        console.error('fetchStats error', err);
+      }
 
-// et dans le return de fetchStats, remplace `countries` par `countries: countriesFixed`
-return {
-  sessionsParJour, eventsParJour, deviceTypes, countries: countriesFixed,
-  topPages, entryPages, exitPages, newVsReturning,
-  categories, clicks, avgEngagement, dailyGlobal,
-  recentSessions
-};
+      try {
+        result.recentSessions = await fetchRecentSessions();
+      } catch (err) {
+        console.error('recentSessions fetch error', err);
+      }
 
-// sessions récentes (debug)
-const recentSessions = await fetchRecentSessions();
-
-const errs = [e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12].filter(Boolean);
-if (errs.length) {
-  console.error('Erreurs Supabase:', errs);
-  showMessage('error', 'Certaines données n’ont pas pu être chargées. Réessaie plus tard ou clique sur “Actualiser”.');
-} else {
-  document.getElementById('dashboard-messages').innerHTML = '';
-}
-
-return {
-  sessionsParJour, eventsParJour, deviceTypes, countries: countriesFixed,
-  topPages, entryPages, exitPages, newVsReturning,
-  categories, clicks, avgEngagement, dailyGlobal,
-  recentSessions
-};
-
-
+      return result;
+    }
     // ====== KPI ======
     function renderKPIs(stats) {
       const box = document.getElementById('kpi-row');
