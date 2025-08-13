@@ -205,24 +205,34 @@
 
     // ====== Fetch (inclut un panneau "Sessions récentes") ======
     async function fetchRecentSessions() {
+      const sanitize = (r) => ({
+        ...r,
+        country: r.country ?? 'Inconnu',
+        city: r.city ?? 'Inconnu',
+        device_type: r.device_type ?? 'unknown',
+        ip: r.ip ?? '—',
+        tz_offset: r.tz_offset ?? 0,
+        viewport: r.viewport ?? { width: 0, height: 0 },
+        screen: r.screen ?? { width: 0, height: 0 }
+      });
       try {
         const q = await supabase
           .from('sessions')
-          .select('session_id,country,city,device_type,last_activity_at,ip')
+          .select('session_id,country,city,device_type,last_activity_at,ip,tz_offset,viewport,screen')
           .order('last_activity_at', { ascending: false })
           .limit(20);
         if (q.error) {
           console.warn('recent sessions with ip failed', q.error);
           const q2 = await supabase
             .from('sessions')
-            .select('session_id,country,city,device_type,last_activity_at')
+            .select('session_id,country,city,device_type,last_activity_at,tz_offset,viewport,screen')
             .order('last_activity_at', { ascending: false })
             .limit(20);
-          if (!q2.error) return q2.data || [];
+          if (!q2.error) return (q2.data || []).map(sanitize);
           console.error('recent sessions fallback error', q2.error);
           return [];
         }
-        return q.data || [];
+        return (q.data || []).map(sanitize);
       } catch (err) {
         console.error('recent sessions exception', err);
         return [];
@@ -267,6 +277,14 @@
         result.eventsParJour = res[1].value?.data ?? [];
         result.deviceTypes = res[2].value?.data ?? [];
         let countries = res[3].value?.data ?? [];
+        if (countries.length) {
+          const mapCountries = {};
+          countries.forEach(r => {
+            const c = r.country && r.country.trim() ? r.country : 'Inconnu';
+            mapCountries[c] = (mapCountries[c] || 0) + (r.sessions || 0);
+          });
+          countries = Object.entries(mapCountries).map(([country, sessions]) => ({ country, sessions }));
+        }
         result.topPages = res[4].value?.data ?? [];
         result.entryPages = res[5].value?.data ?? [];
         result.exitPages = res[6].value?.data ?? [];
@@ -279,12 +297,11 @@
         if (!countries.length) {
           const { data: sess, error } = await supabase
             .from('sessions')
-            .select('country')
-            .not('country', 'is', null);
+            .select('country');
           if (!error && sess) {
             const map = {};
             (sess || []).forEach(r => {
-              const c = r.country || 'Inconnu';
+              const c = r.country && r.country.trim() ? r.country : 'Inconnu';
               map[c] = (map[c] || 0) + 1;
             });
             countries = Object.entries(map)
@@ -293,7 +310,7 @@
               .slice(0, 20);
           }
         }
-        result.countries = (countries || []).map(c => ({ ...c, country: c.country || 'Inconnu' }));
+        result.countries = countries;
       } catch (err) {
         console.error('fetchStats error', err);
       }
