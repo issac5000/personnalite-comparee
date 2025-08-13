@@ -53,14 +53,15 @@
     })).filter(obj=>obj.button&&obj.menu&&obj.caret);
 
     mobileMenus.forEach(current=>{
-      current.button.addEventListener('click',()=>{
+      current.button.addEventListener('click',e=>{
         const expanded=current.button.getAttribute('aria-expanded')==='true';
-        mobileMenus.forEach(other=>{
-          other.menu.classList.add('hidden');
-          other.button.setAttribute('aria-expanded','false');
-          other.caret.classList.remove('rotate-180');
-        });
         if(!expanded){
+          e.preventDefault();
+          mobileMenus.forEach(other=>{
+            other.menu.classList.add('hidden');
+            other.button.setAttribute('aria-expanded','false');
+            other.caret.classList.remove('rotate-180');
+          });
           current.menu.classList.remove('hidden');
           current.button.setAttribute('aria-expanded','true');
           current.caret.classList.add('rotate-180');
