@@ -5401,7 +5401,7 @@ function showPrivacyPolicy() {
 <script src="https://unpkg.com/@supabase/supabase-js"></script>
 <script type="module">
   // ====== CONFIG SUPABASE ======
-const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co';
+  const SUPABASE_URL = 'https://eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg';
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -5444,10 +5444,10 @@ const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co';
   const screenSize = { width: screen.width, height: screen.height };
   const tzOffset = new Date().getTimezoneOffset();
 
-  // Récupération pays/ville via IP
+  // Récupération pays/ville via IP (CORS OK)
   async function getGeoData() {
     try {
-      const res = await fetch('https://ipapi.co/json/');
+      const res = await fetch('https://get.geojs.io/v1/ip/geo.json');
       return await res.json();
     } catch {
       return {};
@@ -5474,7 +5474,7 @@ const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co';
           is_returning: isReturning,
           last_page_url: window.location.href,
           last_activity_at: new Date().toISOString(),
-          country: geo.country_name || null,
+          country: geo.country || null,
           city: geo.city || null
         }, { onConflict: ['session_id'] });
     } catch (err) {
