@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBTI - Personnalité Comparée</title>
+  <link rel="icon" type="image/jpeg" href="/flavicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+  <style>
+    .mobile-menu { position: absolute; top: 100%; left: 0; right: 0; z-index:1100; display:none; }
+    .mobile-menu.active { display:block; }
+  </style>
+</head>
+<body class="font-sans bg-white text-gray-900">
+<header class="sticky-header">
+  <div class="flex items-center">
+    <div class="flex-shrink-0 flex items-center">
+      <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span class="ml-3 text-xl font-bold text-black">Personnalité Comparée</span>
+    </div>
+  </div>
+  <nav class="desktop-nav hidden md:ml-6 md:flex md:items-center md:space-x-8">
+    <a href="/index.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Accueil</a>
+    <a href="/mbti.html" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-blue-500 text-sm font-medium">MBTI</a>
+    <a href="/enneagramme.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Ennéagramme</a>
+    <a href="/blog.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Blog</a>
+  </nav>
+  <div class="-mr-2 flex items-center md:hidden">
+    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
+      <span class="sr-only">Ouvrir le menu principal</span>
+      <i class="fas fa-bars" id="menu-icon"></i>
+    </button>
+  </div>
+  <div class="mobile-menu md:hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+      <a href="/index.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-900 bg-blue-50">Accueil</a>
+      <a href="/mbti.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-gray-700">MBTI</a>
+      <a href="/enneagramme.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-gray-700">Ennéagramme</a>
+      <a href="/blog.html" class="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:text-gray-700">Blog</a>
+    </div>
+  </div>
+</header>
+
+<section class="py-16 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto text-center">
+    <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl mb-4">Comprendre le MBTI</h1>
+    <p class="text-lg text-gray-700">Le MBTI est un outil de compréhension de soi basé sur 4 dimensions fondamentales de la personnalité...</p>
+  </div>
+</section>
+
+<section class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">Un peu d'histoire</h2>
+    <p class="text-gray-700">Le MBTI trouve ses racines dans les travaux de Carl Jung, puis a été développé par Isabel Briggs Myers et sa mère Katharine Cook Briggs dans les années 1940...</p>
+  </div>
+</section>
+
+
+    <div id="mbti" data-aos="fade-right" class="section section-clair py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                    Les 16 types de personnalité MBTI
+                </h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+                    Découvrez les différents profils de la typologie Myers-Briggs
+                </p>
+            </div>
+            
+            <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Analystes (NT) -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-blue-500 rounded-md p-3">
+                                <i class="fas fa-brain text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">INTJ</h3>
+                                <p class="mt-1 text-sm text-gray-500">L'Architecte</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Visionnaires stratégiques avec un plan pour tout. Indépendants et déterminés à atteindre leurs objectifs.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('INTJ')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-blue-500 rounded-md p-3">
+                                <i class="fas fa-user text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">ENTJ</h3>
+                                <p class="mt-1 text-sm text-gray-500">Le Commandant</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Leaders naturels, charismatiques et déterminés. Excellents pour organiser et mettre en œuvre des plans.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('ENTJ')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                                <i class="fas fa-microscope text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">INTP</h3>
+                                <p class="mt-1 text-sm text-gray-500">Le Penseur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Penseurs logiques et créatifs, toujours à la recherche de nouvelles idées et possibilités théoriques.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('INTP')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Diplomates (NF) -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                                <i class="fas fa-lightbulb text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">ENFJ</h3>
+                                <p class="mt-1 text-sm text-gray-500">Le Donateur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Charismatiques et empathiques, motivés par le désir d'aider les autres à réaliser leur potentiel.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('ENFJ')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-red-500 rounded-md p-3">
+                                <i class="fas fa-heart text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">ENFP</h3>
+                                <p class="mt-1 text-sm text-gray-500">L'Inspirateur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Enthousiastes, créatifs et sociables, toujours à la recherche de nouvelles idées et expériences.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('ENFP')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-teal-500 rounded-md p-3">
+                                <i class="fas fa-dove text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">INFJ</h3>
+                                <p class="mt-1 text-sm text-gray-500">L'Avocat</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Idéalistes créatifs et perspicaces, motivés par leurs valeurs profondes et leur vision du futur.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('INFJ')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-pink-500 rounded-md p-3">
+                                <i class="fas fa-palette text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">INFP</h3>
+                                <p class="mt-1 text-sm text-gray-500">Le Médiateur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Poétiques, gentils et altruistes, toujours désireux d'aider une bonne cause ou une personne importante.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('INFP')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sentinelles (SJ) -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-gray-600 rounded-md p-3">
+                                <i class="fas fa-balance-scale text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">ISTJ</h3>
+                                <p class="mt-1 text-sm text-gray-500">Le Logisticien</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Pratiques et factuels, fiables et responsables. Ils aiment l'ordre et respectent les traditions.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('ISTJ')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-orange-500 rounded-md p-3">
+                                <i class="fas fa-shield-alt text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">ISFJ</h3>
+                                <p class="mt-1 text-sm text-gray-500">Le Protecteur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Chaleureux et consciencieux, toujours prêts à protéger leurs proches et à maintenir l'harmonie.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('ISFJ')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-red-600 rounded-md p-3">
+                                <i class="fas fa-bullhorn text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">ESTJ</h3>
+                                <p class="mt-1 text-sm text-gray-500">L'Exécutif</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Excellents administrateurs, incomparables pour gérer les choses et les personnes avec efficacité.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('ESTJ')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-green-600 rounded-md p-3">
+                                <i class="fas fa-hands-helping text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">ESFJ</h3>
+                                <p class="mt-1 text-sm text-gray-500">Le Consul</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Extraordinairement attentionnés, sociables et populaires, toujours désireux d'aider les autres.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('ESFJ')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Explorateurs (SP) -->
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-yellow-600 rounded-md p-3">
+                                <i class="fas fa-tools text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">ISTP</h3>
+                                <p class="mt-1 text-sm text-gray-500">Le Virtuose</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Mécaniciens audacieux et pratiques, maîtres de tous les types d'outils et de techniques.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('ISTP')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-blue-600 rounded-md p-3">
+                                <i class="fas fa-music text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">ISFP</h3>
+                                <p class="mt-1 text-sm text-gray-500">L'Aventurier</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Artistes flexibles et charmants, toujours prêts à explorer de nouvelles possibilités créatives.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('ISFP')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-blue-600 rounded-md p-3">
+                                <i class="fas fa-rocket text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">ESTP</h3>
+                                <p class="mt-1 text-sm text-gray-500">L'Entrepreneur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Intelligents, énergiques et très perceptifs, vraiment appréciés pour leur spontanéité et leur humour.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('ESTP')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-pink-600 rounded-md p-3">
+                                <i class="fas fa-theater-masks text-white text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <h3 class="text-lg font-medium text-gray-900">ESFP</h3>
+                                <p class="mt-1 text-sm text-gray-500">L'Amuseur</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600">
+                                Spontanés, énergiques et enthousiastes, la vie n'est jamais ennuyeuse autour d'eux.
+                            </p>
+                        </div>
+                        <div class="mt-5">
+                            <button onclick="showMBTIDetails('ESFP')" class="text-sm font-medium text-black hover:text-gray-800">
+                                En savoir plus <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="bg-gray-800">
+  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div>
+        <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Personnalité Comparée</h3>
+        <ul class="mt-4 space-y-4">
+          <li><a href="/index.html" class="text-base text-gray-300 hover:text-white transition-colors">Accueil</a></li>
+          <li><a href="/mbti.html" class="text-base text-gray-300 hover:text-white transition-colors">MBTI</a></li>
+          <li><a href="/enneagramme.html" class="text-base text-gray-300 hover:text-white transition-colors">Ennéagramme</a></li>
+          <li><a href="/blog.html" class="text-base text-gray-300 hover:text-white transition-colors">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Légal</h3>
+        <ul class="mt-4 space-y-4">
+          <li><a href="#" class="text-base text-gray-300 hover:text-white transition-colors">Confidentialité</a></li>
+          <li><a href="#" class="text-base text-gray-300 hover:text-white transition-colors">Conditions d'utilisation</a></li>
+          <li><a href="#" class="text-base text-gray-300 hover:text-white transition-colors">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-8 border-t border-gray-700 pt-8">
+      <p class="text-base text-gray-400 text-center">&copy; 2025 Personnalité Comparée. Tous droits réservés.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuIcon = document.getElementById('menu-icon');
+
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener('click', function() {
+      const isOpen = mobileMenu.classList.contains('active');
+      if (isOpen) {
+        mobileMenu.classList.remove('active');
+        menuIcon.classList.remove('fa-times');
+        menuIcon.classList.add('fa-bars');
+        mobileMenuButton.setAttribute('aria-expanded', 'false');
+      } else {
+        mobileMenu.classList.add('active');
+        menuIcon.classList.remove('fa-bars');
+        menuIcon.classList.add('fa-times');
+        mobileMenuButton.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    const mobileLinks = mobileMenu.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        menuIcon.classList.remove('fa-times');
+        menuIcon.classList.add('fa-bars');
+        mobileMenuButton.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+</script>
+</body>
+</html>
