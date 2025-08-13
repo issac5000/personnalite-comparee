@@ -73,6 +73,15 @@
           current.caret.classList.add('rotate-180');
         }
       },{capture:true});
+      current.menu.addEventListener('click',e=>{
+        if(!isMobile()) return;
+        const link=e.target.closest('a');
+        if(link){
+          current.menu.classList.add('hidden');
+          current.button.setAttribute('aria-expanded','false');
+          current.caret.classList.remove('rotate-180');
+        }
+      });
     });
 
     document.addEventListener('click',e=>{
