@@ -5858,6 +5858,71 @@ addChatStyles();
 <style>
   #pc-constellation{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none;}
 </style>
+
+  // 🔑 Initialisation Supabase (frontend)
+const { createClient } = supabase;
+const supabaseClient = createClient(
+  'https://swjnpvfkloubshksobau.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL3N1cGFiYXNlLnYwL2FkbWluX2NsYWltcyI6eyJyb2xlIjoibWFpbiJ9LCJpYXQiOjE2OTM5Njg4MDAsImV4cCI6MjAwOTU0NDgwMH0.i3TnndvWNa2FfsryYBoJ2gqj07PqsnPjUNToBGogIdQ'
+);
+
+// 🔄 Récupère ou crée l'ID de session dans localStorage
+let sessionId = localStorage.getItem('pc_session_id');
+if (!sessionId) {
+  sessionId = crypto.randomUUID();
+  localStorage.setItem('pc_session_id', sessionId);
+}
+
+// 🛠 Fonction pour créer ou mettre à jour la session avec la géoloc
+async function trackSession() {
+  try {
+    // 1️⃣ Récupère infos IP & géolocalisation
+    const geo = await fetch('https://get.geojs.io/v1/ip/geo.json').then(res => res.json());
+
+    // 2️⃣ Prépare les données à stocker
+    const sessionData = {
+      session_id: sessionId,
+      last_activity_at: new Date().toISOString(),
+      device_type: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
+      language: navigator.language,
+      ip: geo.ip,
+      country: geo.country,
+      city: geo.city,
+      last_event_name: 'page_view',
+      last_page_url: window.location.href,
+    };
+
+    // 3️⃣ Vérifie si la session existe déjà
+    const { data: existing } = await supabaseClient
+      .from('sessions')
+      .select('session_id')
+      .eq('session_id', sessionId)
+      .single();
+
+    if (existing) {
+      // Met à jour la session
+      await supabaseClient
+        .from('sessions')
+        .update(sessionData)
+        .eq('session_id', sessionId);
+    } else {
+      // Crée une nouvelle session
+      await supabaseClient
+        .from('sessions')
+        .insert([sessionData]);
+    }
+
+    console.log('✅ Session enregistrée avec géoloc:', sessionData);
+
+  } catch (err) {
+    console.error('❌ Erreur tracking session:', err);
+  }
+}
+
+// 🚀 Lancer le tracking
+trackSession();
+
+  
 </body>
 </html>
 
