@@ -404,7 +404,7 @@
             <a href="enneagramme.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Ennéagramme</a>
             <a href="blog.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Blog</a>
             <a href="index.html#profil-chatbot" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">IA spécialisée</a>
-            <a href="index.html#faq" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">FAQ</a>
+            <a href="#faq" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">FAQ</a>
             <button id="profile-btn-desktop" onclick="openProfileModal()" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                 Mon profil
             </button>
@@ -423,7 +423,7 @@
                 <a href="enneagramme.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Ennéagramme</a>
                 <a href="blog.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">Blog</a>
                 <a href="index.html#profil-chatbot" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">IA spécialisée</a>
-                <a href="index.html#faq" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">FAQ</a>
+                <a href="#faq" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium">FAQ</a>
                 <button id="profile-btn-mobile" onclick="openProfileModal()" class="w-full mt-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800">
                     Mon profil
                 </button>
@@ -880,6 +880,111 @@
 
 
     </main>
+        <div id="faq" data-aos="fade-up" class="section section-clair py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                    Questions fréquentes
+                </h2>
+                <p class="mt-4 text-xl text-gray-500">
+                    Trouvez des réponses aux questions les plus courantes
+                </p>
+            </div>
+
+            <div class="mt-12 space-y-6">
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-mbti-1" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-mbti-1-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">Le MBTI est-il scientifique et fiable ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-mbti-1-content" class="faq-content mt-2 hidden" aria-labelledby="faq-mbti-1" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Le MBTI est largement utilisé mais sa validité psychométrique est débattue. Il mesure des préférences plutôt que des traits continus. En pratique, il est utile pour le dialogue et la connaissance de soi, mais il ne remplace pas une évaluation clinique ou des modèles de recherche (ex. Big Five).
+                            </p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-mbti-2" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-mbti-2-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">Quelle est la différence entre MBTI et Big Five ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-mbti-2-content" class="faq-content mt-2 hidden" aria-labelledby="faq-mbti-2" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Le MBTI classe en 16 types via 4 dichotomies (E/I, S/N, T/F, J/P). Le Big Five mesure 5 grands traits continus (Ouverture, Conscienciosité, Extraversion, Agréabilité, Névrosisme). Le Big Five est plus validé scientifiquement ; le MBTI est plus pédagogique et typologique.
+                            </p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-mbti-3" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-mbti-3-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">Mon type peut-il changer ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-mbti-3-content" class="faq-content mt-2 hidden" aria-labelledby="faq-mbti-3" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Les préférences sont relativement stables, mais le résultat d’un test peut varier selon le contexte, l’humeur et l’expérience. On peut aussi mieux comprendre ses préférences avec le temps et “affiner” son type.
+                            </p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-mbti-4" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-mbti-4-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">Les “fonctions cognitives” sont-elles indispensables ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-mbti-4-content" class="faq-content mt-2 hidden" aria-labelledby="faq-mbti-4" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Les lettres (E/I, S/N, T/F, J/P) suffisent pour un premier niveau. Les fonctions (Si, Se, Ni, Ne, Ti, Te, Fi, Fe) apportent une lecture plus fine des dynamiques internes du type, mais sont optionnelles pour un usage basique.
+                            </p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-mbti-5" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-mbti-5-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">À quoi sert le MBTI concrètement (travail, couple, parentalité) ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-mbti-5-content" class="faq-content mt-2 hidden" aria-labelledby="faq-mbti-5" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Il facilite la communication, la répartition des rôles, la compréhension des styles de décision et d’énergie. Il ne “prévoit” pas la compatibilité, mais aide à expliciter les préférences, donc à réduire les malentendus.
+                            </p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <button id="faq-mbti-6" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-mbti-6-content">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">Comment trouver mon type avec plus de certitude ?</h3>
+                            <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
+                        </div>
+                        <div id="faq-mbti-6-content" class="faq-content mt-2 hidden" aria-labelledby="faq-mbti-6" aria-hidden="true">
+                            <p class="text-gray-600">
+                                Combine un questionnaire, la lecture des descriptions, et un retour de ton entourage sur ton comportement réel. La cohérence entre auto-perception et comportements observables vaut plus qu’un unique score.
+                            </p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-gray-600">
+                    Vous avez d'autres questions ? <a href="mailto:contact@personnalitecomparee.com" class="text-blue-600 hover:text-blue-500 font-medium">Contactez-nous</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-gray-800">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -891,7 +996,7 @@
                         <li><a href="enneagramme.html" class="text-base text-gray-300 hover:text-white transition-colors">Ennéagramme</a></li>
                         <li><a href="blog.html" class="text-base text-gray-300 hover:text-white transition-colors">Blog</a></li>
                        <li><a href="index.html#profil-chatbot" class="text-base text-gray-300 hover:text-white transition-colors">IA spécialisée</a></li>
-                        <li><a href="index.html#faq" class="text-base text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#faq" class="text-base text-gray-300 hover:text-white transition-colors">FAQ</a></li>
 
                     </ul>
                 </div>
@@ -1229,8 +1334,8 @@ if (window.location.href.includes("external")) {
                 button.addEventListener('click', function() {
                     const content = this.querySelector('.faq-content');
                     const icon = this.querySelector('i');
-                    const isOpen = !content.classList.contains('hidden');
-                    
+                    const isOpen = this.getAttribute('aria-expanded') === 'true';
+
                     // Fermer toutes les autres FAQ
                     faqButtons.forEach(otherButton => {
                         if (otherButton !== this) {
@@ -1238,16 +1343,22 @@ if (window.location.href.includes("external")) {
                             const otherIcon = otherButton.querySelector('i');
                             otherContent.classList.add('hidden');
                             otherIcon.classList.remove('rotate-180');
+                            otherButton.setAttribute('aria-expanded', 'false');
+                            otherContent.setAttribute('aria-hidden', 'true');
                         }
                     });
-                    
+
                     // Toggle la FAQ actuelle
                     if (isOpen) {
                         content.classList.add('hidden');
                         icon.classList.remove('rotate-180');
+                        this.setAttribute('aria-expanded', 'false');
+                        content.setAttribute('aria-hidden', 'true');
                     } else {
                         content.classList.remove('hidden');
                         icon.classList.add('rotate-180');
+                        this.setAttribute('aria-expanded', 'true');
+                        content.setAttribute('aria-hidden', 'false');
                     }
                 });
             });
