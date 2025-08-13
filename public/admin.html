@@ -256,6 +256,33 @@
         { data: dailyGlobal, error: e12 },
       ] = await Promise.all(queries);
 
+// après le Promise.all(...)
+let countriesFixed = countries || [];
+if (!countriesFixed?.length) {
+  // fallback: on agrège depuis public.sessions
+  const { data: sess } = await supabase
+    .from('sessions')
+    .select('country')
+    .not('country', 'is', null);
+
+  const map = {};
+  (sess || []).forEach(r => {
+    const c = r.country || 'Inconnu';
+    map[c] = (map[c] || 0) + 1;
+  });
+  countriesFixed = Object.entries(map)
+    .map(([country, sessions]) => ({ country, sessions }))
+    .sort((a,b) => b.sessions - a.sessions)
+    .slice(0, 20);
+}
+// et dans le return de fetchStats, remplace `countries` par `countries: countriesFixed`
+return {
+  sessionsParJour, eventsParJour, deviceTypes, countries: countriesFixed,
+  topPages, entryPages, exitPages, newVsReturning,
+  categories, clicks, avgEngagement, dailyGlobal,
+  recentSessions
+};
+      
       // sessions récentes (debug)
       const recentSessions = await fetchRecentSessions();
 
