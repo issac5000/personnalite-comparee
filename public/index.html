@@ -5349,8 +5349,7 @@ function showPrivacyPolicy() {
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
   const supabaseUrl = "https://swjnpvfkloubshksobau.supabase.co";
-  const supabaseKey =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg";
 
   const supabase = createClient(supabaseUrl, supabaseKey);
   window.supabase = supabase;
@@ -5401,7 +5400,7 @@ function showPrivacyPolicy() {
 <script src="https://unpkg.com/@supabase/supabase-js"></script>
 <script type="module">
   // ====== CONFIG SUPABASE ======
-  const SUPABASE_URL = 'https://eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg.supabase.co';
+  const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg';
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -5444,13 +5443,30 @@ function showPrivacyPolicy() {
   const screenSize = { width: screen.width, height: screen.height };
   const tzOffset = new Date().getTimezoneOffset();
 
-  // Récupération pays/ville via IP (CORS OK)
+  // 🌍 Récupération pays/ville via IP avec fallback
   async function getGeoData() {
     try {
-      const res = await fetch('https://get.geojs.io/v1/ip/geo.json');
-      return await res.json();
-    } catch {
-      return {};
+      const res = await fetch('https://ipapi.co/json/');
+      if (!res.ok) throw new Error('Erreur IPAPI');
+      const data = await res.json();
+      return {
+        country: data.country_name || 'Inconnu',
+        city: data.city || 'Inconnue'
+      };
+    } catch (err) {
+      console.warn('🌍 Échec IPAPI, tentative fallback...', err);
+      try {
+        const res2 = await fetch('https://ipwho.is/');
+        if (!res2.ok) throw new Error('Erreur IPWHO.IS');
+        const data2 = await res2.json();
+        return {
+          country: data2.country || 'Inconnu',
+          city: data2.city || 'Inconnue'
+        };
+      } catch (err2) {
+        console.error('❌ Impossible de récupérer la localisation', err2);
+        return { country: 'Inconnu', city: 'Inconnue' };
+      }
     }
   }
 
@@ -5474,8 +5490,8 @@ function showPrivacyPolicy() {
           is_returning: isReturning,
           last_page_url: window.location.href,
           last_activity_at: new Date().toISOString(),
-          country: geo.country || null,
-          city: geo.city || null
+          country: geo.country,
+          city: geo.city
         }, { onConflict: ['session_id'] });
     } catch (err) {
       console.error('❌ Erreur lors de la création/mise à jour de la session :', err);
@@ -5530,6 +5546,7 @@ function showPrivacyPolicy() {
     trackEvent('click', { element: selector });
   });
 </script>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
