@@ -28,6 +28,8 @@
       });
 
       if (res.ok) {
+        // ✅ Enregistrer l'état de connexion
+        localStorage.setItem("isAdminLogged", "true");
         window.location.href = "/admin.html";
       } else {
         alert("Mot de passe incorrect");
