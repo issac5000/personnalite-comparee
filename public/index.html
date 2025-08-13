@@ -5443,7 +5443,7 @@ function showPrivacyPolicy() {
   const screenSize = { width: screen.width, height: screen.height };
   const tzOffset = new Date().getTimezoneOffset();
 
-  // Récupération pays/ville via IP
+  // Récupération pays/ville/IP via GeoJS
   async function getGeoData() {
     try {
       const res = await fetch('https://get.geojs.io/v1/ip/geo.json');
@@ -5480,6 +5480,7 @@ function showPrivacyPolicy() {
           is_returning: isReturning,
           last_page_url: window.location.href,
           last_activity_at: new Date().toISOString(),
+          ip: geo.ip,          // ⬅ Ajout IP
           country: geo.country,
           city: geo.city
         }, { onConflict: ['session_id'] });
@@ -5536,6 +5537,7 @@ function showPrivacyPolicy() {
     trackEvent('click', { element: selector });
   });
 </script>
+
 
 
 
