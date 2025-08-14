@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Chiffreur Admin</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 2em; background: #f9f9f9; }
+    textarea, input, button { width: 100%; margin-top: 1em; }
+    textarea { height: 200px; }
+    .output { background: #eee; padding: 1em; margin-top: 1em; white-space: pre-wrap; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <h1>🔐 Chiffreur Admin</h1>
+  <p>Colle ici le contenu de ton <code>admin.html</code> non protégé :</p>
+  <textarea id="htmlInput" placeholder="Ton code HTML..."></textarea>
+  <input type="password" id="password" placeholder="Mot de passe 🔑"/>
+  <button onclick="chiffrer()">🔒 Chiffrer</button>
+
+  <h2>Résultat à coller dans admin.html :</h2>
+  <div class="output" id="outputCode"></div>
+
+  <script>
+    function chiffrer() {
+      const html = document.getElementById('htmlInput').value;
+      const password = document.getElementById('password').value;
+      if (!html || !password) return alert("Code et mot de passe obligatoires frérot");
+
+      const encrypted = CryptoJS.AES.encrypt(html, password).toString();
+
+      const finalHTML = \`
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin sécurisé</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+<script>
+  const encrypted = \\\`\${encrypted}\\\`;
+  const pass = prompt("Mot de passe :");
+  try {
+    const decrypted = CryptoJS.AES.decrypt(encrypted, pass).toString(CryptoJS.enc.Utf8);
+    if (!decrypted) throw new Error();
+    document.write(decrypted);
+  } catch {
+    alert("Mot de passe incorrect");
+    location.href = "/";
+  }
+</script>
+</body>
+</html>\`.trim();
+
+      document.getElementById("outputCode").textContent = finalHTML;
+    }
+  </script>
+</body>
+</html>
