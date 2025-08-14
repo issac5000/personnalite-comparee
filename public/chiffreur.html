@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>🔐 Chiffreur Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+      color: #1f2937;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    textarea, input, button {
+      width: 100%;
+      margin-top: 1rem;
+      font-size: 1rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.2s ease-in-out;
+    }
+    button:hover {
+      background-color: #2563eb;
+    }
+    .output {
+      background: #f3f4f6;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: monospace;
+      font-size: 0.95rem;
+      border: 1px solid #e5e7eb;
+    }
+    label {
+      font-weight: 600;
+      margin-top: 1.5rem;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 Chiffreur Admin</h1>
+
+  <label for="htmlInput">Colle ici ton code HTML à protéger :</label>
+  <textarea id="htmlInput" placeholder="Ton code HTML ici..."></textarea>
+
+  <label for="password">Mot de passe 🔑 :</label>
+  <input type="password" id="password" placeholder="Choisis un mot de passe fort" />
+
+  <button onclick="chiffrer()">🔒 Chiffrer</button>
+
+  <label for="outputCode">Voici ton code à coller dans admin.html :</label>
+  <div class="output" id="outputCode"></div>
+
+  <script>
+    function chiffrer() {
+      const html = document.getElementById("htmlInput").value;
+      const password = document.getElementById("password").value;
+
+      if (!html || !password) {
+        alert("Frérot, tu dois remplir les deux champs !");
+        return;
+      }
+
+      const encrypted = CryptoJS.AES.encrypt(html, password).toString();
+
+      const finalHTML = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin sécurisé</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+<script>
+  const encrypted = \`${encrypted}\`;
+  const pass = prompt("Mot de passe :");
+  try {
+    const decrypted = CryptoJS.AES.decrypt(encrypted, pass).toString(CryptoJS.enc.Utf8);
+    if (!decrypted) throw new Error();
+    document.write(decrypted);
+  } catch {
+    alert("Mot de passe incorrect.");
+    location.href = "/";
+  }
+<\/script>
+</body>
+</html>`.trim();
+
+      document.getElementById("outputCode").textContent = finalHTML;
+    }
+  </script>
+</body>
+</html>
