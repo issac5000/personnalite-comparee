@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>🔐 Chiffreur Admin</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f3f4f6;
+      background: #f6f8fa;
+      color: #333;
       padding: 2rem;
       max-width: 600px;
       margin: auto;
-      color: #111827;
     }
     h1 {
       font-size: 1.8rem;
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -23,10 +24,10 @@
     textarea, input, button {
       width: 100%;
       margin-top: 1rem;
-      padding: 0.75rem;
       font-size: 1rem;
       border-radius: 8px;
-      border: 1px solid #d1d5db;
+      border: 1px solid #ccc;
+      padding: 0.75rem;
       box-sizing: border-box;
     }
     button {
@@ -34,50 +35,52 @@
       color: white;
       font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.2s ease-in-out;
+      border: none;
+      transition: 0.2s;
     }
     button:hover {
       background-color: #2563eb;
     }
     .output {
-      background: #f9fafb;
+      background: #f0f0f0;
       padding: 1rem;
       border-radius: 8px;
       margin-top: 1.5rem;
-      font-family: monospace;
       white-space: pre-wrap;
-      border: 1px solid #e5e7eb;
+      word-break: break-word;
+      font-family: monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
     }
   </style>
 </head>
 <body>
+
   <h1>🔐 Chiffreur Admin</h1>
 
   <label for="htmlInput">Colle ici ton code HTML à protéger :</label>
-  <textarea id="htmlInput" rows="6" placeholder="<html>...</html>"></textarea>
+  <textarea id="htmlInput" rows="6" placeholder="<h1>Page admin secrète</h1>"></textarea>
 
   <label for="password">Mot de passe 🔑 :</label>
-  <input type="password" id="password" placeholder="Entre un mot de passe fort" />
+  <input type="password" id="password" placeholder="Mot de passe fort ici" />
 
-  <button onclick="encryptHTML()">🔒 Chiffrer</button>
+  <button onclick="encrypt()">🔒 Chiffrer</button>
 
-  <label for="outputCode">Voici ton code à coller dans admin.html :</label>
-  <div class="output" id="outputCode"></div>
+  <label for="output">Voici ton code à coller dans admin.html :</label>
+  <div class="output" id="output"></div>
 
   <script>
-    function encryptHTML() {
-      const html = document.getElementById('htmlInput').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const output = document.getElementById('outputCode');
-
+    function encrypt() {
+      const html = document.getElementById("htmlInput").value;
+      const password = document.getElementById("password").value;
       if (!html || !password) {
-        alert("Frérot, faut remplir les deux champs.");
+        alert("Frérot, remplis les deux champs stp.");
         return;
       }
 
       const encrypted = CryptoJS.AES.encrypt(html, password).toString();
 
-      const result = `
+      const securedHTML = `
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -99,11 +102,11 @@
   }
 <\/script>
 </body>
-</html>
-      `.trim();
+</html>`.trim();
 
-      output.textContent = result;
+      document.getElementById("output").textContent = securedHTML;
     }
   </script>
+
 </body>
 </html>
