@@ -1317,17 +1317,7 @@ if (window.location.href.includes("external")) {
             if (evaluationForm) {
                 evaluationForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    const formData = new FormData(this);
-                    const code = formData.get('code');
-                    const relation = formData.get('relation');
-                    
-                    if (code && relation) {
-                        userCode = code;
-                        testType = 'proche';
-                        startEvaluationTest(relation);
-                    } else {
-                        alert('Veuillez remplir tous les champs requis.');
-                    }
+                    startExternalEvaluation();
                 });
             }
         }
@@ -1547,10 +1537,10 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
          * Cette fonction récupère l'utilisateur par son code unique, puis insère une évaluation liée.
          * @param {String} code Code unique de l'utilisateur évalué.
          * @param {String} relation Relation entre l'évaluateur et l'utilisateur ("family", "partner", "friend", "colleague").
-         * @param {Object} mbtiScores Scores MBTI calculés à partir des réponses de l'évaluation externe.
+         * @param {Object} functionScores Scores des fonctions cognitives calculés à partir des réponses.
          * @param {Object} enneagramScores Scores Ennéagramme calculés à partir des réponses.
          */
-        async function saveExternalEvaluationToSupabase(code, relation, mbtiScores, enneagramScores) {
+        async function saveExternalEvaluationToSupabase(code, relation, functionScores, enneagramScores) {
             try {
                 // Récupérer l'utilisateur par code
                 const { data: user, error: userError } = await supabase
@@ -1569,7 +1559,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     .insert({
                         user_id: userId,
                         relation: relation,
-                        mbti_scores: mbtiScores,
+                        mbti_scores: functionScores,
                         enneagram_scores: enneagramScores
                     });
                 if (insertError) {
@@ -1587,15 +1577,23 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
          * Calcule et enregistre le résultat final si au moins trois évaluations externes sont disponibles.
          * @param {String} userId Identifiant de l'utilisateur.
          */
-        function getProfileFromScores(mbtiScores, enneagramScores) {
+        function getProfileFromScores(functionScores, enneagramScores) {
+            const E = (functionScores.Fe || 0) + (functionScores.Te || 0) + (functionScores.Se || 0) + (functionScores.Ne || 0);
+            const I = (functionScores.Fi || 0) + (functionScores.Ti || 0) + (functionScores.Si || 0) + (functionScores.Ni || 0);
+            const S = (functionScores.Si || 0) + (functionScores.Se || 0);
+            const N = (functionScores.Ni || 0) + (functionScores.Ne || 0);
+            const T = (functionScores.Ti || 0) + (functionScores.Te || 0);
+            const F = (functionScores.Fi || 0) + (functionScores.Fe || 0);
+            const J = (functionScores.Te || 0) + (functionScores.Fe || 0);
+            const P = (functionScores.Se || 0) + (functionScores.Ne || 0);
             const mbtiType =
-                (mbtiScores.E > mbtiScores.I ? 'E' : 'I') +
-                (mbtiScores.S > mbtiScores.N ? 'S' : 'N') +
-                (mbtiScores.T > mbtiScores.F ? 'T' : 'F') +
-                (mbtiScores.J > mbtiScores.P ? 'J' : 'P');
+                (E >= I ? 'E' : 'I') +
+                (S >= N ? 'S' : 'N') +
+                (T >= F ? 'T' : 'F') +
+                (J >= P ? 'J' : 'P');
             let topEnnea = '1';
             Object.keys(enneagramScores).forEach(type => {
-                if (enneagramScores[type] > enneagramScores[topEnnea]) {
+                if ((enneagramScores[type] || 0) > (enneagramScores[topEnnea] || 0)) {
                     topEnnea = type;
                 }
             });
@@ -1605,19 +1603,25 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         function getCohérenceMBTI(scores) {
             if (!scores) return "Inconnue";
 
+            const E = (scores.Fe || 0) + (scores.Te || 0) + (scores.Se || 0) + (scores.Ne || 0);
+            const I = (scores.Fi || 0) + (scores.Ti || 0) + (scores.Si || 0) + (scores.Ni || 0);
+            const S = (scores.Si || 0) + (scores.Se || 0);
+            const N = (scores.Ni || 0) + (scores.Ne || 0);
+            const T = (scores.Ti || 0) + (scores.Te || 0);
+            const F = (scores.Fi || 0) + (scores.Fe || 0);
+            const J = (scores.Te || 0) + (scores.Fe || 0);
+            const P = (scores.Se || 0) + (scores.Ne || 0);
+
             const pairs = [
-                ["I", "E"],
-                ["S", "N"],
-                ["T", "F"],
-                ["J", "P"]
+                [I, E],
+                [S, N],
+                [T, F],
+                [J, P]
             ];
 
-            const écarts = pairs.map(([a, b]) => {
-                if (scores[a] == null || scores[b] == null) return 0;
-                return Math.abs(scores[a] - scores[b]);
-            });
+            const écarts = pairs.map(([a, b]) => Math.abs(a - b));
 
-            const moyenne = écarts.reduce((sum, val) => sum + val, 0) / écarts.length;
+            const moyenne = écarts.reduce((sum, val) => sum + val, 0) / pairs.length;
 
             if (moyenne >= 30) return "Forte";
             if (moyenne >= 15) return "Moyenne";
@@ -1674,7 +1678,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         return Object.fromEntries(keys.map(k => [k, totals[k] / count]));
     };
 
-    const avgFunc = avg(functions, 'function_scores');
+    const avgFunc = avg(functions, 'mbti_scores');
     const avgEnnea = avg(types, 'enneagram_scores');
 
     const E = avgFunc.Fe + avgFunc.Te + avgFunc.Se + avgFunc.Ne;
@@ -1715,7 +1719,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         const maxDev = evaluations.length * keys.length * 3;
         return Math.round((1 - Math.min(dev/maxDev,1)) * 100);
     };
-    const mbtiConvergence = convergence(functions, 'function_scores');
+    const mbtiConvergence = convergence(functions, 'mbti_scores');
     const enneagramConvergence = convergence(types, 'enneagram_scores');
     const overallCertainty = Math.round((mbtiConvergence + enneagramConvergence)/2);
 
@@ -1827,48 +1831,55 @@ async function fetchUserProfileFromSupabase(code) {
 
 async function calculateResults() {
     console.log("Bouton Terminer cliqué");
-    const mbtiScores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+    const functionScores = { Fi: 0, Fe: 0, Ti: 0, Te: 0, Ni: 0, Ne: 0, Si: 0, Se: 0 };
     const enneagramScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
-    
+
     Object.keys(answers).forEach(questionId => {
         const questionIndex = parseInt(questionId) - 1;
         const answerIndex = answers[questionId];
         const question = AUTO_QUESTIONS[questionIndex];
         const selectedOption = question.options[answerIndex];
-        
-        Object.keys(selectedOption.mbti).forEach(trait => {
-            mbtiScores[trait] += selectedOption.mbti[trait];
+
+        Object.keys(selectedOption.functions).forEach(func => {
+            functionScores[func] += selectedOption.functions[func];
         });
-        
+
         Object.keys(selectedOption.enneagram).forEach(type => {
             enneagramScores[type] += selectedOption.enneagram[type];
         });
     });
-    
-    const mbtiType = 
-        (mbtiScores.E > mbtiScores.I ? 'E' : 'I') +
-        (mbtiScores.S > mbtiScores.N ? 'S' : 'N') +
-        (mbtiScores.T > mbtiScores.F ? 'T' : 'F') +
-        (mbtiScores.J > mbtiScores.P ? 'J' : 'P');
-    
-    const enneagramType = Object.keys(enneagramScores).reduce((a, b) => 
+
+    const E = functionScores.Fe + functionScores.Te + functionScores.Se + functionScores.Ne;
+    const I = functionScores.Fi + functionScores.Ti + functionScores.Si + functionScores.Ni;
+    const S = functionScores.Si + functionScores.Se;
+    const N = functionScores.Ni + functionScores.Ne;
+    const T = functionScores.Ti + functionScores.Te;
+    const F = functionScores.Fi + functionScores.Fe;
+    const J = functionScores.Te + functionScores.Fe;
+    const P = functionScores.Se + functionScores.Ne;
+
+    const mbtiType =
+        (E >= I ? 'E' : 'I') +
+        (S >= N ? 'S' : 'N') +
+        (T >= F ? 'T' : 'F') +
+        (J >= P ? 'J' : 'P');
+
+    const enneagramType = Object.keys(enneagramScores).reduce((a, b) =>
         enneagramScores[a] > enneagramScores[b] ? a : b
     );
-    
-    const mbtiPairs = [
-        ['E', 'I'],
-        ['S', 'N'],
-        ['T', 'F'],
-        ['J', 'P']
+
+    const traitPairs = [
+        [E, I],
+        [S, N],
+        [T, F],
+        [J, P]
     ];
-    let mbtiCertaintySum = 0;
-    mbtiPairs.forEach(([a, b]) => {
-        const pairTotal = mbtiScores[a] + mbtiScores[b];
-        if (pairTotal > 0) {
-            mbtiCertaintySum += Math.abs(mbtiScores[a] - mbtiScores[b]) / pairTotal;
-        }
-    });
-    const mbtiCertainty = Math.min(95, Math.round((mbtiCertaintySum / mbtiPairs.length) * 100));
+    const mbtiCertainty = Math.min(95, Math.round(
+        traitPairs.reduce((sum, [a, b]) => {
+            const total = a + b;
+            return total ? sum + Math.abs(a - b) / total : sum;
+        }, 0) / traitPairs.length * 100
+    ));
 
     const totalEnneagramScore = Object.values(enneagramScores).reduce((a, b) => a + b, 0);
     const enneagramCertainty = totalEnneagramScore
@@ -1876,9 +1887,9 @@ async function calculateResults() {
         : 0;
 
     const certaintyScore = Math.round((mbtiCertainty + enneagramCertainty) / 2);
-    
+
     const uniqueCode = genererUniqueCode();
-    
+
     const userProfile = {
         code: uniqueCode,
         mbtiType,
@@ -1886,14 +1897,14 @@ async function calculateResults() {
         mbtiCertainty,
         enneagramCertainty,
         certaintyScore,
-        mbtiScores,
+        mbtiScores: functionScores,
         enneagramScores,
         timestamp: Date.now()
     };
 
     await saveUserProfileToSupabase(userProfile);
     localStorage.setItem('userProfile_' + uniqueCode, JSON.stringify(userProfile));
-    
+
     displayResults({
         code: uniqueCode,
         mbtiType,
@@ -1901,7 +1912,7 @@ async function calculateResults() {
         mbtiCertainty,
         enneagramCertainty,
         certaintyScore,
-        mbtiScores,
+        mbtiScores: functionScores,
         enneagramScores
     });
 }
@@ -2107,11 +2118,6 @@ function displayResults(results) {
                 displayQuestion(0);
             }
         }
-
-        function startEvaluationTest(relation) {
-            alert(`Évaluation pour un ${relation} - Fonctionnalité en cours de développement`);
-        }
-
         // Gestion des modales
         function showModal(title, content) {
             const modalContainer = document.getElementById('modal-container');
@@ -3335,9 +3341,9 @@ function showPrivacyPolicy() {
         async function submitExternalEvaluation() {
             const code = localStorage.getItem('externalEvaluationCode');
             const relation = localStorage.getItem('externalEvaluationRelation');
-            
-            // Calculer les scores MBTI et Ennéagramme pour cette évaluation
-            const mbtiScores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+            // Calculer les scores de fonctions cognitives et Ennéagramme
+            const functionScores = { Fi: 0, Fe: 0, Ti: 0, Te: 0, Ni: 0, Ne: 0, Si: 0, Se: 0 };
             const enneagramScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
             Object.keys(externalAnswers).forEach(questionId => {
                 const question = EXTERNAL_QUESTIONS.find(q => q.id === parseInt(questionId));
@@ -3346,9 +3352,9 @@ function showPrivacyPolicy() {
                     return;
                 }
                 const selectedOption = question.options[value - 1];
-                // Ajouter les scores MBTI
-                Object.keys(selectedOption.mbti).forEach(trait => {
-                    mbtiScores[trait] += selectedOption.mbti[trait];
+                // Ajouter les scores de fonctions cognitives
+                Object.keys(selectedOption.functions).forEach(func => {
+                    functionScores[func] += selectedOption.functions[func];
                 });
                 // Ajouter les scores Ennéagramme
                 Object.keys(selectedOption.enneagram).forEach(type => {
@@ -3356,7 +3362,7 @@ function showPrivacyPolicy() {
                 });
             });
             // Enregistrer dans Supabase
-            await saveExternalEvaluationToSupabase(code, relation, mbtiScores, enneagramScores);
+            await saveExternalEvaluationToSupabase(code, relation, functionScores, enneagramScores);
             // Nettoyer le stockage local temporaire
             localStorage.removeItem('externalEvaluationCode');
             localStorage.removeItem('externalEvaluationRelation');
@@ -3940,9 +3946,19 @@ function showPrivacyPolicy() {
                 { label: 'T / F', a: 'T', b: 'F' },
                 { label: 'J / P', a: 'J', b: 'P' }
             ];
+            const traitScores = {
+                E: (profile.mbtiScores.Fe || 0) + (profile.mbtiScores.Te || 0) + (profile.mbtiScores.Se || 0) + (profile.mbtiScores.Ne || 0),
+                I: (profile.mbtiScores.Fi || 0) + (profile.mbtiScores.Ti || 0) + (profile.mbtiScores.Si || 0) + (profile.mbtiScores.Ni || 0),
+                S: (profile.mbtiScores.Si || 0) + (profile.mbtiScores.Se || 0),
+                N: (profile.mbtiScores.Ni || 0) + (profile.mbtiScores.Ne || 0),
+                T: (profile.mbtiScores.Ti || 0) + (profile.mbtiScores.Te || 0),
+                F: (profile.mbtiScores.Fi || 0) + (profile.mbtiScores.Fe || 0),
+                J: (profile.mbtiScores.Te || 0) + (profile.mbtiScores.Fe || 0),
+                P: (profile.mbtiScores.Se || 0) + (profile.mbtiScores.Ne || 0)
+            };
             const mbtiData = mbtiPairs.map(pair => {
-                const aScore = profile.mbtiScores[pair.a];
-                const bScore = profile.mbtiScores[pair.b];
+                const aScore = traitScores[pair.a];
+                const bScore = traitScores[pair.b];
                 const dominant = aScore > bScore ? pair.a : pair.b;
                 const value = Math.round((Math.max(aScore, bScore) / (aScore + bScore)) * 100);
                 return { label: pair.label, value, dominant };
