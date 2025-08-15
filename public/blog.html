@@ -668,7 +668,7 @@ if (window.location.href.includes("external")) {
         let currentQuestionIndex = 0;
         let answers = {};
         let testType = 'auto'; // 'auto' ou 'proche'
-        let userCode = generateUniqueCode();
+        let userCode = genererUniqueCode();
 
 
 
@@ -988,18 +988,6 @@ function displayQuestion(index) {
         }
 
         // === Configuration Supabase ===
-      
-        // 🔐 Génére un code aléatoire
-
-function generateUniqueCode(length = 6) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let code = '';
-  for (let i = 0; i < length; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
-}
-
 
         const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg';
@@ -1365,6 +1353,7 @@ async function fetchUserProfileFromSupabase(code) {
 }
 
 async function calculateResults() {
+    console.log("Bouton Terminer cliqué");
     const mbtiScores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
     const enneagramScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
     
@@ -1415,7 +1404,7 @@ async function calculateResults() {
 
     const certaintyScore = Math.round((mbtiCertainty + enneagramCertainty) / 2);
     
-    const uniqueCode = generateUniqueCode();
+    const uniqueCode = genererUniqueCode();
     
     const userProfile = {
         code: uniqueCode,
