@@ -1823,124 +1823,87 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         }
 
        function computeWeightedResults(evaluations) {
-    const baseWeights = {
-        family: 30,
-        partner: 25,
-        friend: 25,
-        colleague: 15
-    };
-
-    const combinedMbti = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
-    const combinedEnneagram = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
-
-    const availableRelations = {};
-    let totalBaseWeight = 0;
-
-    evaluations.forEach(ev => {
-        if (baseWeights[ev.relation]) {
-            if (!availableRelations[ev.relation]) {
-                availableRelations[ev.relation] = [];
-                totalBaseWeight += baseWeights[ev.relation];
-            }
-            availableRelations[ev.relation].push(ev);
-        }
-    });
-
-    if (totalBaseWeight === 0) {
+    const functions = ['Fi','Fe','Ti','Te','Ni','Ne','Si','Se'];
+    const types = ['1','2','3','4','5','6','7','8','9'];
+    if (!Array.isArray(evaluations) || evaluations.length === 0) {
         return {
             mbtiType: null,
             enneagramType: null,
-            mbtiCertainty: 0,
-            enneagramCertainty: 0,
-            overallCertainty: 0,
-            combinedMbti,
-            combinedEnneagram
+            enneagramWing: null,
+            mbtiPercentages: {},
+            mbtiStack: [],
+            mbtiConvergence: 0,
+            enneagramConvergence: 0,
+            overallCertainty: 0
         };
     }
 
-    const normalizedWeights = {};
-    Object.keys(availableRelations).forEach(relation => {
-        normalizedWeights[relation] = (baseWeights[relation] / totalBaseWeight) * 100;
-    });
-
-    Object.keys(availableRelations).forEach(relation => {
-        const weight = normalizedWeights[relation];
-        const relEvaluations = availableRelations[relation];
-        const avgMbti = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
-        const avgEnneagram = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
-
-        relEvaluations.forEach(ev => {
-            Object.keys(ev.mbti_scores).forEach(trait => {
-                avgMbti[trait] += ev.mbti_scores[trait];
-            });
-            Object.keys(ev.enneagram_scores).forEach(type => {
-                avgEnneagram[type] += ev.enneagram_scores[type];
-            });
+    const avg = (keys, field) => {
+        const totals = Object.fromEntries(keys.map(k => [k, 0]));
+        evaluations.forEach(ev => {
+            const scores = ev[field] || {};
+            keys.forEach(k => { totals[k] += Number(scores[k] || 0); });
         });
+        const count = evaluations.length;
+        return Object.fromEntries(keys.map(k => [k, totals[k] / count]));
+    };
 
-        Object.keys(avgMbti).forEach(trait => {
-            avgMbti[trait] = avgMbti[trait] / relEvaluations.length;
-            combinedMbti[trait] += avgMbti[trait] * (weight / 100);
-        });
-        Object.keys(avgEnneagram).forEach(type => {
-            avgEnneagram[type] = avgEnneagram[type] / relEvaluations.length;
-            combinedEnneagram[type] += avgEnneagram[type] * (weight / 100);
-        });
-    });
+    const avgFunc = avg(functions, 'function_scores');
+    const avgEnnea = avg(types, 'enneagram_scores');
 
+    const E = avgFunc.Fe + avgFunc.Te + avgFunc.Se + avgFunc.Ne;
+    const I = avgFunc.Fi + avgFunc.Ti + avgFunc.Si + avgFunc.Ni;
+    const S = avgFunc.Si + avgFunc.Se;
+    const N = avgFunc.Ni + avgFunc.Ne;
+    const T = avgFunc.Ti + avgFunc.Te;
+    const F = avgFunc.Fi + avgFunc.Fe;
+    const J = avgFunc.Te + avgFunc.Fe;
+    const P = avgFunc.Se + avgFunc.Ne;
     const mbtiType =
-        (combinedMbti.E > combinedMbti.I ? 'E' : 'I') +
-        (combinedMbti.S > combinedMbti.N ? 'S' : 'N') +
-        (combinedMbti.T > combinedMbti.F ? 'T' : 'F') +
-        (combinedMbti.J > combinedMbti.P ? 'J' : 'P');
+        (E >= I ? 'E' : 'I') +
+        (S >= N ? 'S' : 'N') +
+        (T >= F ? 'T' : 'F') +
+        (J >= P ? 'J' : 'P');
 
-    let topEnnea = '1';
-    Object.keys(combinedEnneagram).forEach(type => {
-        if (combinedEnneagram[type] > combinedEnneagram[topEnnea]) {
-            topEnnea = type;
-        }
-    });
+    const mbtiStack = Object.entries(avgFunc)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,4)
+        .map(([f])=>f);
+    const totalFunc = Object.values(avgFunc).reduce((a,b)=>a+b,0);
+    const mbtiPercentages = Object.fromEntries(functions.map(f=>[f, totalFunc?Math.round(avgFunc[f]/totalFunc*100):0]));
 
-    const mbtiTypes = [];
-    const enneagramTypes = [];
+    let enneagramType = null; let max = -Infinity;
+    Object.entries(avgEnnea).forEach(([t,v])=>{ if(v>max){max=v; enneagramType=t;} });
+    const left = enneagramType==='1'?'9':String(Number(enneagramType)-1);
+    const right = enneagramType==='9'?'1':String(Number(enneagramType)+1);
+    const enneagramWing = avgEnnea[left] >= avgEnnea[right] ? left : right;
 
-    evaluations.forEach(ev => {
-        const evMbtiType =
-            (ev.mbti_scores.E > ev.mbti_scores.I ? 'E' : 'I') +
-            (ev.mbti_scores.S > ev.mbti_scores.N ? 'S' : 'N') +
-            (ev.mbti_scores.T > ev.mbti_scores.F ? 'T' : 'F') +
-            (ev.mbti_scores.J > ev.mbti_scores.P ? 'J' : 'P');
-        const evEnneaType = Object.keys(ev.enneagram_scores).reduce((a, b) =>
-            ev.enneagram_scores[a] > ev.enneagram_scores[b] ? a : b
-        );
-        mbtiTypes.push(evMbtiType);
-        enneagramTypes.push(evEnneaType);
-    });
-
-    const mbtiFreq = {};
-    mbtiTypes.forEach(type => {
-        mbtiFreq[type] = (mbtiFreq[type] || 0) + 1;
-    });
-    const mbtiMaxFreq = Math.max(...Object.values(mbtiFreq));
-    const mbtiCertainty = Math.round((mbtiMaxFreq / mbtiTypes.length) * 100);
-
-    const enneaFreq = {};
-    enneagramTypes.forEach(type => {
-        enneaFreq[type] = (enneaFreq[type] || 0) + 1;
-    });
-    const enneaMaxFreq = Math.max(...Object.values(enneaFreq));
-    const enneagramCertainty = Math.round((enneaMaxFreq / enneagramTypes.length) * 100);
-
-    const overallCertainty = Math.round((mbtiCertainty + enneagramCertainty) / 2);
+    const convergence = (keys, field) => {
+        if (evaluations.length<=1) return 100;
+        const means = avg(keys, field);
+        let dev = 0;
+        evaluations.forEach(ev=>{
+            const scores=ev[field]||{};
+            keys.forEach(k=>{dev += Math.abs(Number(scores[k]||0)-means[k]);});
+        });
+        const maxDev = evaluations.length * keys.length * 3;
+        return Math.round((1 - Math.min(dev/maxDev,1)) * 100);
+    };
+    const mbtiConvergence = convergence(functions, 'function_scores');
+    const enneagramConvergence = convergence(types, 'enneagram_scores');
+    const overallCertainty = Math.round((mbtiConvergence + enneagramConvergence)/2);
 
     return {
         mbtiType,
-        enneagramType: topEnnea,
-        mbtiCertainty,
-        enneagramCertainty,
+        enneagramType,
+        enneagramWing,
+        mbtiPercentages,
+        mbtiStack,
+        mbtiConvergence,
+        enneagramConvergence,
         overallCertainty,
-        combinedMbti,
-        combinedEnneagram
+        functionAverages: avgFunc,
+        enneagramAverages: avgEnnea
     };
 }
 
@@ -1976,8 +1939,8 @@ async function calculateFinalProfile(code) {
                 mbti_type: weighted.mbtiType,
                 enneagram_type: weighted.enneagramType,
                 certainty_score: overallCertainty,
-                mbti_scores: weighted.combinedMbti,
-                enneagram_scores: weighted.combinedEnneagram
+                mbti_scores: weighted.functionAverages,
+                enneagram_scores: weighted.enneagramAverages
             })
             .eq('code', code);
 
@@ -1987,13 +1950,13 @@ async function calculateFinalProfile(code) {
                 code,
                 mbti_type: weighted.mbtiType,
                 enneagram_type: weighted.enneagramType,
-                mbti_scores: weighted.combinedMbti,
-                enneagram_scores: weighted.combinedEnneagram,
+                mbti_scores: weighted.functionAverages,
+                enneagram_scores: weighted.enneagramAverages,
                 certainty_score: overallCertainty
             },
             evaluations,
-            mbtiCertainty: weighted.mbtiCertainty,
-            enneagramCertainty: weighted.enneagramCertainty,
+            mbtiCertainty: weighted.mbtiConvergence,
+            enneagramCertainty: weighted.enneagramConvergence,
             overallCertainty
         };
     } catch (err) {

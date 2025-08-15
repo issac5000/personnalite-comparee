@@ -1,123 +1,129 @@
-function buildMbtiType(scores = {}) {
-  const pairs = [
-    ['E', 'I'],
-    ['S', 'N'],
-    ['T', 'F'],
-    ['J', 'P'],
-  ];
-  let type = '';
-  for (const [a, b] of pairs) {
-    const aScore = typeof scores[a] === 'number' ? scores[a] : -Infinity;
-    const bScore = typeof scores[b] === 'number' ? scores[b] : -Infinity;
-    if (aScore === -Infinity && bScore === -Infinity) {
-      return null;
-    }
-    type += aScore >= bScore ? a : b;
-  }
-  return type;
+/**
+ * Compute final MBTI and Enneagram profile from a set of external evaluations.
+ * The algorithm no longer weights answers based on the relationship of the evaluator.
+ * Instead it averages every evaluation and derives a profile based on Jungian
+ * cognitive functions and Enneagram types.  A certainty score is produced by
+ * measuring convergence between evaluators.
+ */
+
+const COGNITIVE_FUNCTIONS = ['Fi', 'Fe', 'Ti', 'Te', 'Ni', 'Ne', 'Si', 'Se'];
+const ENNEAGRAM_TYPES = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+function averageScores(evaluations, keyList, field) {
+  const totals = Object.fromEntries(keyList.map(k => [k, 0]));
+  evaluations.forEach(ev => {
+    const scores = ev[field] || {};
+    keyList.forEach(k => {
+      totals[k] += Number(scores[k] || 0);
+    });
+  });
+  const count = evaluations.length;
+  return Object.fromEntries(keyList.map(k => [k, totals[k] / count]));
 }
 
-function getMaxKey(obj = {}) {
-  let maxKey = null;
-  let maxVal = -Infinity;
-  for (const key in obj) {
-    const val = obj[key];
-    if (typeof val === 'number' && val > maxVal) {
-      maxVal = val;
-      maxKey = key;
-    }
-  }
-  return maxKey;
+function computePercentages(avgMap) {
+  const total = Object.values(avgMap).reduce((a, b) => a + b, 0);
+  if (total === 0) return Object.fromEntries(Object.keys(avgMap).map(k => [k, 0]));
+  return Object.fromEntries(
+    Object.entries(avgMap).map(([k, v]) => [k, Math.round((v / total) * 100)])
+  );
 }
 
-function getDominantType(weightMap) {
-  let dominantType = null;
-  let weight = 0;
-  for (const [type, w] of Object.entries(weightMap)) {
-    if (w > weight) {
-      weight = w;
-      dominantType = type;
+function mbtiFromFunctions(avgFunctions) {
+  const E = avgFunctions.Fe + avgFunctions.Te + avgFunctions.Se + avgFunctions.Ne;
+  const I = avgFunctions.Fi + avgFunctions.Ti + avgFunctions.Si + avgFunctions.Ni;
+  const S = avgFunctions.Si + avgFunctions.Se;
+  const N = avgFunctions.Ni + avgFunctions.Ne;
+  const T = avgFunctions.Ti + avgFunctions.Te;
+  const F = avgFunctions.Fi + avgFunctions.Fe;
+  const J = avgFunctions.Te + avgFunctions.Fe;
+  const P = avgFunctions.Se + avgFunctions.Ne;
+  return (
+    (E >= I ? 'E' : 'I') +
+    (S >= N ? 'S' : 'N') +
+    (T >= F ? 'T' : 'F') +
+    (J >= P ? 'J' : 'P')
+  );
+}
+
+function topEnneagramType(avgTypes) {
+  let top = null;
+  let max = -Infinity;
+  for (const [t, v] of Object.entries(avgTypes)) {
+    if (v > max) {
+      top = t;
+      max = v;
     }
   }
-  return { dominantType, weight };
+  return top;
+}
+
+function computeWing(avgTypes, coreType) {
+  if (!coreType) return null;
+  const left = coreType === '1' ? '9' : String(Number(coreType) - 1);
+  const right = coreType === '9' ? '1' : String(Number(coreType) + 1);
+  return avgTypes[left] >= avgTypes[right] ? left : right;
+}
+
+function convergenceScore(evaluations, keyList, field) {
+  if (evaluations.length <= 1) return 100;
+  const means = averageScores(evaluations, keyList, field);
+  let totalDeviation = 0;
+  evaluations.forEach(ev => {
+    const scores = ev[field] || {};
+    keyList.forEach(k => {
+      const val = Number(scores[k] || 0);
+      totalDeviation += Math.abs(val - means[k]);
+    });
+  });
+  // Maximum deviation if one evaluator gives 0 and another 3 on all keys
+  const maxDeviation = evaluations.length * keyList.length * 3;
+  const ratio = totalDeviation / maxDeviation;
+  return Math.round((1 - Math.min(ratio, 1)) * 100);
 }
 
 function computeFinalProfileFromExternalEvaluations(evaluations) {
-  const emptyResult = {
+  const empty = {
     mbtiType: null,
     enneagramType: null,
-    mbtiCertainty: 0,
-    enneagramCertainty: 0,
-    overallCertainty: 0,
+    enneagramWing: null,
+    mbtiPercentages: {},
+    mbtiStack: [],
     mbtiConvergence: 0,
     enneagramConvergence: 0,
+    overallCertainty: 0,
   };
 
-  if (!Array.isArray(evaluations) || evaluations.length < 3) {
-    return emptyResult;
+  if (!Array.isArray(evaluations) || evaluations.length === 0) {
+    return empty;
   }
 
-  const baseWeights = { family: 30, partner: 25, friend: 25, colleague: 15 };
+  const avgFunctions = averageScores(evaluations, COGNITIVE_FUNCTIONS, 'function_scores');
+  const avgEnnea = averageScores(evaluations, ENNEAGRAM_TYPES, 'enneagram_scores');
 
-  const rawWeights = [];
-  let totalRaw = 0;
-  const validEvaluations = [];
+  const mbtiType = mbtiFromFunctions(avgFunctions);
+  const mbtiPercentages = computePercentages(avgFunctions);
+  const mbtiStack = Object.entries(avgFunctions)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([f]) => f);
 
-  evaluations.forEach((ev) => {
-    const weight = baseWeights[ev.relation] || 0;
-    if (weight > 0) {
-      rawWeights.push(weight);
-      validEvaluations.push(ev);
-      totalRaw += weight;
-    }
-  });
+  const enneagramType = topEnneagramType(avgEnnea);
+  const enneagramWing = computeWing(avgEnnea, enneagramType);
 
-  if (validEvaluations.length < 3 || totalRaw <= 0) {
-    return emptyResult;
-  }
-
-  let normalizedWeights = rawWeights.map((w) => w / totalRaw);
-  const sumNormalized = normalizedWeights.reduce((a, b) => a + b, 0);
-  if (sumNormalized === 0) {
-    return emptyResult;
-  }
-  normalizedWeights = normalizedWeights.map((w) => w / sumNormalized);
-
-  const checkSum = normalizedWeights.reduce((a, b) => a + b, 0);
-  if (Math.abs(checkSum - 1) > 1e-6) {
-    normalizedWeights = normalizedWeights.map((w) => w / checkSum);
-  }
-
-  const mbtiWeights = {};
-  const enneagramWeights = {};
-
-  validEvaluations.forEach((ev, idx) => {
-    const weight = normalizedWeights[idx];
-    const mbtiType = buildMbtiType(ev.mbti_scores || {});
-    if (mbtiType) {
-      mbtiWeights[mbtiType] = (mbtiWeights[mbtiType] || 0) + weight;
-    }
-    const enneagramType = getMaxKey(ev.enneagram_scores || {});
-    if (enneagramType) {
-      enneagramWeights[enneagramType] = (enneagramWeights[enneagramType] || 0) + weight;
-    }
-  });
-
-  const { dominantType: mbtiType, weight: mbtiWeight } = getDominantType(mbtiWeights);
-  const { dominantType: enneagramType, weight: enneagramWeight } = getDominantType(enneagramWeights);
-
-  const mbtiCertainty = Math.round((mbtiWeight || 0) * 100);
-  const enneagramCertainty = Math.round((enneagramWeight || 0) * 100);
-  const overallCertainty = Math.round((mbtiCertainty + enneagramCertainty) / 2);
+  const mbtiConvergence = convergenceScore(evaluations, COGNITIVE_FUNCTIONS, 'function_scores');
+  const enneagramConvergence = convergenceScore(evaluations, ENNEAGRAM_TYPES, 'enneagram_scores');
+  const overallCertainty = Math.round((mbtiConvergence + enneagramConvergence) / 2);
 
   return {
     mbtiType,
     enneagramType,
-    mbtiCertainty,
-    enneagramCertainty,
+    enneagramWing,
+    mbtiPercentages,
+    mbtiStack,
+    mbtiConvergence,
+    enneagramConvergence,
     overallCertainty,
-    mbtiConvergence: mbtiCertainty,
-    enneagramConvergence: enneagramCertainty,
   };
 }
 
