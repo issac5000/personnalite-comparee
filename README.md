@@ -5,7 +5,7 @@ Webapp HTML/JS combinant test MBTI + Ennéagramme, sans backend. Résultats anon
 
 - Test MBTI + Ennéagramme avec validation par des proches
 - Génération du profil final après 3 évaluations externes
-- Chatbot basé sur GPT‑3.5 pour répondre aux questions sur les profils
+- Chatbot basé sur GPT‑4o mini pour répondre aux questions sur les profils
 
 ## Configuration du chatbot
 
