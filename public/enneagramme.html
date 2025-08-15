@@ -1030,176 +1030,14 @@
             </div>
         </div>
     </footer>
+    <script src="questions-v2.js"></script>
 
    
       
     <script>
         // Configuration et données
-        const QUESTIONS_AUTO_EVALUATION = [
-            
-            {
-                id: 1,
-                question: "Dans une soirée, vous êtes plutôt :",
-                options: [
-                    { text: "Au centre de l'attention, à animer la conversation", mbti: { E: 3 }, enneagram: { 3: 2, 7: 1, 8: 1 } },
-                    { text: "À discuter en petit groupe avec des personnes que vous connaissez", mbti: { E: 1 }, enneagram: { 2: 2, 9: 1 } },
-                    { text: "À observer les autres et à ne parler qu'avec une ou deux personnes", mbti: { I: 2 }, enneagram: { 4: 1, 5: 2, 6: 1 } },
-                    { text: "À chercher un moyen de partir discrètement", mbti: { I: 3 }, enneagram: { 5: 2, 9: 1 } }
-                ]
-            },
-            {
-                id: 2,
-                question: "Quand vous devez prendre une décision importante, vous :",
-                options: [
-                    { text: "Analysez tous les faits et données disponibles", mbti: { T: 3, J: 1 }, enneagram: { 1: 2, 5: 2 } },
-                    { text: "Écoutez votre intuition et vos sentiments", mbti: { F: 3, P: 1 }, enneagram: { 4: 2, 7: 1 } },
-                    { text: "Demandez conseil à plusieurs personnes de confiance", mbti: { F: 2 }, enneagram: { 2: 1, 6: 2, 9: 1 } },
-                    { text: "Pesez rapidement le pour et le contre puis agissez", mbti: { T: 2, J: 2 }, enneagram: { 3: 2, 8: 2 } }
-                ]
-            },
-            {
-                id: 3,
-                question: "Votre espace de travail idéal est :",
-                options: [
-                    { text: "Parfaitement organisé avec chaque chose à sa place", mbti: { J: 3, S: 1 }, enneagram: { 1: 3 } },
-                    { text: "Créatif et inspirant, même si un peu désordonné", mbti: { P: 2, N: 2 }, enneagram: { 4: 2, 7: 1 } },
-                    { text: "Fonctionnel et pratique avant tout", mbti: { S: 2, T: 1 }, enneagram: { 3: 1, 5: 1, 8: 1 } },
-                    { text: "Chaleureux et accueillant pour recevoir des collègues", mbti: { F: 2, E: 1 }, enneagram: { 2: 3 } }
-                ]
-            },
-            {
-                id: 4,
-                question: "Face à un conflit, votre première réaction est de :",
-                options: [
-                    { text: "Confronter directement le problème", mbti: { T: 2, E: 1 }, enneagram: { 8: 3, 1: 1 } },
-                    { text: "Chercher un compromis qui satisfait tout le monde", mbti: { F: 2 }, enneagram: { 2: 1, 9: 3 } },
-                    { text: "Prendre du recul pour analyser la situation", mbti: { I: 2, T: 1 }, enneagram: { 5: 3, 6: 1 } },
-                    { text: "Éviter le conflit si possible", mbti: { F: 1, I: 1 }, enneagram: { 4: 1, 9: 2 } }
-                ]
-            },
-            {
-                id: 5,
-                question: "Vous vous sentez le plus énergisé quand vous :",
-                options: [
-                    { text: "Interagissez avec beaucoup de personnes différentes", mbti: { E: 3 }, enneagram: { 3: 1, 7: 2 } },
-                    { text: "Travaillez seul sur un projet qui vous passionne", mbti: { I: 3 }, enneagram: { 4: 2, 5: 2 } },
-                    { text: "Aidez quelqu'un à résoudre ses problèmes", mbti: { F: 2, E: 1 }, enneagram: { 2: 3 } },
-                    { text: "Relevez un défi stimulant", mbti: { N: 1, T: 1 }, enneagram: { 3: 2, 8: 2 } }
-                ]
-            },
-            {
-                id: 6,
-                question: "Votre approche de la planification est :",
-                options: [
-                    { text: "Planifier chaque détail à l'avance", mbti: { J: 3, S: 1 }, enneagram: { 1: 2, 6: 1 } },
-                    { text: "Avoir une idée générale et improviser", mbti: { P: 3, N: 1 }, enneagram: { 7: 2, 9: 1 } },
-                    { text: "Planifier les grandes étapes seulement", mbti: { N: 2, J: 1 }, enneagram: { 3: 2, 5: 1 } },
-                    { text: "Préférer la spontanéité totale", mbti: { P: 3 }, enneagram: { 7: 3 } }
-                ]
-            },
-            {
-                id: 7,
-                question: "Quand vous apprenez quelque chose de nouveau, vous préférez :",
-                options: [
-                    { text: "Comprendre d'abord la théorie puis pratiquer", mbti: { N: 2, T: 1 }, enneagram: { 5: 3 } },
-                    { text: "Apprendre en faisant, par l'expérience", mbti: { S: 3, P: 1 }, enneagram: { 7: 2, 8: 1 } },
-                    { text: "Avoir quelqu'un qui vous guide étape par étape", mbti: { S: 2, F: 1 }, enneagram: { 2: 1, 6: 2 } },
-                    { text: "Explorer librement et découvrir par vous-même", mbti: { N: 2, P: 2 }, enneagram: { 4: 2, 7: 1 } }
-                ]
-            },
-            {
-                id: 8,
-                question: "Votre plus grande motivation au travail est :",
-                options: [
-                    { text: "Atteindre l'excellence et la perfection", mbti: { J: 2, T: 1 }, enneagram: { 1: 3 } },
-                    { text: "Aider les autres et faire une différence", mbti: { F: 3 }, enneagram: { 2: 3 } },
-                    { text: "Réussir et être reconnu pour vos accomplissements", mbti: { E: 1, T: 1 }, enneagram: { 3: 3 } },
-                    { text: "Exprimer votre créativité et votre authenticité", mbti: { N: 2, F: 1 }, enneagram: { 4: 3 } }
-                ]
-            },
-            {
-                id: 9,
-                question: "Face à l'incertitude, vous :",
-                options: [
-                    { text: "Cherchez à obtenir plus d'informations", mbti: { T: 2, J: 1 }, enneagram: { 5: 2, 6: 2 } },
-                    { text: "Faites confiance à votre instinct", mbti: { N: 2, F: 1 }, enneagram: { 4: 1, 7: 1, 8: 1 } },
-                    { text: "Vous sentez anxieux et cherchez du soutien", mbti: { F: 2 }, enneagram: { 6: 3 } },
-                    { text: "Voyez cela comme une aventure excitante", mbti: { P: 2, N: 1 }, enneagram: { 7: 3 } }
-                ]
-            },
-            {
-                id: 10,
-                question: "Votre style de communication est :",
-                options: [
-                    { text: "Direct et factuel", mbti: { T: 3, S: 1 }, enneagram: { 1: 1, 8: 2 } },
-                    { text: "Chaleureux et personnel", mbti: { F: 3 }, enneagram: { 2: 3 } },
-                    { text: "Imaginatif et métaphorique", mbti: { N: 3 }, enneagram: { 4: 2, 7: 1 } },
-                    { text: "Diplomate et nuancé", mbti: { F: 2, I: 1 }, enneagram: { 9: 3 } }
-                ]
-            },
-            {
-                id: 11,
-                question: "Votre plus grande peur est :",
-                options: [
-                    { text: "De faire des erreurs ou d'être imparfait", mbti: { J: 2, T: 1 }, enneagram: { 1: 3 } },
-                    { text: "De ne pas être aimé ou apprécié", mbti: { F: 2, E: 1 }, enneagram: { 2: 3 } },
-                    { text: "D'échouer ou d'être sans valeur", mbti: { T: 1, E: 1 }, enneagram: { 3: 3 } },
-                    { text: "De perdre votre identité unique", mbti: { N: 2, F: 1 }, enneagram: { 4: 3 } }
-                ]
-            },
-            {
-                id: 12,
-                question: "Dans un groupe, vous êtes naturellement :",
-                options: [
-                    { text: "Le leader qui organise et dirige", mbti: { E: 2, J: 2 }, enneagram: { 3: 2, 8: 2 } },
-                    { text: "Celui qui veille au bien-être de chacun", mbti: { F: 3 }, enneagram: { 2: 3 } },
-                    { text: "L'observateur qui analyse la dynamique", mbti: { I: 2, T: 1 }, enneagram: { 5: 3 } },
-                    { text: "Le médiateur qui maintient l'harmonie", mbti: { F: 2, I: 1 }, enneagram: { 9: 3 } }
-                ]
-            },
-            {
-                id: 13,
-                question: "Votre rapport au temps est :",
-                options: [
-                    { text: "Très structuré, vous respectez toujours les horaires", mbti: { J: 3, S: 1 }, enneagram: { 1: 2, 6: 1 } },
-                    { text: "Flexible, vous vous adaptez aux circonstances", mbti: { P: 3 }, enneagram: { 7: 2, 9: 1 } },
-                    { text: "Orienté vers les objectifs et les échéances", mbti: { J: 2, T: 1 }, enneagram: { 3: 3 } },
-                    { text: "Vous perdez facilement la notion du temps", mbti: { P: 2, N: 1 }, enneagram: { 4: 1, 7: 1 } }
-                ]
-            },
-            {
-                id: 14,
-                question: "Votre environnement idéal pour réfléchir est :",
-                options: [
-                    { text: "Un endroit calme et silencieux", mbti: { I: 3 }, enneagram: { 5: 2, 9: 1 } },
-                    { text: "Entouré de personnes stimulantes", mbti: { E: 3 }, enneagram: { 3: 1, 7: 2 } },
-                    { text: "Dans la nature ou un cadre inspirant", mbti: { N: 2, F: 1 }, enneagram: { 4: 2, 7: 1 } },
-                    { text: "Un espace organisé avec vos outils", mbti: { S: 2, J: 1 }, enneagram: { 1: 2, 5: 1 } }
-                ]
-            },
-            {
-                id: 15,
-                question: "Face au changement, vous :",
-                options: [
-                    { text: "Résistez et préférez la stabilité", mbti: { S: 2, J: 2 }, enneagram: { 1: 1, 6: 2 } },
-                    { text: "L'embrassez avec enthousiasme", mbti: { N: 2, P: 2 }, enneagram: { 7: 3 } },
-                    { text: "L'analysez soigneusement avant d'accepter", mbti: { T: 2, I: 1 }, enneagram: { 5: 2, 6: 1 } },
-                    { text: "Vous adaptez naturellement", mbti: { P: 2, F: 1 }, enneagram: { 3: 1, 9: 2 } }
-                ]
-            },
-            {
-                id: 16,
-                question: "Votre définition du succès est :",
-                options: [
-                    { text: "Faire les choses correctement et sans erreur", mbti: { J: 2, T: 1 }, enneagram: { 1: 3 } },
-                    { text: "Être utile et apprécié par les autres", mbti: { F: 3 }, enneagram: { 2: 3 } },
-                    { text: "Atteindre vos objectifs et être reconnu", mbti: { E: 1, T: 1 }, enneagram: { 3: 3 } },
-                    { text: "Rester fidèle à vous-même et vos valeurs", mbti: { F: 2, I: 1 }, enneagram: { 4: 2, 9: 1 } }
-                ]
-            }
-        ];
-        // Récupère les questions externes depuis Supabase si l'utilisateur est un proche
-let questions = QUESTIONS_AUTO_EVALUATION;
+                // Récupère les questions externes depuis Supabase si l'utilisateur est un proche
+let questions = AUTO_QUESTIONS;
 // 🔐 Génére un code aléatoire
 function genererUniqueCode() {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -1429,18 +1267,18 @@ if (window.location.href.includes("external")) {
        // Affichage d'une question
 function displayQuestion(index) {
   const questionsContainer = document.getElementById('questions-container');
-  const question = QUESTIONS_AUTO_EVALUATION[index];
+  const question = AUTO_QUESTIONS[index];
 
   if (!question || !questionsContainer) return;
 
-  const progress = ((index + 1) / QUESTIONS_AUTO_EVALUATION.length) * 100;
+  const progress = ((index + 1) / AUTO_QUESTIONS.length) * 100;
 
   const questionHTML = `
     <div class="question-container fade active bg-transparent overflow-hidden">
       <div class="px-6 py-4">
         <div class="flex justify-between items-center mb-4">
           <span class="text-sm font-medium text-blue-600">
-            Question ${index + 1}/${QUESTIONS_AUTO_EVALUATION.length}
+            Question ${index + 1}/${AUTO_QUESTIONS.length}
           </span>
           <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
             <div class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-500"
@@ -1502,8 +1340,8 @@ function displayQuestion(index) {
             
             if (nextButton) {
                 nextButton.addEventListener('click', function() {
-                    if (answers[QUESTIONS_AUTO_EVALUATION[currentQuestionIndex].id] !== undefined) {
-                        if (currentQuestionIndex < QUESTIONS_AUTO_EVALUATION.length - 1) {
+                    if (answers[AUTO_QUESTIONS[currentQuestionIndex].id] !== undefined) {
+                        if (currentQuestionIndex < AUTO_QUESTIONS.length - 1) {
                             currentQuestionIndex++;
                             displayQuestion(currentQuestionIndex);
                         }
@@ -1515,7 +1353,7 @@ function displayQuestion(index) {
             
             if (finishButton) {
                 finishButton.addEventListener('click', function() {
-                    if (Object.keys(answers).length === QUESTIONS_AUTO_EVALUATION.length) {
+                    if (Object.keys(answers).length === AUTO_QUESTIONS.length) {
                         calculateResults();
                     } else {
                         alert('Veuillez répondre à toutes les questions avant de terminer.');
@@ -1534,8 +1372,8 @@ function displayQuestion(index) {
                 prevButton.style.display = currentQuestionIndex > 0 ? 'inline-flex' : 'none';
             }
             
-            const isLastQuestion = currentQuestionIndex === QUESTIONS_AUTO_EVALUATION.length - 1;
-            const hasAnswer = answers[QUESTIONS_AUTO_EVALUATION[currentQuestionIndex].id] !== undefined;
+            const isLastQuestion = currentQuestionIndex === AUTO_QUESTIONS.length - 1;
+            const hasAnswer = answers[AUTO_QUESTIONS[currentQuestionIndex].id] !== undefined;
             
             if (nextButton && finishButton) {
                 if (isLastQuestion) {
@@ -1966,7 +1804,7 @@ async function calculateResults() {
     Object.keys(answers).forEach(questionId => {
         const questionIndex = parseInt(questionId) - 1;
         const answerIndex = answers[questionId];
-        const question = QUESTIONS_AUTO_EVALUATION[questionIndex];
+        const question = AUTO_QUESTIONS[questionIndex];
         const selectedOption = question.options[answerIndex];
         
         Object.keys(selectedOption.mbti).forEach(trait => {
@@ -3293,231 +3131,23 @@ function showPrivacyPolicy() {
         let externalAnswers = {};
         
         // Questions pour l'évaluation externe (20 questions)
-        const EXTERNAL_EVALUATION_QUESTIONS = [
-            {
-                id: 1,
-                question: "Cette personne préfère généralement :",
-                options: [
-                    { text: "Être entourée de beaucoup de monde", mbti: { E: 3 }, enneagram: { 3: 1, 7: 2 } },
-                    { text: "Passer du temps seule ou avec quelques proches", mbti: { I: 3 }, enneagram: { 4: 2, 5: 2 } },
-                    { text: "Alterner entre moments sociaux et moments seuls", mbti: { E: 1, I: 1 }, enneagram: { 9: 2 } },
-                    { text: "Cela dépend de son humeur", mbti: { P: 1 }, enneagram: { 4: 1, 7: 1 } }
-                ]
-            },
-            {
-                id: 2,
-                question: "Quand cette personne prend des décisions, elle :",
-                options: [
-                    { text: "Analyse tous les faits et données", mbti: { T: 3, J: 1 }, enneagram: { 1: 2, 5: 2 } },
-                    { text: "Suit son instinct et ses émotions", mbti: { F: 3, P: 1 }, enneagram: { 4: 2, 7: 1 } },
-                    { text: "Demande l'avis de plusieurs personnes", mbti: { F: 2, E: 1 }, enneagram: { 2: 2, 6: 2 } },
-                    { text: "Prend du temps pour réfléchir", mbti: { I: 2, J: 1 }, enneagram: { 5: 2, 9: 1 } }
-                ]
-            },
-            {
-                id: 3,
-                question: "Cette personne est motivée principalement par :",
-                options: [
-                    { text: "Le désir d'aider les autres", mbti: { F: 3 }, enneagram: { 2: 3 } },
-                    { text: "L'atteinte de ses objectifs personnels", mbti: { T: 2, J: 1 }, enneagram: { 3: 3 } },
-                    { text: "La recherche de nouvelles expériences", mbti: { N: 2, P: 2 }, enneagram: { 7: 3 } },
-                    { text: "Le maintien de l'harmonie", mbti: { F: 2, I: 1 }, enneagram: { 9: 3 } }
-                ]
-            },
-            {
-                id: 4,
-                question: "Face au stress, cette personne :",
-                options: [
-                    { text: "Devient plus organisée et contrôlante", mbti: { J: 3, T: 1 }, enneagram: { 1: 2, 8: 2 } },
-                    { text: "Cherche du soutien auprès des autres", mbti: { F: 2, E: 2 }, enneagram: { 2: 2, 6: 2 } },
-                    { text: "Se retire et réfléchit seule", mbti: { I: 3, T: 1 }, enneagram: { 5: 3 } },
-                    { text: "Évite le problème ou le minimise", mbti: { P: 2, F: 1 }, enneagram: { 7: 2, 9: 2 } }
-                ]
-            },
-            {
-                id: 5,
-                question: "Cette personne communique de manière :",
-                options: [
-                    { text: "Directe et factuelle", mbti: { T: 3, S: 1 }, enneagram: { 1: 1, 8: 2 } },
-                    { text: "Chaleureuse et empathique", mbti: { F: 3 }, enneagram: { 2: 3 } },
-                    { text: "Créative et métaphorique", mbti: { N: 3, F: 1 }, enneagram: { 4: 3 } },
-                    { text: "Diplomatique et nuancée", mbti: { F: 2, I: 1 }, enneagram: { 9: 3 } }
-                ]
-            }
-            // ... (15 autres questions similaires)
-        ];
-        
-        // Ajouter les 15 questions manquantes
-        EXTERNAL_EVALUATION_QUESTIONS.push(
-            {
-                id: 6,
-                question: "Cette personne gère le changement en :",
-                options: [
-                    { text: "S'adaptant rapidement et avec enthousiasme", mbti: { P: 3, E: 1 }, enneagram: { 7: 3 } },
-                    { text: "Prenant le temps d'analyser les implications", mbti: { J: 2, T: 2 }, enneagram: { 5: 2, 6: 1 } },
-                    { text: "Cherchant du soutien auprès des autres", mbti: { F: 2, E: 1 }, enneagram: { 2: 2, 6: 2 } },
-                    { text: "Résistant au début puis s'adaptant", mbti: { J: 2, I: 1 }, enneagram: { 1: 1, 9: 2 } }
-                ]
-            },
-            {
-                id: 7,
-                question: "Dans son travail, cette personne privilégie :",
-                options: [
-                    { text: "La qualité et la perfection", mbti: { J: 3, T: 1 }, enneagram: { 1: 3 } },
-                    { text: "L'efficacité et les résultats", mbti: { T: 2, J: 2 }, enneagram: { 3: 3 } },
-                    { text: "La collaboration et l'harmonie", mbti: { F: 3 }, enneagram: { 2: 2, 9: 2 } },
-                    { text: "L'innovation et la créativité", mbti: { N: 3, P: 1 }, enneagram: { 4: 2, 7: 2 } }
-                ]
-            },
-            {
-                id: 8,
-                question: "Cette personne exprime ses émotions :",
-                options: [
-                    { text: "Ouvertement et spontanément", mbti: { E: 3, F: 2 }, enneagram: { 7: 2, 8: 1 } },
-                    { text: "De manière contrôlée et réfléchie", mbti: { I: 2, T: 2 }, enneagram: { 1: 2, 5: 2 } },
-                    { text: "Principalement avec ses proches", mbti: { I: 2, F: 2 }, enneagram: { 4: 2, 6: 1 } },
-                    { text: "Rarement, préfère les garder pour elle", mbti: { I: 3, T: 1 }, enneagram: { 5: 3 } }
-                ]
-            },
-            {
-                id: 9,
-                question: "Face à une critique, cette personne :",
-                options: [
-                    { text: "L'accepte et cherche à s'améliorer", mbti: { J: 2, T: 1 }, enneagram: { 1: 2, 6: 1 } },
-                    { text: "Se défend et explique son point de vue", mbti: { E: 2, T: 1 }, enneagram: { 3: 2, 8: 2 } },
-                    { text: "Se sent blessée mais n'en parle pas", mbti: { I: 2, F: 2 }, enneagram: { 4: 3 } },
-                    { text: "Minimise et évite le conflit", mbti: { P: 2, F: 1 }, enneagram: { 7: 1, 9: 3 } }
-                ]
-            },
-            {
-                id: 10,
-                question: "Cette personne prend des risques :",
-                options: [
-                    { text: "Rarement, préfère la sécurité", mbti: { J: 2, S: 2 }, enneagram: { 6: 3 } },
-                    { text: "Après une analyse approfondie", mbti: { T: 3, J: 1 }, enneagram: { 5: 2, 1: 1 } },
-                    { text: "Quand cela peut aider les autres", mbti: { F: 3 }, enneagram: { 2: 3 } },
-                    { text: "Souvent, aime l'aventure", mbti: { P: 3, N: 1 }, enneagram: { 7: 3 } }
-                ]
-            },
-            {
-                id: 11,
-                question: "Cette personne organise son espace de vie :",
-                options: [
-                    { text: "De manière très ordonnée et systématique", mbti: { J: 3, S: 1 }, enneagram: { 1: 3 } },
-                    { text: "Fonctionnellement, selon ses besoins", mbti: { T: 2, J: 1 }, enneagram: { 3: 2, 5: 1 } },
-                    { text: "De façon créative et personnelle", mbti: { N: 2, F: 2 }, enneagram: { 4: 3 } },
-                    { text: "De manière décontractée, parfois désordonnée", mbti: { P: 3 }, enneagram: { 7: 2, 9: 2 } }
-                ]
-            },
-            {
-                id: 12,
-                question: "Cette personne apprend mieux :",
-                options: [
-                    { text: "En suivant une méthode structurée", mbti: { J: 3, S: 1 }, enneagram: { 1: 2, 6: 1 } },
-                    { text: "En expérimentant par elle-même", mbti: { P: 3, N: 1 }, enneagram: { 7: 2, 8: 1 } },
-                    { text: "En échangeant avec d'autres", mbti: { E: 3, F: 1 }, enneagram: { 2: 2, 3: 1 } },
-                    { text: "En réfléchissant seule", mbti: { I: 3, T: 1 }, enneagram: { 5: 3 } }
-                ]
-            },
-            {
-                id: 13,
-                question: "Cette personne gère son temps :",
-                options: [
-                    { text: "Avec des plannings détaillés", mbti: { J: 3, S: 1 }, enneagram: { 1: 2, 3: 1 } },
-                    { text: "En se concentrant sur les priorités", mbti: { T: 2, J: 2 }, enneagram: { 3: 3 } },
-                    { text: "De manière flexible selon l'humeur", mbti: { P: 3, F: 1 }, enneagram: { 4: 2, 7: 2 } },
-                    { text: "En procrastinant souvent", mbti: { P: 2, I: 1 }, enneagram: { 9: 3 } }
-                ]
-            },
-            {
-                id: 14,
-                question: "Cette personne résout les problèmes en :",
-                options: [
-                    { text: "Analysant logiquement les faits", mbti: { T: 3, J: 1 }, enneagram: { 5: 3 } },
-                    { text: "Cherchant des solutions créatives", mbti: { N: 3, P: 1 }, enneagram: { 4: 2, 7: 2 } },
-                    { text: "Demandant conseil à son entourage", mbti: { F: 2, E: 2 }, enneagram: { 2: 1, 6: 3 } },
-                    { text: "Agissant rapidement et directement", mbti: { E: 2, S: 2 }, enneagram: { 8: 3 } }
-                ]
-            },
-            {
-                id: 15,
-                question: "Cette personne exprime son affection :",
-                options: [
-                    { text: "Par des gestes concrets et des services", mbti: { S: 3, F: 1 }, enneagram: { 2: 2, 6: 1 } },
-                    { text: "Par des mots et des compliments", mbti: { E: 2, F: 2 }, enneagram: { 2: 3 } },
-                    { text: "Par sa présence et son écoute", mbti: { I: 2, F: 3 }, enneagram: { 9: 3 } },
-                    { text: "De manière subtile et discrète", mbti: { I: 3, T: 1 }, enneagram: { 5: 2, 4: 1 } }
-                ]
-            },
-            {
-                id: 16,
-                question: "Cette personne fait face aux échecs :",
-                options: [
-                    { text: "En analysant ce qui n'a pas marché", mbti: { T: 3, J: 1 }, enneagram: { 1: 2, 5: 2 } },
-                    { text: "En rebondissant rapidement", mbti: { E: 2, P: 2 }, enneagram: { 3: 2, 7: 2 } },
-                    { text: "En cherchant du soutien émotionnel", mbti: { F: 3, E: 1 }, enneagram: { 2: 1, 6: 2 } },
-                    { text: "En se remettant en question profondément", mbti: { I: 2, F: 2 }, enneagram: { 4: 3 } }
-                ]
-            },
-            {
-                id: 17,
-                question: "Cette personne prend des décisions importantes :",
-                options: [
-                    { text: "Après avoir pesé tous les pour et contre", mbti: { T: 3, J: 2 }, enneagram: { 5: 2, 6: 2 } },
-                    { text: "En suivant son intuition", mbti: { N: 3, F: 1 }, enneagram: { 4: 2, 7: 1 } },
-                    { text: "En consultant ses proches", mbti: { F: 2, E: 2 }, enneagram: { 2: 2, 6: 2 } },
-                    { text: "Rapidement, en faisant confiance à son expérience", mbti: { S: 2, E: 2 }, enneagram: { 8: 3 } }
-                ]
-            },
-            {
-                id: 18,
-                question: "Cette personne se ressource :",
-                options: [
-                    { text: "En passant du temps seule", mbti: { I: 3 }, enneagram: { 5: 3 } },
-                    { text: "En étant entourée d'amis", mbti: { E: 3 }, enneagram: { 7: 2, 2: 1 } },
-                    { text: "En aidant les autres", mbti: { F: 3 }, enneagram: { 2: 3 } },
-                    { text: "En pratiquant ses hobbies", mbti: { P: 2, N: 1 }, enneagram: { 4: 2, 9: 2 } }
-                ]
-            },
-            {
-                id: 19,
-                question: "Cette personne exprime son désaccord :",
-                options: [
-                    { text: "Directement et clairement", mbti: { T: 3, E: 2 }, enneagram: { 8: 3 } },
-                    { text: "De manière diplomatique", mbti: { F: 3, I: 1 }, enneagram: { 9: 3 } },
-                    { text: "En argumentant avec des faits", mbti: { T: 3, J: 1 }, enneagram: { 1: 2, 5: 2 } },
-                    { text: "En évitant le conflit si possible", mbti: { F: 2, I: 2 }, enneagram: { 9: 2, 6: 1 } }
-                ]
-            },
-            {
-                id: 20,
-                question: "Cette personne se sent le plus épanouie quand :",
-                options: [
-                    { text: "Elle atteint ses objectifs personnels", mbti: { T: 2, J: 2 }, enneagram: { 3: 3 } },
-                    { text: "Elle aide quelqu'un à réussir", mbti: { F: 3 }, enneagram: { 2: 3 } },
-                    { text: "Elle découvre quelque chose de nouveau", mbti: { N: 3, P: 1 }, enneagram: { 5: 2, 7: 2 } },
-                    { text: "Elle maintient l'harmonie autour d'elle", mbti: { F: 2, I: 1 }, enneagram: { 9: 3 } }
-                ]
-            }
-        );
-
         // Ajout de l'option "Je ne sais pas" à chaque question d'évaluation externe
-        EXTERNAL_EVALUATION_QUESTIONS.forEach(q => {
-            q.options.push({ text: "Je ne sais pas", mbti: {}, enneagram: {} });
+        EXTERNAL_QUESTIONS.forEach(q => {
+            q.options.push({ text: "Je ne sais pas", functions: {}, enneagram: {} });
         });
 
         // Fonction pour afficher une question externe
         function displayExternalQuestion(index) {
-            const question = EXTERNAL_EVALUATION_QUESTIONS[index];
+            const question = EXTERNAL_QUESTIONS[index];
             if (!question) return;
             
-            const progress = ((index + 1) / EXTERNAL_EVALUATION_QUESTIONS.length) * 100;
+            const progress = ((index + 1) / EXTERNAL_QUESTIONS.length) * 100;
             const questionsContent = document.getElementById('external-questions-content');
             
             questionsContent.innerHTML = `
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm font-medium text-blue-600">Question ${index + 1}/${EXTERNAL_EVALUATION_QUESTIONS.length}</span>
+                        <span class="text-sm font-medium text-blue-600">Question ${index + 1}/${EXTERNAL_QUESTIONS.length}</span>
                         <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
                             <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
                         </div>
@@ -3569,8 +3199,8 @@ function showPrivacyPolicy() {
             
             if (nextButton) {
                 nextButton.addEventListener('click', function() {
-                    if (externalAnswers[EXTERNAL_EVALUATION_QUESTIONS[currentExternalQuestionIndex].id] !== undefined) {
-                        if (currentExternalQuestionIndex < EXTERNAL_EVALUATION_QUESTIONS.length - 1) {
+                    if (externalAnswers[EXTERNAL_QUESTIONS[currentExternalQuestionIndex].id] !== undefined) {
+                        if (currentExternalQuestionIndex < EXTERNAL_QUESTIONS.length - 1) {
                             currentExternalQuestionIndex++;
                             displayExternalQuestion(currentExternalQuestionIndex);
                         }
@@ -3591,8 +3221,8 @@ function showPrivacyPolicy() {
                 prevButton.style.display = currentExternalQuestionIndex > 0 ? 'inline-flex' : 'none';
             }
 
-            const isLastQuestion = currentExternalQuestionIndex === EXTERNAL_EVALUATION_QUESTIONS.length - 1;
-            const hasAnswer = externalAnswers[EXTERNAL_EVALUATION_QUESTIONS[currentExternalQuestionIndex].id] !== undefined;
+            const isLastQuestion = currentExternalQuestionIndex === EXTERNAL_QUESTIONS.length - 1;
+            const hasAnswer = externalAnswers[EXTERNAL_QUESTIONS[currentExternalQuestionIndex].id] !== undefined;
 
             if (nextButton && finishButton) {
                 if (isLastQuestion) {
@@ -3641,7 +3271,7 @@ function showPrivacyPolicy() {
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 if (btn.disabled) return;
-                if (Object.keys(externalAnswers).length !== EXTERNAL_EVALUATION_QUESTIONS.length) {
+                if (Object.keys(externalAnswers).length !== EXTERNAL_QUESTIONS.length) {
                     alert('Veuillez répondre à toutes les questions avant de terminer.');
                     return;
                 }
@@ -3681,7 +3311,7 @@ function showPrivacyPolicy() {
             const mbtiScores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
             const enneagramScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
             Object.keys(externalAnswers).forEach(questionId => {
-                const question = EXTERNAL_EVALUATION_QUESTIONS.find(q => q.id === parseInt(questionId));
+                const question = EXTERNAL_QUESTIONS.find(q => q.id === parseInt(questionId));
                 const value = externalAnswers[questionId];
                 if (value === 0) {
                     return;
