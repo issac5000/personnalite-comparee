@@ -3,330 +3,330 @@
 const AUTO_QUESTIONS = [
   {
     id: 1,
-    question: "Quand vous devez trancher un choix personnel, vous privilégiez…",
+    question: "Quand tu dois trancher un choix impliquant des valeurs et des faits, tu t'appuies d'abord sur…",
     options: [
-      { text: "ce qui résonne avec vos valeurs intérieures", functions: { Fi: 3 }, enneagram: { 4: 2, 9: 1 } },
-      { text: "l'impact que cela aura sur l'harmonie autour de vous", functions: { Fe: 3 }, enneagram: { 2: 2, 6: 1 } },
-      { text: "la solution la plus efficace et mesurable", functions: { Te: 3 }, enneagram: { 1: 2, 3: 1 } }
+      { text: "ce qui est aligné avec mes convictions internes", functions: { Fi: 3 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "l’impact humain et relationnel autour de moi", functions: { Fe: 3, Te: 1 }, enneagram: { 2: 2, 6: 1 } },
+      { text: "la logique opérationnelle et la mesure des résultats", functions: { Te: 2, Ti: 2}, enneagram: { 1: 2, 5: 2, 3: 1 } }
     ]
   },
   {
     id: 2,
-    question: "Pour comprendre un nouveau concept, vous préférez…",
+    question: "Face à un nouveau concept complexe, ta porte d’entrée naturelle c’est…",
     options: [
-      { text: "explorer librement toutes les pistes possibles", functions: { Ne: 3 }, enneagram: { 7: 2, 5: 1 } },
-      { text: "relier l'idée à vos expériences passées", functions: { Si: 3 }, enneagram: { 6: 2, 1: 1 } },
-      { text: "expérimenter concrètement sur le terrain", functions: { Se: 3 }, enneagram: { 8: 2, 3: 1 } }
+      { text: "explorer des possibilités et faire des liens inattendus", functions: { Ne: 3, Ni: 2 }, enneagram: { 7: 2, 5: 1 } },
+      { text: "raccrocher à des schémas connus et à l’expérience", functions: { Si: 3 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "chercher le fil directeur, le sens profond", functions: { Ni: 2 }, enneagram: { 5: 2, 4: 1 } }
     ]
   },
   {
     id: 3,
-    question: "Face à un imprévu dans votre journée, vous…",
+    question: "Quand un imprévu bouscule ton plan…",
     options: [
-      { text: "improvisez avec enthousiasme", functions: { Se: 2, Ne: 1 }, enneagram: { 7: 2 } },
-      { text: "cherchez à rétablir votre plan initial", functions: { Si: 2, Te: 1 }, enneagram: { 1: 2 } },
-      { text: "prenez du recul pour comprendre le sens caché", functions: { Ni: 3 }, enneagram: { 4: 1, 5: 1 } }
+      { text: "tu t’adaptes vite et testes sur le moment", functions: { Se: 2, Ne: 1 }, enneagram: { 7: 2, 8: 1 } },
+      { text: "tu réorganises pour sécuriser le résultat", functions: { Si: 2, Te: 1, Ni: 1 }, enneagram: { 1: 2, 6: 1 } },
+      { text: "tu prends du recul pour comprendre la dynamique", functions: { Ni: 2, Ti: 1, Si: 1 }, enneagram: { 5: 2 } }
     ]
   },
   {
     id: 4,
-    question: "Dans une discussion animée, vous êtes celui qui…",
+    question: "Dans un repas de famille, un débat s'ouvre, ton réflexe dominant c'est...",
     options: [
-      { text: "ramène des faits et de la logique", functions: { Ti: 3 }, enneagram: { 5: 2 } },
-      { text: "observe silencieusement en analysant le non‑dit", functions: { Ni: 2, Fi: 1 }, enneagram: { 4: 2 } },
-      { text: "anime le groupe et met chacun à l'aise", functions: { Fe: 3 }, enneagram: { 2: 2 } }
+      { text: "structurer par l’analyse logique et les définitions", functions: { Ti: 3, Te: 2, Si: 1 }, enneagram: { 5: 2, 1: 1, 8: 1 } },
+      { text: "faire circuler la parole et harmoniser", functions: { Fe: 3 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "être en retrait, écouter et éviter les querelles", functions: { Fe: 3, Ti: -2 }, enneagram: { 2: 2, 9: 3 } }
     ]
   },
   {
     id: 5,
-    question: "Votre espace de travail idéal est…",
+    question: "Ton environnement de travail qui te rend le plus efficace…",
     options: [
-      { text: "structuré et optimisé pour la productivité", functions: { Te: 3, Si: 1 }, enneagram: { 1: 2, 3: 1 } },
-      { text: "rempli d'objets inspirants et uniques", functions: { Fi: 2, Ne: 1 }, enneagram: { 4: 2 } },
-      { text: "minimaliste pour rester en alerte", functions: { Se: 2, Ti: 1 }, enneagram: { 8: 2 } }
+      { text: "process, clarté, repères stables", functions: { Si: 2, Te: 1, Ni: 1 }, enneagram: { 1: 2, 6: 1 } },
+      { text: "épuré, sensoriel, réactif", functions: { Se: 2, Ti: 1 }, enneagram: { 8: 2, 3: 1 } },
+      { text: "stimulant, ouvert aux associations d’idées", functions: { Ne: 2, Se: 1, }, enneagram: { 4: 2, 7: 1 } }
     ]
   },
   {
     id: 6,
-    question: "Lorsque vous aidez quelqu'un, vous…",
+    question: "Quand tu aides quelqu’un…",
     options: [
-      { text: "partagez des conseils pratiques immédiatement applicables", functions: { Te: 2, Se: 1 }, enneagram: { 3: 1, 8: 1 } },
-      { text: "écoutez avec empathie pour comprendre ses émotions", functions: { Fe: 2, Fi: 1 }, enneagram: { 2: 3 } },
-      { text: "analysez sa situation pour trouver la cause profonde", functions: { Ti: 2, Ni: 1 }, enneagram: { 5: 2 } }
+      { text: "tu analyses la mécanique du problème", functions: { Ti: 2, Ni: 1 }, enneagram: { 5: 2 } },
+      { text: "tu proposes des étapes concrètes tout de suite", functions: { Te: 2, Se: 1, Ti: 1 }, enneagram: { 3: 1, 8: 1, 5: 1} },
+      { text: "tu entres en résonance avec son vécu", functions: { Fe: 2, Fi: 1 }, enneagram: { 2: 3 } }
     ]
   },
   {
     id: 7,
-    question: "Quand vous planifiez l'avenir, vous voyez surtout…",
+    question: "Ta façon naturelle de planifier l’avenir…",
     options: [
-      { text: "des possibilités variées et changeantes", functions: { Ne: 3 }, enneagram: { 7: 3 } },
-      { text: "une vision claire et ciblée", functions: { Ni: 3 }, enneagram: { 1: 1, 3: 1 } },
-      { text: "les étapes concrètes à réaliser", functions: { Si: 2, Te: 1 }, enneagram: { 6: 2 } }
+      { text: "vision ciblée et trajectoire long terme", functions: { Ni: 3, Si: 2 }, enneagram: { 1: 1, 3: 1, 6: 1 } },
+      { text: "cartographie d’options et portes ouvertes", functions: { Ne: 3 }, enneagram: { 7: 3 } },
+      { text: "jalons concrets et gestion des risques", functions: { Si: 2, Te: 1, Ni: 1 }, enneagram: { 6: 2 } }
     ]
   },
   {
     id: 8,
-    question: "Devant un conflit relationnel, vous avez tendance à…",
+    question: "Dans un conflit relationnel…",
     options: [
-      { text: "rechercher une solution gagnant‑gagnant", functions: { Fe: 3 }, enneagram: { 9: 2 } },
-      { text: "exprimer directement ce qui ne va pas", functions: { Te: 2, Se: 1 }, enneagram: { 8: 2 } },
-      { text: "vous retirer pour réfléchir", functions: { Fi: 2, Ni: 1 }, enneagram: { 5: 2 } }
+      { text: "tu cherches l’accord qui préserve chacun", functions: { Fe: 3, Te: 1 }, enneagram: { 9: 2, 2: 1 } },
+      { text: "tu vas droit au point à corriger", functions: { Te: 2, Se: 1 }, enneagram: { 8: 2, 1: 1, 5: 1 } },
+      { text: "tu prends de la distance pour assimiler", functions: { Fi: 2, Ni: 1, Ni: 1 }, enneagram: { 5: 2, 4: 1 } }
     ]
   },
   {
     id: 9,
-    question: "Votre motivation première est de…",
+    question: "Ce qui te motive en premier lieu…",
     options: [
-      { text: "vivre en accord avec votre identité", functions: { Fi: 3 }, enneagram: { 4: 3 } },
-      { text: "atteindre un objectif mesurable", functions: { Te: 3 }, enneagram: { 3: 3 } },
-      { text: "rester en paix et éviter le stress", functions: { Si: 2, Ne: 1 }, enneagram: { 9: 3 } }
+      { text: "être authentique et fidèle à toi-même", functions: { Fi: 3, Ti: 2 }, enneagram: { 4: 2 } },
+      { text: "atteindre un standard de performance", functions: { Te: 2, Ti: 1 }, enneagram: { 3: 3, 1: 1 } },
+      { text: "préserver la stabilité et la paix intérieure", functions: { Si: 2, Ni: 1 }, enneagram: { 9: 3, 6: 1 } }
     ]
   },
   {
     id: 10,
-    question: "Quand vous explorez un nouveau lieu, vous…",
+    question: "Quand tu entres dans un endroit inconnu…",
     options: [
-      { text: "vous laissez guider par vos cinq sens", functions: { Se: 3 }, enneagram: { 7: 2 } },
-      { text: "recherchez l'histoire cachée du lieu", functions: { Ni: 2, Ti: 1 }, enneagram: { 5: 2 } },
-      { text: "comparez ce que vous voyez à des souvenirs", functions: { Si: 3 }, enneagram: { 6: 2 } }
+      { text: "tu scans les stimuli et passes à l’action", functions: { Se: 3 }, enneagram: { 7: 2, 8: 1 } },
+      { text: "tu compares avec des repères mémorisés", functions: { Si: 2 }, enneagram: { 6: 2 } },
+      { text: "tu cherches l’intention/le sens de l’ensemble", functions: { Ni: 3 }, enneagram: { 5: 2, 4: 1 } }
     ]
   },
   {
     id: 11,
-    question: "Lorsque vous travaillez en équipe, vous êtes celui qui…",
+    question: "En équipe, on te reconnaît surtout pour…",
     options: [
-      { text: "coordonne et répartit les tâches", functions: { Te: 3 }, enneagram: { 1: 1, 8: 1 } },
-      { text: "assure que tout le monde se sente entendu", functions: { Fe: 3 }, enneagram: { 2: 2 } },
-      { text: "propose des idées originales", functions: { Ne: 3 }, enneagram: { 7: 2 } }
+      { text: "l’organisation et la tenue des échéances", functions: { Te: 3, Si: 2 }, enneagram: { 1: 1, 3: 1, 6: 2 } },
+      { text: "l’inclusion et la qualité du climat", functions: { Fe: 3, Te: 2 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "les idées originales et le pivot rapide", functions: { Ne: 3, Se: 2 }, enneagram: { 7: 2 } }
     ]
   },
   {
     id: 12,
-    question: "Votre rapport au temps est plutôt…",
+    question: "Ta relation au temps est plutôt…",
     options: [
-      { text: "orienté vers l'instant présent", functions: { Se: 2, Fi: 1 }, enneagram: { 7: 1, 8: 1 } },
-      { text: "tourné vers des schémas récurrents", functions: { Si: 3 }, enneagram: { 6: 2 } },
-      { text: "projeté vers ce qui va arriver", functions: { Ni: 3 }, enneagram: { 5: 1 } }
+      { text: "présent-action, tu ajustes en live", functions: { Se: 3, Ne: 2 }, enneagram: { 7: 1, 8: 1 } },
+      { text: "récurrence et routine maîtrisée", functions: { Si: 3, Ni: 1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "projection et scénarios futurs", functions: { Ni: 2, Si: 1 }, enneagram: { 5: 1, 3: 1 } }
     ]
   },
   {
     id: 13,
-    question: "Face à une règle qui vous semble absurde, vous…",
+    question: "Devant une règle bancale…",
     options: [
-      { text: "la contournez si elle entrave votre liberté", functions: { Fi: 2, Ne: 1 }, enneagram: { 4: 1, 7: 1 } },
-      { text: "cherchez à la modifier officiellement", functions: { Te: 2, Fe: 1 }, enneagram: { 1: 2, 8: 1 } },
-      { text: "l'appliquez malgré tout pour garder l'ordre", functions: { Si: 2, Ti: 1 }, enneagram: { 6: 2 } }
+      { text: "tu cherches le moyen de la contourner", functions: { Te: 2, Fe: 1, Se: 3, Ne: 2 }, enneagram: { 7: 1, 8: 2 } },
+      { text: "tu la suis si elle sécurise le cadre", functions: { Si: 2, Ti: 1 }, enneagram: { 6: 2 } },
+      { text: "tu la contournes si elle viole tes valeurs", functions: { Fi: 2, Ne: 1, Se: 2 }, enneagram: { 4: 1, 7: 1 } }
     ]
   },
   {
     id: 14,
-    question: "Quand vous êtes plongé dans vos pensées, c'est souvent pour…",
+    question: "Quand tu es seul...",
     options: [
-      { text: "explorer des symboles et significations", functions: { Ni: 3 }, enneagram: { 4: 1, 5: 1 } },
-      { text: "réviser des souvenirs en détail", functions: { Si: 3 }, enneagram: { 6: 1, 9: 1 } },
-      { text: "imaginer des scénarios futurs", functions: { Ne: 3 }, enneagram: { 7: 2 } }
+      { text: "Tu te retrouves vite sur les réseaux sociaux à intéragir avec d'autres", functions: { Se: 2, Fe: 2, Te, 2 }, enneagram: { 2: 1, 3: 1, 8: 1 } },
+      { text: "Tu profites de cette solitude pour faire ce qui te passionne (lire, regarder une vidéo etc)", functions: { Fi: 2, Ti: 2 }, enneagram: { 4: 1, 5: 1, 9: 1 } },
+      { text: "Tu cherche le moyen d'être en intéraction avec d'autres", functions: { Se: 1, Te: 2, Fe: 2 }, enneagram: { 7: 2, 2: 2 } }
     ]
   },
   {
     id: 15,
-    question: "Pour résoudre un problème technique, vous…",
+    question: "Pour résoudre un problème technique…",
     options: [
-      { text: "décomposez logiquement chaque étape", functions: { Ti: 3 }, enneagram: { 5: 3 } },
-      { text: "cherchez un tutoriel ou l'avis d'un expert", functions: { Te: 2, Si: 1 }, enneagram: { 6: 2 } },
-      { text: "expérimentez différentes possibilités", functions: { Ne: 2, Se: 1 }, enneagram: { 7: 2 } }
+      { text: "tu démontes le système conceptuellement", functions: { Ti: 3 }, enneagram: { 5: 3 } },
+      { text: "tu appliques un protocole clair", functions: { Te: 2, Si: 2 }, enneagram: { 1: 2, 6: 1, 5: 1 } },
+      { text: "tu expérimentes et itères rapidement", functions: { Ne: 2, Se: 1 }, enneagram: { 7: 2, 3: 2 } }
     ]
   },
   {
     id: 16,
-    question: "Votre définition d'une vie réussie se rapproche de…",
+    question: "Une vie réussie, pour toi, c’est…",
     options: [
-      { text: "rester fidèle à soi et à ses proches", functions: { Fi: 2, Fe: 1 }, enneagram: { 2: 1, 4: 2 } },
-      { text: "laisser une trace concrète et utile", functions: { Te: 2, Ni: 1 }, enneagram: { 3: 2, 1: 1 } },
-      { text: "profiter du voyage sans pression", functions: { Si: 1, Ne: 1, Se: 1 }, enneagram: { 9: 2 } }
+      { text: "fidélité à soi et aux proches", functions: { Fi: 2, Fe: 1, Ti: 1 }, enneagram: { 2: 1, 4: 2 } },
+      { text: "impact tangible et trace utile", functions: { Te: 2, Fe: 1 }, enneagram: { 3: 2, 1: 1, 8: 1 } },
+      { text: "paix, équilibre, absence de pression", functions: { Si: 1, Ne: 1, Se: 1 }, enneagram: { 9: 2 } }
     ]
   }
 ];
 
-// Version externe - 20 questions
+// Version externe - 20 questions (observation)
 const EXTERNAL_QUESTIONS = [
   {
     id: 1,
-    question: "Cette personne prend ses décisions surtout en fonction…",
+    question: "Cette personne décide surtout en fonction…",
     options: [
-      { text: "de ses valeurs personnelles", functions: { Fi: 3 }, enneagram: { 4: 2, 9: 1 } },
-      { text: "de l'impact sur les autres", functions: { Fe: 3 }, enneagram: { 2: 2, 6: 1 } },
-      { text: "de l'efficacité mesurable", functions: { Te: 3 }, enneagram: { 3: 2, 1: 1 } }
+      { text: "de ses convictions internes", functions: { Fi: 3, Ti: 2 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "de l’impact sur les autres", functions: { Fe: 3, Te: 2 }, enneagram: { 2: 2, 6: 1 } },
+      { text: "de l’efficacité et des résultats", functions: { Te: 2, Ti: 2, Si: 2 }, enneagram: { 3: 2, 1: 2, 5: 1 } }
     ]
   },
   {
     id: 2,
-    question: "Pour apprendre, cette personne préfère…",
+    question: "Pour apprendre, elle…",
     options: [
-      { text: "tester immédiatement", functions: { Se: 3 }, enneagram: { 7: 2, 8: 1 } },
-      { text: "relier à son vécu", functions: { Si: 3 }, enneagram: { 6: 2 } },
-      { text: "explorer des idées abstraites", functions: { Ne: 2, Ni: 1 }, enneagram: { 5: 2 } }
+      { text: "teste vite en situation réelle", functions: { Se: 3, Ne: 2 }, enneagram: { 7: 2, 8: 1 } },
+      { text: "s’appuie sur son expérience", functions: { Si: 3, Ni: 2 }, enneagram: { 6: 2 } },
+      { text: "cherche le sens global/les modèles", functions: { Ni: 2, Ne: 1 }, enneagram: { 5: 2 } }
     ]
   },
   {
     id: 3,
-    question: "Lorsqu'elle est sous pression, cette personne…",
+    question: "Sous pression, elle…",
     options: [
-      { text: "cherche à garder le contrôle et l'ordre", functions: { Te: 2, Si: 1 }, enneagram: { 1: 2, 8: 1 } },
-      { text: "se replie pour réfléchir", functions: { Fi: 2, Ni: 1 }, enneagram: { 5: 2 } },
-      { text: "dédramatise et passe à autre chose", functions: { Ne: 2, Se: 1 }, enneagram: { 7: 2 } }
+      { text: "renforce le contrôle et la structure", functions: { Te: 2, Si: 2 }, enneagram: { 1: 2, 8: 2 } },
+      { text: "se replie pour analyser", functions: { Fi: 1, Ni: 2, Ti: 1, Si: 1 }, enneagram: { 5: 2, 4: 1 } },
+      { text: "désamorce et passe à autre chose", functions: { Ne: 2, Se: 1 }, enneagram: { 7: 2 } }
     ]
   },
   {
     id: 4,
-    question: "Dans un groupe, cette personne est souvent celle qui…",
+    question: "Dans un groupe, elle est plutôt celle qui…",
     options: [
-      { text: "met l'ambiance et encourage", functions: { Fe: 2, Se: 1 }, enneagram: { 2: 2, 7: 1 } },
-      { text: "analyse en silence", functions: { Ni: 2, Ti: 1 }, enneagram: { 5: 2 } },
-      { text: "structure l'action", functions: { Te: 3 }, enneagram: { 3: 2, 8: 1 } }
+      { text: "anime et relie les personnes", functions: { Fe: 2, Se: 1, Te: 1 }, enneagram: { 2: 2, 7: 1, 9: 1 } },
+      { text: "analyse en profondeur", functions: { Ni: 2, Ti: 1 }, enneagram: { 5: 2 } },
+      { text: "organise et oriente l’action", functions: { Te: 3, Fe: 1 }, enneagram: { 3: 2, 8: 2 } }
     ]
   },
   {
     id: 5,
-    question: "Son environnement de travail est plutôt…",
+    question: "Son espace de travail semble…",
     options: [
-      { text: "soigné et fonctionnel", functions: { Si: 2, Te: 1 }, enneagram: { 1: 2 } },
-      { text: "créatif et personnalisé", functions: { Fi: 2, Ne: 1 }, enneagram: { 4: 2 } },
-      { text: "variable selon son humeur", functions: { Se: 2 }, enneagram: { 7: 1, 9: 1 } }
+      { text: "soigné et processé", functions: { Si: 2, Te: 1, Ni: 1 }, enneagram: { 1: 2, 6: 1 } },
+      { text: "personnel et créatif", functions: { Fi: 2, Ne: 1 }, enneagram: { 4: 2 } },
+      { text: "minimaliste et réactif", functions: { Si: 2, Ti: 1 }, enneagram: { 8: 2, 3: 1 } }
     ]
   },
   {
     id: 6,
-    question: "Avec les autres, cette personne montre surtout…",
+    question: "Avec les autres, elle montre surtout…",
     options: [
-      { text: "de l'empathie et du soutien", functions: { Fe: 3 }, enneagram: { 2: 3 } },
-      { text: "des conseils pratiques", functions: { Te: 2, Se: 1 }, enneagram: { 3: 1, 8: 1 } },
-      { text: "une écoute discrète", functions: { Fi: 2, Si: 1 }, enneagram: { 9: 2 } }
+      { text: "soutien empathique", functions: { Fe: 3, Fi: 1 }, enneagram: { 2: 3 } },
+      { text: "conseils concrets", functions: { Te: 2, Se: 1, Ti: 2 }, enneagram: { 3: 1, 8: 1, 5: 1 } },
+      { text: "écoute calme et discrète", functions: { Fi: 2, Si: 1 }, enneagram: { 9: 2 } }
     ]
   },
   {
     id: 7,
-    question: "Quand un plan change, cette personne…",
+    question: "Quand un plan change, elle…",
     options: [
-      { text: "s'adapte rapidement", functions: { Ne: 2, Se: 1 }, enneagram: { 7: 2 } },
-      { text: "cherche à revenir au plan initial", functions: { Si: 2, Te: 1 }, enneagram: { 6: 2 } },
-      { text: "questionne le sens du changement", functions: { Ni: 2, Fi: 1 }, enneagram: { 4: 1, 5: 1 } }
+      { text: "s’adapte rapidement", functions: { Ne: 2, Se: 2 }, enneagram: { 7: 2 } },
+      { text: "revient au plan initial si possible", functions: { Si: 2, Te: 1 }, enneagram: { 6: 2 } },
+      { text: "questionne la finalité", functions: { Ni: 2, Fi: 1 }, enneagram: { 4: 1, 5: 1 } }
     ]
   },
   {
     id: 8,
-    question: "Lors d'un désaccord, cette personne…",
+    question: "En désaccord, elle…",
     options: [
-      { text: "négocie pour que chacun y trouve son compte", functions: { Fe: 3 }, enneagram: { 9: 2 } },
-      { text: "maintient fermement sa position", functions: { Te: 2, Ti: 1 }, enneagram: { 8: 2, 1: 1 } },
-      { text: "se retire pour éviter l'escalade", functions: { Fi: 2, Si: 1 }, enneagram: { 6: 1, 5: 1 } }
+      { text: "négocie une solution mutuellement acceptable", functions: { Fe: 3, Te: 2 }, enneagram: { 9: 2, 2: 2 } },
+      { text: "tient fermement sa position", functions: { Ti: 3, Fi: 2 }, enneagram: { 8: 2, 1: 1, 4: 2 } },
+      { text: "se retire pour éviter l’escalade", functions: { Fe: 2, Si: 1 }, enneagram: { 6: 1, 9: 2 } }
     ]
   },
   {
     id: 9,
-    question: "Cette personne paraît motivée avant tout par…",
+    question: "On dirait qu’elle est motivée surtout par…",
     options: [
       { text: "la réussite mesurable", functions: { Te: 3 }, enneagram: { 3: 3 } },
-      { text: "l'harmonie relationnelle", functions: { Fe: 3 }, enneagram: { 2: 2, 9: 1 } },
-      { text: "la recherche de sens intérieur", functions: { Fi: 3 }, enneagram: { 4: 2 } }
+      { text: "l’harmonie sociale", functions: { Fe: 3 }, enneagram: { 2: 2, 9: 2 } },
+      { text: "le sens personnel", functions: { Fi: 3, Ti: 1 }, enneagram: { 4: 2 } }
     ]
   },
   {
     id: 10,
-    question: "Devant une situation nouvelle, cette personne…",
+    question: "Face à une situation nouvelle, elle…",
     options: [
-      { text: "observe avant d'agir", functions: { Ni: 2, Si: 1 }, enneagram: { 5: 2 } },
-      { text: "se lance spontanément", functions: { Se: 3 }, enneagram: { 7: 2 } },
-      { text: "cherche des références pour se rassurer", functions: { Si: 2, Fe: 1 }, enneagram: { 6: 2 } }
+      { text: "observe avant d’agir", functions: { Ni: 2, Si: 1 }, enneagram: { 5: 2, 1: 2 } },
+      { text: "se lance spontanément", functions: { Se: 3, Ne: 2 }, enneagram: { 7: 2, 8: 1 } },
+      { text: "cherche une référence rassurante", functions: { Si: 2, Fe: 1 }, enneagram: { 6: 2 } }
     ]
   },
   {
     id: 11,
-    question: "Son style de communication est…",
+    question: "Sa communication est plutôt…",
     options: [
-      { text: "direct et objectif", functions: { Te: 2, Ti: 1 }, enneagram: { 1: 1, 8: 1 } },
-      { text: "imaginatif et digressif", functions: { Ne: 3 }, enneagram: { 7: 2 } },
-      { text: "chaleureux et personnel", functions: { Fe: 3 }, enneagram: { 2: 3 } }
+      { text: "directe et factuelle", functions: { Te: 2, Ti: 1, Si: 3, Se; 3 }, enneagram: { 1: 1, 8: 1 } },
+      { text: "imaginative et associative", functions: { Ne: 3, Ni: 3 }, enneagram: { 7: 2, 4: 2 } },
+      { text: "chaleureuse et personnelle", functions: { Fe: 3, Fi: 2 }, enneagram: { 2: 3, 9: 2 } }
     ]
   },
   {
     id: 12,
-    question: "Quand elle parle de l'avenir, cette personne…",
+    question: "Quand elle parle d’avenir, elle…",
     options: [
-      { text: "décrit un but précis", functions: { Ni: 3 }, enneagram: { 3: 1, 1: 1 } },
-      { text: "imagine plusieurs scénarios possibles", functions: { Ne: 3 }, enneagram: { 7: 2 } },
-      { text: "reste plutôt centrée sur le présent", functions: { Se: 2, Fi: 1 }, enneagram: { 9: 2 } }
+      { text: "décrit un but précis", functions: { Ni: 3, Si: 1 }, enneagram: { 3: 1, 1: 1 } },
+      { text: "déploie plusieurs scénarios", functions: { Ne: 2, Se: 2 }, enneagram: { 7: 2, 4: 1 } },
+      { text: "reste centrée sur l’instant", functions: { Se: 2, Si: 2 }, enneagram: { 9: 2 } }
     ]
   },
   {
     id: 13,
-    question: "Dans son temps libre, cette personne aime surtout…",
+    question: "Dans son temps libre, elle aime…",
     options: [
-      { text: "organiser des activités utiles", functions: { Te: 2, Si: 1 }, enneagram: { 1: 1, 3: 1 } },
-      { text: "créer et s'exprimer", functions: { Fi: 2, Ne: 1 }, enneagram: { 4: 2 } },
+      { text: "organiser des activités utiles", functions: { Te: 1, Si: 1, Fe: 1 }, enneagram: { 1: 1, 3: 1 } },
+      { text: "créer/exprimer quelque chose d’unique", functions: { Fi: 2, Ne: 1, Ti: 1 }, enneagram: { 4: 2 } },
       { text: "se détendre sans plan", functions: { Se: 2, Ne: 1 }, enneagram: { 9: 2, 7: 1 } }
     ]
   },
   {
     id: 14,
-    question: "Face à l'incertitude, cette personne…",
+    question: "Face à l’incertitude, elle…",
     options: [
-      { text: "cherche à rassembler des données", functions: { Ti: 2, Te: 1 }, enneagram: { 5: 2, 6: 1 } },
-      { text: "fait confiance à son intuition", functions: { Ni: 2, Fi: 1 }, enneagram: { 4: 1, 8: 1 } },
-      { text: "avance sans trop se poser de questions", functions: { Se: 2, Ne: 1 }, enneagram: { 7: 2 } }
+      { text: "récolte des données et structure", functions: { Ti: 2, Te: 1, Si: 2 }, enneagram: { 5: 2, 6: 1 } },
+      { text: "fait confiance à son intuition", functions: { Ni: 2, Fi: 1, Ne: 2 }, enneagram: { 4: 1 } },
+      { text: "avance sans trop s’arrêter", functions: { Se: 2, Ne: 1 }, enneagram: { 7: 2, 8: 1 } }
     ]
   },
   {
     id: 15,
-    question: "Cette personne semble surtout rechercher…",
+    question: "Elle semble surtout rechercher…",
     options: [
-      { text: "la sécurité et la stabilité", functions: { Si: 3 }, enneagram: { 6: 3 } },
-      { text: "l'indépendance", functions: { Fi: 2, Ti: 1 }, enneagram: { 5: 2, 4: 1 } },
-      { text: "l'intensité et le défi", functions: { Se: 2, Te: 1 }, enneagram: { 8: 2 } }
+      { text: "sécurité et stabilité", functions: { Si: 3, Ni: 2 }, enneagram: { 6: 3 } },
+      { text: "autonomie et cohérence interne", functions: { Fi: 2, Ti: 2 }, enneagram: { 5: 2, 4: 2 } },
+      { text: "intensité et challenge", functions: { Se: 2, Te: 1, Ne: 1 }, enneagram: { 8: 2, 7: 1 } }
     ]
   },
   {
     id: 16,
-    question: "Dans ses relations, cette personne est vue comme…",
+    question: "Dans ses relations, on la perçoit…",
     options: [
       { text: "protectrice et attentive", functions: { Fe: 3 }, enneagram: { 2: 2 } },
       { text: "réservée mais fiable", functions: { Si: 2, Fi: 1 }, enneagram: { 6: 1, 9: 1 } },
-      { text: "franche et parfois brusque", functions: { Te: 2, Se: 1 }, enneagram: { 8: 2 } }
+      { text: "franche, parfois abrupte", functions: { Te: 2, Se: 1, Ti: 1 }, enneagram: { 8: 2, 5: 1 } }
     ]
   },
   {
     id: 17,
-    question: "Quand il faut choisir rapidement, cette personne…",
+    question: "Quand il faut choisir rapidement, elle…",
     options: [
-      { text: "va droit au but", functions: { Te: 2, Se: 1 }, enneagram: { 3: 2 } },
-      { text: "prend un moment pour réfléchir", functions: { Ti: 2, Si: 1 }, enneagram: { 5: 2 } },
-      { text: "demande l'avis du groupe", functions: { Fe: 2, Ne: 1 }, enneagram: { 6: 2 } }
+      { text: "va droit au but", functions: { Te: 1, Se: 1 }, enneagram: { 3: 1, 8: 1 } },
+      { text: "prend un temps d’analyse", functions: { Ti: 1, Si: 1 }, enneagram: { 5: 2 } },
+      { text: "sollicite l’avis du groupe", functions: { Fe: 2, Ne: 1, Te: 1 }, enneagram: { 6: 2, 2: 2 } }
     ]
   },
   {
     id: 18,
-    question: "Cette personne semble se ressourcer surtout…",
+    question: "Elle se ressource surtout…",
     options: [
-      { text: "seule dans son monde intérieur", functions: { Ni: 2, Fi: 1 }, enneagram: { 4: 1, 5: 1 } },
-      { text: "au contact d'un large cercle social", functions: { Fe: 2, Se: 1 }, enneagram: { 7: 2, 2: 1 } },
-      { text: "avec quelques proches de confiance", functions: { Si: 2, Fi: 1 }, enneagram: { 6: 2 } }
+      { text: "en solitaire, monde intérieur", functions: { Ni: 1, Fi: 1, Ti: 1, Si: 1 }, enneagram: { 4: 1, 5: 1, 9: 1 } },
+      { text: "auprès d’un large cercle social", functions: { Fe: 2, Se: 1, Te: 2 }, enneagram: { 7: 2, 2: 1 } },
+      { text: "avec quelques proches sûrs", functions: { Si: 2, Fi: 1 }, enneagram: { 6: 2 } }
     ]
   },
   {
     id: 19,
-    question: "Son approche des règles est plutôt…",
+    question: "Son rapport aux règles est plutôt…",
     options: [
-      { text: "les respecter scrupuleusement", functions: { Si: 2, Te: 1 }, enneagram: { 1: 2 } },
-      { text: "les contourner si elles semblent injustes", functions: { Fi: 2, Ne: 1 }, enneagram: { 4: 1, 7: 1 } },
-      { text: "les questionner pour les améliorer", functions: { Ti: 2, Fe: 1 }, enneagram: { 6: 1, 5: 1 } }
+      { text: "respect strict pour l’ordre", functions: { Si: 3, Te: 1, Ni: 1 }, enneagram: { 1: 2, 6: 3 } },
+      { text: "contournement si injustes", functions: { Fi: 2, Ne: 1, Ti: 1 }, enneagram: { 4: 1, 7: 1 } },
+      { text: "questionnement pour améliorer", functions: { Ti: 2, Fe: 1, Ne: 1, Se: 1 }, enneagram: { 6: 1, 5: 1, 1: 1 } }
     ]
   },
   {
     id: 20,
-    question: "Globalement, cette personne dégage surtout…",
+    question: "Globalement, cette personne dégage…",
     options: [
       { text: "une énergie calme et conciliante", functions: { Si: 2, Fe: 1 }, enneagram: { 9: 3 } },
       { text: "une présence intense et directive", functions: { Te: 2, Se: 1 }, enneagram: { 8: 3 } },
-      { text: "une curiosité vive et enthousiaste", functions: { Ne: 3 }, enneagram: { 7: 3 } }
+      { text: "une curiosité vive et enthousiaste", functions: { Ne: 3, Se: 1 }, enneagram: { 7: 3 } }
     ]
   }
 ];
@@ -334,4 +334,3 @@ const EXTERNAL_QUESTIONS = [
 if (typeof module !== 'undefined') {
   module.exports = { AUTO_QUESTIONS, EXTERNAL_QUESTIONS };
 }
-
