@@ -1747,36 +1747,23 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         }
     });
 
-    const mbtiTypes = [];
-    const enneagramTypes = [];
-
+    const COHERENCE_WEIGHTS = { Forte:1.0, Moyenne:0.7, Faible:0.4 };
+    const mbtiWeights = {};
+    const enneagramWeights = {};
     evaluations.forEach(ev => {
-        const evMbtiType =
-            (ev.mbti_scores.E > ev.mbti_scores.I ? 'E' : 'I') +
-            (ev.mbti_scores.S > ev.mbti_scores.N ? 'S' : 'N') +
-            (ev.mbti_scores.T > ev.mbti_scores.F ? 'T' : 'F') +
-            (ev.mbti_scores.J > ev.mbti_scores.P ? 'J' : 'P');
-        const evEnneaType = Object.keys(ev.enneagram_scores).reduce((a, b) =>
-            ev.enneagram_scores[a] > ev.enneagram_scores[b] ? a : b
-        );
-        mbtiTypes.push(evMbtiType);
-        enneagramTypes.push(evEnneaType);
+        const { mbtiType: evMbti, enneagramType: evEnnea } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
+        const cohMbti = getCohérenceMBTI(ev.mbti_scores);
+        const cohEnnea = getCohérenceEnnéagramme(ev.enneagram_scores);
+        const wMbti = COHERENCE_WEIGHTS[cohMbti] || 0;
+        const wEnnea = COHERENCE_WEIGHTS[cohEnnea] || 0;
+        mbtiWeights[evMbti] = (mbtiWeights[evMbti] || 0) + wMbti;
+        enneagramWeights[evEnnea] = (enneagramWeights[evEnnea] || 0) + wEnnea;
     });
-
-    const mbtiFreq = {};
-    mbtiTypes.forEach(type => {
-        mbtiFreq[type] = (mbtiFreq[type] || 0) + 1;
-    });
-    const mbtiMaxFreq = Math.max(...Object.values(mbtiFreq));
-    const mbtiCertainty = Math.round((mbtiMaxFreq / mbtiTypes.length) * 100);
-
-    const enneaFreq = {};
-    enneagramTypes.forEach(type => {
-        enneaFreq[type] = (enneaFreq[type] || 0) + 1;
-    });
-    const enneaMaxFreq = Math.max(...Object.values(enneaFreq));
-    const enneagramCertainty = Math.round((enneaMaxFreq / enneagramTypes.length) * 100);
-
+    const totalEvals = evaluations.length;
+    const mbtiTop = Math.max(...Object.values(mbtiWeights), 0);
+    const enneaTop = Math.max(...Object.values(enneagramWeights), 0);
+    const mbtiCertainty = Math.round((mbtiTop / totalEvals) * 100);
+    const enneagramCertainty = Math.round((enneaTop / totalEvals) * 100);
     const overallCertainty = Math.round((mbtiCertainty + enneagramCertainty) / 2);
 
     return {
