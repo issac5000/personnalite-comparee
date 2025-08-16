@@ -263,7 +263,7 @@ const EXTERNAL_QUESTIONS = [
       },
       {
         "text": "Il cherche à optimiser, à tout structurer, parfois au détriment de l’humain.",
-        "functions": { "Te": 3, "Si":  2, "Ni": 1" },
+        "functions": { "Te": 3, "Si":  2, "Ni": 1 },
         "enneagram": { "1": 1, "2": 2 }
       },
       {
@@ -372,7 +372,7 @@ const EXTERNAL_QUESTIONS = [
       },
       {
         "text": "Il agit selon une vision intérieure qu’il est parfois le seul à comprendre.",
-        "functions": { "Ni": 3, "Ti": 2, "Fi", 2 },
+        "functions": { "Ni": 3, "Ti": 2, "Fi": 2 },
         "enneagram": { "5": 1, "9": 2 }
       }
     ]
