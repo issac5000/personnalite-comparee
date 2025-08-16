@@ -1662,8 +1662,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             enneagramWing: null,
             mbtiPercentages: {},
             mbtiStack: [],
-            mbtiConvergence: 0,
-            enneagramConvergence: 0,
+            mbtiCertainty: 0,
+            enneagramCertainty: 0,
             overallCertainty: 0
         };
     }
@@ -1708,20 +1708,24 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     const right = enneagramType==='9'?'1':String(Number(enneagramType)+1);
     const enneagramWing = avgEnnea[left] >= avgEnnea[right] ? left : right;
 
-    const convergence = (keys, field) => {
-        if (evaluations.length<=1) return 100;
-        const means = avg(keys, field);
-        let dev = 0;
-        evaluations.forEach(ev=>{
-            const scores=ev[field]||{};
-            keys.forEach(k=>{dev += Math.abs(Number(scores[k]||0)-means[k]);});
-        });
-        const maxDev = evaluations.length * keys.length * 3;
-        return Math.round((1 - Math.min(dev/maxDev,1)) * 100);
-    };
-    const mbtiConvergence = convergence(functions, 'mbti_scores');
-    const enneagramConvergence = convergence(types, 'enneagram_scores');
-    const overallCertainty = Math.round((mbtiConvergence + enneagramConvergence)/2);
+    const COHERENCE_WEIGHTS = { Forte:1.0, Moyenne:0.7, Faible:0.4 };
+    const mbtiWeightTotals = {};
+    const enneagramWeightTotals = {};
+    evaluations.forEach(ev => {
+        const { mbtiType: tMbti, enneagramType: tEnnea } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
+        const cohMbti = getCohérenceMBTI(ev.mbti_scores);
+        const cohEnnea = getCohérenceEnnéagramme(ev.enneagram_scores);
+        const wMbti = COHERENCE_WEIGHTS[cohMbti] || 0;
+        const wEnnea = COHERENCE_WEIGHTS[cohEnnea] || 0;
+        mbtiWeightTotals[tMbti] = (mbtiWeightTotals[tMbti] || 0) + wMbti;
+        enneagramWeightTotals[tEnnea] = (enneagramWeightTotals[tEnnea] || 0) + wEnnea;
+    });
+    const totalEvals = evaluations.length;
+    const mbtiTop = Math.max(...Object.values(mbtiWeightTotals), 0);
+    const enneaTop = Math.max(...Object.values(enneagramWeightTotals), 0);
+    const mbtiCertainty = Math.round((mbtiTop / totalEvals) * 100);
+    const enneagramCertainty = Math.round((enneaTop / totalEvals) * 100);
+    const overallCertainty = Math.round((mbtiCertainty + enneagramCertainty)/2);
 
     return {
         mbtiType,
@@ -1729,8 +1733,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         enneagramWing,
         mbtiPercentages,
         mbtiStack,
-        mbtiConvergence,
-        enneagramConvergence,
+        mbtiCertainty,
+        enneagramCertainty,
         overallCertainty,
         functionAverages: avgFunc,
         enneagramAverages: avgEnnea
@@ -1785,8 +1789,8 @@ async function calculateFinalProfile(code) {
                 certainty_score: overallCertainty
             },
             evaluations,
-            mbtiCertainty: weighted.mbtiConvergence,
-            enneagramCertainty: weighted.enneagramConvergence,
+            mbtiCertainty: weighted.mbtiCertainty,
+            enneagramCertainty: weighted.enneagramCertainty,
             overallCertainty
         };
     } catch (err) {

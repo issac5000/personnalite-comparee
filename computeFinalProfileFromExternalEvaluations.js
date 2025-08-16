@@ -130,24 +130,17 @@ const COHERENCE_COEFFICIENT = {
   Faible: 0.4,
 };
 
-function convergenceScore(evaluations, keyList, weightGetter, field) {
-  if (evaluations.length <= 1) return 100;
-  const means = weightedAverage(evaluations, keyList, field, weightGetter);
-  let totalDeviation = 0;
-  let totalWeight = 0;
-  evaluations.forEach(ev => {
-    const w = weightGetter(ev);
-    totalWeight += w;
-    const scores = ev[field] || {};
-    keyList.forEach(k => {
-      const val = Number(scores[k] || 0);
-      totalDeviation += w * Math.abs(val - means[k]);
-    });
+function certaintyFromTypes(evaluations, typeField, weightField) {
+  if (!evaluations.length) return 0;
+  const totals = {};
+  evaluations.forEach(e => {
+    const t = e[typeField];
+    if (!t) return;
+    const w = e[weightField] || 0;
+    totals[t] = (totals[t] || 0) + w;
   });
-  // Maximum deviation if one evaluator gives 0 and another 3 on all keys
-  const maxDeviation = totalWeight * keyList.length * 3;
-  const ratio = totalDeviation / maxDeviation;
-  return Math.round((1 - Math.min(ratio, 1)) * 100);
+  const topWeight = Math.max(...Object.values(totals), 0);
+  return Math.round((topWeight / evaluations.length) * 100);
 }
 
 function computeFinalProfileFromExternalEvaluations(evaluations) {
@@ -157,8 +150,8 @@ function computeFinalProfileFromExternalEvaluations(evaluations) {
     enneagramWing: null,
     mbtiPercentages: {},
     mbtiStack: [],
-    mbtiConvergence: 0,
-    enneagramConvergence: 0,
+    mbtiCertainty: 0,
+    enneagramCertainty: 0,
     overallCertainty: 0,
   };
 
@@ -177,14 +170,19 @@ function computeFinalProfileFromExternalEvaluations(evaluations) {
     const cohMBTI = internalCoherenceMBTI(fnScores);
     const cohEnnea = internalCoherenceEnneagram(enScores);
 
+    const weightMBTI = COHERENCE_COEFFICIENT[cohMBTI] || 0;
+    const weightEnnea = COHERENCE_COEFFICIENT[cohEnnea] || 0;
+
     return {
       original: ev,
       function_scores: fnScores,
       enneagram_scores: enScores,
       mbtiType: mbti,
       enneagramType: ennea,
-      weightMBTI: COHERENCE_COEFFICIENT[cohMBTI] || 0,
-      weightEnnea: COHERENCE_COEFFICIENT[cohEnnea] || 0,
+      weightMBTI,
+      weightEnnea,
+      baseWeightMBTI: weightMBTI,
+      baseWeightEnnea: weightEnnea,
     };
   });
 
@@ -252,20 +250,18 @@ function computeFinalProfileFromExternalEvaluations(evaluations) {
   const enneagramType = topEnneagramType(avgEnnea);
   const enneagramWing = computeWing(avgEnnea, enneagramType);
 
-  // --- Step 6: compute convergence scores ---------------------------------
-  const mbtiConvergence = convergenceScore(
+  // --- Step 6: compute certainty scores ----------------------------------
+  const mbtiCertainty = certaintyFromTypes(
     enriched,
-    COGNITIVE_FUNCTIONS,
-    e => e.weightMBTI,
-    'function_scores'
+    'mbtiType',
+    'baseWeightMBTI'
   );
-  const enneagramConvergence = convergenceScore(
+  const enneagramCertainty = certaintyFromTypes(
     enriched,
-    ENNEAGRAM_TYPES,
-    e => e.weightEnnea,
-    'enneagram_scores'
+    'enneagramType',
+    'baseWeightEnnea'
   );
-  const overallCertainty = Math.round((mbtiConvergence + enneagramConvergence) / 2);
+  const overallCertainty = Math.round((mbtiCertainty + enneagramCertainty) / 2);
 
   return {
     mbtiType,
@@ -273,8 +269,8 @@ function computeFinalProfileFromExternalEvaluations(evaluations) {
     enneagramWing,
     mbtiPercentages,
     mbtiStack,
-    mbtiConvergence,
-    enneagramConvergence,
+    mbtiCertainty,
+    enneagramCertainty,
     overallCertainty,
   };
 }
