@@ -153,20 +153,20 @@ const EXTERNAL_QUESTIONS = [
     id: 1,
     question: "Dans quelle description reconnaissez-vous le plus votre proche ?",
     options: [
-      { text: "Il agit selon ce qu’il ressent comme juste, même si personne ne l’approuve.", functions: { Fi: 3 }, enneagram: { 1: 2, 4: 1 } },
-      { text: "Il s’efface souvent pour aider ou soutenir les autres.", functions: { Fe: 3 }, enneagram: { 2: 2, 9: 1 } },
-      { text: "Il prend des décisions rapides, orientées résultats.", functions: { Te: 3 }, enneagram: { 3: 2, 8: 1 } },
-      { text: "Il remet tout en question jusqu’à comprendre totalement.", functions: { Ti: 3 }, enneagram: { 5: 2, 6: 1 } }
+      { text: "Il agit selon ce qu’il ressent comme juste, même si personne ne l’approuve.", functions: { "Fi": 3, "Ti": 2 }, enneagram: { "1": 2, "4": 1 } },
+      { text: "Il s’efface souvent pour aider ou soutenir les autres.", functions: { "Fe": 3, }, enneagram: { "2": 2, "9": 1 } },
+      { text: "Il prend des décisions rapides, orientées résultats.", functions: { "Te": 3, "Ti": 1 }, enneagram: { "3": 2, "8": 1 } },
+      { text: "Il remet tout en question jusqu’à comprendre totalement.", functions: { "Ti": 3 }, enneagram: { "5": 2, "6": 1 } }
     ]
   },
   {
     id: 2,
     question: "Dans quelle description reconnaissez-vous le plus votre proche ?",
     options: [
-      { text: "Il vit dans ses souvenirs, ses habitudes sont rassurantes.", functions: { Si: 3 }, enneagram: { 6: 2, 9: 1 } },
-      { text: "Il capte tous les détails de l’environnement et agit vite.", functions: { Se: 3 }, enneagram: { 7: 2, 8: 1 } },
-      { text: "Il imagine le futur comme une histoire intérieure.", functions: { Ni: 3 }, enneagram: { 4: 2, 5: 1 } },
-      { text: "Il saute d’une idée à l’autre avec enthousiasme.", functions: { Ne: 3 }, enneagram: { 7: 2, 3: 1 } }
+      { text: "Il vit dans ses souvenirs, ses habitudes sont rassurantes.", functions: { "Si": 3, "Ni": 1 }, enneagram: { "6": 2, "9": 1 } },
+      { text: "Il capte tous les détails de l’environnement et agit vite.", functions: { "Se": 3, "Si": 1 }, enneagram: { "7": 2, "8": 1 } },
+      { text: "Il imagine et se projète constamment dans le futur.", functions: { "Ni": 3 }, enneagram: { "4": 2, "5": 1 } },
+      { text: "Il saute d’une idée à l’autre avec enthousiasme.", functions: { "Ne": 3, "Se": 2 }, enneagram: { "7": 2, "3": 1 } }
     ]
   },
   {
@@ -175,22 +175,22 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il ressent fortement ses émotions mais les garde pour lui.",
-        "functions": { "Fi": 3 },
+        "functions": { "Fi": 3, "Ti": 2 },
         "enneagram": { "4": 2, "6": 1 }
       },
       {
         "text": "Il cherche à maintenir la paix autour de lui.",
         "functions": { "Fe": 3 },
-        "enneagram": { "2": 2, "9": 1 }
+        "enneagram": { "2": 2, "9": 2 }
       },
       {
         "text": "Il veut une vérité logique, pas une version édulcorée.",
-        "functions": { "Ti": 3 },
+        "functions": { "Ti": 3, "Te": 1 },
         "enneagram": { "5": 1, "1": 2 }
       },
       {
         "text": "Il planifie tout avec clarté pour éviter les imprévus.",
-        "functions": { "Te": 2, "Si": 1 },
+        "functions": { "Te": 2, "Si": 3 },
         "enneagram": { "1": 1, "3": 2 }
       }
     ]
@@ -201,23 +201,23 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il voit les dangers avant qu’ils arrivent, il anticipe tout.",
-        "functions": { "Ni": 3 },
+        "functions": { "Ni": 3, "Si": 2 },
         "enneagram": { "5": 2, "3": 1 }
       },
       {
         "text": "Il aime faire plaisir et attend une reconnaissance en retour.",
-        "functions": { "Fe": 2, "Si": 1 },
+        "functions": { "Fe": 2, },
         "enneagram": { "2": 2, "3": 1 }
       },
       {
         "text": "Il se laisse guider par ses ressentis et son authenticité.",
-        "functions": { "Fi": 3 },
+        "functions": { "Fi": 3, "Fe": 1 },
         "enneagram": { "4": 2, "9": 1 }
       },
       {
         "text": "Il agit avec fermeté, surtout quand il faut recadrer.",
         "functions": { "Te": 2, "Se": 1 },
-        "enneagram": { "1": 1, "8": 2 }
+        "enneagram": { "1": 1, "8": 3 }
       }
     ]
   },
@@ -227,22 +227,22 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il structure son quotidien pour garder le contrôle.",
-        "functions": { "Si": 3 },
+        "functions": { "Si": 3, "Ni": 2 },
         "enneagram": { "6": 2, "1": 1 }
       },
       {
         "text": "Il se fie à l’instant et agit vite, sans trop réfléchir.",
-        "functions": { "Se": 3 },
+        "functions": { "Se": 3, "Ne": 2 },
         "enneagram": { "8": 2, "7": 1 }
       },
       {
         "text": "Il pense de manière abstraite, comme s’il reliait tout sans effort.",
-        "functions": { "Ni": 3 },
+        "functions": { "Ni": 3, "Ne": 2 },
         "enneagram": { "5": 2, "3": 1 }
       },
       {
         "text": "Il déteste les routines et adore changer de perspective.",
-        "functions": { "Ne": 3 },
+        "functions": { "Ne": 2, "Se": 3 },
         "enneagram": { "7": 2, "3": 1 }
       }
     ]
@@ -253,17 +253,17 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il agit selon ce qu’il ressent profondément, sans chercher l’approbation.",
-        "functions": { "Fi": 2, "Ne": 1 },
+        "functions": { "Fi": 2, "Ti": 1 },
         "enneagram": { "4": 2, "9": 1 }
       },
       {
         "text": "Il veut être utile, quitte à porter les problèmes des autres.",
         "functions": { "Fe": 3 },
-        "enneagram": { "2": 2, "6": 1 }
+        "enneagram": { "2": 3, "6": 1 }
       },
       {
         "text": "Il cherche à optimiser, à tout structurer, parfois au détriment de l’humain.",
-        "functions": { "Te": 3 },
+        "functions": { "Te": 3, "Si":  2, "Ni": 1" },
         "enneagram": { "1": 1, "2": 2 }
       },
       {
@@ -280,16 +280,16 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "Il se sent souvent à part, unique, parfois même incompris.",
         "functions": { "Fi": 3 },
-        "enneagram": { "4": 2, "5": 1 }
+        "enneagram": { "4": 3, "5": 1 }
       },
       {
         "text": "Il cherche l’équilibre émotionnel du groupe avant d’affirmer ses idées.",
-        "functions": { "Fe": 2, "Ti": 1 },
+        "functions": { "Fe": 3 },
         "enneagram": { "2": 2, "9": 1 }
       },
       {
         "text": "Il adore expérimenter, tester, vivre ce qu’il ressent sur le moment.",
-        "functions": { "Se": 3 },
+        "functions": { "Se": 3, "Ne": 1 },
         "enneagram": { "7": 2, "8": 1 }
       },
       {
@@ -305,22 +305,22 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il est nostalgique, fidèle à ce qu’il connaît. Il préfère ce qui a fait ses preuves.",
-        "functions": { "Si": 3 },
+        "functions": { "Si": 3, "Ni": 2 },
         "enneagram": { "6": 2, "9": 1 }
       },
       {
         "text": "Il rebondit mentalement sur tout, déteste les cadres trop rigides.",
-        "functions": { "Ne": 3 },
+        "functions": { "Ne": 3, "Se": 2 },
         "enneagram": { "7": 2, "3": 1 }
       },
       {
         "text": "Il veut comprendre les rouages cachés, sans jamais se contenter d’un “parce que”.",
-        "functions": { "Ti": 3 },
+        "functions": { "Ti": 3, "Te": 3 },
         "enneagram": { "5": 2, "3": 1 }
       },
       {
         "text": "Il structure son entourage pour que chacun soit à sa place.",
-        "functions": { "Te": 3 },
+        "functions": { "Te": 3, "Si": 2 },
         "enneagram": { "8": 2, "3": 1 }
       }
     ]
@@ -331,17 +331,17 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il ressent intensément ce qu’il vit, mais garde ça dans son monde intérieur.",
-        "functions": { "Fi": 3 },
+        "functions": { "Fi": 3, "Ti": 1 },
         "enneagram": { "4": 2, "6": 1 }
       },
       {
         "text": "Il sait instinctivement ce que les autres ressentent ou attendent.",
-        "functions": { "Fe": 2, "Ne": 1 },
+        "functions": { "Fe": 3, "Ne": 1 },
         "enneagram": { "2": 2, "9": 1 }
       },
       {
         "text": "Il agit dans l’urgence avec une confiance parfois brute mais efficace.",
-        "functions": { "Se": 3 },
+        "functions": { "Se": 3, "Te": 2 },
         "enneagram": { "8": 2, "7": 1 }
       },
       {
@@ -357,22 +357,22 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il a besoin de sécurité et de repères stables pour se sentir bien.",
-        "functions": { "Si": 3 },
+        "functions": { "Si": 3, "Ni": 2 },
         "enneagram": { "6": 2, "1": 1 }
       },
       {
         "text": "Il cherche sans cesse de nouvelles idées pour sortir de la routine.",
-        "functions": { "Ne": 3 },
+        "functions": { "Ne": 2, "Se": 2 },
         "enneagram": { "7": 2, "4": 1 }
       },
       {
         "text": "Il prend naturellement le lead quand il sent que personne n’ose.",
         "functions": { "Te": 3 },
-        "enneagram": { "8": 2, "3": 1 }
+        "enneagram": { "8": 3, "3": 1 }
       },
       {
         "text": "Il agit selon une vision intérieure qu’il est parfois le seul à comprendre.",
-        "functions": { "Ni": 3 },
+        "functions": { "Ni": 3, "Ti": 2, "Fi", 2 },
         "enneagram": { "5": 1, "9": 2 }
       }
     ]
@@ -388,17 +388,17 @@ const EXTERNAL_QUESTIONS = [
       },
       {
         "text": "Il aime improviser, explorer ce qui l'entoure, sans plan préétabli.",
-        "functions": { "Se": 3 },
+        "functions": { "Se": 3, "Ne": 1 },
         "enneagram": { "7": 2, "9": 1 }
       },
       {
         "text": "Il suit des intuitions profondes qu'il ne peut toujours expliquer.",
-        "functions": { "Ni": 3 },
+        "functions": { "Ni": 3, "Ne": 2 },
         "enneagram": { "1": 1, "9": 2 }
       },
       {
         "text": "Il passe d'une idée à l'autre sans jamais s'arrêter.",
-        "functions": { "Ne": 3 },
+        "functions": { "Ne": 3, "Se": 1 },
         "enneagram": { "7": 2, "3": 1 }
       }
     ]
@@ -445,12 +445,12 @@ const EXTERNAL_QUESTIONS = [
       },
       {
         "text": "Il ne supporte pas l'idée d’être inutile ou rejeté.",
-        "functions": { "Fe": 3 },
+        "functions": { "Fe": 3, "Te": 2 },
         "enneagram": { "2": 2, "4": 1 }
       },
       {
         "text": "Il revient toujours à ce qui fonctionne, il ne prend pas de risques inutiles.",
-        "functions": { "Si": 3 },
+        "functions": { "Si": 3, "Ni": 2 },
         "enneagram": { "6": 2, "9": 1 }
       }
     ]
@@ -471,7 +471,7 @@ const EXTERNAL_QUESTIONS = [
       },
       {
         "text": "Il organise les choses pour atteindre des objectifs clairs.",
-        "functions": { "Te": 3 },
+        "functions": { "Te": 3, "Si": 2 },
         "enneagram": { "3": 2, "1": 1 }
       },
       {
@@ -487,7 +487,7 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il prend souvent du recul pour voir la situation dans son ensemble.",
-        "functions": { "Ni": 2, "Ti": 1 },
+        "functions": { "Ni": 2, "Ti": 1, "Te": 1 },
         "enneagram": { "9": 2, "4": 1 }
       },
       {
@@ -497,7 +497,7 @@ const EXTERNAL_QUESTIONS = [
       },
       {
         "text": "Il pense en termes de logique et de cohérence interne.",
-        "functions": { "Ti": 3 },
+        "functions": { "Ti": 3, "Te": 2 },
         "enneagram": { "5": 1, "1": 2 }
       },
       {
@@ -513,17 +513,17 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il donne pour recevoir de la reconnaissance et du lien.",
-        "functions": { "Fe": 3 },
+        "functions": { "Fe": 4 },
         "enneagram": { "2": 2, "3": 1 }
       },
       {
         "text": "Il agit pour que les choses soient faites, pas pour discuter.",
-        "functions": { "Te": 2, "Se": 1 },
+        "functions": { "Te": 1, "Se": 1 },
         "enneagram": { "3": 2, "8": 1 }
       },
       {
         "text": "Il suit ses ressentis sans toujours chercher à les expliquer.",
-        "functions": { "Fi": 3 },
+        "functions": { "Fi": 3, "Fe": 2 },
         "enneagram": { "4": 2, "9": 1 }
       },
       {
@@ -539,7 +539,7 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il veut faire ce qu’il faut, selon une logique implacable.",
-        "functions": { "Ti": 3 },
+        "functions": { "Ti": 3, "Te": 1 },
         "enneagram": { "1": 2, "6": 1 }
       },
       {
@@ -549,12 +549,12 @@ const EXTERNAL_QUESTIONS = [
       },
       {
         "text": "Il agit de manière efficace et directe.",
-        "functions": { "Te": 3 },
+        "functions": { "Te": 3, "Se": 2 },
         "enneagram": { "8": 2, "3": 1 }
       },
       {
         "text": "Il s’appuie sur des références précises et des habitudes stables.",
-        "functions": { "Si": 3 },
+        "functions": { "Si": 3, "Ni": 2 },
         "enneagram": { "6": 2, "9": 1 }
       }
     ]
@@ -565,7 +565,7 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il perçoit des vérités profondes sans toujours pouvoir les verbaliser.",
-        "functions": { "Ni": 3 },
+        "functions": { "Ni": 3, "Fi": 2 },
         "enneagram": { "5": 2, "4": 1 }
       },
       {
@@ -575,12 +575,12 @@ const EXTERNAL_QUESTIONS = [
       },
       {
         "text": "Il veut apaiser, lisser, éviter les tensions au maximum.",
-        "functions": { "Fe": 3 },
+        "functions": { "Fe": 3, "Fi": 2 },
         "enneagram": { "2": 2, "9": 1 }
       },
       {
         "text": "Il ressent très fort mais ne se laisse pas dicter ses émotions.",
-        "functions": { "Fi": 3 },
+        "functions": { "Fi": 3, "Ti": 1 },
         "enneagram": { "4": 2, "6": 1 }
       }
     ]
@@ -592,11 +592,11 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "Il cherche la vérité, même si elle est inconfortable.",
         "functions": { "Ti": 3 },
-        "enneagram": { "5": 1, "1": 2 }
+        "enneagram": { "5": 3, "1": 2 }
       },
       {
         "text": "Il agit pour régler les choses, sans forcément tout comprendre.",
-        "functions": { "Te": 3 },
+        "functions": { "Te": 2 },
         "enneagram": { "3": 2, "8": 1 }
       },
       {
@@ -606,7 +606,7 @@ const EXTERNAL_QUESTIONS = [
       },
       {
         "text": "Il garde une constance, une routine qui le sécurise.",
-        "functions": { "Si": 3 },
+        "functions": { "Si": 3, "Ni": 1 },
         "enneagram": { "6": 2, "9": 1 }
       }
     ]
@@ -617,12 +617,12 @@ const EXTERNAL_QUESTIONS = [
     "options": [
       {
         "text": "Il agit par principe, fidèle à une vision intérieure de la vérité.",
-        "functions": { "Fi": 3 },
+        "functions": { "Fi": 4 },
         "enneagram": { "1": 1, "4": 2 }
       },
       {
         "text": "Il observe les signaux faibles et fait des liens très subtils.",
-        "functions": { "Ni": 3 },
+        "functions": { "Ni": 3, "Ne": 2 },
         "enneagram": { "5": 1, "9": 2 }
       },
       {
@@ -632,7 +632,7 @@ const EXTERNAL_QUESTIONS = [
       },
       {
         "text": "Il cherche à rendre service et à créer de l'harmonie autour de lui.",
-        "functions": { "Fe": 3 },
+        "functions": { "Fe": 4 },
         "enneagram": { "2": 2, "9": 1 }
       }
     ]
