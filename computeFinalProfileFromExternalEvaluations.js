@@ -99,8 +99,8 @@ function internalCoherenceMBTI(scores) {
   const diffs = pairs.map(([a, b]) => Math.abs(a - b));
   const mean = diffs.reduce((s, v) => s + v, 0) / pairs.length;
 
-  if (mean >= 20) return 'Forte';
-  if (mean >= 10) return 'Moyenne';
+  if (mean >= 10) return 'Forte';
+  if (mean >= 7) return 'Moyenne';
   return 'Faible';
 }
 
@@ -119,8 +119,8 @@ function internalCoherenceEnneagram(scores) {
   const meanOthers = others.reduce((s, v) => s + v, 0) / (others.length || 1);
   const diff = dominantScore - meanOthers;
 
-  if (diff > 15) return 'Forte';
-  if (diff >= 7) return 'Moyenne';
+  if (diff > 8) return 'Forte';
+  if (diff >= 4) return 'Moyenne';
   return 'Faible';
 }
 
