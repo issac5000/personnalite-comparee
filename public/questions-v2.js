@@ -641,8 +641,4 @@ const EXTERNAL_QUESTIONS = [
 
 if (typeof module !== 'undefined') {
   module.exports = { AUTO_QUESTIONS, EXTERNAL_QUESTIONS };
-];
-
-if (typeof module !== 'undefined') {
-  module.exports = EXTERNAL_QUESTIONS;
 }
