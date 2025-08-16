@@ -151,188 +151,498 @@ const AUTO_QUESTIONS = [
 const EXTERNAL_QUESTIONS = [
   {
     id: 1,
-    question: "Cette personne décide surtout en fonction…",
+    question: "Dans quelle description reconnaissez-vous le plus votre proche ?",
     options: [
-      { text: "de ses convictions internes", functions: { Fi: 3, Ti: 2 }, enneagram: { 4: 2, 9: 1 } },
-      { text: "de l’impact sur les autres", functions: { Fe: 2, Te: 1 }, enneagram: { 2: 2, 6: 1 } },
-      { text: "de l’efficacité et des résultats", functions: { Te: 1, Ti: 2, Si: 1 }, enneagram: { 3: 3, 1: 2, 5: 1 } }
+      { text: "Il agit selon ce qu’il ressent comme juste, même si personne ne l’approuve.", functions: { Fi: 3 }, enneagram: { 1: 2, 4: 1 } },
+      { text: "Il s’efface souvent pour aider ou soutenir les autres.", functions: { Fe: 3 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "Il prend des décisions rapides, orientées résultats.", functions: { Te: 3 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "Il remet tout en question jusqu’à comprendre totalement.", functions: { Ti: 3 }, enneagram: { 5: 2, 6: 1 } }
     ]
   },
   {
     id: 2,
-    question: "Pour apprendre, elle…",
+    question: "Dans quelle description reconnaissez-vous le plus votre proche ?",
     options: [
-      { text: "teste vite en situation réelle", functions: { Se: 3, Ne: 2 }, enneagram: { 7: 1, 8: 1 } },
-      { text: "s’appuie sur son expérience", functions: { Si: 2, Ni: 2 }, enneagram: { 6: 2 } },
-      { text: "cherche le sens global/les modèles", functions: { Ni: 2, Ne: 1 }, enneagram: { 5: 2 } }
+      { text: "Il vit dans ses souvenirs, ses habitudes sont rassurantes.", functions: { Si: 3 }, enneagram: { 6: 2, 9: 1 } },
+      { text: "Il capte tous les détails de l’environnement et agit vite.", functions: { Se: 3 }, enneagram: { 7: 2, 8: 1 } },
+      { text: "Il imagine le futur comme une histoire intérieure.", functions: { Ni: 3 }, enneagram: { 4: 2, 5: 1 } },
+      { text: "Il saute d’une idée à l’autre avec enthousiasme.", functions: { Ne: 3 }, enneagram: { 7: 2, 3: 1 } }
     ]
   },
   {
-    id: 3,
-    question: "Sous pression, elle…",
-    options: [
-      { text: "renforce le contrôle et la structure", functions: { Te: 1, Si: 1 }, enneagram: { 1: 2, 8: 2 } },
-      { text: "se replie pour analyser", functions: { Fi: 1, Ni: 2, Ti: 1, Si: 1 }, enneagram: { 5: 2, 4: 1 } },
-      { text: "désamorce et passe à autre chose", functions: { Ne: 2, Se: 1 }, enneagram: { 7: 1 } }
+    "id": 3,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il ressent fortement ses émotions mais les garde pour lui.",
+        "functions": { "Fi": 3 },
+        "enneagram": { "4": 2, "6": 1 }
+      },
+      {
+        "text": "Il cherche à maintenir la paix autour de lui.",
+        "functions": { "Fe": 3 },
+        "enneagram": { "2": 2, "9": 1 }
+      },
+      {
+        "text": "Il veut une vérité logique, pas une version édulcorée.",
+        "functions": { "Ti": 3 },
+        "enneagram": { "5": 1, "1": 2 }
+      },
+      {
+        "text": "Il planifie tout avec clarté pour éviter les imprévus.",
+        "functions": { "Te": 2, "Si": 1 },
+        "enneagram": { "1": 1, "3": 2 }
+      }
     ]
   },
   {
-    id: 4,
-    question: "Dans un groupe, elle est plutôt celle qui…",
-    options: [
-      { text: "anime et relie les personnes", functions: { Fe: 2, Se: 1, Te: 1 }, enneagram: { 2: 2, 7: 1, 9: 1 } },
-      { text: "analyse en profondeur", functions: { Ni: 2, Ti: 1 }, enneagram: { 5: 2 } },
-      { text: "organise et oriente l’action", functions: { Te: 2, Fe: 1 }, enneagram: { 3: 3, 8: 2 } }
+    "id": 4,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il voit les dangers avant qu’ils arrivent, il anticipe tout.",
+        "functions": { "Ni": 3 },
+        "enneagram": { "5": 2, "3": 1 }
+      },
+      {
+        "text": "Il aime faire plaisir et attend une reconnaissance en retour.",
+        "functions": { "Fe": 2, "Si": 1 },
+        "enneagram": { "2": 2, "3": 1 }
+      },
+      {
+        "text": "Il se laisse guider par ses ressentis et son authenticité.",
+        "functions": { "Fi": 3 },
+        "enneagram": { "4": 2, "9": 1 }
+      },
+      {
+        "text": "Il agit avec fermeté, surtout quand il faut recadrer.",
+        "functions": { "Te": 2, "Se": 1 },
+        "enneagram": { "1": 1, "8": 2 }
+      }
     ]
   },
   {
-    id: 5,
-    question: "Son espace de travail semble…",
-    options: [
-      { text: "soigné et processé", functions: { Si: 1, Te: 1, Ni: 1 }, enneagram: { 1: 2, 6: 1 } },
-      { text: "personnel et créatif", functions: { Fi: 2, Ne: 1 }, enneagram: { 4: 2 } },
-      { text: "minimaliste et réactif", functions: { Si: 1, Ti: 1 }, enneagram: { 8: 2, 3: 1 } }
+    "id": 5,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il structure son quotidien pour garder le contrôle.",
+        "functions": { "Si": 3 },
+        "enneagram": { "6": 2, "1": 1 }
+      },
+      {
+        "text": "Il se fie à l’instant et agit vite, sans trop réfléchir.",
+        "functions": { "Se": 3 },
+        "enneagram": { "8": 2, "7": 1 }
+      },
+      {
+        "text": "Il pense de manière abstraite, comme s’il reliait tout sans effort.",
+        "functions": { "Ni": 3 },
+        "enneagram": { "5": 2, "3": 1 }
+      },
+      {
+        "text": "Il déteste les routines et adore changer de perspective.",
+        "functions": { "Ne": 3 },
+        "enneagram": { "7": 2, "3": 1 }
+      }
     ]
   },
   {
-    id: 6,
-    question: "Avec les autres, elle montre surtout…",
-    options: [
-      { text: "soutien empathique", functions: { Fe: 2, Fi: 1 }, enneagram: { 2: 3 } },
-      { text: "conseils concrets", functions: { Te: 1, Se: 1, Ti: 2 }, enneagram: { 3: 1, 8: 1, 5: 1 } },
-      { text: "écoute calme et discrète", functions: { Fi: 2, Si: 1 }, enneagram: { 9: 2 } }
+    "id": 6,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il agit selon ce qu’il ressent profondément, sans chercher l’approbation.",
+        "functions": { "Fi": 2, "Ne": 1 },
+        "enneagram": { "4": 2, "9": 1 }
+      },
+      {
+        "text": "Il veut être utile, quitte à porter les problèmes des autres.",
+        "functions": { "Fe": 3 },
+        "enneagram": { "2": 2, "6": 1 }
+      },
+      {
+        "text": "Il cherche à optimiser, à tout structurer, parfois au détriment de l’humain.",
+        "functions": { "Te": 3 },
+        "enneagram": { "1": 1, "2": 2 }
+      },
+      {
+        "text": "Il veut comprendre chaque détail avant de donner son avis.",
+        "functions": { "Ti": 3 },
+        "enneagram": { "5": 2, "3": 1 }
+      }
     ]
   },
   {
-    id: 7,
-    question: "Quand un plan change, elle…",
-    options: [
-      { text: "s’adapte rapidement", functions: { Ne: 2, Se: 1 }, enneagram: { 7: 1 } },
-      { text: "revient au plan initial si possible", functions: { Si: 1, Te: 1 }, enneagram: { 6: 2 } },
-      { text: "questionne la finalité", functions: { Ni: 2, Fi: 1 }, enneagram: { 4: 1, 5: 1 } }
+    "id": 7,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il se sent souvent à part, unique, parfois même incompris.",
+        "functions": { "Fi": 3 },
+        "enneagram": { "4": 2, "5": 1 }
+      },
+      {
+        "text": "Il cherche l’équilibre émotionnel du groupe avant d’affirmer ses idées.",
+        "functions": { "Fe": 2, "Ti": 1 },
+        "enneagram": { "2": 2, "9": 1 }
+      },
+      {
+        "text": "Il adore expérimenter, tester, vivre ce qu’il ressent sur le moment.",
+        "functions": { "Se": 3 },
+        "enneagram": { "7": 2, "8": 1 }
+      },
+      {
+        "text": "Il fait confiance à ses intuitions silencieuses, même s’il ne les explique pas.",
+        "functions": { "Ni": 3 },
+        "enneagram": { "1": 1, "9": 2 }
+      }
     ]
   },
   {
-    id: 8,
-    question: "En désaccord, elle…",
-    options: [
-      { text: "négocie une solution mutuellement acceptable", functions: { Fe: 2, Te: 1 }, enneagram: { 9: 2, 2: 2 } },
-      { text: "tient fermement sa position", functions: { Ti: 3, Fi: 2 }, enneagram: { 8: 2, 1: 2, 4: 2 } },
-      { text: "se retire pour éviter l’escalade", functions: { Fe: 1, Si: 1 }, enneagram: { 6: 1, 9: 2 } }
+    "id": 8,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il est nostalgique, fidèle à ce qu’il connaît. Il préfère ce qui a fait ses preuves.",
+        "functions": { "Si": 3 },
+        "enneagram": { "6": 2, "9": 1 }
+      },
+      {
+        "text": "Il rebondit mentalement sur tout, déteste les cadres trop rigides.",
+        "functions": { "Ne": 3 },
+        "enneagram": { "7": 2, "3": 1 }
+      },
+      {
+        "text": "Il veut comprendre les rouages cachés, sans jamais se contenter d’un “parce que”.",
+        "functions": { "Ti": 3 },
+        "enneagram": { "5": 2, "3": 1 }
+      },
+      {
+        "text": "Il structure son entourage pour que chacun soit à sa place.",
+        "functions": { "Te": 3 },
+        "enneagram": { "8": 2, "3": 1 }
+      }
     ]
   },
   {
-    id: 9,
-    question: "On dirait qu’elle est motivée surtout par…",
-    options: [
-      { text: "la réussite mesurable", functions: { Te: 3 }, enneagram: { 3: 3 } },
-      { text: "l’harmonie sociale", functions: { Fe: 2 }, enneagram: { 2: 2, 9: 2 } },
-      { text: "le sens personnel", functions: { Fi: 3, Ti: 1 }, enneagram: { 4: 2 } }
+    "id": 9,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il ressent intensément ce qu’il vit, mais garde ça dans son monde intérieur.",
+        "functions": { "Fi": 3 },
+        "enneagram": { "4": 2, "6": 1 }
+      },
+      {
+        "text": "Il sait instinctivement ce que les autres ressentent ou attendent.",
+        "functions": { "Fe": 2, "Ne": 1 },
+        "enneagram": { "2": 2, "9": 1 }
+      },
+      {
+        "text": "Il agit dans l’urgence avec une confiance parfois brute mais efficace.",
+        "functions": { "Se": 3 },
+        "enneagram": { "8": 2, "7": 1 }
+      },
+      {
+        "text": "Il voit venir les choses, anticipe les dérives sans que personne ne s’en rende compte.",
+        "functions": { "Ni": 2, "Ti": 1 },
+        "enneagram": { "5": 1, "1": 2 }
+      }
     ]
   },
   {
-    id: 10,
-    question: "Face à une situation nouvelle, elle…",
-    options: [
-      { text: "observe avant d’agir", functions: { Ni: 2, Si: 1 }, enneagram: { 5: 2, 1: 2 } },
-      { text: "se lance spontanément", functions: { Se: 3, Ne: 2 }, enneagram: { 7: 1, 8: 1 } },
-      { text: "cherche une référence rassurante", functions: { Si: 1, Fe: 1 }, enneagram: { 6: 2 } }
+    "id": 10,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il a besoin de sécurité et de repères stables pour se sentir bien.",
+        "functions": { "Si": 3 },
+        "enneagram": { "6": 2, "1": 1 }
+      },
+      {
+        "text": "Il cherche sans cesse de nouvelles idées pour sortir de la routine.",
+        "functions": { "Ne": 3 },
+        "enneagram": { "7": 2, "4": 1 }
+      },
+      {
+        "text": "Il prend naturellement le lead quand il sent que personne n’ose.",
+        "functions": { "Te": 3 },
+        "enneagram": { "8": 2, "3": 1 }
+      },
+      {
+        "text": "Il agit selon une vision intérieure qu’il est parfois le seul à comprendre.",
+        "functions": { "Ni": 3 },
+        "enneagram": { "5": 1, "9": 2 }
+      }
     ]
   },
   {
-    id: 11,
-    question: "Sa communication est plutôt…",
-    options: [
-      { text: "directe et factuelle", functions: { Te: 1, Ti: 1, Si: 2, Se: 2 }, enneagram: { 1: 1, 8: 1 } },
-      { text: "imaginative et associative", functions: { Ne: 3, Ni: 3 }, enneagram: { 7: 1, 4: 2 } },
-      { text: "chaleureuse et personnelle", functions: { Fe: 2, Fi: 2 }, enneagram: { 2: 3, 9: 2 } }
+    "id": 11,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il se repose sur des expériences passées pour prendre ses décisions.",
+        "functions": { "Si": 3 },
+        "enneagram": { "6": 2, "1": 1 }
+      },
+      {
+        "text": "Il aime improviser, explorer ce qui l'entoure, sans plan préétabli.",
+        "functions": { "Se": 3 },
+        "enneagram": { "7": 2, "9": 1 }
+      },
+      {
+        "text": "Il suit des intuitions profondes qu'il ne peut toujours expliquer.",
+        "functions": { "Ni": 3 },
+        "enneagram": { "1": 1, "9": 2 }
+      },
+      {
+        "text": "Il passe d'une idée à l'autre sans jamais s'arrêter.",
+        "functions": { "Ne": 3 },
+        "enneagram": { "7": 2, "3": 1 }
+      }
     ]
   },
   {
-    id: 12,
-    question: "Quand elle parle d’avenir, elle…",
-    options: [
-      { text: "décrit un but précis", functions: { Ni: 3, Si: 1 }, enneagram: { 3: 1, 1: 1 } },
-      { text: "déploie plusieurs scénarios", functions: { Ne: 2, Se: 1 }, enneagram: { 7: 1, 4: 1 } },
-      { text: "reste centrée sur l’instant", functions: { Se: 1, Si: 2 }, enneagram: { 9: 2 } }
+    "id": 12,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il analyse tout en profondeur avant de s'engager émotionnellement.",
+        "functions": { "Ti": 3 },
+        "enneagram": { "5": 2, "3": 1 }
+      },
+      {
+        "text": "Il agit pour faire ce qui est bien, pas pour plaire.",
+        "functions": { "Te": 3 },
+        "enneagram": { "1": 2, "8": 1 }
+      },
+      {
+        "text": "Il évite de se mettre en avant mais ressent très fort ce qu'il vit.",
+        "functions": { "Fi": 2, "Si": 1 },
+        "enneagram": { "4": 2, "9": 1 }
+      },
+      {
+        "text": "Il se rend utile dès qu’il voit un besoin, même implicite.",
+        "functions": { "Fe": 3 },
+        "enneagram": { "2": 2, "6": 1 }
+      }
     ]
   },
   {
-    id: 13,
-    question: "Dans son temps libre, elle aime…",
-    options: [
-      { text: "organiser des activités utiles", functions: { Te: 1, Si: 1, Fe: 1 }, enneagram: { 1: 1, 3: 1 } },
-      { text: "créer/exprimer quelque chose d’unique", functions: { Fi: 2, Ne: 1, Ti: 1 }, enneagram: { 4: 2 } },
-      { text: "se détendre sans plan", functions: { Se: 2, Ne: 1 }, enneagram: { 9: 2, 7: 1 } }
+    "id": 13,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il cherche à comprendre pour anticiper, il voit ce qui est caché.",
+        "functions": { "Ni": 3 },
+        "enneagram": { "5": 1, "1": 2 }
+      },
+      {
+        "text": "Il agit vite et ajuste au fur et à mesure.",
+        "functions": { "Se": 3 },
+        "enneagram": { "8": 2, "3": 1 }
+      },
+      {
+        "text": "Il ne supporte pas l'idée d’être inutile ou rejeté.",
+        "functions": { "Fe": 3 },
+        "enneagram": { "2": 2, "4": 1 }
+      },
+      {
+        "text": "Il revient toujours à ce qui fonctionne, il ne prend pas de risques inutiles.",
+        "functions": { "Si": 3 },
+        "enneagram": { "6": 2, "9": 1 }
+      }
     ]
   },
   {
-    id: 14,
-    question: "Face à l’incertitude, elle…",
-    options: [
-      { text: "récolte des données et structure", functions: { Ti: 2, Te: 1, Si: 1 }, enneagram: { 5: 2, 6: 1 } },
-      { text: "fait confiance à son intuition", functions: { Ni: 2, Fi: 1, Ne: 2 }, enneagram: { 4: 1 } },
-      { text: "avance sans trop s’arrêter", functions: { Se: 2, Ne: 1 }, enneagram: { 7: 1, 8: 1 } }
+    "id": 14,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il explore toutes les idées possibles, même les plus improbables.",
+        "functions": { "Ne": 3 },
+        "enneagram": { "7": 2, "5": 1 }
+      },
+      {
+        "text": "Il garde pour lui ses émotions et agit selon son propre ressenti.",
+        "functions": { "Fi": 3 },
+        "enneagram": { "4": 2, "6": 1 }
+      },
+      {
+        "text": "Il organise les choses pour atteindre des objectifs clairs.",
+        "functions": { "Te": 3 },
+        "enneagram": { "3": 2, "1": 1 }
+      },
+      {
+        "text": "Il pose beaucoup de questions pour comprendre avant d'agir.",
+        "functions": { "Ti": 3 },
+        "enneagram": { "5": 2, "3": 1 }
+      }
     ]
   },
   {
-    id: 15,
-    question: "Elle semble surtout rechercher…",
-    options: [
-      { text: "sécurité et stabilité", functions: { Si: 2, Ni: 2 }, enneagram: { 6: 3 } },
-      { text: "autonomie et cohérence interne", functions: { Fi: 2, Ti: 2 }, enneagram: { 5: 2, 4: 2 } },
-      { text: "intensité et challenge", functions: { Se: 1, Te: 1, Ne: 1 }, enneagram: { 8: 2, 7: 1 } }
+    "id": 15,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il prend souvent du recul pour voir la situation dans son ensemble.",
+        "functions": { "Ni": 2, "Ti": 1 },
+        "enneagram": { "9": 2, "4": 1 }
+      },
+      {
+        "text": "Il observe, évalue, et agit avec rapidité et précision.",
+        "functions": { "Se": 3 },
+        "enneagram": { "8": 2, "7": 1 }
+      },
+      {
+        "text": "Il pense en termes de logique et de cohérence interne.",
+        "functions": { "Ti": 3 },
+        "enneagram": { "5": 1, "1": 2 }
+      },
+      {
+        "text": "Il cherche à stabiliser ce qui l’entoure, à garder un cadre.",
+        "functions": { "Si": 3 },
+        "enneagram": { "6": 2, "2": 1 }
+      }
     ]
   },
   {
-    id: 16,
-    question: "Dans ses relations, on la perçoit…",
-    options: [
-      { text: "protectrice et attentive", functions: { Fe: 2 }, enneagram: { 2: 2 } },
-      { text: "réservée mais fiable", functions: { Si: 1, Fi: 1 }, enneagram: { 6: 1, 9: 1 } },
-      { text: "franche, parfois abrupte", functions: { Te: 1, Se: 1, Ti: 1 }, enneagram: { 8: 2, 5: 1 } }
+    "id": 16,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il donne pour recevoir de la reconnaissance et du lien.",
+        "functions": { "Fe": 3 },
+        "enneagram": { "2": 2, "3": 1 }
+      },
+      {
+        "text": "Il agit pour que les choses soient faites, pas pour discuter.",
+        "functions": { "Te": 2, "Se": 1 },
+        "enneagram": { "3": 2, "8": 1 }
+      },
+      {
+        "text": "Il suit ses ressentis sans toujours chercher à les expliquer.",
+        "functions": { "Fi": 3 },
+        "enneagram": { "4": 2, "9": 1 }
+      },
+      {
+        "text": "Il jongle avec les idées, toujours en mouvement mental.",
+        "functions": { "Ne": 3 },
+        "enneagram": { "7": 2, "5": 1 }
+      }
     ]
   },
   {
-    id: 17,
-    question: "Quand il faut choisir rapidement, elle…",
-    options: [
-      { text: "va droit au but", functions: { Te: 1, Se: 1 }, enneagram: { 3: 2, 8: 1 } },
-      { text: "prend un temps d’analyse", functions: { Ti: 1, Si: 1 }, enneagram: { 5: 2 } },
-      { text: "sollicite l’avis du groupe", functions: { Fe: 1, Ne: 1, Te: 1 }, enneagram: { 6: 2, 2: 2 } }
+    "id": 17,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il veut faire ce qu’il faut, selon une logique implacable.",
+        "functions": { "Ti": 3 },
+        "enneagram": { "1": 2, "6": 1 }
+      },
+      {
+        "text": "Il aime explorer de nouvelles idées sans forcément les creuser.",
+        "functions": { "Ne": 3 },
+        "enneagram": { "7": 2, "3": 1 }
+      },
+      {
+        "text": "Il agit de manière efficace et directe.",
+        "functions": { "Te": 3 },
+        "enneagram": { "8": 2, "3": 1 }
+      },
+      {
+        "text": "Il s’appuie sur des références précises et des habitudes stables.",
+        "functions": { "Si": 3 },
+        "enneagram": { "6": 2, "9": 1 }
+      }
     ]
   },
   {
-    id: 18,
-    question: "Elle se ressource surtout…",
-    options: [
-      { text: "en solitaire, monde intérieur", functions: { Ni: 1, Fi: 1, Ti: 1, Si: 1 }, enneagram: { 4: 1, 5: 1, 9: 1 } },
-      { text: "auprès d’un large cercle social", functions: { Fe: 1, Se: 1, Te: 1 }, enneagram: { 7: 1, 2: 1 } },
-      { text: "avec quelques proches sûrs", functions: { Si: 1, Fi: 1 }, enneagram: { 6: 2 } }
+    "id": 18,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il perçoit des vérités profondes sans toujours pouvoir les verbaliser.",
+        "functions": { "Ni": 3 },
+        "enneagram": { "5": 2, "4": 1 }
+      },
+      {
+        "text": "Il agit vite et fort, il prend sa place naturellement.",
+        "functions": { "Se": 3 },
+        "enneagram": { "8": 2, "3": 1 }
+      },
+      {
+        "text": "Il veut apaiser, lisser, éviter les tensions au maximum.",
+        "functions": { "Fe": 3 },
+        "enneagram": { "2": 2, "9": 1 }
+      },
+      {
+        "text": "Il ressent très fort mais ne se laisse pas dicter ses émotions.",
+        "functions": { "Fi": 3 },
+        "enneagram": { "4": 2, "6": 1 }
+      }
     ]
   },
   {
-    id: 19,
-    question: "Son rapport aux règles est plutôt…",
-    options: [
-      { text: "respect strict pour l’ordre", functions: { Si: 2, Te: 1, Ni: 1 }, enneagram: { 1: 2, 6: 3 } },
-      { text: "contournement si injustes", functions: { Fi: 2, Ne: 1, Ti: 1 }, enneagram: { 4: 1, 7: 1 } },
-      { text: "questionnement pour améliorer", functions: { Ti: 2, Fe: 1, Ne: 1, Se: 1 }, enneagram: { 6: 1, 5: 1, 1: 2 } }
+    "id": 19,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il cherche la vérité, même si elle est inconfortable.",
+        "functions": { "Ti": 3 },
+        "enneagram": { "5": 1, "1": 2 }
+      },
+      {
+        "text": "Il agit pour régler les choses, sans forcément tout comprendre.",
+        "functions": { "Te": 3 },
+        "enneagram": { "3": 2, "8": 1 }
+      },
+      {
+        "text": "Il explore tous les scénarios possibles, juste au cas où.",
+        "functions": { "Ne": 3 },
+        "enneagram": { "6": 2, "7": 1 }
+      },
+      {
+        "text": "Il garde une constance, une routine qui le sécurise.",
+        "functions": { "Si": 3 },
+        "enneagram": { "6": 2, "9": 1 }
+      }
     ]
   },
   {
-    id: 20,
-    question: "Globalement, cette personne dégage…",
-    options: [
-      { text: "une énergie calme et conciliante", functions: { Si: 1, Fe: 1 }, enneagram: { 9: 3 } },
-      { text: "une présence intense et directive", functions: { Te: 1, Se: 1 }, enneagram: { 8: 3 } },
-      { text: "une curiosité vive et enthousiaste", functions: { Ne: 3, Se: 1 }, enneagram: { 7: 2 } }
+    "id": 20,
+    "question": "Dans quelle description reconnaissez-vous le plus votre proche ?",
+    "options": [
+      {
+        "text": "Il agit par principe, fidèle à une vision intérieure de la vérité.",
+        "functions": { "Fi": 3 },
+        "enneagram": { "1": 1, "4": 2 }
+      },
+      {
+        "text": "Il observe les signaux faibles et fait des liens très subtils.",
+        "functions": { "Ni": 3 },
+        "enneagram": { "5": 1, "9": 2 }
+      },
+      {
+        "text": "Il se jette dans l’action sans perdre de temps.",
+        "functions": { "Se": 3 },
+        "enneagram": { "8": 2, "7": 1 }
+      },
+      {
+        "text": "Il cherche à rendre service et à créer de l'harmonie autour de lui.",
+        "functions": { "Fe": 3 },
+        "enneagram": { "2": 2, "9": 1 }
+      }
     ]
   }
 ];
 
 if (typeof module !== 'undefined') {
   module.exports = { AUTO_QUESTIONS, EXTERNAL_QUESTIONS };
+];
+
+if (typeof module !== 'undefined') {
+  module.exports = EXTERNAL_QUESTIONS;
 }
-
-
