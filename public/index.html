@@ -380,15 +380,19 @@
           font-weight: 500;
           font-size: 0.875rem;
         }
-        #beta-banner .banner-text {
+        #beta-banner .banner-track {
           display: inline-block;
           white-space: nowrap;
           will-change: transform;
           animation: beta-scroll 25s linear infinite;
         }
+        #beta-banner .banner-track span {
+          display: inline-block;
+          padding-right: 2rem;
+        }
         @keyframes beta-scroll {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
         }
 
        /* Styles spécifiques au chatbot Psycho'Bot */
@@ -413,7 +417,7 @@
 
 </head>
 <body id="top" class="font-sans bg-white text-gray-900">
-    <div id="beta-banner"><span class="banner-text">🚧 Ce site est encore en version bêta ! Certaines fonctions peuvent évoluer ou être améliorées. Revenez bientôt pour profiter d’une version 100% finalisée. Merci pour votre patience.</span></div>
+    <div id="beta-banner"><div class="banner-track"><span>🚧 Ce site est encore en version bêta ! Certaines fonctions peuvent évoluer ou être améliorées. Revenez bientôt pour profiter d’une version 100% finalisée. Merci pour votre patience.</span><span aria-hidden="true">🚧 Ce site est encore en version bêta ! Certaines fonctions peuvent évoluer ou être améliorées. Revenez bientôt pour profiter d’une version 100% finalisée. Merci pour votre patience.</span></div></div>
     <!-- Navigation -->
     <header id="site-header" class="sticky-header">
         <div class="flex items-center">
