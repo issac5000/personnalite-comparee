@@ -168,7 +168,18 @@ function showTermsOfService(){
   showModal("Conditions d'utilisation", content);
 }
 function showLegalNotices(){
-  const content = `<p class="text-gray-700">Personnalité Comparée — Site éducatif hébergé par Vercel.</p>`;
+  const content = `
+    <div class="space-y-4">
+      <p class="text-gray-700">Personnalité Comparée — Site éducatif hébergé par Vercel.</p>
+      <h4 class="font-semibold text-gray-900">Marques et mentions légales spécifiques</h4>
+      <p class="text-gray-700">
+        MBTI est une marque déposée appartenant à The Myers-Briggs Company. Le présent site utilise ce terme à des fins pédagogiques et informatives uniquement. Nous ne sommes ni affiliés, ni agréés, ni soutenus par The Myers-Briggs Company.
+      </p>
+      <p class="text-gray-700">
+        L’utilisation du mot "Ennéagramme" fait référence au système de typologie de la personnalité bien connu, dont l’usage est libre. Aucun lien n’est revendiqué avec des organismes officiels comme The Enneagram Institute.
+      </p>
+    </div>
+  `;
   showModal('Mentions légales', content);
 }
 function showContact(){
