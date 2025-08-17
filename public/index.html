@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Personnalité Comparée | Test MBTI & Ennéagramme Gratuit</title>
+  <title data-i18n="siteTitle">Personnalité Comparée | Test MBTI & Ennéagramme Gratuit</title>
 
   <!-- Supabase JS -->
 
@@ -417,6 +417,10 @@
 
 </head>
 <body id="top" class="font-sans bg-white text-gray-900">
+    <div class="fixed top-4 right-4 space-x-2">
+        <button onclick="switchLang('fr')" class="px-2 py-1 border">FR</button>
+        <button onclick="switchLang('en')" class="px-2 py-1 border">EN</button>
+    </div>
     <div id="beta-banner"><div class="banner-track"><span>🚧 Ce site est encore en version bêta ! Certaines fonctions peuvent évoluer ou être améliorées. Revenez bientôt pour profiter d’une version 100% finalisée. Merci pour votre patience.</span><span aria-hidden="true">🚧 Ce site est encore en version bêta ! Certaines fonctions peuvent évoluer ou être améliorées. Revenez bientôt pour profiter d’une version 100% finalisée. Merci pour votre patience.</span></div></div>
     <!-- Navigation -->
     <header id="site-header" class="sticky-header">
@@ -555,18 +559,16 @@
   <img src="/logobanniere.jpeg" alt="Nouveau logo" class="mx-auto mb-8 w-36 sm:w-40 h-auto">
             
             <!-- Titre principal avec hiérarchie claire -->
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-slate-900 mb-6 leading-tight">
-                Et si vous vous connaissiez
-                <br>
-                <span class="text-blue-600 font-medium"><strong>vraiment</strong></span> ?
+            <h1 data-i18n="heroTitle" class="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-slate-900 mb-6 leading-tight">
+                Et si vous vous connaissiez<br><span class="text-blue-600 font-medium"><strong>vraiment</strong></span> ?
             </h1>
             
             <!-- Sous-titre épuré -->
-   <p class="max-w-2xl mx-auto text-lg md:text-xl text-slate-600 leading-relaxed mb-12 font-light">
-    La première plateforme qui combine 
-    <span class="font-medium text-slate-800">test MBTI</span> & <span class="font-medium text-slate-800">Ennéagramme</span>, 
+   <p data-i18n="heroSubtitle" class="max-w-2xl mx-auto text-lg md:text-xl text-slate-600 leading-relaxed mb-12 font-light">
+    La première plateforme qui combine
+    <span class="font-medium text-slate-800">test MBTI</span> & <span class="font-medium text-slate-800">Ennéagramme</span>,
     validation par l’entourage et <span class="font-medium text-slate-800">IA spécialisée</span> pour répondre à toutes vos questions.
-</p>
+   </p>
             
             <!-- Boutons premium -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
@@ -592,15 +594,15 @@
             <div class="flex items-center justify-center gap-8 text-sm text-slate-500">
                 <div class="flex items-center gap-2">
                     <div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                    <span>16 profils MBTI</span>
+                    <span data-i18n="indicatorMBTI">16 profils MBTI</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                    <span>9 types Ennéagramme</span>
+                    <span data-i18n="indicatorEnneagram">9 types Ennéagramme</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <div class="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                    <span>Validation par les proches</span>
+                    <span data-i18n="indicatorValidation">Validation par les proches</span>
                 </div>
             </div>
         </div>
@@ -612,10 +614,10 @@
     
     <!-- Title -->
     <div class="text-center">
-      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-        Comment ça marche ? 
+      <h2 data-i18n="howTitle" class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+        Comment ça marche ?
       </h2>
-      <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+      <p data-i18n="howSubtitle" class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
         Une approche innovante pour une analyse plus objective de votre personnalité
       </p>
     </div>
@@ -5027,6 +5029,8 @@ async function trackEvent(eventName, meta = {}) {
 </script>
 
 <script src="nav.js"></script>
+<script src="lang.js"></script>
+<script src="i18n.js"></script>
 
 <script>
 window.addEventListener('scroll', () => {
