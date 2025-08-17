@@ -381,12 +381,14 @@
           font-size: 0.875rem;
         }
         #beta-banner .banner-text {
+          display: inline-block;
           white-space: nowrap;
-          animation: beta-scroll 20s linear infinite;
+          will-change: transform;
+          animation: beta-scroll 25s linear infinite;
         }
         @keyframes beta-scroll {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
         }
 
        /* Styles spécifiques au chatbot Psycho'Bot */
