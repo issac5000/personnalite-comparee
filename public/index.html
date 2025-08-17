@@ -2979,140 +2979,140 @@ function displayResults(results) {
 function showPrivacyPolicy() {
   const content = `
     <div class="space-y-4">
-      <h3 class="text-lg font-semibold text-gray-900">Politique de Confidentialité</h3>
-      <p class="text-gray-700">Dernière mise à jour : ${new Date().toLocaleDateString('fr-FR')}</p>
+      <h3 class="text-lg font-semibold text-gray-900" data-i18n="home.modal.privacy.title">Politique de Confidentialité</h3>
+      <p class="text-gray-700" data-i18n="home.modal.privacy.update">Dernière mise à jour : ${new Date().toLocaleDateString('fr-FR')}</p>
 
-      <h4 class="font-semibold text-gray-900">1. Données collectées</h4>
-      <p class="text-gray-700">Nous collectons uniquement les réponses fournies lors&nbsp;:</p>
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.privacy.collected.title">1. Données collectées</h4>
+      <p class="text-gray-700" data-i18n="home.modal.privacy.collected.desc">Nous collectons uniquement les réponses fournies lors&nbsp;:</p>
       <ul class="list-disc pl-6 text-gray-700">
-        <li>de vos auto-évaluations ;</li>
-        <li>des évaluations réalisées par vos proches.</li>
+        <li data-i18n="home.modal.privacy.collected.item1">de vos auto-évaluations ;</li>
+        <li data-i18n="home.modal.privacy.collected.item2">des évaluations réalisées par vos proches.</li>
       </ul>
-      <p class="text-gray-700">Aucune autre donnée personnelle (nom, e-mail, localisation, etc.) n’est demandée ni enregistrée.</p>
+      <p class="text-gray-700" data-i18n="home.modal.privacy.collected.note">Aucune autre donnée personnelle (nom, e-mail, localisation, etc.) n’est demandée ni enregistrée.</p>
 
-      <h4 class="font-semibold text-gray-900">2. Finalité de la collecte</h4>
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.privacy.purpose.title">2. Finalité de la collecte</h4>
       <ul class="list-disc pl-6 text-gray-700">
-        <li>Calculer et afficher votre profil de personnalité ;</li>
-        <li>Générer les résultats finaux à partir des évaluations reçues.</li>
+        <li data-i18n="home.modal.privacy.purpose.item1">Calculer et afficher votre profil de personnalité ;</li>
+        <li data-i18n="home.modal.privacy.purpose.item2">Générer les résultats finaux à partir des évaluations reçues.</li>
       </ul>
 
-      <h4 class="font-semibold text-gray-900">3. Stockage des données</h4>
-      <p class="text-gray-700">Vos réponses sont stockées de manière sécurisée dans notre base de données <strong>Supabase</strong>. Elles ne sont pas enregistrées ailleurs.</p>
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.privacy.storage.title">3. Stockage des données</h4>
+      <p class="text-gray-700" data-i18n="home.modal.privacy.storage.text">Vos réponses sont stockées de manière sécurisée dans notre base de données <strong>Supabase</strong>. Elles ne sont pas enregistrées ailleurs.</p>
 
-      <h4 class="font-semibold text-gray-900">4. Partage des données</h4>
-      <p class="text-gray-700">Nous ne vendons, n’échangeons et ne partageons <strong>aucune</strong> donnée avec des tiers. Seules les personnes disposant de votre code unique peuvent consulter vos résultats.</p>
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.privacy.sharing.title">4. Partage des données</h4>
+      <p class="text-gray-700" data-i18n="home.modal.privacy.sharing.text">Nous ne vendons, n’échangeons et ne partageons <strong>aucune</strong> donnée avec des tiers. Seules les personnes disposant de votre code unique peuvent consulter vos résultats.</p>
 
-      <h4 class="font-semibold text-gray-900">5. Sécurité</h4>
-      <p class="text-gray-700">Supabase applique des mesures de sécurité standards (chiffrement en transit, contrôles d’accès). Nous limitons l’accès aux données aux seules finalités décrites ci-dessus.</p>
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.privacy.security.title">5. Sécurité</h4>
+      <p class="text-gray-700" data-i18n="home.modal.privacy.security.text">Supabase applique des mesures de sécurité standards (chiffrement en transit, contrôles d’accès). Nous limitons l’accès aux données aux seules finalités décrites ci-dessus.</p>
 
-      <h4 class="font-semibold text-gray-900">6. Durée de conservation</h4>
-      <p class="text-gray-700">Les réponses sont conservées tant que votre code unique reste valide dans notre base. Vous pouvez demander leur suppression à tout moment.</p>
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.privacy.retention.title">6. Durée de conservation</h4>
+      <p class="text-gray-700" data-i18n="home.modal.privacy.retention.text">Les réponses sont conservées tant que votre code unique reste valide dans notre base. Vous pouvez demander leur suppression à tout moment.</p>
 
-      <h4 class="font-semibold text-gray-900">7. Vos droits</h4>
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.privacy.rights.title">7. Vos droits</h4>
       <ul class="list-disc pl-6 text-gray-700">
-        <li>Demander une copie de vos données ;</li>
-        <li>Demander la suppression définitive de vos données.</li>
+        <li data-i18n="home.modal.privacy.rights.item1">Demander une copie de vos données ;</li>
+        <li data-i18n="home.modal.privacy.rights.item2">Demander la suppression définitive de vos données.</li>
       </ul>
-      <p class="text-gray-700">Pour exercer ces droits, contactez-nous via la section <strong>Support</strong> du site.</p>
+      <p class="text-gray-700" data-i18n="home.modal.privacy.rights.contact">Pour exercer ces droits, contactez-nous via la section <strong>Support</strong> du site.</p>
     </div>
   `;
-  showModal('Politique de Confidentialité', content);
+  showModal('<span data-i18n="home.modal.privacy.title">Politique de Confidentialité</span>', content);
 }
 
         function showTermsOfService() {
             const content = `
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Conditions d'Utilisation</h3>
-                    <p class="text-gray-700">Dernière mise à jour : ${new Date().toLocaleDateString('fr-FR')}</p>
-                    
-                    <h4 class="font-semibold text-gray-900">Utilisation du service</h4>
-                    <p class="text-gray-700">Ce service est fourni gratuitement à des fins éducatives et de développement personnel. Il ne remplace pas un conseil professionnel en psychologie.</p>
-                    
-                    <h4 class="font-semibold text-gray-900">Précision des résultats</h4>
-                    <p class="text-gray-700">Les résultats sont basés sur des modèles psychologiques reconnus mais ne constituent pas un diagnostic médical ou psychologique.</p>
-                    
-                    <h4 class="font-semibold text-gray-900">Responsabilité</h4>
-                    <p class="text-gray-700">L'utilisation de ce service se fait sous votre propre responsabilité. Nous ne sommes pas responsables des décisions prises sur la base des résultats.</p>
+                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="home.modal.terms.title">Conditions d'Utilisation</h3>
+                    <p class="text-gray-700" data-i18n="home.modal.terms.update">Dernière mise à jour : ${new Date().toLocaleDateString('fr-FR')}</p>
+
+                    <h4 class="font-semibold text-gray-900" data-i18n="home.modal.terms.use.title">Utilisation du service</h4>
+                    <p class="text-gray-700" data-i18n="home.modal.terms.use.text">Ce service est fourni gratuitement à des fins éducatives et de développement personnel. Il ne remplace pas un conseil professionnel en psychologie.</p>
+
+                    <h4 class="font-semibold text-gray-900" data-i18n="home.modal.terms.accuracy.title">Précision des résultats</h4>
+                    <p class="text-gray-700" data-i18n="home.modal.terms.accuracy.text">Les résultats sont basés sur des modèles psychologiques reconnus mais ne constituent pas un diagnostic médical ou psychologique.</p>
+
+                    <h4 class="font-semibold text-gray-900" data-i18n="home.modal.terms.liability.title">Responsabilité</h4>
+                    <p class="text-gray-700" data-i18n="home.modal.terms.liability.text">L'utilisation de ce service se fait sous votre propre responsabilité. Nous ne sommes pas responsables des décisions prises sur la base des résultats.</p>
                 </div>
             `;
-            showModal('Conditions d\'Utilisation', content);
+            showModal('<span data-i18n="home.modal.terms.title">Conditions d\'Utilisation</span>', content);
         }
 
        function showLegalNotices() {
   const content = `
     <div class="space-y-4">
-      <h3 class="text-lg font-semibold text-gray-900">Mentions Légales</h3>
-      
-      <h4 class="font-semibold text-gray-900">Éditeur du site</h4>
-      <p class="text-gray-700">
+      <h3 class="text-lg font-semibold text-gray-900" data-i18n="home.modal.legal.title">Mentions Légales</h3>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.legal.editor.title">Éditeur du site</h4>
+      <p class="text-gray-700" data-i18n="home.modal.legal.editor.text">
         <strong>Personnalité Comparée</strong><br>
         Site web éducatif et informatif sur les tests de personnalité (MBTI et Ennéagramme)<br>
         Contact : <a href="mailto:contact@personnalitecomparee.com" class="text-blue-600 hover:underline">contact@personnalitecomparee.com</a>
       </p>
-      
-      <h4 class="font-semibold text-gray-900">Hébergement</h4>
-      <p class="text-gray-700">
+
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.legal.hosting.title">Hébergement</h4>
+      <p class="text-gray-700" data-i18n="home.modal.legal.hosting.text">
         Ce site est hébergé par <strong>Vercel Inc.</strong><br>
         340 S Lemon Ave #4133<br>
         Walnut, CA 91789, États-Unis<br>
         <a href="https://vercel.com" target="_blank" rel="noopener" class="text-blue-600 hover:underline">https://vercel.com</a>
       </p>
-      
-      <h4 class="font-semibold text-gray-900">Propriété intellectuelle</h4>
-      <p class="text-gray-700">
+
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.legal.ip.title">Propriété intellectuelle</h4>
+      <p class="text-gray-700" data-i18n="home.modal.legal.ip.text">
         L’ensemble du contenu de ce site (textes, éléments graphiques, code source) est protégé par les lois en vigueur sur la propriété intellectuelle.<br>
         Les modèles MBTI et Ennéagramme sont des systèmes conceptuels utilisés ici uniquement à des fins pédagogiques et informatives.
       </p>
-      
-      <h4 class="font-semibold text-gray-900">Responsabilité</h4>
-      <p class="text-gray-700">
+
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.legal.liability.title">Responsabilité</h4>
+      <p class="text-gray-700" data-i18n="home.modal.legal.liability.text">
         Les informations fournies sur ce site le sont à titre indicatif et ne constituent en aucun cas un conseil professionnel, médical ou psychologique. L’utilisateur reste seul responsable de l’usage qu’il fait des informations et résultats proposés.
       </p>
-      
-      <h4 class="font-semibold text-gray-900">Cookies et stockage local</h4>
-      <p class="text-gray-700">
+
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.legal.cookies.title">Cookies et stockage local</h4>
+      <p class="text-gray-700" data-i18n="home.modal.legal.cookies.text">
         Ce site n’utilise pas de cookies de suivi.<br>
         Seules certaines données nécessaires au fonctionnement (comme la progression dans le test ou le code d’accès aux résultats) sont stockées localement dans le navigateur ou dans notre base de données Supabase.
       </p>
 
-      <h4 class="font-semibold text-gray-900">Marques et mentions légales spécifiques</h4>
-      <p class="text-gray-700">
+      <h4 class="font-semibold text-gray-900" data-i18n="home.modal.legal.trademarks.title">Marques et mentions légales spécifiques</h4>
+      <p class="text-gray-700" data-i18n="home.modal.legal.trademarks.mbti">
         MBTI est une marque déposée appartenant à The Myers-Briggs Company. Le présent site utilise ce terme à des fins pédagogiques et informatives uniquement. Nous ne sommes ni affiliés, ni agréés, ni soutenus par The Myers-Briggs Company.
       </p>
-      <p class="text-gray-700">
+      <p class="text-gray-700" data-i18n="home.modal.legal.trademarks.enneagram">
         L’utilisation du mot "Ennéagramme" fait référence au système de typologie de la personnalité bien connu, dont l’usage est libre. Aucun lien n’est revendiqué avec des organismes officiels comme The Enneagram Institute.
       </p>
     </div>
   `;
-  showModal('Mentions Légales', content);
+  showModal('<span data-i18n="home.modal.legal.title">Mentions Légales</span>', content);
 }
         function showContact() {
             const content = `
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Nous Contacter</h3>
-                    
+                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="home.modal.contact.title">Nous Contacter</h3>
+
                     <div class="bg-blue-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-blue-900">Email</h4>
-                        <p class="text-blue-700"><a href="mailto:contact@personnalitecomparee.com?subject=Support%20Personnalit%C3%A9%20Compar%C3%A9e" class="text-blue-700 hover:underline">contact@personnalitecomparee.com</a></p>
+                        <h4 class="font-semibold text-blue-900" data-i18n="home.modal.contact.email.title">Email</h4>
+                        <p class="text-blue-700" data-i18n="home.modal.contact.email.text"><a href="mailto:contact@personnalitecomparee.com?subject=Support%20Personnalit%C3%A9%20Compar%C3%A9e" class="text-blue-700 hover:underline">contact@personnalitecomparee.com</a></p>
                     </div>
-                    
+
                     <div class="bg-blue-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-blue-900">Support technique</h4>
-                        <p class="text-blue-700">Pour toute question technique ou problème avec le test, n'hésitez pas à nous écrire en détaillant votre problème.</p>
+                        <h4 class="font-semibold text-blue-900" data-i18n="home.modal.contact.support.title">Support technique</h4>
+                        <p class="text-blue-700" data-i18n="home.modal.contact.support.text">Pour toute question technique ou problème avec le test, n'hésitez pas à nous écrire en détaillant votre problème.</p>
                     </div>
-                    
+
                     <div class="bg-green-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-green-900">Suggestions</h4>
-                        <p class="text-green-700">Vos suggestions d'amélioration sont les bienvenues ! Aidez-nous à améliorer l'expérience utilisateur.</p>
+                        <h4 class="font-semibold text-green-900" data-i18n="home.modal.contact.suggestions.title">Suggestions</h4>
+                        <p class="text-green-700" data-i18n="home.modal.contact.suggestions.text">Vos suggestions d'amélioration sont les bienvenues ! Aidez-nous à améliorer l'expérience utilisateur.</p>
                     </div>
-                    
+
                     <div class="bg-yellow-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-yellow-900">Temps de réponse</h4>
-                        <p class="text-yellow-700">Nous nous efforçons de répondre à tous les messages dans les 48 heures.</p>
+                        <h4 class="font-semibold text-yellow-900" data-i18n="home.modal.contact.time.title">Temps de réponse</h4>
+                        <p class="text-yellow-700" data-i18n="home.modal.contact.time.text">Nous nous efforçons de répondre à tous les messages dans les 48 heures.</p>
                     </div>
                 </div>
             `;
-            showModal('Contact', content);
+            showModal('<span data-i18n="home.modal.contact.title">Contact</span>', content);
         }
 
         // Fonction pour démarrer l'évaluation externe
@@ -3162,8 +3162,8 @@ function showPrivacyPolicy() {
 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                         <div class="bg-blue-600 px-6 py-4 flex justify-between items-center">
                             <div>
-                                <h2 class="text-2xl font-bold text-white">Évaluation externe</h2>
-                                <p class="text-blue-100 mt-1">Code: ${code} | Relation: ${relationLabels[relation]}</p>
+                                <h2 class="text-2xl font-bold text-white" data-i18n="home.modal.externalEval.title">Évaluation externe</h2>
+                                <p class="text-blue-100 mt-1"><span data-i18n="home.modal.externalEval.codeLabel">Code:</span> ${code} | <span data-i18n="home.modal.externalEval.relationLabel">Relation:</span> ${relationLabels[relation]}</p>
                             </div>
                             <span class="close" onclick="closeModal()" style="color: white;">&times;</span>
                         </div>
@@ -3174,13 +3174,13 @@ function showPrivacyPolicy() {
                                 </div>
                                 <div class="mt-6 flex justify-between">
                                     <button type="button" id="prev-external-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" style="display: none;">
-                                        <i class="fas fa-arrow-left mr-2"></i> Question précédente
+                                        <i class="fas fa-arrow-left mr-2"></i> <span data-i18n="home.modal.externalEval.prev">Question précédente</span>
                                     </button>
                                     <button type="button" id="next-external-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
-                                        Question suivante <i class="fas fa-arrow-right ml-2"></i>
+                                        <span data-i18n="home.modal.externalEval.next">Question suivante</span> <i class="fas fa-arrow-right ml-2"></i>
                                     </button>
                                     <button type="submit" id="submit-eval" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700" style="display: none;">
-                                        <i class="fas fa-check mr-2"></i> Terminer l'évaluation
+                                        <i class="fas fa-check mr-2"></i> <span data-i18n="home.modal.externalEval.submit">Terminer l'évaluation</span>
                                     </button>
                                 </div>
                             </form>
@@ -3426,15 +3426,13 @@ function showPrivacyPolicy() {
                         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                             <i class="fas fa-check text-green-600 text-xl"></i>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-900 mb-4">Évaluation terminée !</h2>
-                        <p class="text-gray-600 mb-6">
-                            Merci d'avoir pris le temps d'évaluer cette personne. Votre évaluation a été enregistrée avec le code <strong>${code}</strong>.
-                        </p>
-                        <p class="text-sm text-gray-500 mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4" data-i18n="home.modal.evalDone.title">Évaluation terminée !</h2>
+                        <p class="text-gray-600 mb-6"><span data-i18n="home.modal.evalDone.message">Merci d'avoir pris le temps d'évaluer cette personne. Votre évaluation a été enregistrée avec le code</span> <strong>${code}</strong>.</p>
+                        <p class="text-sm text-gray-500 mb-6" data-i18n="home.modal.evalDone.info">
                             La personne recevra ses résultats complets une fois que toutes les évaluations seront terminées.
                         </p>
                         <button id="close-evaluation-modal" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-black hover:bg-gray-800">
-                            <i class="fas fa-home mr-2"></i> Retour à l'accueil
+                            <i class="fas fa-home mr-2"></i> <span data-i18n="home.modal.evalDone.back">Retour à l'accueil</span>
                         </button>
                     </div>
                 </div>
@@ -3825,7 +3823,7 @@ function showPrivacyPolicy() {
             resultsModal.innerHTML = `
                 <div class="modal-content" style="max-width: 800px;">
                     <div class="modal-header">
-                        <h2 class="text-xl font-bold text-gray-900">Résultats Détaillés - ${profile.name}</h2>
+                        <h2 class="text-xl font-bold text-gray-900" data-i18n="home.modal.results.title">Résultats Détaillés - ${profile.name}</h2>
                         <span class="close" onclick="closeResultsModal()">&times;</span>
                     </div>
                     <div class="modal-body">
@@ -3833,39 +3831,39 @@ function showPrivacyPolicy() {
                             <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
                                 <i class="fas fa-chart-pie text-green-600 text-2xl"></i>
                             </div>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Analyse Complète</h3>
-                            <p class="text-sm text-gray-500">Code: <span class="font-mono font-bold">${code}</span></p>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2" data-i18n="home.modal.results.analysis">Analyse Complète</h3>
+                            <p class="text-sm text-gray-500"><span data-i18n="home.modal.results.code">Code:</span> <span class="font-mono font-bold">${code}</span></p>
                         </div>
 
                         <!-- Résultats MBTI et Ennéagramme -->
         <div class="grid md:grid-cols-2 gap-6 mb-6">
           <div class="bg-blue-50 rounded-lg p-4">
-            <h4 class="font-semibold text-blue-900 mb-2">Type MBTI</h4>
+            <h4 class="font-semibold text-blue-900 mb-2" data-i18n="home.modal.results.mbtiTitle">Type MBTI</h4>
             <div class="text-2xl font-bold text-blue-600 mb-2">${profile.results.mbti}</div>
             <div class="mt-2">
               ${
                 profile.results.mbtiCertainty != null
-                  ? `<p class="mb-1">Certitude</p>
+                  ? `<p class="mb-1" data-i18n="home.modal.results.certainty">Certitude</p>
                      <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
                        <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-blue-500 transition-all duration-1000" data-width="${profile.results.mbtiCertainty}" style="width:0"></div>
                        <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.mbtiCertainty}%</span>
                      </div>`
-                  : `<p>Certitude : Données en cours...</p>`
+                  : `<p data-i18n="home.modal.results.pending">Certitude : Données en cours...</p>`
               }
             </div>
           </div>
           <div class="bg-purple-50 rounded-lg p-4">
-            <h4 class="font-semibold text-purple-900 mb-2">Ennéagramme</h4>
+            <h4 class="font-semibold text-purple-900 mb-2" data-i18n="home.modal.results.enneagramTitle">Ennéagramme</h4>
             <div class="text-2xl font-bold text-purple-600 mb-2">${profile.results.enneagram}</div>
             <div class="mt-2">
               ${
                 profile.results.enneagramCertainty != null
-                  ? `<p class="mb-1">Certitude</p>
+                  ? `<p class="mb-1" data-i18n="home.modal.results.certainty">Certitude</p>
                      <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
                        <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-purple-500 transition-all duration-1000" data-width="${profile.results.enneagramCertainty}" style="width:0"></div>
                        <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.enneagramCertainty}%</span>
                      </div>`
-                  : `<p>Certitude : Données en cours...</p>`
+                  : `<p data-i18n="home.modal.results.pending">Certitude : Données en cours...</p>`
               }
             </div>
           </div>
@@ -3875,34 +3873,34 @@ function showPrivacyPolicy() {
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
           ${
             profile.results.overallCertainty != null
-              ? `<p class="mb-1">Certitude globale</p>
+              ? `<p class="mb-1" data-i18n="home.modal.results.overallCertainty">Certitude globale</p>
                  <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
                    <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-green-500 transition-all duration-1000" data-width="${profile.results.overallCertainty}" style="width:0"></div>
                    <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.overallCertainty}%</span>
                  </div>`
-              : `<p>Certitude : Données en cours...</p>`
+              : `<p data-i18n="home.modal.results.pending">Certitude : Données en cours...</p>`
           }
-          <p class="text-sm text-gray-600 mt-2">Basé sur les évaluations de vos proches</p>
-          ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
+          <p class="text-sm text-gray-600 mt-2" data-i18n="home.modal.results.basedOnRelatives">Basé sur les évaluations de vos proches</p>
+          ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2" data-i18n="home.modal.results.increaseCertainty">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
         </div>
 
 
         <!-- Graphiques MBTI & Ennéagramme -->
         <div class="grid md:grid-cols-2 gap-6 mb-6">
           <div class="bg-white rounded-lg p-4">
-            <h4 class="font-semibold text-gray-900 mb-3">Dichotomies MBTI</h4>
+            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="home.modal.results.mbtiDichotomies">Dichotomies MBTI</h4>
             <canvas id="mbtiChart" height="220"></canvas>
           </div>
           <div class="bg-white rounded-lg p-4">
-            <h4 class="font-semibold text-gray-900 mb-3">Types Ennéagramme</h4>
+            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="home.modal.results.enneagramTypes">Types Ennéagramme</h4>
             <canvas id="enneagramChart" height="220"></canvas>
           </div>
         </div>
 
         <div id="ai-profile-summary" class="mt-6 bg-gray-50 rounded-lg p-5 shadow-sm mb-6">
-            <h4 class="font-semibold text-gray-900 text-lg mb-3">Description succincte du profil par Psycho'Bot</h4>
+            <h4 class="font-semibold text-gray-900 text-lg mb-3" data-i18n="home.modal.results.aiSummaryTitle">Description succincte du profil par Psycho'Bot</h4>
             <div id="ai-summary-content" class="relative text-sm leading-relaxed text-gray-700 max-h-80 overflow-y-auto">
-                Génération en cours…
+                <span data-i18n="home.modal.results.generating">Génération en cours…</span>
                 <div id="scroll-indicator" aria-hidden="true" class="pointer-events-none hidden absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-white flex items-end justify-center pb-1 text-gray-500">
                     <span class="text-xl animate-bounce">⌄</span>
                 </div>
@@ -3911,14 +3909,14 @@ function showPrivacyPolicy() {
 
                             <!-- Détail des évaluations -->
                         <div class="mb-6">
-                            <h4 class="font-semibold text-gray-900 mb-3">Détail des évaluations</h4>
+                            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="home.modal.results.detailTitle">Détail des évaluations</h4>
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                                     <div>
-                                        <span class="text-sm font-medium text-gray-700">Auto-évaluation</span>
+                                        <span class="text-sm font-medium text-gray-700" data-i18n="home.modal.results.selfEvaluation">Auto-évaluation</span>
                                         <div class="text-xs text-gray-500">${profile.self.mbti} — type ${profile.self.enneagram}</div>
                                     </div>
-                                    <span class="text-sm text-green-600 font-medium">✓ Complétée</span>
+                                    <span class="text-sm text-green-600 font-medium" data-i18n="home.modal.results.completed">✓ Complétée</span>
                                 </div>
                                 ${profile.externalEvaluations.map(eval => `
                                     <div class="flex items-center justify-between p-3 ${eval.completed ? 'bg-green-50' : 'bg-gray-50'} rounded-lg">
@@ -3935,11 +3933,11 @@ function showPrivacyPolicy() {
                         </div>
 
 <div class="mt-8 mb-6 p-4 rounded-lg bg-gray-100 border border-gray-300 text-xs text-gray-700 leading-relaxed">
-  <p class="mb-2"><strong> Cohérence</strong> : détermine dans quelle mesure les réponses d’un proche sont logiquement stables.</p>
+  <p class="mb-2"><strong data-i18n="home.modal.results.coherence.title"> Cohérence</strong> : <span data-i18n="home.modal.results.coherence.desc">détermine dans quelle mesure les réponses d’un proche sont logiquement stables.</span></p>
   <ul class="list-disc list-inside space-y-1">
-    <li><strong>Forte</strong> → peu voire pas de contradictions, réponses alignées</li>
-    <li><strong>Moyenne</strong> → quelques hésitations ou contradictions</li>
-    <li><strong>Faible</strong> → réponses peu cohérentes entre elles</li>
+    <li data-i18n="home.modal.results.coherence.strong"><strong>Forte</strong> → peu voire pas de contradictions, réponses alignées</li>
+    <li data-i18n="home.modal.results.coherence.medium"><strong>Moyenne</strong> → quelques hésitations ou contradictions</li>
+    <li data-i18n="home.modal.results.coherence.weak"><strong>Faible</strong> → réponses peu cohérentes entre elles</li>
   </ul>
 </div>
 
@@ -3954,11 +3952,11 @@ function showPrivacyPolicy() {
                         <div class="flex space-x-3">
                             <button class="download-pdf-btn flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                                 <i class="fas fa-download mr-2"></i>
-                                Télécharger PDF
+                                <span data-i18n="home.modal.results.downloadPdf">Télécharger PDF</span>
                             </button>
                             <button onclick="shareProfileResults('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                                 <i class="fas fa-share mr-2"></i>
-                                Partager
+                                <span data-i18n="home.modal.results.share">Partager</span>
                             </button>
                         </div>
                     </div>
@@ -4413,7 +4411,7 @@ function showPrivacyPolicy() {
                         <div class="mt-4">
                             <div class="flex justify-between text-sm text-gray-600 mb-1">
                                 <span data-i18n="profileModal.step2.progress">Progression globale</span>
-                                <span id="progress-text">0/4 terminé</span>
+                                <span id="progress-text" data-i18n="profileModal.step2.progressText">0/4 terminé</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
                                 <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
