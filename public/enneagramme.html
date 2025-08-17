@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-i18n="enneaPageTitle">Ennéagramme — Personnalité Comparée</title>
+  <title data-i18n="enneagramme.page.title">Ennéagramme — Personnalité Comparée</title>
 
   <!-- Supabase JS -->
 
@@ -398,8 +398,8 @@
                 <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span id="brand-home" class="ml-3 text-xl font-bold text-black" data-i18n="brand.name">Personnalité Comparée</span>
             </div>
             <div class="language-switcher ml-4 flex gap-2 text-sm">
-                <button onclick="switchLang('fr')">🇫🇷 FR</button>
-                <button onclick="switchLang('en')">🇬🇧 EN</button>
+                <button onclick="switchLang('fr')" data-i18n="lang.fr">🇫🇷 FR</button>
+                <button onclick="switchLang('en')" data-i18n="lang.en">🇬🇧 EN</button>
             </div>
         </div>
         <nav class="desktop-nav hidden md:ml-6 md:flex md:items-center md:space-x-8">
@@ -456,7 +456,7 @@
         </nav>
         <div class="-mr-2 flex items-center md:hidden">
             <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
-                <span class="sr-only">Ouvrir le menu principal</span>
+                <span class="sr-only" data-i18n="nav.open_main">Ouvrir le menu principal</span>
                 <i class="fas fa-bars" id="menu-icon"></i>
             </button>
         </div>
@@ -524,47 +524,47 @@
   <div class="absolute top-2/3 right-1/3 w-1.5 h-1.5 bg-blue-300/25 rounded-full"></div>
   <div class="relative max-w-3xl mx-auto px-6 pb-16 text-center">
     <img src="/logobanniere.jpeg" alt="Nouveau logo" class="mx-auto mb-8 w-36 sm:w-40 h-auto">
-    <h1 data-i18n="enneaTitle" class="text-3xl font-extrabold text-gray-900 sm:text-4xl mb-6">Découvrir l'ennéagramme</h1>
-    <p data-i18n="enneaIntro" class="text-lg text-gray-700">L'ennéagramme est un modèle de personnalité fondé sur 9 types, centré sur nos motivations profondes et nos blessures originelles.</p>
+    <h1 data-i18n="enneagramme.hero.title" class="text-3xl font-extrabold text-gray-900 sm:text-4xl mb-6">Découvrir l'ennéagramme</h1>
+    <p data-i18n="enneagramme.hero.text" class="text-lg text-gray-700">L'ennéagramme est un modèle de personnalité fondé sur 9 types, centré sur nos motivations profondes et nos blessures originelles.</p>
   </div>
 </section>
 
 <section id="ennea-history" data-aos="fade-up" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
   <div class="max-w-3xl mx-auto">
     <div class="text-center">
-      <h2 data-i18n="historyTitle" class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Un peu d'histoire</h2>
+      <h2 data-i18n="enneagramme.history.title" class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Un peu d'histoire</h2>
     </div>
     <div class="mt-12 text-gray-700 space-y-6 leading-relaxed">
       
       <div>
-        <h3 class="text-xl font-semibold text-gray-800 mb-2">1. Étymologie & origines anciennes</h3>
-        <p>Le mot <em>Ennéagramme</em> vient des mots grecs <em>ennea</em> (« neuf ») et <em>gramma</em> (« ce qui est dessiné ou écrit »). Son symbolisme puise dans des traditions spirituelles et philosophiques anciennes, telles que la mystique chrétienne, soufie, bouddhiste, hindoue ou kabbalistique, ainsi que dans les enseignements de Pythagore.</p>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2" data-i18n="enneagramme.history.origins.title">1. Étymologie & origines anciennes</h3>
+        <p data-i18n="enneagramme.history.origins.text">Le mot <em>Ennéagramme</em> vient des mots grecs <em>ennea</em> (« neuf ») et <em>gramma</em> (« ce qui est dessiné ou écrit »). Son symbolisme puise dans des traditions spirituelles et philosophiques anciennes, telles que la mystique chrétienne, soufie, bouddhiste, hindoue ou kabbalistique, ainsi que dans les enseignements de Pythagore.</p>
       </div>
 
       <div>
-        <h3 class="text-xl font-semibold text-gray-800 mb-2">2. Gurdjieff & premiers usages modernes</h3>
-        <p>Au début du XXᵉ siècle, le philosophe mystique <strong>Georges Gurdjieff</strong> introduit en Occident la figure de l’Ennéagramme, vers 1916, comme symbole cosmique et outil pour comprendre le mouvement et les lois universelles — sans l’appliquer à la typologie de la personnalité.</p>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2" data-i18n="enneagramme.history.gurdjieff.title">2. Gurdjieff & premiers usages modernes</h3>
+        <p data-i18n="enneagramme.history.gurdjieff.text">Au début du XXᵉ siècle, le philosophe mystique <strong>Georges Gurdjieff</strong> introduit en Occident la figure de l’Ennéagramme, vers 1916, comme symbole cosmique et outil pour comprendre le mouvement et les lois universelles — sans l’appliquer à la typologie de la personnalité.</p>
       </div>
 
       <div>
-        <h3 class="text-xl font-semibold text-gray-800 mb-2">3. Ichazo & Naranjo : naissance de la typologie</h3>
-        <p><strong>Oscar Ichazo</strong> (Bolivie, années 1950) formalise les neuf fixations d’ego, passions et vertus de chaque point de l’Ennéagramme, dans un système nommé <em>Protoanalysis</em>, avec une base philosophique et psychologique.</p>
-        <p>Dans les années 1970, le psychiatre <strong>Claudio Naranjo</strong> reprend ce travail et l’adapte en une véritable typologie de personnalité. Il le diffuse aux États-Unis via l’Institut Esalen à Berkeley.</p>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2" data-i18n="enneagramme.history.ichazo.title">3. Ichazo & Naranjo : naissance de la typologie</h3>
+        <p data-i18n="enneagramme.history.ichazo.text1"><strong>Oscar Ichazo</strong> (Bolivie, années 1950) formalise les neuf fixations d’ego, passions et vertus de chaque point de l’Ennéagramme, dans un système nommé <em>Protoanalysis</em>, avec une base philosophique et psychologique.</p>
+        <p data-i18n="enneagramme.history.ichazo.text2">Dans les années 1970, le psychiatre <strong>Claudio Naranjo</strong> reprend ce travail et l’adapte en une véritable typologie de personnalité. Il le diffuse aux États-Unis via l’Institut Esalen à Berkeley.</p>
       </div>
 
       <div>
-        <h3 class="text-xl font-semibold text-gray-800 mb-2">4. Diffusion académique et populaire</h3>
-        <p>Dans les années 1980–1990, des auteurs comme <strong>Don Richard Riso</strong>, <strong>Russ Hudson</strong>, <strong>Helen Palmer</strong>, <strong>Eli Jaxon-Bear</strong> ou <strong>Richard Rohr</strong> publient des ouvrages populaires rendant le système accessible au grand public.</p>
-        <p>En 1993, Riso et Hudson créent le <em>Riso–Hudson Enneagram Type Indicator (RHETI)</em> et fondent l’Enneagram Institute, qui structure la diffusion, la recherche et la formation.</p>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2" data-i18n="enneagramme.history.diffusion.title">4. Diffusion académique et populaire</h3>
+        <p data-i18n="enneagramme.history.diffusion.text1">Dans les années 1980–1990, des auteurs comme <strong>Don Richard Riso</strong>, <strong>Russ Hudson</strong>, <strong>Helen Palmer</strong>, <strong>Eli Jaxon-Bear</strong> ou <strong>Richard Rohr</strong> publient des ouvrages populaires rendant le système accessible au grand public.</p>
+        <p data-i18n="enneagramme.history.diffusion.text2">En 1993, Riso et Hudson créent le <em>Riso–Hudson Enneagram Type Indicator (RHETI)</em> et fondent l’Enneagram Institute, qui structure la diffusion, la recherche et la formation.</p>
       </div>
 
       <div>
-        <h3 class="text-xl font-semibold text-gray-800 mb-2">5. Popularité, usages & critiques</h3>
-        <p>Aujourd’hui, l’Ennéagramme est utilisé en développement personnel, spiritualité, coaching et travail en équipe. Mais il est aussi critiqué pour :</p>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2" data-i18n="enneagramme.history.popularity.title">5. Popularité, usages & critiques</h3>
+        <p data-i18n="enneagramme.history.popularity.text">Aujourd’hui, l’Ennéagramme est utilisé en développement personnel, spiritualité, coaching et travail en équipe. Mais il est aussi critiqué pour :</p>
         <ul class="list-disc list-inside">
-          <li>Un manque de validation psychométrique solide</li>
-          <li>Une base scientifique limitée</li>
-          <li>Une forte influence de traditions spirituelles, ce qui le rend plus subjectif</li>
+          <li data-i18n="enneagramme.history.popularity.list1">Un manque de validation psychométrique solide</li>
+          <li data-i18n="enneagramme.history.popularity.list2">Une base scientifique limitée</li>
+          <li data-i18n="enneagramme.history.popularity.list3">Une forte influence de traditions spirituelles, ce qui le rend plus subjectif</li>
         </ul>
       </div>
 
@@ -576,10 +576,10 @@
     <div id="ennea-types" data-aos="fade-left" class="section section-fonce py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <div class="text-center">
-                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl" data-i18n="enneaTypesTitle">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl" data-i18n="enneagramme.types.title">
                     Les 9 types de l'Ennéagramme
                 </h2>
-                <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto" data-i18n="enneaTypesSubtitle">
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto" data-i18n="enneagramme.types.subtitle">
                     Découvrez les motivations profondes qui influencent votre personnalité
                 </p>
             </div>
@@ -593,17 +593,17 @@
                                 <span class="text-white font-bold text-lg">1</span>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">Le Perfectionniste</h3>
-                                <p class="text-sm text-gray-500">Le Réformateur</p>
+                                <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.types.1.name">Le Perfectionniste</h3>
+                                <p class="text-sm text-gray-500" data-i18n="enneagramme.types.1.nickname">Le Réformateur</p>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-sm text-gray-600">
+                            <p class="text-sm text-gray-600" data-i18n="enneagramme.types.1.desc">
                                 Motivés par le besoin de vivre correctement, d'améliorer le monde et d'éviter la colère. Ils sont idéalistes, responsables et ont un fort sens moral.
                             </p>
                         </div>
                         <div class="mt-4">
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs text-gray-500" data-i18n="enneagramme.types.1.detail">
                                 <strong>Peur fondamentale :</strong> Être corrompu, défectueux ou mauvais<br>
                                 <strong>Désir fondamental :</strong> Être bon, vertueux et parfait
                             </div>
@@ -624,17 +624,17 @@
                                 <span class="text-white font-bold text-lg">2</span>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">L'Altruiste</h3>
-                                <p class="text-sm text-gray-500">L'Aidant</p>
+                                <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.types.2.name">L'Altruiste</h3>
+                                <p class="text-sm text-gray-500" data-i18n="enneagramme.types.2.nickname">L'Aidant</p>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-sm text-gray-600">
+                            <p class="text-sm text-gray-600" data-i18n="enneagramme.types.2.desc">
                                 Motivés par le besoin d'être aimés et appréciés, et d'exprimer leurs sentiments positifs envers les autres. Ils sont empathiques, sincères et chaleureux.
                             </p>
                         </div>
                         <div class="mt-4">
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs text-gray-500" data-i18n="enneagramme.types.2.detail">
                                 <strong>Peur fondamentale :</strong> Être indigne d'amour<br>
                                 <strong>Désir fondamental :</strong> Se sentir aimé et apprécié
                             </div>
@@ -655,17 +655,17 @@
                                 <span class="text-white font-bold text-lg">3</span>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">Le Bâtisseur</h3>
-                                <p class="text-sm text-gray-500">Le Performeur</p>
+                                <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.types.3.name">Le Bâtisseur</h3>
+                                <p class="text-sm text-gray-500" data-i18n="enneagramme.types.3.nickname">Le Performeur</p>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-sm text-gray-600">
+                            <p class="text-sm text-gray-600" data-i18n="enneagramme.types.3.desc">
                                 Motivés par le besoin d'être productifs, d'atteindre le succès et d'éviter l'échec. Ils sont adaptables, ambitieux et orientés vers les objectifs.
                             </p>
                         </div>
                         <div class="mt-4">
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs text-gray-500" data-i18n="enneagramme.types.3.detail">
                                 <strong>Peur fondamentale :</strong> Être sans valeur en dehors de leurs réalisations<br>
                                 <strong>Désir fondamental :</strong> Se sentir valorisé et digne d'amour
                             </div>
@@ -686,17 +686,17 @@
                                 <span class="text-white font-bold text-lg">4</span>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">L'Artiste</h3>
-                                <p class="text-sm text-gray-500">L'Individualiste</p>
+                                <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.types.4.name">L'Artiste</h3>
+                                <p class="text-sm text-gray-500" data-i18n="enneagramme.types.4.nickname">L'Individualiste</p>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-sm text-gray-600">
+                            <p class="text-sm text-gray-600" data-i18n="enneagramme.types.4.desc">
                                 Motivés par le besoin de s'exprimer et d'être compris pour qui ils sont vraiment. Ils sont créatifs, émotionnellement honnêtes et personnels.
                             </p>
                         </div>
                         <div class="mt-4">
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs text-gray-500" data-i18n="enneagramme.types.4.detail">
                                 <strong>Peur fondamentale :</strong> N'avoir ni identité ni importance personnelle<br>
                                 <strong>Désir fondamental :</strong> Trouver leur vrai moi et leur importance
                             </div>
@@ -717,17 +717,17 @@
                                 <span class="text-white font-bold text-lg">5</span>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">L'Investigateur</h3>
-                                <p class="text-sm text-gray-500">Le Penseur</p>
+                                <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.types.5.name">L'Investigateur</h3>
+                                <p class="text-sm text-gray-500" data-i18n="enneagramme.types.5.nickname">Le Penseur</p>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-sm text-gray-600">
+                            <p class="text-sm text-gray-600" data-i18n="enneagramme.types.5.desc">
                                 Motivés par le besoin de comprendre le monde qui les entoure. Ils sont intenses, cérébraux, perceptifs et indépendants.
                             </p>
                         </div>
                         <div class="mt-4">
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs text-gray-500" data-i18n="enneagramme.types.5.detail">
                                 <strong>Peur fondamentale :</strong> Être inutile, incapable ou envahi<br>
                                 <strong>Désir fondamental :</strong> Être compétent et comprendre l'environnement
                             </div>
@@ -748,17 +748,17 @@
                                 <span class="text-white font-bold text-lg">6</span>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">Le Loyaliste</h3>
-                                <p class="text-sm text-gray-500">Le Sceptique</p>
+                                <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.types.6.name">Le Loyaliste</h3>
+                                <p class="text-sm text-gray-500" data-i18n="enneagramme.types.6.nickname">Le Sceptique</p>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-sm text-gray-600">
+                            <p class="text-sm text-gray-600" data-i18n="enneagramme.types.6.desc">
                                 Motivés par le besoin de sécurité et de soutien. Ils sont engagés, responsables, anxieux et soupçonneux.
                             </p>
                         </div>
                         <div class="mt-4">
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs text-gray-500" data-i18n="enneagramme.types.6.detail">
                                 <strong>Peur fondamentale :</strong> Être sans soutien ou sans guidance<br>
                                 <strong>Désir fondamental :</strong> Avoir sécurité et soutien
                             </div>
@@ -779,17 +779,17 @@
                                 <span class="text-white font-bold text-lg">7</span>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">L'Enthousiaste</h3>
-                                <p class="text-sm text-gray-500">L'Épicurien</p>
+                                <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.types.7.name">L'Enthousiaste</h3>
+                                <p class="text-sm text-gray-500" data-i18n="enneagramme.types.7.nickname">L'Épicurien</p>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-sm text-gray-600">
+                            <p class="text-sm text-gray-600" data-i18n="enneagramme.types.7.desc">
                                 Motivés par le besoin de maintenir leur bonheur et leur enthousiasme. Ils sont spontanés, polyvalents, distractibles et dispersés.
                             </p>
                         </div>
                         <div class="mt-4">
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs text-gray-500" data-i18n="enneagramme.types.7.detail">
                                 <strong>Peur fondamentale :</strong> Être piégé dans la douleur ou la privation<br>
                                 <strong>Désir fondamental :</strong> Maintenir leur bonheur et leur satisfaction
                             </div>
@@ -810,17 +810,17 @@
                                 <span class="text-white font-bold text-lg">8</span>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">Le Challenger</h3>
-                                <p class="text-sm text-gray-500">Le Protecteur</p>
+                                <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.types.8.name">Le Challenger</h3>
+                                <p class="text-sm text-gray-500" data-i18n="enneagramme.types.8.nickname">Le Protecteur</p>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-sm text-gray-600">
+                            <p class="text-sm text-gray-600" data-i18n="enneagramme.types.8.desc">
                                 Motivés par le besoin d'être autonomes et de contrôler leur propre vie. Ils sont puissants, dominants, confiants et confrontants.
                             </p>
                         </div>
                         <div class="mt-4">
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs text-gray-500" data-i18n="enneagramme.types.8.detail">
                                 <strong>Peur fondamentale :</strong> Être contrôlé ou vulnérable aux autres<br>
                                 <strong>Désir fondamental :</strong> Être autonome et contrôler leur propre vie
                             </div>
@@ -841,17 +841,17 @@
                                 <span class="text-white font-bold text-lg">9</span>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">Le Médiateur</h3>
-                                <p class="text-sm text-gray-500">Le Pacificateur</p>
+                                <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.types.9.name">Le Médiateur</h3>
+                                <p class="text-sm text-gray-500" data-i18n="enneagramme.types.9.nickname">Le Pacificateur</p>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <p class="text-sm text-gray-600">
+                            <p class="text-sm text-gray-600" data-i18n="enneagramme.types.9.desc">
                                 Motivés par le besoin de maintenir leur paix intérieure et extérieure. Ils sont réceptifs, rassurants, agréables et complaisants.
                             </p>
                         </div>
                         <div class="mt-4">
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs text-gray-500" data-i18n="enneagramme.types.9.detail">
                                 <strong>Peur fondamentale :</strong> Perte de connexion et fragmentation<br>
                                 <strong>Désir fondamental :</strong> Maintenir leur paix intérieure et extérieure
                             </div>
@@ -872,10 +872,10 @@
         <div id="ennea-faq" data-aos="fade-up" class="section section-clair py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <div class="text-center">
-                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl" data-i18n="enneagramme.faq.title">
                     Questions fréquentes
                 </h2>
-                <p class="mt-4 text-xl text-gray-500">
+                <p class="mt-4 text-xl text-gray-500" data-i18n="enneagramme.faq.subtitle">
                     Trouvez des réponses aux questions les plus courantes
                 </p>
             </div>
@@ -884,11 +884,11 @@
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button id="faq-ennea-1" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-1-content">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">En quoi l’Ennéagramme diffère-t-il du MBTI ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.faq.q1.question">En quoi l’Ennéagramme diffère-t-il du MBTI ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div id="faq-ennea-1-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-1" aria-hidden="true">
-                            <p class="text-gray-600">
+                            <p class="text-gray-600" data-i18n="enneagramme.faq.q1.answer">
                                 Le MBTI décrit des préférences cognitives ; l’Ennéagramme décrit surtout des motivations profondes, peurs de base et mécanismes de défense. Ils sont complémentaires : l’un parle de “comment tu fonctionnes”, l’autre de “pourquoi tu fonctionnes comme ça”.
                             </p>
                         </div>
@@ -898,11 +898,11 @@
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button id="faq-ennea-2" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-2-content">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">C’est spirituel ou psychologique ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.faq.q2.question">C’est spirituel ou psychologique ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div id="faq-ennea-2-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-2" aria-hidden="true">
-                            <p class="text-gray-600">
+                            <p class="text-gray-600" data-i18n="enneagramme.faq.q2.answer">
                                 Historiquement, l’Ennéagramme a des racines spirituelles ; aujourd’hui il est utilisé dans un cadre de développement personnel et de coaching. Ce n’est pas un outil clinique, son socle scientifique est limité.
                             </p>
                         </div>
@@ -912,11 +912,11 @@
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button id="faq-ennea-3" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-3-content">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Que sont les “ailes” et les “sous-types” ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.faq.q3.question">Que sont les “ailes” et les “sous-types” ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div id="faq-ennea-3-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-3" aria-hidden="true">
-                            <p class="text-gray-600">
+                            <p class="text-gray-600" data-i18n="enneagramme.faq.q3.answer">
                                 Les ailes sont les types adjacents qui colorent ton type principal (ex. 4w3, 4w5). Les sous-types (instincts : conservation, social, sexuel) modulent l’expression du type et expliquent des variations fortes au sein d’un même type.
                             </p>
                         </div>
@@ -926,11 +926,11 @@
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button id="faq-ennea-4" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-4-content">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Peut-on “changer” de type ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.faq.q4.question">Peut-on “changer” de type ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div id="faq-ennea-4-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-4" aria-hidden="true">
-                            <p class="text-gray-600">
+                            <p class="text-gray-600" data-i18n="enneagramme.faq.q4.answer">
                                 Le type de base reste généralement stable ; ce qui change, c’est ton niveau de santé/ressources et la manière dont tu gères ta peur centrale. On parle d’intégration/désintégration plutôt que de changement de type.
                             </p>
                         </div>
@@ -940,11 +940,11 @@
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button id="faq-ennea-5" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-5-content">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Pourquoi je me reconnais dans plusieurs types ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.faq.q5.question">Pourquoi je me reconnais dans plusieurs types ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div id="faq-ennea-5-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-5" aria-hidden="true">
-                            <p class="text-gray-600">
+                            <p class="text-gray-600" data-i18n="enneagramme.faq.q5.answer">
                                 Les comportements se recoupent. La clé, c’est la motivation profonde et la peur de base. Les tests peuvent aider, mais l’auto-enquête (exemples concrets, réactions sous stress, désirs non négociables) est déterminante.
                             </p>
                         </div>
@@ -954,11 +954,11 @@
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button id="faq-ennea-6" class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500" aria-expanded="false" aria-controls="faq-ennea-6-content">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Comment utiliser l’Ennéagramme sans tomber dans les étiquettes ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="enneagramme.faq.q6.question">Comment utiliser l’Ennéagramme sans tomber dans les étiquettes ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div id="faq-ennea-6-content" class="faq-content mt-2 hidden" aria-labelledby="faq-ennea-6" aria-hidden="true">
-                            <p class="text-gray-600">
+                            <p class="text-gray-600" data-i18n="enneagramme.faq.q6.answer">
                                 Comme une carte : un repère pour le langage et la compréhension de soi/autrui, pas une prison. Évite les jugements rapides, privilégie la curiosité, l’empathie et le travail sur les schémas récurrents.
                             </p>
                         </div>
@@ -967,7 +967,7 @@
             </div>
 
             <div class="mt-8 text-center">
-                <p class="text-gray-600">
+                <p class="text-gray-600" data-i18n="enneagramme.faq.outro">
                     Vous avez d'autres questions ? <a href="mailto:contact@personnalitecomparee.com" class="text-blue-600 hover:text-blue-500 font-medium">Contactez-nous</a>
                 </p>
             </div>
@@ -1012,15 +1012,15 @@
                         <li><a href="#" onclick="showContact(); return false;" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.support">Support</a></li>
                         <li class="flex space-x-6 pt-2">
                             <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                                <span class="sr-only">Facebook</span>
+                                <span class="sr-only" data-i18n="social.facebook">Facebook</span>
                                 <i class="fab fa-facebook-f"></i>
                             </a>
                             <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                                <span class="sr-only">Instagram</span>
+                                <span class="sr-only" data-i18n="social.instagram">Instagram</span>
                                 <i class="fab fa-instagram"></i>
                             </a>
                             <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                                <span class="sr-only">TikTok</span>
+                                <span class="sr-only" data-i18n="social.tiktok">TikTok</span>
                                 <i class="fab fa-tiktok"></i>
                             </a>
                         </li>
