@@ -512,7 +512,7 @@
     </header>
 
     <main>
-<section id="mbti-hero" class="px-4 sm:px-6 lg:px-8 relative overflow-hidden pc-hero mt-8 sm:mt-12" data-hero>
+<section id="mbti-hero" data-aos="fade-up" class="px-4 sm:px-6 lg:px-8 relative overflow-hidden pc-hero mt-8 sm:mt-12" data-hero>
   <canvas id="pc-constellation" aria-hidden="true"></canvas>
   <div class="absolute inset-0 opacity-[0.02]">
     <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, rgb(15 23 42) 1px, transparent 0); background-size: 40px 40px;"></div>
@@ -527,7 +527,7 @@
   </div>
 </section>
 
-<section id="mbti-history" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+<section id="mbti-history" data-aos="fade-up" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
   <div class="max-w-3xl mx-auto">
     <div class="text-center">
       <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Un peu d'histoire</h2>
@@ -4504,6 +4504,13 @@ function showPrivacyPolicy() {
       externalForm.style.display = "none";
     });
   }
+</script>
+
+<script>
+  document.querySelectorAll('.type-card').forEach((card, idx) => {
+    card.setAttribute('data-aos', 'fade-up');
+    card.setAttribute('data-aos-delay', (idx % 4) * 100);
+  });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
