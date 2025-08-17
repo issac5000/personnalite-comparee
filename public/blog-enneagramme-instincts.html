@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Comprendre les peurs profondes de l'Ennéagramme — Personnalité Comparée</title>
+  <title data-i18n="blogEnneaInstinctsPageTitle">Comprendre les peurs profondes de l'Ennéagramme — Personnalité Comparée</title>
 
   <!-- Supabase JS -->
 
@@ -391,6 +391,10 @@
 
 </head>
 <body id="top" class="font-sans bg-white text-gray-900">
+    <div class="fixed top-4 right-4 space-x-2">
+        <button onclick="switchLang('fr')" class="px-2 py-1 border">FR</button>
+        <button onclick="switchLang('en')" class="px-2 py-1 border">EN</button>
+    </div>
 <!-- Navigation -->
     <header id="site-header" class="sticky-header">
         <div class="flex items-center">
@@ -513,10 +517,10 @@
     <main class="mt-16">
         <article class="px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
             <img src="enneagramme.png" alt="Symbole de l'Ennéagramme" class="w-full h-auto max-h-64 sm:max-h-72 md:max-h-80 object-contain rounded-lg mb-8">
-            <h1 class="text-3xl font-bold mb-4">Comprendre les peurs profondes de l'Ennéagramme</h1>
+            <h1 data-i18n="blogEnneaInstinctsTitle" class="text-3xl font-bold mb-4">Comprendre les peurs profondes de l'Ennéagramme</h1>
             <p class="text-gray-500 mb-8">15 août 2025 · Lecture ~12 min</p>
             <nav class="mb-12" aria-label="Sommaire">
-                <h2 class="text-xl font-semibold mb-4">Sommaire</h2>
+                <h2 data-i18n="toc" class="text-xl font-semibold mb-4">Sommaire</h2>
                 <ul class="list-disc list-inside space-y-2 text-blue-600">
                     <li><a href="#peur-moteur" class="hover:underline">Introduction : la peur comme moteur psychologique</a></li>
                     <li><a href="#enneagramme-outil" class="hover:underline">L’Ennéagramme et ses peurs fondamentales</a></li>
@@ -744,5 +748,7 @@
   function openProfileModal() {}
 </script>
 <script src="nav.js"></script>
+<script src="lang.js"></script>
+<script src="i18n.js"></script>
 </body>
 </html>
