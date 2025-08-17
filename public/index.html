@@ -369,6 +369,26 @@
           .pc-info-banner{ margin:12px 0; font-size:.93rem; }
         }
 
+        #beta-banner {
+          background-color: #F6D1D1;
+          color: #B94E4E;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          overflow: hidden;
+          padding: 0 1rem;
+          font-weight: 500;
+          font-size: 0.875rem;
+        }
+        #beta-banner .banner-text {
+          white-space: nowrap;
+          animation: beta-scroll 20s linear infinite;
+        }
+        @keyframes beta-scroll {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+
        /* Styles spécifiques au chatbot Psycho'Bot */
 #chat-window {
   border-radius: 32px !important;
@@ -391,6 +411,7 @@
 
 </head>
 <body id="top" class="font-sans bg-white text-gray-900">
+    <div id="beta-banner"><span class="banner-text">🚧 Ce site est encore en version bêta ! Certaines fonctions peuvent évoluer ou être améliorées. Revenez bientôt pour profiter d’une version 100% finalisée. Merci pour votre patience.</span></div>
     <!-- Navigation -->
     <header id="site-header" class="sticky-header">
         <div class="flex items-center">
@@ -4992,6 +5013,13 @@ async function trackEvent(eventName, meta = {}) {
 </script>
 
 <script src="nav.js"></script>
+
+<script>
+window.addEventListener('scroll', () => {
+    const banner = document.getElementById('beta-banner');
+    if (banner) banner.remove();
+}, { once: true });
+</script>
 
 
 
