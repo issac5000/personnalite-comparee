@@ -112,7 +112,7 @@
             max-height: 80vh;
             overflow-y: auto;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            animation: modalSlideIn 0.3s ease-out;
+            animation: modalZoomIn 0.3s ease-out;
         }
         
         .modal-header {
@@ -145,14 +145,14 @@
             to { opacity: 1; }
         }
         
-        @keyframes modalSlideIn {
-            from { 
+        @keyframes modalZoomIn {
+            from {
                 opacity: 0;
-                transform: translateY(-50px) scale(0.95);
+                transform: scale(0.9);
             }
-            to { 
+            to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: scale(1);
             }
         }
         
@@ -585,7 +585,7 @@
             
             <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 <!-- Type 1 -->
-                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                <div class="type-card bg-white overflow-hidden shadow rounded-[32px] transform transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-red-500 rounded-full h-12 w-12 flex items-center justify-center">
@@ -616,7 +616,7 @@
                 </div>
                 
                 <!-- Type 2 -->
-                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                <div class="type-card bg-white overflow-hidden shadow rounded-[32px] transform transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-green-500 rounded-full h-12 w-12 flex items-center justify-center">
@@ -647,7 +647,7 @@
                 </div>
                 
                 <!-- Type 3 -->
-                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                <div class="type-card bg-white overflow-hidden shadow rounded-[32px] transform transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-yellow-500 rounded-full h-12 w-12 flex items-center justify-center">
@@ -678,7 +678,7 @@
                 </div>
                 
                 <!-- Type 4 -->
-                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                <div class="type-card bg-white overflow-hidden shadow rounded-[32px] transform transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-blue-500 rounded-full h-12 w-12 flex items-center justify-center">
@@ -709,7 +709,7 @@
                 </div>
                 
                 <!-- Type 5 -->
-                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                <div class="type-card bg-white overflow-hidden shadow rounded-[32px] transform transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-blue-500 rounded-full h-12 w-12 flex items-center justify-center">
@@ -740,7 +740,7 @@
                 </div>
                 
                 <!-- Type 6 -->
-                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                <div class="type-card bg-white overflow-hidden shadow rounded-[32px] transform transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-indigo-500 rounded-full h-12 w-12 flex items-center justify-center">
@@ -771,7 +771,7 @@
                 </div>
                 
                 <!-- Type 7 -->
-                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                <div class="type-card bg-white overflow-hidden shadow rounded-[32px] transform transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-orange-500 rounded-full h-12 w-12 flex items-center justify-center">
@@ -802,7 +802,7 @@
                 </div>
                 
                 <!-- Type 8 -->
-                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                <div class="type-card bg-white overflow-hidden shadow rounded-[32px] transform transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-red-600 rounded-full h-12 w-12 flex items-center justify-center">
@@ -833,7 +833,7 @@
                 </div>
                 
                 <!-- Type 9 -->
-                <div class="type-card bg-white overflow-hidden shadow rounded-lg transition-all duration-300">
+                <div class="type-card bg-white overflow-hidden shadow rounded-[32px] transform transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                     <div class="px-4 py-5 sm:p-6">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-teal-600 rounded-full h-12 w-12 flex items-center justify-center">
