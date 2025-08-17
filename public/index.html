@@ -417,7 +417,7 @@
 
 </head>
 <body id="top" class="font-sans bg-white text-gray-900">
-    <div id="beta-banner"><div class="banner-track"><span>🚧 Ce site est encore en version bêta ! Certaines fonctions peuvent évoluer ou être améliorées. Revenez bientôt pour profiter d’une version 100% finalisée. Merci pour votre patience.</span><span aria-hidden="true">🚧 Ce site est encore en version bêta ! Certaines fonctions peuvent évoluer ou être améliorées. Revenez bientôt pour profiter d’une version 100% finalisée. Merci pour votre patience.</span></div></div>
+    <div id="beta-banner"><div class="banner-track"><span data-i18n="beta.banner">🚧 Ce site est encore en version bêta ! Certaines fonctions peuvent évoluer ou être améliorées. Revenez bientôt pour profiter d’une version 100% finalisée. Merci pour votre patience.</span><span aria-hidden="true" data-i18n="beta.banner">🚧 Ce site est encore en version bêta ! Certaines fonctions peuvent évoluer ou être améliorées. Revenez bientôt pour profiter d’une version 100% finalisée. Merci pour votre patience.</span></div></div>
     <!-- Navigation -->
     <header id="site-header" class="sticky-header">
         <div class="flex items-center">
@@ -425,8 +425,8 @@
                 <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span id="brand-home" class="ml-3 text-xl font-bold text-black" data-i18n="brand.name">Personnalité Comparée</span>
             </div>
             <div class="language-switcher ml-4 flex gap-2 text-sm">
-                <button onclick="switchLang('fr')">🇫🇷 FR</button>
-                <button onclick="switchLang('en')">🇬🇧 EN</button>
+                <button onclick="switchLang('fr'); updatePlaceholders();" data-i18n="lang.fr">🇫🇷 FR</button>
+                <button onclick="switchLang('en'); updatePlaceholders();" data-i18n="lang.en">🇬🇧 EN</button>
             </div>
         </div>
         <nav class="desktop-nav hidden md:ml-6 md:flex md:items-center md:space-x-8">
@@ -485,7 +485,7 @@
         </nav>
         <div class="-mr-2 flex items-center md:hidden">
             <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
-                <span class="sr-only">Ouvrir le menu principal</span>
+                <span class="sr-only" data-i18n="nav.open_main">Ouvrir le menu principal</span>
                 <i class="fas fa-bars" id="menu-icon"></i>
             </button>
         </div>
@@ -576,17 +576,17 @@
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
-                    Auto-évaluation
+                    <span data-i18n="hero.autoEvalBtn">Auto-évaluation</span>
                     <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
                 </a>
-                
+
                 <a href="#home-enneagramme" class="group inline-flex items-center gap-3 px-8 py-4 text-base font-medium text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md">
                     <svg class="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
-                    Évaluer un proche 
+                    <span data-i18n="hero.evalFriendBtn">Évaluer un proche</span>
                 </a>
             </div>
             
@@ -726,7 +726,7 @@
                 <div class="mb-6">
                     <label for="code" class="block text-sm font-medium text-gray-700" data-i18n="evalCodeLabel">Code unique de la personne</label>
                     <div class="mt-1 relative rounded-md shadow-sm">
-                        <input type="text" name="code" id="code" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-4 pr-12 py-3 sm:text-sm border-gray-300 rounded-md" placeholder="Ex: ABC123" required>
+                        <input type="text" name="code" id="code" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-4 pr-12 py-3 sm:text-sm border-gray-300 rounded-md" placeholder="Ex: ABC123" data-i18n-placeholder="eval.codePlaceholder" required>
                         <div class="absolute inset-y-0 right-0 flex items-center">
                             <button type="button" id="search-code" class="h-full rounded-r-md border-transparent bg-gray-100 px-4 text-black hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-black">
                                 <i class="fas fa-search"></i>
@@ -833,7 +833,7 @@
       <div class="flex w-full">
         <div class="flex w-full border border-gray-300 rounded-full overflow-hidden">
           <input id="chat-input" type="text" placeholder="Posez votre question à Psycho'Bot..."
-                 class="flex-grow px-4 py-2 text-gray-900 placeholder-gray-400 bg-white border-none focus:outline-none focus:ring-0" />
+                 class="flex-grow px-4 py-2 text-gray-900 placeholder-gray-400 bg-white border-none focus:outline-none focus:ring-0" data-i18n-placeholder="chat.inputPlaceholder" />
           <button id="chat-send"
                   class="px-5 py-2 bg-black text-white font-medium hover:bg-gray-800 focus:outline-none">
             <span data-i18n="chatSend">Envoyer</span>
@@ -857,18 +857,18 @@
           <div class="text-center">
             <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl flex justify-center items-center gap-2">
               <i class="fas fa-search text-blue-500 animate-pulse"></i>
-              Retrouver un profil
+              <span data-i18n="retrieve.title">Retrouver un profil</span>
             </h2>
-            <p class="mt-4 text-xl text-gray-500">
+            <p class="mt-4 text-xl text-gray-500" data-i18n="retrieve.subtitle">
               Saisis le code unique que tu as reçu pour afficher un profil complet.
             </p>
           </div>
           <form onsubmit="event.preventDefault(); viewResults(document.getElementById('code-saisi').value);" autocomplete="off" class="mt-12 max-w-lg mx-auto">
             <div class="flex flex-col sm:flex-row items-center gap-4">
-              <label for="code-saisi" class="sr-only">Code reçu</label>
-              <input type="text" id="code-saisi" class="flex-1 px-6 py-3 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-300 text-base text-center shadow-sm transition" placeholder="ABC123" maxlength="12" required>
+              <label for="code-saisi" class="sr-only" data-i18n="retrieve.codeLabel">Code reçu</label>
+              <input type="text" id="code-saisi" class="flex-1 px-6 py-3 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-300 text-base text-center shadow-sm transition" placeholder="ABC123" maxlength="12" data-i18n-placeholder="retrieve.placeholder" required>
               <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-lg font-semibold shadow hover:bg-gray-800 transition">
-                <i class="fas fa-eye"></i> Voir le profil
+                <i class="fas fa-eye"></i> <span data-i18n="retrieve.viewButton">Voir le profil</span>
               </button>
             </div>
           </form>
@@ -879,19 +879,19 @@
 <section id="home-blog" data-aos="fade-up" class="section section-clair py-16 px-4 sm:px-6 lg:px-8">
   <div class="max-w-5xl mx-auto">
     <div class="text-center">
-      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Derniers articles</h2>
-      <p class="mt-4 text-xl text-gray-500">Explorez notre blog pour approfondir MBTI et Ennéagramme</p>
+      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl" data-i18n="blogSection.title">Derniers articles</h2>
+      <p class="mt-4 text-xl text-gray-500" data-i18n="blogSection.subtitle">Explorez notre blog pour approfondir MBTI et Ennéagramme</p>
     </div>
     <div class="mt-12 grid gap-6 md:grid-cols-2">
       <a href="blog-mbti-4-dimensions.html" class="block p-6 rounded-[2rem] bg-white shadow hover:shadow-md transition">
         <img src="blog1.jpeg" alt="Illustration MBTI" class="w-full h-auto max-h-40 object-contain rounded-[2rem] mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 mb-2">Les 4 dimensions du MBTI</h3>
-        <p class="text-gray-600 text-sm">Comprenez les axes fondamentaux qui structurent les 16 types de personnalité.</p>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2" data-i18n="blogPreview.mbti4.title">Les 4 dimensions du MBTI</h3>
+        <p class="text-gray-600 text-sm" data-i18n="blogPreview.mbti4.excerpt">Comprenez les axes fondamentaux qui structurent les 16 types de personnalité.</p>
       </a>
       <a href="blog-enneagramme-instincts.html" class="block p-6 rounded-[2rem] bg-white shadow hover:shadow-md transition">
         <img src="enneagramme.png" alt="Symbole de l'Ennéagramme" class="w-full h-auto max-h-40 md:max-h-48 object-contain rounded-[2rem] mb-4">
-        <h3 class="text-lg font-semibold text-gray-900 mb-2">Comprendre les peurs profondes de l'Ennéagramme</h3>
-        <p class="text-gray-600 text-sm">Explore les peurs fondamentales des neuf types et la manière dont elles guident nos actions.</p>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2" data-i18n="blogPreview.enneaInstincts.title">Comprendre les peurs profondes de l'Ennéagramme</h3>
+        <p class="text-gray-600 text-sm" data-i18n="blogPreview.enneaInstincts.excerpt">Explore les peurs fondamentales des neuf types et la manière dont elles guident nos actions.</p>
       </a>
     </div>
   </div>
@@ -901,10 +901,10 @@
     <div id="home-faq" data-aos="fade-up" class="section section-clair py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <div class="text-center">
-                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl" data-i18n="faq.title">
                     Questions fréquentes
                 </h2>
-                <p class="mt-4 text-xl text-gray-500">
+                <p class="mt-4 text-xl text-gray-500" data-i18n="faq.subtitle">
                     Trouvez des réponses aux questions les plus courantes
                 </p>
             </div>
@@ -913,12 +913,11 @@
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Comment fonctionne le système de pondération ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="faq.q1.question">Comment fonctionne le système de pondération ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div class="faq-content mt-2 hidden">
-                            <p class="text-gray-600">
-Avec le temps, nous avons constaté que l’auto-évaluation introduisait souvent des biais.<br>Le <strong>résultat final repose donc uniquement sur l’évaluation de trois proches</strong> de votre entourage.<br><br>Le système ne tient <strong>plus compte du lien</strong> (famille, ami, collègue…), mais analyse la <strong>convergence de leurs réponses</strong>.<br><br>➤ Si leurs réponses sont <strong>fortement cohérentes</strong>, le <strong>score de certitude</strong> est élevé.<br>➤ Si elles sont <strong>divergentes</strong>, le score sera plus faible, ce qui vous permet d’identifier un profil encore flou ou nuancé.<br><br>Votre propre auto-évaluation est toujours disponible, mais uniquement <strong>à titre informatif</strong> – elle <strong>n’influence plus le calcul</strong>.                            </p>
+                            <p class="text-gray-600" data-i18n="faq.q1.answer">Avec le temps, nous avons constaté que l’auto-évaluation introduisait souvent des biais.<br>Le <strong>résultat final repose donc uniquement sur l’évaluation de trois proches</strong> de votre entourage.<br><br>Le système ne tient <strong>plus compte du lien</strong> (famille, ami, collègue…), mais analyse la <strong>convergence de leurs réponses</strong>.<br><br>➤ Si leurs réponses sont <strong>fortement cohérentes</strong>, le <strong>score de certitude</strong> est élevé.<br>➤ Si elles sont <strong>divergentes</strong>, le score sera plus faible, ce qui vous permet d’identifier un profil encore flou ou nuancé.<br><br>Votre propre auto-évaluation est toujours disponible, mais uniquement <strong>à titre informatif</strong> – elle <strong>n’influence plus le calcul</strong>.</p>
                         </div>
                     </button>
                 </div>
@@ -926,12 +925,11 @@ Avec le temps, nous avons constaté que l’auto-évaluation introduisait souven
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Quelle intelligence artificielle se cache derrière Psycho'Bot ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="faq.q2.question">Quelle intelligence artificielle se cache derrière Psycho'Bot ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div class="faq-content mt-2 hidden">
-                            <p class="text-gray-600">
-Psycho'Bot fonctionne grâce au modèle gpt-4o-mini d’OpenAI, une intelligence artificielle rapide et économique, capable de fournir des réponses précises et naturelles en temps réel.                            </p>
+                            <p class="text-gray-600" data-i18n="faq.q2.answer">Psycho'Bot fonctionne grâce au modèle gpt-4o-mini d’OpenAI, une intelligence artificielle rapide et économique, capable de fournir des réponses précises et naturelles en temps réel.</p>
                         </div>
                     </button>
                 </div>
@@ -939,12 +937,11 @@ Psycho'Bot fonctionne grâce au modèle gpt-4o-mini d’OpenAI, une intelligence
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Mes réponses et celles de mes proches sont-elles anonymes ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="faq.q3.question">Mes réponses et celles de mes proches sont-elles anonymes ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div class="faq-content mt-2 hidden">
-                            <p class="text-gray-600">
-Oui. Aucune identité n’est enregistrée avec les réponses, et seules les données nécessaires au calcul du profil sont conservées.                            </p>
+                            <p class="text-gray-600" data-i18n="faq.q3.answer">Oui. Aucune identité n’est enregistrée avec les réponses, et seules les données nécessaires au calcul du profil sont conservées.</p>
                         </div>
                     </button>
                 </div>
@@ -952,12 +949,11 @@ Oui. Aucune identité n’est enregistrée avec les réponses, et seules les don
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Mon code d’accès est-il valable à vie ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="faq.q4.question">Mon code d’accès est-il valable à vie ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div class="faq-content mt-2 hidden">
-                            <p class="text-gray-600">
-Oui. Votre code d’accès reste valable indéfiniment, ce qui vous permet de consulter vos résultats à tout moment, sans limite de durée.                            </p>
+                            <p class="text-gray-600" data-i18n="faq.q4.answer">Oui. Votre code d’accès reste valable indéfiniment, ce qui vous permet de consulter vos résultats à tout moment, sans limite de durée.</p>
                         </div>
                     </button>
                 </div>
@@ -965,12 +961,11 @@ Oui. Votre code d’accès reste valable indéfiniment, ce qui vous permet de co
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Puis-je voir les réponses détaillées de chaque proche ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="faq.q5.question">Puis-je voir les réponses détaillées de chaque proche ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div class="faq-content mt-2 hidden">
-                            <p class="text-gray-600">
-Non. Par souci de confidentialité, vous ne pouvez pas consulter le détail des réponses individuelles de vos proches. En revanche, dans votre page de résultats, vous pouvez voir le profil MBTI et Ennéagramme attribué à chaque proche sur la base de ses réponses.                            </p>
+                            <p class="text-gray-600" data-i18n="faq.q5.answer">Non. Par souci de confidentialité, vous ne pouvez pas consulter le détail des réponses individuelles de vos proches. En revanche, dans votre page de résultats, vous pouvez voir le profil MBTI et Ennéagramme attribué à chaque proche sur la base de ses réponses.</p>
                         </div>
                     </button>
                 </div>
@@ -978,12 +973,11 @@ Non. Par souci de confidentialité, vous ne pouvez pas consulter le détail des 
                 <div class="bg-white border border-gray-200 rounded-[2rem] overflow-hidden">
                     <button class="faq-button w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Puis-je obtenir une interprétation personnalisée de mes résultats ?</h3>
+                            <h3 class="text-lg font-medium text-gray-900" data-i18n="faq.q6.question">Puis-je obtenir une interprétation personnalisée de mes résultats ?</h3>
                             <i class="fas fa-chevron-down text-blue-500 transform transition-transform duration-300"></i>
                         </div>
                         <div class="faq-content mt-2 hidden">
-                            <p class="text-gray-600">
-Oui. Vous pouvez interroger Psycho’Bot dans la section "Parler avec Psycho’Bot" pour obtenir une interprétation personnalisée de votre profil MBTI et Ennéagramme. N’hésitez pas à lui communiquer votre profil et à lui poser toutes les questions que vous souhaitez.                            </p>
+                            <p class="text-gray-600" data-i18n="faq.q6.answer">Oui. Vous pouvez interroger Psycho’Bot dans la section "Parler avec Psycho’Bot" pour obtenir une interprétation personnalisée de votre profil MBTI et Ennéagramme. N’hésitez pas à lui communiquer votre profil et à lui poser toutes les questions que vous souhaitez.</p>
                         </div>
                     </button>
                 </div>
@@ -991,7 +985,7 @@ Oui. Vous pouvez interroger Psycho’Bot dans la section "Parler avec Psycho’B
             
             <div class="mt-8 text-center">
                 <p class="text-gray-600">
-                    Vous avez d'autres questions ? <a href="mailto:contact@personnalitecomparee.com" class="text-blue-600 hover:text-blue-500 font-medium">Contactez-nous</a>
+                    <span data-i18n="faq.moreQuestions">Vous avez d'autres questions ?</span> <a href="mailto:contact@personnalitecomparee.com" class="text-blue-600 hover:text-blue-500 font-medium" data-i18n="faq.contactUs">Contactez-nous</a>
                 </p>
             </div>
         </div>
@@ -1000,10 +994,10 @@ Oui. Vous pouvez interroger Psycho’Bot dans la section "Parler avec Psycho’B
     <!-- About Section -->
     <div id="home-about" class="section section-fonce py-16 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl" data-i18n="about.title">
                 À propos du projet
             </h2>
-            <p class="mt-6 text-lg text-gray-600">
+            <p class="mt-6 text-lg text-gray-600" data-i18n="about.description">
                 "Personnalité Comparée" est né de la volonté de créer un outil plus objectif pour comprendre sa personnalité. Contrairement aux tests traditionnels qui reposent uniquement sur l'auto-évaluation, notre approche combine votre perception avec celle de votre entourage pour un résultat plus nuancé et fidèle.
             </p>
             <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -1011,8 +1005,8 @@ Oui. Vous pouvez interroger Psycho’Bot dans la section "Parler avec Psycho’B
                     <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full text-[#B94E4E]" style="background-color: #F6D1D1;">
                         <i class="fas fa-eye text-2xl drop-shadow-sm"></i>
                     </div>
-                    <h3 class="mt-6 text-lg font-semibold text-gray-900">Vision objective</h3>
-                    <p class="mt-3 text-sm text-gray-600">
+                    <h3 class="mt-6 text-lg font-semibold text-gray-900" data-i18n="about.feature1.title">Vision objective</h3>
+                    <p class="mt-3 text-sm text-gray-600" data-i18n="about.feature1.desc">
                         Combiner plusieurs perspectives pour une analyse plus complète
                     </p>
                 </div>
@@ -1020,8 +1014,8 @@ Oui. Vous pouvez interroger Psycho’Bot dans la section "Parler avec Psycho’B
                     <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full text-[#C9A227]" style="background-color: #FFF3B0;">
                         <i class="fas fa-shield-alt text-2xl drop-shadow-sm"></i>
                     </div>
-                    <h3 class="mt-6 text-lg font-semibold text-gray-900">Confidentialité</h3>
-                    <p class="mt-3 text-sm text-gray-600">
+                    <h3 class="mt-6 text-lg font-semibold text-gray-900" data-i18n="about.feature2.title">Confidentialité</h3>
+                    <p class="mt-3 text-sm text-gray-600" data-i18n="about.feature2.desc">
                         Vos données sont protégées et ne sont jamais partagées
                     </p>
                 </div>
@@ -1029,15 +1023,15 @@ Oui. Vous pouvez interroger Psycho’Bot dans la section "Parler avec Psycho’B
                     <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full text-[#3C8F7C]" style="background-color: #B7E4C7;">
                         <i class="fas fa-graduation-cap text-2xl drop-shadow-sm"></i>
                     </div>
-                    <h3 class="mt-6 text-lg font-semibold text-gray-900">Base scientifique</h3>
-                    <p class="mt-3 text-sm text-gray-600">
+                    <h3 class="mt-6 text-lg font-semibold text-gray-900" data-i18n="about.feature3.title">Base scientifique</h3>
+                    <p class="mt-3 text-sm text-gray-600" data-i18n="about.feature3.desc">
                         Fondé sur les recherches en psychologie de la personnalité
                     </p>
                 </div>
             </div>
             <div class="mt-8">
                 <button onclick="showAboutProject()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
-                    En savoir plus sur le concept <i class="fas fa-arrow-right ml-2"></i>
+                    <span data-i18n="about.button">En savoir plus sur le concept</span> <i class="fas fa-arrow-right ml-2"></i>
                 </button>
             </div>
         </div>
@@ -1082,15 +1076,15 @@ Oui. Vous pouvez interroger Psycho’Bot dans la section "Parler avec Psycho’B
                         <li><a href="#" onclick="showContact(); return false;" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.support">Support</a></li>
                         <li class="flex space-x-6 pt-2">
                             <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                                <span class="sr-only">Facebook</span>
+                                <span class="sr-only" data-i18n="social.facebook">Facebook</span>
                                 <i class="fab fa-facebook-f"></i>
                             </a>
                             <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                                <span class="sr-only">Instagram</span>
+                                <span class="sr-only" data-i18n="social.instagram">Instagram</span>
                                 <i class="fab fa-instagram"></i>
                             </a>
                             <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                                <span class="sr-only">TikTok</span>
+                                <span class="sr-only" data-i18n="social.tiktok">TikTok</span>
                                 <i class="fab fa-tiktok"></i>
                             </a>
                         </li>
@@ -1136,7 +1130,7 @@ async function enregistrerQuestionsPourProches(questionsAutoEvaluation, userCode
     console.error("❌ Erreur lors de l'enregistrement Supabase :", error);
   } else {
     console.log("✅ Questions pour proches enregistrées avec succès :", data);
-    alert("Voici ton code à donner à 3 proches : " + userCode);
+    alert((translations[document.documentElement.lang] || translations.fr).shareCodeAlert + userCode);
   }
 }
 
@@ -1187,6 +1181,18 @@ if (window.location.href.includes("external")) {
             setupEvaluationForm();
             loadFirstQuestion();
             initCountUp();
+            updatePlaceholders();
+        }
+
+        function updatePlaceholders() {
+            const lang = document.documentElement.lang;
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                const translation = translations[lang] && translations[lang][key];
+                if (translation !== undefined) {
+                    el.placeholder = translation;
+                }
+            });
         }
 
         // Menu mobile
@@ -1377,7 +1383,7 @@ function displayQuestion(index) {
       <div class="px-6 py-4">
         <div class="flex justify-between items-center mb-4">
           <span class="text-sm font-medium text-blue-600">
-            Question ${index + 1}/${AUTO_QUESTIONS.length}
+            <span data-i18n="question.label">Question</span> ${index + 1}/${AUTO_QUESTIONS.length}
           </span>
           <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
             <div class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-500"
@@ -3112,7 +3118,7 @@ function showPrivacyPolicy() {
 
         // Fonction pour démarrer l'évaluation externe
         function startExternalEvaluation() {
-            const codeInput = document.querySelector('input[placeholder="Ex: ABC123"]');
+            const codeInput = document.getElementById('code');
             const relationInputs = document.querySelectorAll('input[name="relation"]');
             
             if (!codeInput || !codeInput.value.trim()) {
@@ -3226,7 +3232,7 @@ function showPrivacyPolicy() {
             questionsContent.innerHTML = `
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm font-medium text-blue-600">Question ${index + 1}/${EXTERNAL_QUESTIONS.length}</span>
+                        <span class="text-sm font-medium text-blue-600"><span data-i18n="question.label">Question</span> ${index + 1}/${EXTERNAL_QUESTIONS.length}</span>
                         <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
                             <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
                         </div>
@@ -4300,11 +4306,11 @@ function showPrivacyPolicy() {
             ];
             overlay.innerHTML = `
                 <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
-                    <h3 class="text-lg font-medium mb-4">Partager</h3>
+                    <h3 class="text-lg font-medium mb-4" data-i18n="shareFallback.title">Partager</h3>
                     <div class="flex flex-col space-y-2">
                         ${links.map(l => `<a href="${l.url}" target="_blank" class="px-4 py-2 rounded hover:bg-gray-100">${l.name}</a>`).join('')}
                     </div>
-                    <button class="mt-4 w-full px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" onclick="document.getElementById('share-fallback').remove()">Fermer</button>
+                    <button class="mt-4 w-full px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" onclick="document.getElementById('share-fallback').remove()"><span data-i18n="shareFallback.close">Fermer</span></button>
                 </div>`;
             overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
             document.body.appendChild(overlay);
@@ -4349,7 +4355,7 @@ function showPrivacyPolicy() {
     <div id="profile-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="text-xl font-bold text-gray-900">Mon Espace Personnel</h2>
+                <h2 class="text-xl font-bold text-gray-900" data-i18n="profileModal.title">Mon Espace Personnel</h2>
                 <span class="close" onclick="closeProfileModal()">&times;</span>
             </div>
             <div class="modal-body">
@@ -4359,19 +4365,19 @@ function showPrivacyPolicy() {
                         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
                             <i class="fas fa-key text-blue-600 text-xl"></i>
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">Accédez à votre profil</h3>
-                        <p class="text-sm text-gray-500">Entrez votre code unique pour consulter vos résultats</p>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2" data-i18n="profileModal.step1.title">Accédez à votre profil</h3>
+                        <p class="text-sm text-gray-500" data-i18n="profileModal.step1.desc">Entrez votre code unique pour consulter vos résultats</p>
                     </div>
                     
                     <div class="space-y-4">
                         <div>
-                            <label for="profile-code" class="block text-sm font-medium text-gray-700 mb-2">Code unique</label>
-                            <input type="text" id="profile-code" placeholder="Entrez votre code (ex: ABC123)" 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-mono tracking-wider uppercase">
+                            <label for="profile-code" class="block text-sm font-medium text-gray-700 mb-2" data-i18n="profileModal.codeLabel">Code unique</label>
+                            <input type="text" id="profile-code" placeholder="Entrez votre code (ex: ABC123)"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-mono tracking-wider uppercase" data-i18n-placeholder="profileModal.codePlaceholder">
                         </div>
                         <button onclick="checkProfileCode()" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                             <i class="fas fa-sign-in-alt mr-2"></i>
-                            Accéder à mon profil
+                            <span data-i18n="profileModal.accessButton">Accéder à mon profil</span>
                         </button>
                     </div>
                 </div>
@@ -4382,22 +4388,22 @@ function showPrivacyPolicy() {
                         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
                             <i class="fas fa-user-circle text-blue-600 text-xl"></i>
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">Profil de <span id="profile-name"></span></h3>
-                        <p class="text-sm text-gray-500">Code: <span id="display-code" class="font-mono font-bold"></span></p>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2"><span data-i18n="profileModal.step2.title">Profil de</span> <span id="profile-name"></span></h3>
+                        <p class="text-sm text-gray-500"><span data-i18n="profileModal.step2.codeLabel">Code:</span> <span id="display-code" class="font-mono font-bold"></span></p>
                     </div>
 
                     <!-- Statut des évaluations -->
                     <div class="bg-gray-50 rounded-lg p-4 mb-6">
-                        <h4 class="font-medium text-gray-900 mb-3">Statut des évaluations</h4>
+                        <h4 class="font-medium text-gray-900 mb-3" data-i18n="profileModal.step2.statusTitle">Statut des évaluations</h4>
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-600">Votre auto-évaluation</span>
+                                <span class="text-sm text-gray-600" data-i18n="profileModal.step2.selfEval">Votre auto-évaluation</span>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    <i class="fas fa-check mr-1"></i> Terminée
+                                    <i class="fas fa-check mr-1"></i> <span data-i18n="profileModal.step2.completed">Terminée</span>
                                 </span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-600">Évaluations des proches</span>
+                                <span class="text-sm text-gray-600" data-i18n="profileModal.step2.relativesEval">Évaluations des proches</span>
                                 <span id="evaluations-status" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
                                     <!-- Sera rempli dynamiquement -->
                                 </span>
@@ -4407,7 +4413,7 @@ function showPrivacyPolicy() {
                         <!-- Barre de progression -->
                         <div class="mt-4">
                             <div class="flex justify-between text-sm text-gray-600 mb-1">
-                                <span>Progression globale</span>
+                                <span data-i18n="profileModal.step2.progress">Progression globale</span>
                                 <span id="progress-text">0/4 terminé</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
@@ -4425,11 +4431,11 @@ function showPrivacyPolicy() {
                     <div class="flex space-x-3">
                         <button onclick="shareCode()" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                             <i class="fas fa-share mr-2"></i>
-                            Partager mon code
+                            <span data-i18n="profileModal.shareButton">Partager mon code</span>
                         </button>
                         <button id="seeResultsBtn" onclick="viewResults()" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                             <i class="fas fa-chart-pie mr-2"></i>
-                            Voir mes résultats
+                            <span data-i18n="profileModal.viewResultsButton">Voir mes résultats</span>
                         </button>
                     </div>
                 </div>
@@ -4440,10 +4446,10 @@ function showPrivacyPolicy() {
                         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
                             <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">Code introuvable</h3>
-                        <p class="text-sm text-gray-500 mb-4">Le code que vous avez entré n'existe pas ou est incorrect.</p>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2" data-i18n="profileModal.error.title">Code introuvable</h3>
+                        <p class="text-sm text-gray-500 mb-4" data-i18n="profileModal.error.desc">Le code que vous avez entré n'existe pas ou est incorrect.</p>
                         <button onclick="resetProfileModal()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
-                            Réessayer
+                            <span data-i18n="profileModal.error.retry">Réessayer</span>
                         </button>
                     </div>
                 </div>
