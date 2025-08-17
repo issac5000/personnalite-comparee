@@ -631,8 +631,8 @@
           <i class="fas fa-user text-2xl"></i>
         </div>
       <div class="mt-6">
-        <h3 class="text-lg font-semibold text-gray-900"><strong>1. Auto-évaluation</strong></h3>
-        <p class="mt-3 text-base text-gray-500 leading-relaxed">
+        <h3 class="text-lg font-semibold text-gray-900"><strong data-i18n="step1Title">1. Auto-évaluation</strong></h3>
+        <p class="mt-3 text-base text-gray-500 leading-relaxed" data-i18n="step1Desc">
           Répondez à 16 questions simples pour établir votre propre perception de votre personnalité.
         </p>
       </div>
@@ -644,8 +644,8 @@
           <i class="fas fa-users text-2xl"></i>
         </div>
         <div class="mt-6">
-          <h3 class="text-lg font-semibold text-gray-900"><strong>2. Évaluation par 3 proches</strong></h3>
-          <p class="mt-3 text-base text-gray-500 leading-relaxed">
+          <h3 class="text-lg font-semibold text-gray-900"><strong data-i18n="step2Title">2. Évaluation par 3 proches</strong></h3>
+          <p class="mt-3 text-base text-gray-500 leading-relaxed" data-i18n="step2Desc">
             Partagez votre code unique avec 3 personnes de votre entourage qui répondront à 20 questions.
           </p>
         </div>
@@ -657,8 +657,8 @@
           <i class="fas fa-chart-pie text-2xl"></i>
         </div>
         <div class="mt-6">
-          <h3 class="text-lg font-semibold text-gray-900"><strong>3. Profil complet</strong></h3>
-          <p class="mt-3 text-base text-gray-500 leading-relaxed">
+          <h3 class="text-lg font-semibold text-gray-900"><strong data-i18n="step3Title">3. Profil complet</strong></h3>
+          <p class="mt-3 text-base text-gray-500 leading-relaxed" data-i18n="step3Desc">
             Recevez une analyse pondérée combinant votre auto-évaluation et les évaluations de vos proches.
           </p>
         </div>
@@ -674,10 +674,10 @@
     <div class="max-w-3xl mx-auto">
         <!-- Titre & Sous-titre -->
         <div class="text-center">
-            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl" data-i18n="autoEvalSectionTitle">
                 Auto-évaluation
             </h2>
-            <p class="mt-4 text-xl text-gray-500">
+            <p class="mt-4 text-xl text-gray-500" data-i18n="autoEvalSectionSubtitle">
                 Répondez à ces 16 questions pour commencer votre analyse
             </p>
         </div>
@@ -693,13 +693,13 @@
             <!-- Navigation boutons -->
 <div class="mt-8 flex justify-center">
                 <button id="prev-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
-                    <i class="fas fa-arrow-left mr-2"></i> Question précédente
+                    <i class="fas fa-arrow-left mr-2"></i> <span data-i18n="prevQuestion">Question précédente</span>
                 </button>
                 <button id="next-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
-                    Question suivante <i class="fas fa-arrow-right ml-2"></i>
+                    <span data-i18n="nextQuestion">Question suivante</span> <i class="fas fa-arrow-right ml-2"></i>
                 </button>
                 <button id="finish-test" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
-                    Terminer le test <i class="fas fa-check ml-2"></i>
+                    <span data-i18n="finishTest">Terminer le test</span> <i class="fas fa-check ml-2"></i>
                 </button>
             </div>
         </div>
@@ -712,10 +712,10 @@
 <div id="home-enneagramme" data-aos="fade-left" class="section section-fonce py-16 px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mx-auto">
         <div class="text-center">
-            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl" data-i18n="evalFriendTitle">
                 Évaluer un proche
             </h2>
-            <p class="mt-4 text-xl text-gray-500">
+            <p class="mt-4 text-xl text-gray-500" data-i18n="evalFriendSubtitle">
                 Aidez un ami, un membre de votre famille ou un collègue à mieux comprendre sa personnalité
             </p>
         </div>
@@ -724,7 +724,7 @@
         <div class="mt-12 mb-4 rounded-[2rem] shadow-sm border border-gray-200 px-6 py-8">
             <form id="evaluation-form">
                 <div class="mb-6">
-                    <label for="code" class="block text-sm font-medium text-gray-700">Code unique de la personne</label>
+                    <label for="code" class="block text-sm font-medium text-gray-700" data-i18n="evalCodeLabel">Code unique de la personne</label>
                     <div class="mt-1 relative rounded-md shadow-sm">
                         <input type="text" name="code" id="code" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-4 pr-12 py-3 sm:text-sm border-gray-300 rounded-md" placeholder="Ex: ABC123" required>
                         <div class="absolute inset-y-0 right-0 flex items-center">
@@ -733,19 +733,19 @@
                             </button>
                         </div>
                     </div>
-                    <p class="mt-2 text-sm text-gray-500">Entrez le code que votre proche vous a communiqué</p>
+                    <p class="mt-2 text-sm text-gray-500" data-i18n="evalCodeHint">Entrez le code que votre proche vous a communiqué</p>
                 </div>
                 
                 <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-3">Votre relation avec cette personne</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-3" data-i18n="evalRelationLabel">Votre relation avec cette personne</label>
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div class="relative flex items-start">
                             <div class="flex items-center h-5">
                                 <input id="family" name="relation" type="radio" value="family" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" required>
                             </div>
                             <div class="ml-3 text-sm">
-                                <label for="family" class="font-medium text-gray-700">Membre de la famille</label>
-                                <p class="text-gray-500">Parent, frère, sœur, enfant...</p>
+                                <label for="family" class="font-medium text-gray-700" data-i18n="evalRelationFamily">Membre de la famille</label>
+                                <p class="text-gray-500" data-i18n="evalRelationFamilyDesc">Parent, frère, sœur, enfant...</p>
                             </div>
                         </div>
                         <div class="relative flex items-start">
@@ -753,8 +753,8 @@
                                 <input id="partner" name="relation" type="radio" value="partner" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" required>
                             </div>
                             <div class="ml-3 text-sm">
-                                <label for="partner" class="font-medium text-gray-700">Partenaire amoureux</label>
-                                <p class="text-gray-500">Conjoint, petit(e) ami(e)...</p>
+                                <label for="partner" class="font-medium text-gray-700" data-i18n="evalRelationPartner">Partenaire amoureux</label>
+                                <p class="text-gray-500" data-i18n="evalRelationPartnerDesc">Conjoint, petit(e) ami(e)...</p>
                             </div>
                         </div>
                         <div class="relative flex items-start">
@@ -762,8 +762,8 @@
                                 <input id="friend" name="relation" type="radio" value="friend" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" required>
                             </div>
                             <div class="ml-3 text-sm">
-                                <label for="friend" class="font-medium text-gray-700">Ami(e)</label>
-                                <p class="text-gray-500">Ami proche, meilleur ami...</p>
+                                <label for="friend" class="font-medium text-gray-700" data-i18n="evalRelationFriend">Ami(e)</label>
+                                <p class="text-gray-500" data-i18n="evalRelationFriendDesc">Ami proche, meilleur ami...</p>
                             </div>
                         </div>
                         <div class="relative flex items-start">
@@ -771,8 +771,8 @@
                                 <input id="colleague" name="relation" type="radio" value="colleague" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" required>
                             </div>
                             <div class="ml-3 text-sm">
-                                <label for="colleague" class="font-medium text-gray-700">Collègue de travail</label>
-                                <p class="text-gray-500">Collègue, manager, collaborateur...</p>
+                                <label for="colleague" class="font-medium text-gray-700" data-i18n="evalRelationColleague">Collègue de travail</label>
+                                <p class="text-gray-500" data-i18n="evalRelationColleagueDesc">Collègue, manager, collaborateur...</p>
                             </div>
                         </div>
                     </div>
@@ -780,7 +780,7 @@
                 
                 <div class="flex justify-center">
                     <button type="button" onclick="startExternalEvaluation()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
-                        Commencer l'évaluation <i class="fas fa-play ml-2"></i>
+                        <span data-i18n="evalStartBtn">Commencer l'évaluation</span> <i class="fas fa-play ml-2"></i>
                     </button>
                 </div>
             </form>
@@ -794,8 +794,8 @@
 
     <!-- Titre centré -->
     <div class="text-center">
-      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Parler avec Psycho'Bot</h2>
-      <p class="mt-4 text-xl text-gray-500">
+      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl" data-i18n="chatTitle">Parler avec Psycho'Bot</h2>
+      <p class="mt-4 text-xl text-gray-500" data-i18n="chatSubtitle">
         Discutez avec notre assistant IA pour en savoir plus sur les profils MBTI et Ennéagramme.
       </p>
     </div>
@@ -804,7 +804,8 @@
     <div class="mt-4 flex justify-end">
       <button id="clear-chat"
               onclick="resetConversation()"
-              class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full shadow">
+              class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full shadow"
+              data-i18n="chatReset">
         réinitialiser
       </button>
     </div>
@@ -816,13 +817,13 @@
 
         <!-- Suggestions: 2 côte à côte, 3e centrée en dessous quand visible -->
         <div id="chat-suggestions" class="question-buttons p-3">
-          <button class="suggestion-bubble" data-question="Explique-moi le MBTI">Explique-moi le MBTI</button>
-          <button class="suggestion-bubble" data-question="Mon profil est-il inné ?">Mon profil est-il inné ?</button>
-          <button class="suggestion-bubble" data-question="Pourquoi demander l’avis des proches ?">Pourquoi demander l’avis des proches ?</button>
+          <button class="suggestion-bubble" data-question="Explique-moi le MBTI" data-i18n="chatSugExplainMBTI">Explique-moi le MBTI</button>
+          <button class="suggestion-bubble" data-question="Mon profil est-il inné ?" data-i18n="chatSugInnate">Mon profil est-il inné ?</button>
+          <button class="suggestion-bubble" data-question="Pourquoi demander l’avis des proches ?" data-i18n="chatSugWhyRelatives">Pourquoi demander l’avis des proches ?</button>
         </div>
 
         <div id="pc-typing-indicator" class="pc-typing" aria-live="polite" role="status" hidden>
-          <span class="pc-typing-text">Psycho'Bot est en train d'écrire
+          <span class="pc-typing-text" data-i18n="chatTyping">Psycho'Bot est en train d'écrire
             <span class="pc-dots"><span>.</span><span>.</span><span>.</span></span>
           </span>
         </div>
@@ -835,7 +836,7 @@
                  class="flex-grow px-4 py-2 text-gray-900 placeholder-gray-400 bg-white border-none focus:outline-none focus:ring-0" />
           <button id="chat-send"
                   class="px-5 py-2 bg-black text-white font-medium hover:bg-gray-800 focus:outline-none">
-            Envoyer
+            <span data-i18n="chatSend">Envoyer</span>
           </button>
         </div>
       </div>
