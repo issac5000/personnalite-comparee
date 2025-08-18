@@ -3,146 +3,192 @@
 const AUTO_QUESTIONS = [
   {
     id: 1,
-    question: "Quand tu dois trancher un choix impliquant des valeurs et des faits, tu t'appuies d'abord sur…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "ce qui est aligné avec mes convictions internes", functions: { Fi: 3 }, enneagram: { 4: 2, 9: 1 } },
-      { text: "l’impact humain et relationnel autour de moi", functions: { Fe: 3, Te: 1 }, enneagram: { 2: 2, 6: 1 } },
-      { text: "la logique opérationnelle et la mesure des résultats", functions: { Te: 1, Ti: 3 }, enneagram: { 1: 2, 5: 1, 3: 1 } }
+      { text: "Je prends mes décisions en fonction de mes convictions profondes.", functions: { Fi: 3 }, enneagram: { "4": 2, "9": 1 } },
+      { text: "Je me demande comment mes choix vont impacter les autres.", functions: { Fe: 3, Te: 1 }, enneagram: { "2": 2, "6": 1 } },
+      { text: "Je cherche ce qui est logique et efficace, même si ce n’est pas agréable.", functions: { Te: 1, Ti: 3 }, enneagram: { "1": 2, "5": 1, "3": 1 } }
     ]
   },
   {
     id: 2,
-    question: "Face à un nouveau concept complexe, ta porte d’entrée naturelle c’est…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "explorer des possibilités et faire des liens inattendus", functions: { Ne: 3, Ni: 2 }, enneagram: { 7: 1, 5: 1 } },
-      { text: "raccrocher à des schémas connus et à l’expérience", functions: { Si: 3 }, enneagram: { 6: 2, 1: 1 } },
-      { text: "chercher le fil directeur, le sens profond", functions: { Ni: 2 }, enneagram: { 5: 2, 4: 1 } }
+      { text: "J’aime me fier à des données précises et fiables.", functions: { Si: 3 }, enneagram: { "6": 2, "1": 1 } },
+      { text: "J’improvise et j’agis dans l’instant sans forcément planifier.", functions: { Se: 3, Ne: 1 }, enneagram: { "7": 2, "8": 1 } },
+      { text: "Je vois des liens ou des significations profondes derrière les événements.", functions: { Ni: 3, Ne: 2 }, enneagram: { "4": 2, "5": 1 } }
     ]
   },
   {
     id: 3,
-    question: "Quand un imprévu bouscule ton plan…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "tu t’adaptes vite et testes sur le moment", functions: { Se: 2, Ne: 1 }, enneagram: { 7: 1, 8: 1 } },
-      { text: "tu réorganises pour sécuriser le résultat", functions: { Si: 2, Te: 1, Ni: 1 }, enneagram: { 1: 2, 6: 1 } },
-      { text: "tu prends du recul pour comprendre la dynamique", functions: { Ni: 2, Ti: 1, Si: 1 }, enneagram: { 5: 1, 6: 1 } }
+      { text: "J’ai besoin de comprendre en profondeur avant d’agir.", functions: { Ti: 3 }, enneagram: { "5": 2, "1": 1 } },
+      { text: "Je me sens poussé à aider les autres, même sans qu’ils demandent.", functions: { Fe: 3 }, enneagram: { "2": 2, "9": 1 } },
+      { text: "J’agis pour atteindre mes objectifs, quitte à être compétitif.", functions: { Te: 3 }, enneagram: { "3": 2, "8": 1 } }
     ]
   },
   {
     id: 4,
-    question: "Dans un repas de famille, un débat s'ouvre, ton réflexe dominant c'est...",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "structurer par l’analyse logique et les définitions", functions: { Ti: 3, Te: 1, Si: 1 }, enneagram: { 5: 2, 1: 1, 8: 1 } },
-      { text: "faire circuler la parole et harmoniser", functions: { Fe: 2, Fi: 1 }, enneagram: { 2: 2, 9: 1 } },
-      { text: "être en retrait, écouter et éviter les querelles", functions: { Fe: 2, Ti: -2 }, enneagram: { 2: 2, 9: 3 } }
+      { text: "Je garde mes ressentis pour moi, mais ils guident mes choix.", functions: { Fi: 3 }, enneagram: { "4": 2, "9": 1 } },
+      { text: "Je cherche la stabilité et les routines qui me rassurent.", functions: { Si: 3, Ni: 1 }, enneagram: { "6": 2, "9": 1 } },
+      { text: "Je m’appuie sur mes intuitions pour voir ce qui va arriver.", functions: { Ni: 3 }, enneagram: { "5": 1, "1": 2 } }
     ]
   },
   {
     id: 5,
-    question: "Ton environnement de travail qui te rend le plus efficace…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "process, clarté, repères stables", functions: { Si: 2, Te: 1, Ni: 1 }, enneagram: { 1: 2, 6: 1 } },
-      { text: "épuré, sensoriel, réactif", functions: { Se: 2, Ti: 1 }, enneagram: { 8: 2, 3: 1 } },
-      { text: "stimulant, ouvert aux associations d’idées", functions: { Ne: 2, Se: 1 }, enneagram: { 4: 2, 7: 1 } }
+      { text: "Je multiplie les idées et scénarios possibles.", functions: { Ne: 3 }, enneagram: { "7": 2, "6": 1 } },
+      { text: "Je cherche ce qui est juste et conforme à mes principes.", functions: { Ti: 3, Fi: 1 }, enneagram: { "1": 2, "4": 1 } },
+      { text: "Je veux agir de manière efficace et concrète.", functions: { Te: 3, Se: 2 }, enneagram: { "3": 2, "8": 1 } }
     ]
   },
   {
     id: 6,
-    question: "Quand tu aides quelqu’un…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "tu analyses la mécanique du problème", functions: { Ti: 2, Ni: 1 }, enneagram: { 5: 1, 6: 1 } },
-      { text: "tu proposes des étapes concrètes tout de suite", functions: { Te: 1, Se: 1, Ti: 2 }, enneagram: { 3: 1, 8: 1, 5: 1 } },
-      { text: "tu entres en résonance avec son vécu", functions: { Fe: 1, Fi: 2 }, enneagram: { 2: 3 } }
+      { text: "Je privilégie l’harmonie et j’évite les conflits.", functions: { Fe: 3, Fi: 2 }, enneagram: { "9": 2, "2": 1 } },
+      { text: "Je m’appuie sur des expériences passées pour décider.", functions: { Si: 3 }, enneagram: { "6": 2, "1": 1 } },
+      { text: "Je prends les devants et j’impose mon point de vue si nécessaire.", functions: { Te: 3, Se: 2 }, enneagram: { "8": 2, "3": 1 } }
     ]
   },
   {
     id: 7,
-    question: "Ta façon naturelle de planifier l’avenir…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "vision ciblée et trajectoire long terme", functions: { Ni: 3, Si: 2 }, enneagram: { 1: 1, 3: 1, 6: 1 } },
-      { text: "cartographie d’options et portes ouvertes", functions: { Ne: 3 }, enneagram: { 7: 2 } },
-      { text: "jalons concrets et gestion des risques", functions: { Si: 2, Te: 1, Ni: 1 }, enneagram: { 6: 2 } }
+      { text: "Je garde une vision claire et long terme de ce que je veux.", functions: { Ni: 3, Te: 1 }, enneagram: { "1": 2, "5": 1 } },
+      { text: "Je réagis aux opportunités de l’instant.", functions: { Se: 3 }, enneagram: { "7": 2, "8": 1 } },
+      { text: "J’évalue chaque détail pour être sûr de ne pas me tromper.", functions: { Si: 3, Ti: 2 }, enneagram: { "6": 2, "1": 1 } }
     ]
   },
   {
     id: 8,
-    question: "Dans un conflit relationnel…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "tu cherches l’accord qui préserve chacun", functions: { Fe: 2, Te: 1, Fi: 1 }, enneagram: { 9: 2, 2: 1 } },
-      { text: "tu vas droit au point à corriger", functions: { Te: 1, Se: 1, Ti: 1 }, enneagram: { 8: 2, 1: 1, 5: 1 } },
-      { text: "tu prends de la distance pour assimiler", functions: { Fi: 2, Ni: 1 }, enneagram: { 5: 2, 4: 1 } }
+      { text: "Je veux être reconnu pour ce que j’apporte aux autres.", functions: { Fe: 3 }, enneagram: { "2": 2, "3": 1 } },
+      { text: "Je cherche à comprendre des concepts abstraits par moi-même.", functions: { Ti: 3, Ni: 2 }, enneagram: { "5": 2, "4": 1 } },
+      { text: "J’aime expérimenter et vivre des sensations nouvelles.", functions: { Se: 3 }, enneagram: { "7": 2, "8": 1 } }
     ]
   },
   {
     id: 9,
-    question: "Ce qui te motive en premier lieu…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "être authentique et fidèle à toi-même", functions: { Fi: 3, Ti: 2 }, enneagram: { 4: 2 } },
-      { text: "atteindre un standard de performance", functions: { Te: 1, Ti: 2 }, enneagram: { 3: 3, 1: 1 } },
-      { text: "préserver la stabilité et la paix intérieure", functions: { Si: 2, Ni: 1 }, enneagram: { 9: 3, 6: 1 } }
+      { text: "Je me concentre sur mes valeurs intérieures avant tout.", functions: { Fi: 3 }, enneagram: { "4": 2, "9": 1 } },
+      { text: "Je fais ce qui est logique et cohérent avec la réalité.", functions: { Te: 3 }, enneagram: { "1": 2, "3": 1 } },
+      { text: "Je garde la paix et je m’adapte pour éviter les tensions.", functions: { Fe: 2, Si: 2 }, enneagram: { "9": 2, "6": 1 } }
     ]
   },
   {
     id: 10,
-    question: "Quand tu entres dans un endroit inconnu…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "tu scans les stimuli et passes à l’action", functions: { Se: 3 }, enneagram: { 7: 1, 8: 1 } },
-      { text: "tu compares avec des repères mémorisés", functions: { Si: 2 }, enneagram: { 6: 2 } },
-      { text: "tu cherches l’intention/le sens de l’ensemble", functions: { Ni: 3 }, enneagram: { 5: 2, 4: 1 } }
+      { text: "Je questionne et j’analyse tout en profondeur.", functions: { Ti: 3 }, enneagram: { "5": 2, "1": 1 } },
+      { text: "Je suis mes intuitions sans forcément pouvoir les prouver.", functions: { Ni: 3 }, enneagram: { "4": 2, "5": 1 } },
+      { text: "Je réagis rapidement à ce qui se passe autour de moi.", functions: { Se: 3 }, enneagram: { "8": 2, "7": 1 } }
     ]
   },
   {
     id: 11,
-    question: "En équipe, on te reconnaît surtout pour…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "l’organisation et la tenue des échéances", functions: { Te: 2, Si: 2 }, enneagram: { 1: 1, 3: 1, 6: 2 } },
-      { text: "l’inclusion et la qualité du climat", functions: { Fe: 2, Te: 2 }, enneagram: { 2: 2, 9: 1 } },
-      { text: "les idées originales et le pivot rapide", functions: { Ne: 3, Se: 1 }, enneagram: { 7: 2 } }
+      { text: "Je me repose sur des expériences passées pour prendre mes décisions.", functions: { Si: 3 }, enneagram: { "6": 2, "1": 1 } },
+      { text: "J’aime improviser, explorer ce qui m’entoure, sans plan préétabli.", functions: { Se: 3, Ne: 1 }, enneagram: { "7": 2, "9": 1 } },
+      { text: "Je suis guidé par des intuitions profondes que je ne peux toujours expliquer.", functions: { Ni: 3, Ne: 2 }, enneagram: { "1": 1, "9": 2 } },
+      { text: "Je passe d’une idée à l’autre sans jamais m’arrêter.", functions: { Ne: 3, Se: 1 }, enneagram: { "7": 2, "3": 1 } }
     ]
   },
   {
     id: 12,
-    question: "Ta relation au temps est plutôt…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "présent-action, tu ajustes en live", functions: { Se: 2, Ne: 2 }, enneagram: { 7: 1, 8: 1 } },
-      { text: "récurrence et routine maîtrisée", functions: { Si: 2, Ni: 1 }, enneagram: { 6: 2, 1: 1 } },
-      { text: "projection et scénarios futurs", functions: { Ni: 2, Si: 1 }, enneagram: { 5: 1, 3: 1 } }
+      { text: "J’analyse tout en profondeur avant de m’engager émotionnellement.", functions: { Ti: 3 }, enneagram: { "5": 2, "3": 1 } },
+      { text: "J’agis pour faire ce qui est bien, pas pour plaire.", functions: { Te: 3 }, enneagram: { "1": 2, "8": 1 } },
+      { text: "J’évite de me mettre en avant mais je ressens très fort ce que je vis.", functions: { Fi: 2, Si: 1 }, enneagram: { "4": 2, "9": 1 } },
+      { text: "Je me rends utile dès que je vois un besoin, même implicite.", functions: { Fe: 3 }, enneagram: { "2": 2, "6": 1 } }
     ]
   },
   {
     id: 13,
-    question: "Devant une règle bancale…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "tu cherches le moyen de la contourner", functions: { Te: 1, Se: 3, Ne: 2 }, enneagram: { 7: 1, 8: 2 } },
-      { text: "tu la suis si elle sécurise le cadre", functions: { Si: 2, Ti: 1 }, enneagram: { 6: 2 } },
-      { text: "tu la contournes si elle viole tes valeurs", functions: { Fi: 2, Ne: 1, Se: 2 }, enneagram: { 4: 1, 7: 1 } }
+      { text: "Je cherche à comprendre pour anticiper, je vois ce qui est caché.", functions: { Ni: 3 }, enneagram: { "5": 1, "1": 2 } },
+      { text: "J’agis vite et j’ajuste au fur et à mesure.", functions: { Se: 3 }, enneagram: { "8": 2, "3": 1 } },
+      { text: "Je ne supporte pas l’idée d’être inutile ou rejeté.", functions: { Fe: 3, Te: 2 }, enneagram: { "2": 2, "4": 1 } },
+      { text: "Je reviens toujours à ce qui fonctionne, je ne prends pas de risques inutiles.", functions: { Si: 3, Ni: 2 }, enneagram: { "6": 2, "9": 1 } }
     ]
   },
   {
     id: 14,
-    question: "Quand tu es seul...",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "Tu te retrouves vite sur les réseaux sociaux à intéragir avec d'autres", functions: { Se: 1, Fe: 1, Te: 1 }, enneagram: { 2: 1, 3: 1, 8: 1 } },
-      { text: "Tu profites de cette solitude pour faire ce qui te passionne (lire, regarder une vidéo etc)", functions: { Fi: 2, Ti: 2 }, enneagram: { 4: 1, 5: 1, 9: 1 } },
-      { text: "Tu cherche le moyen d'être en intéraction avec d'autres", functions: { Se: 1, Te: 1, Fe: 1 }, enneagram: { 7: 2, 2: 2 } }
+      { text: "J’explore toutes les idées possibles, même les plus improbables.", functions: { Ne: 3 }, enneagram: { "7": 2, "5": 1 } },
+      { text: "Je garde pour moi mes émotions et j’agis selon mon propre ressenti.", functions: { Fi: 3 }, enneagram: { "4": 2, "6": 1 } },
+      { text: "J’organise les choses pour atteindre des objectifs clairs.", functions: { Te: 3, Si: 2 }, enneagram: { "3": 2, "1": 1 } },
+      { text: "Je pose beaucoup de questions pour comprendre avant d’agir.", functions: { Ti: 3 }, enneagram: { "5": 2, "3": 1 } }
     ]
   },
   {
     id: 15,
-    question: "Pour résoudre un problème technique…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "tu démontes le système conceptuellement", functions: { Ti: 3 }, enneagram: { 5: 2 } },
-      { text: "tu appliques un protocole clair", functions: { Te: 1, Si: 2 }, enneagram: { 1: 2, 6: 1, 5: 1 } },
-      { text: "tu expérimentes et itères rapidement", functions: { Ne: 2, Se: 1 }, enneagram: { 7: 2, 3: 2 } }
+      { text: "Je prends souvent du recul pour voir la situation dans son ensemble.", functions: { Ni: 2, Ti: 1, Te: 1 }, enneagram: { "9": 2, "4": 1 } },
+      { text: "J’observe, j’évalue, et j’agis avec rapidité et précision.", functions: { Se: 3 }, enneagram: { "8": 2, "7": 1 } },
+      { text: "Je pense en termes de logique et de cohérence interne.", functions: { Ti: 3, Te: 2 }, enneagram: { "5": 1, "1": 2 } },
+      { text: "Je cherche à stabiliser ce qui m’entoure, à garder un cadre.", functions: { Si: 3 }, enneagram: { "6": 2, "2": 1 } }
     ]
   },
   {
     id: 16,
-    question: "Une vie réussie, pour toi, c’est…",
+    question: "Laquelle de ces descriptions te correspond le plus ?",
     options: [
-      { text: "fidélité à soi et aux proches", functions: { Fi: 2, Fe: 1, Ti: 1 }, enneagram: { 2: 1, 4: 2 } },
-      { text: "impact tangible et trace utile", functions: { Te: 1, Fe: 1 }, enneagram: { 3: 2, 1: 1, 8: 1 } },
-      { text: "paix, équilibre, absence de pression", functions: { Si: 1, Ne: 1, Se: 1 }, enneagram: { 9: 2 } }
+      { text: "Je donne pour recevoir de la reconnaissance et du lien.", functions: { Fe: 4 }, enneagram: { "2": 2, "3": 1 } },
+      { text: "J’agis pour que les choses soient faites, pas pour discuter.", functions: { Te: 1, Se: 1 }, enneagram: { "3": 2, "8": 1 } },
+      { text: "Je suis mes ressentis sans toujours chercher à les expliquer.", functions: { Fi: 3, Fe: 2 }, enneagram: { "4": 2, "9": 1 } },
+      { text: "Je jongle avec les idées, toujours en mouvement mental.", functions: { Ne: 3 }, enneagram: { "7": 2, "5": 1 } }
+    ]
+  },
+  {
+    id: 17,
+    question: "Laquelle de ces descriptions te correspond le plus ?",
+    options: [
+      { text: "Je veux faire ce qu’il faut, selon une logique implacable.", functions: { Ti: 3, Te: 1 }, enneagram: { "1": 2, "6": 1 } },
+      { text: "J’aime explorer de nouvelles idées sans forcément les creuser.", functions: { Ne: 3 }, enneagram: { "7": 2, "3": 1 } },
+      { text: "J’agis de manière efficace et directe.", functions: { Te: 3, Se: 2 }, enneagram: { "8": 2, "3": 1 } },
+      { text: "Je m’appuie sur des références précises et des habitudes stables.", functions: { Si: 3, Ni: 2 }, enneagram: { "6": 2, "9": 1 } }
+    ]
+  },
+  {
+    id: 18,
+    question: "Laquelle de ces descriptions te correspond le plus ?",
+    options: [
+      { text: "Je perçois des vérités profondes sans toujours pouvoir les verbaliser.", functions: { Ni: 3, Fi: 2 }, enneagram: { "5": 2, "4": 1 } },
+      { text: "J’agis vite et fort, je prends ma place naturellement.", functions: { Se: 3 }, enneagram: { "8": 2, "3": 1 } },
+      { text: "Je veux apaiser, lisser, éviter les tensions au maximum.", functions: { Fe: 3, Fi: 2 }, enneagram: { "2": 2, "9": 1 } },
+      { text: "Je ressens très fort mais je ne me laisse pas dicter mes émotions.", functions: { Fi: 3, Ti: 1 }, enneagram: { "4": 2, "6": 1 } }
+    ]
+  },
+  {
+    id: 19,
+    question: "Laquelle de ces descriptions te correspond le plus ?",
+    options: [
+      { text: "Je cherche la vérité, même si elle est inconfortable.", functions: { Ti: 3 }, enneagram: { "5": 3, "1": 2 } },
+      { text: "J’agis pour régler les choses, sans forcément tout comprendre.", functions: { Te: 2 }, enneagram: { "3": 2, "8": 1 } },
+      { text: "J’explore tous les scénarios possibles, juste au cas où.", functions: { Ne: 3 }, enneagram: { "6": 2, "7": 1 } },
+      { text: "Je garde une constance, une routine qui me sécurise.", functions: { Si: 3, Ni: 1 }, enneagram: { "6": 2, "9": 1 } }
+    ]
+  },
+  {
+    id: 20,
+    question: "Laquelle de ces descriptions te correspond le plus ?",
+    options: [
+      { text: "J’agis par principe, fidèle à une vision intérieure de la vérité.", functions: { Fi: 4 }, enneagram: { "1": 1, "4": 2 } },
+      { text: "J’observe les signaux faibles et je fais des liens très subtils.", functions: { Ni: 3, Ne: 2 }, enneagram: { "5": 1, "9": 2 } },
+      { text: "Je me jette dans l’action sans perdre de temps.", functions: { Se: 3 }, enneagram: { "8": 2, "7": 1 } },
+      { text: "Je cherche à rendre service et à créer de l’harmonie autour de moi.", functions: { Fe: 4 }, enneagram: { "2": 2, "9": 1 } }
     ]
   }
 ];
