@@ -1649,6 +1649,9 @@ function displayResults(results) {
             if (typeof applyTranslations === 'function') {
                 applyTranslations();
             }
+            if (typeof i18n !== 'undefined' && typeof i18n.translate === 'function') {
+                i18n.translate();
+            }
 
             // Fermer avec ESC
             document.addEventListener('keydown', function(e) {
@@ -2599,6 +2602,11 @@ function showSupport() {
   `;
   showModal('<span data-i18n="footer.legal.mentions.title">Mentions Légales</span>', content);
 }
+window.showPrivacyPolicy = showPrivacyPolicy;
+window.showTermsOfService = showTermsOfService;
+window.showLegalNotices = showLegalNotices;
+window.showCookies = showCookies;
+window.showSupport = showSupport;
         function showContact() {
             const content = `
                 <div class="space-y-4">
@@ -4470,9 +4478,9 @@ async function trackEvent(eventName, meta = {}) {
 })();
 </script>
 
-<script src="nav.js"></script>
 <script src="lang.js"></script>
 <script src="i18n.js"></script>
+<script src="nav.js"></script>
 
 
 
