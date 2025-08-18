@@ -36,7 +36,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.0.7/countUp.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Supabase JS library -->
    
     <style>
@@ -1969,7 +1968,8 @@ function displayResults(results) {
     if (autoEvalSection) {
         autoEvalSection.parentNode.insertBefore(resultsSection, autoEvalSection.nextSibling);
         initCountUp(resultsSection);
-        addPDFDownloadHandler(resultsSection);
+
+        applyTranslations();
 
         setTimeout(() => {
             resultsSection.scrollIntoView({ behavior: 'smooth' });
@@ -1982,36 +1982,14 @@ function displayResults(results) {
 
         // Génération du HTML des résultats
         function generateResultsHTML(results) {
-            const mbtiDescriptions = {
-                'INTJ': 'L\'Architecte - Visionnaires stratégiques avec un plan pour tout.',
-                'INTP': 'Le Penseur - Penseurs logiques et créatifs, toujours à la recherche de nouvelles idées.',
-                'ENTJ': 'Le Commandant - Leaders naturels, charismatiques et déterminés.',
-                'ENTP': 'L\'Innovateur - Inventifs et curieux, excellents pour trouver des solutions originales.',
-                'INFJ': 'L\'Avocat - Idéalistes créatifs et perspicaces, motivés par leurs valeurs profondes.',
-                'INFP': 'Le Médiateur - Poétiques, gentils et altruistes, toujours désireux d\'aider.',
-                'ENFJ': 'Le Donateur - Charismatiques et empathiques, motivés par le désir d\'aider les autres.',
-                'ENFP': 'L\'Inspirateur - Enthousiastes, créatifs et sociables, toujours à la recherche de nouvelles expériences.',
-                'ISTJ': 'Le Logisticien - Pratiques et factuels, fiables et responsables.',
-                'ISFJ': 'Le Protecteur - Chaleureux et consciencieux, toujours prêts à protéger leurs proches.',
-                'ESTJ': 'L\'Exécutif - Excellents administrateurs, incomparables pour gérer avec efficacité.',
-                'ESFJ': 'Le Consul - Extraordinairement attentionnés, sociables et populaires.',
-                'ISTP': 'Le Virtuose - Mécaniciens audacieux et pratiques, maîtres de tous les types d\'outils.',
-                'ISFP': 'L\'Aventurier - Artistes flexibles et charmants, toujours prêts à explorer.',
-                'ESTP': 'L\'Entrepreneur - Intelligents, énergiques et très perceptifs.',
-                'ESFP': 'L\'Amuseur - Spontanés, énergiques et enthousiastes.'
-            };
-            
-            const enneagramDescriptions = {
-                '1': 'Le Perfectionniste - Motivé par le besoin de vivre correctement et d\'améliorer le monde.',
-                '2': 'L\'Altruiste - Motivé par le besoin d\'être aimé et d\'aider les autres.',
-                '3': 'Le Bâtisseur - Motivé par le besoin de réussir et d\'être reconnu.',
-                '4': 'L\'Artiste - Motivé par le besoin d\'exprimer son authenticité unique.',
-                '5': 'L\'Investigateur - Motivé par le besoin de comprendre le monde.',
-                '6': 'Le Loyaliste - Motivé par le besoin de sécurité et de soutien.',
-                '7': 'L\'Enthousiaste - Motivé par le besoin de maintenir le bonheur et l\'enthousiasme.',
-                '8': 'Le Challenger - Motivé par le besoin d\'être autonome et de contrôler sa vie.',
-                '9': 'Le Médiateur - Motivé par le besoin de maintenir la paix intérieure et extérieure.'
-            };
+            const lang = localStorage.getItem('lang') || 'fr';
+            const mbtiDescKey = `mbti.types.${results.mbtiType}.desc`;
+            const mbtiDesc = translations[lang][mbtiDescKey] || '';
+
+            const enneaNameKey = `enneagramme.types.${results.enneagramType}.name`;
+            const enneaName = translations[lang][enneaNameKey] || '';
+            const enneaDescKey = `enneagramme.types.${results.enneagramType}.desc`;
+            const enneaDesc = translations[lang][enneaDescKey] || '';
             
             return `
                 <div class="max-w-4xl mx-auto">
@@ -2062,15 +2040,15 @@ function displayResults(results) {
                                     <h4 class="text-lg font-medium text-gray-900" data-i18n="results.mbti.title">Profil MBTI</h4>
                                     <div class="mt-4 bg-green-50 rounded-lg p-4">
                                         <p class="text-gray-700 font-medium">${results.mbtiType}</p>
-                                        <p class="text-gray-600 text-sm mt-1">${mbtiDescriptions[results.mbtiType]}</p>
+                                        <p class="text-gray-600 text-sm mt-1" data-i18n="${mbtiDescKey}">${mbtiDesc}</p>
                                     </div>
                                 </div>
 
                                 <div>
                                     <h4 class="text-lg font-medium text-gray-900" data-i18n="results.enneagram.title">Profil Ennéagramme</h4>
                                     <div class="mt-4 bg-blue-50 rounded-lg p-4">
-                                        <p class="text-gray-700 font-medium">Type ${results.enneagramType}</p>
-                                        <p class="text-gray-600 text-sm mt-1">${enneagramDescriptions[results.enneagramType]}</p>
+                                        <p class="text-gray-700 font-medium">Type ${results.enneagramType} - <span data-i18n="${enneaNameKey}">${enneaName}</span></p>
+                                        <p class="text-gray-600 text-sm mt-1" data-i18n="${enneaDescKey}">${enneaDesc}</p>
                                     </div>
                                 </div>
                             </div>
@@ -2078,9 +2056,6 @@ function displayResults(results) {
                             <div class="mt-8 flex flex-wrap justify-center gap-4">
                                 <button onclick="shareCode()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                                     <i class="fas fa-share mr-2"></i> <span data-i18n="results.buttons.share">Partager</span>
-                                </button>
-                                <button class="download-pdf-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                    <i class="fas fa-download mr-2"></i> <span data-i18n="results.buttons.downloadPdf">Télécharger PDF</span>
                                 </button>
                                 <button onclick="restartTest()" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <i class="fas fa-redo mr-2"></i> <span data-i18n="results.buttons.restart">Refaire le test</span>
@@ -3974,10 +3949,6 @@ function showPrivacyPolicy() {
 
                         <!-- Actions -->
                         <div class="flex space-x-3">
-                            <button class="download-pdf-btn flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                                <i class="fas fa-download mr-2"></i>
-                                <span data-i18n="results.details.downloadPdf">Télécharger PDF</span>
-                            </button>
                             <button onclick="shareProfileResults('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                                 <i class="fas fa-share mr-2"></i>
                                 <span data-i18n="results.details.share">Partager</span>
@@ -3990,7 +3961,6 @@ function showPrivacyPolicy() {
             // Ajouter la modale au DOM
     document.body.appendChild(resultsModal);
     initCountUp(resultsModal);
-    addPDFDownloadHandler(resultsModal);
     applyTranslations();
     const titleEl = resultsModal.querySelector('[data-i18n="results.details.title"]');
     if (titleEl) { titleEl.innerHTML = titleEl.innerHTML.replace('{name}', profile.name); }
@@ -4241,54 +4211,6 @@ function showPrivacyPolicy() {
             }
         }
 
-        function addPDFDownloadHandler(root) {
-            const btn = root.querySelector('.download-pdf-btn');
-            if (btn) {
-                btn.addEventListener('click', downloadResultsPDF);
-            }
-        }
-
-        function downloadResultsPDF() {
-            let container = document.querySelector('#results-modal .modal-content');
-            let actionsSelector = '.flex.space-x-3';
-            if (!container) {
-                container = document.querySelector('.bg-blue-50 .bg-white.shadow-xl');
-                actionsSelector = '.flex.flex-wrap.justify-center.gap-4';
-            }
-            if (!container) return;
-
-            const clone = container.cloneNode(true);
-
-            const actions = clone.querySelector(actionsSelector);
-            if (actions) actions.remove();
-
-            const canvases = container.querySelectorAll('canvas');
-            const cloneCanvases = clone.querySelectorAll('canvas');
-            canvases.forEach((canvas, idx) => {
-                const img = document.createElement('img');
-                img.src = canvas.toDataURL('image/png');
-                const rect = canvas.getBoundingClientRect();
-                img.style.width = rect.width + 'px';
-                img.style.height = rect.height + 'px';
-                cloneCanvases[idx].replaceWith(img);
-            });
-
-            clone.style.position = 'absolute';
-            clone.style.left = '-9999px';
-            document.body.appendChild(clone);
-
-            const opt = {
-                margin: 0,
-                filename: 'personnalite-comparee-resultats.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(clone).save().then(() => {
-                document.body.removeChild(clone);
-            });
-        }
 
         async function shareProfileResults(code) {
             const result = await fetchUserProfileFromSupabase(code);
