@@ -4998,6 +4998,26 @@ async function trackEvent(eventName, meta = {}) {
 <script src="lang.js"></script>
 <script src="i18n.js"></script>
 
+<script>
+  function showCookies() {
+    const content = `
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold text-gray-900" data-i18n="footer.legal.cookies.title">Cookies et stockage local</h3>
+        <p class="text-gray-700" data-i18n="footer.legal.cookies.text">
+          Ce site n’utilise pas de cookies de suivi.<br>
+          Seules certaines données nécessaires au fonctionnement (comme la progression dans le test ou le code d’accès aux résultats) sont stockées localement dans le navigateur ou dans notre base de données Supabase.
+        </p>
+      </div>
+    `;
+    showModal('<span data-i18n="footer.legal.cookies.title">Cookies et stockage local</span>', content);
+  }
+
+  window.showPrivacyPolicy = showPrivacyPolicy;
+  window.showTermsOfService = showTermsOfService;
+  window.showLegalNotices = showLegalNotices;
+  window.showCookies = showCookies;
+  window.showSupport = showSupport;
+</script>
 
 
 </body>
