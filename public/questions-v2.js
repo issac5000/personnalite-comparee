@@ -639,6 +639,12 @@ const EXTERNAL_QUESTIONS = [
   }
 ];
 
-if (typeof module !== 'undefined') {
+// Expose the questions arrays in both browser and Node environments
+if (typeof window !== 'undefined') {
+  window.AUTO_QUESTIONS = AUTO_QUESTIONS;
+  window.EXTERNAL_QUESTIONS = EXTERNAL_QUESTIONS;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = { AUTO_QUESTIONS, EXTERNAL_QUESTIONS };
 }
