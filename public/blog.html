@@ -3103,10 +3103,12 @@ function showPrivacyPolicy() {
             document.getElementById('display-code').textContent = code;
             
             // Calculer le statut des évaluations
-            const completedEvaluations = profile.externalEvaluations.filter(ev => ev.completed).length;
+            const completedEvaluations = Array.isArray(profile.externalEvaluations)
+                ? profile.externalEvaluations.filter(ev => ev.completed).length
+                : 0;
             // Dans notre système, un minimum de trois évaluations externes est requis
             const totalEvaluationsRequired = 3;
-            const totalProgress = profile.selfEvaluationCompleted ? completedEvaluations + 1 : completedEvaluations;
+            const totalProgress = completedEvaluations + (profile.selfEvaluationCompleted ? 1 : 0);
             const maxProgress = totalEvaluationsRequired + 1; // +1 pour l'auto-évaluation
             
             // Mettre à jour le statut des évaluations
@@ -3123,7 +3125,9 @@ function showPrivacyPolicy() {
             // Mettre à jour la barre de progression
             const progressPercent = (totalProgress / maxProgress) * 100;
             document.getElementById('progress-bar').style.width = progressPercent + '%';
-            document.getElementById('progress-text').textContent = `${totalProgress}/${maxProgress} terminé`;
+            const lang = localStorage.getItem('lang') || 'fr';
+            const suffix = translations[lang]['profileModal.step2.progressSuffix'] || '';
+            document.getElementById('progress-text').textContent = `${totalProgress}/${maxProgress} ${suffix}`;
             
             // Afficher le message selon le statut (3 évaluations requises)
             displayStatusMessage(profile, completedEvaluations, 3);
