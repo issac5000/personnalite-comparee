@@ -193,6 +193,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
         }
 
         body {
@@ -450,7 +451,7 @@
             <a href="index.html#home-ia" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium" data-i18n="menu.ai">IA spécialisée</a>
             <a href="blog.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium" data-i18n="menu.blog">Blog</a>
             <a href="index.html#home-faq" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium" data-i18n="menu.faq">FAQ</a>
-            <button id="profile-btn-desktop" onclick="openProfileModal" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black" data-i18n="menu.profile">Mon profil</button>
+            <button id="profile-btn-desktop" class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black" data-i18n="menu.profile">Mon profil</button>
         </nav>
         <div class="-mr-2 flex items-center md:hidden">
             <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
@@ -504,7 +505,7 @@
                 <a href="index.html#home-ia" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium" data-i18n="menu.ai">IA spécialisée</a>
                 <a href="blog.html" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium" data-i18n="menu.blog">Blog</a>
                 <a href="index.html#home-faq" class="text-gray-500 hover:text-gray-700 block px-3 py-2 rounded-md text-base font-medium" data-i18n="menu.faq">FAQ</a>
-                <button id="profile-btn-mobile" onclick="openProfileModal()" class="w-full mt-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800" data-i18n="menu.profile">
+                <button id="profile-btn-mobile" class="w-full mt-2 inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800" data-i18n="menu.profile">
                     Mon profil
                 </button>
             </div>
@@ -3365,7 +3366,7 @@ function showPrivacyPolicy() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             const menuIcon = document.getElementById('menu-icon');
-            
+
             if (mobileMenuButton && mobileMenu) {
                 mobileMenuButton.addEventListener('click', function() {
                     const isOpen = mobileMenu.style.display === 'block';
@@ -3390,6 +3391,15 @@ function showPrivacyPolicy() {
                         mobileMenuButton.setAttribute('aria-expanded', 'false');
                     });
                 });
+            }
+
+            const profileBtnDesktop = document.getElementById('profile-btn-desktop');
+            const profileBtnMobile = document.getElementById('profile-btn-mobile');
+            if (profileBtnDesktop) {
+                profileBtnDesktop.addEventListener('click', () => openProfileModal());
+            }
+            if (profileBtnMobile) {
+                profileBtnMobile.addEventListener('click', () => openProfileModal());
             }
         });
         
