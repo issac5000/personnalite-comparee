@@ -672,16 +672,16 @@
                 <div>
                     <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase" data-i18n="footer.legal_title">Légal</h3>
                     <ul class="mt-4 space-y-4">
-                        <li><a href="#" onclick="showPrivacyPolicy(); return false;" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.privacy">Confidentialité</a></li>
-                        <li><a href="#" onclick="showTermsOfService(); return false;" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.terms">Conditions d'utilisation</a></li>
-                        <li><a href="#" onclick="showLegalNotices(); return false;" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.legal">Mentions légales</a></li>
-                        <li><a href="#" onclick="showLegalNotices(); return false;" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.cookies">Cookies</a></li>
+                        <li><a href="#" onclick="event.preventDefault(); showPrivacyPolicy();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.privacy">Confidentialité</a></li>
+                        <li><a href="#" onclick="event.preventDefault(); showTermsOfService();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.terms">Conditions d'utilisation</a></li>
+                        <li><a href="#" onclick="event.preventDefault(); showLegalNotices();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.legal">Mentions légales</a></li>
+                        <li><a href="#" onclick="event.preventDefault(); showLegalNotices();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.cookies">Cookies</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase" data-i18n="footer.contact_title">Contact</h3>
                     <ul class="mt-4 space-y-4">
-                        <li><a href="#" onclick="showContact(); return false;" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.support">Support</a></li>
+                        <li><a href="#" onclick="event.preventDefault(); showContact();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.support">Support</a></li>
                         <li class="flex space-x-6 pt-2">
                             <a href="#" class="text-gray-400 hover:text-white transition-colors">
                                 <span class="sr-only">Facebook</span>
