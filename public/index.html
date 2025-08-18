@@ -3624,10 +3624,12 @@ function showPrivacyPolicy() {
             document.getElementById('display-code').textContent = code;
             
             // Calculer le statut des évaluations
-            const completedEvaluations = profile.externalEvaluations.filter(ev => ev.completed).length;
+            const completedEvaluations = Array.isArray(profile.externalEvaluations)
+                ? profile.externalEvaluations.filter(ev => ev.completed).length
+                : 0;
             // Dans notre système, un minimum de trois évaluations externes est requis
             const totalEvaluationsRequired = 3;
-            const totalProgress = profile.selfEvaluationCompleted ? completedEvaluations + 1 : completedEvaluations;
+            const totalProgress = completedEvaluations + (profile.selfEvaluationCompleted ? 1 : 0);
             const maxProgress = totalEvaluationsRequired + 1; // +1 pour l'auto-évaluation
             
             // Mettre à jour le statut des évaluations
@@ -3644,7 +3646,9 @@ function showPrivacyPolicy() {
             // Mettre à jour la barre de progression
             const progressPercent = (totalProgress / maxProgress) * 100;
             document.getElementById('progress-bar').style.width = progressPercent + '%';
-            document.getElementById('progress-text').textContent = `${totalProgress}/${maxProgress} terminé`;
+            const lang = localStorage.getItem('lang') || 'fr';
+            const suffix = translations[lang]['profileModal.step2.progressSuffix'] || '';
+            document.getElementById('progress-text').textContent = `${totalProgress}/${maxProgress} ${suffix}`;
             
             // Afficher le message selon le statut (3 évaluations requises)
             displayStatusMessage(profile, completedEvaluations, 3);
@@ -3834,6 +3838,8 @@ function showPrivacyPolicy() {
         }
 
         function displayDetailedResults(profile, code) {
+            const lang = localStorage.getItem('lang') || 'fr';
+            const coherenceLabel = translations[lang]['results.details.coherence.label'];
             // Créer une nouvelle modale pour les résultats
             const resultsModal = document.createElement('div');
             resultsModal.id = 'results-modal';
@@ -3841,7 +3847,7 @@ function showPrivacyPolicy() {
             resultsModal.innerHTML = `
                 <div class="modal-content" style="max-width: 800px;">
                     <div class="modal-header">
-                        <h2 class="text-xl font-bold text-gray-900" data-i18n="results.modal.title">Résultats Détaillés - ${profile.name}</h2>
+                        <h2 class="text-xl font-bold text-gray-900" data-i18n="results.details.title"></h2>
                         <span class="close" onclick="closeResultsModal()">&times;</span>
                     </div>
                     <div class="modal-body">
@@ -3849,39 +3855,39 @@ function showPrivacyPolicy() {
                             <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
                                 <i class="fas fa-chart-pie text-green-600 text-2xl"></i>
                             </div>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2" data-i18n="results.modal.analysis">Analyse Complète</h3>
-                            <p class="text-sm text-gray-500"><span data-i18n="results.modal.code">Code:</span> <span class="font-mono font-bold">${code}</span></p>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2" data-i18n="results.details.analysis">Analyse Complète</h3>
+                            <p class="text-sm text-gray-500"><span data-i18n="results.details.code">Code:</span> <span class="font-mono font-bold">${code}</span></p>
                         </div>
 
                         <!-- Résultats MBTI et Ennéagramme -->
         <div class="grid md:grid-cols-2 gap-6 mb-6">
           <div class="bg-blue-50 rounded-lg p-4">
-            <h4 class="font-semibold text-blue-900 mb-2" data-i18n="results.modal.mbtiTitle">Type MBTI</h4>
+            <h4 class="font-semibold text-blue-900 mb-2" data-i18n="results.details.mbtiTitle">Type MBTI</h4>
             <div class="text-2xl font-bold text-blue-600 mb-2">${profile.results.mbti}</div>
             <div class="mt-2">
               ${
                 profile.results.mbtiCertainty != null
-                  ? `<p class="mb-1" data-i18n="results.modal.certainty">Certitude</p>
+                  ? `<p class="mb-1" data-i18n="results.details.certainty">Certitude</p>
                      <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
                        <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-blue-500 transition-all duration-1000" data-width="${profile.results.mbtiCertainty}" style="width:0"></div>
                        <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.mbtiCertainty}%</span>
                      </div>`
-                  : `<p data-i18n="results.modal.pending">Certitude : Données en cours...</p>`
+                  : `<p data-i18n="results.details.pending">Certitude : Données en cours...</p>`
               }
             </div>
           </div>
           <div class="bg-purple-50 rounded-lg p-4">
-            <h4 class="font-semibold text-purple-900 mb-2" data-i18n="results.modal.enneagramTitle">Ennéagramme</h4>
+            <h4 class="font-semibold text-purple-900 mb-2" data-i18n="results.details.enneagramTitle">Ennéagramme</h4>
             <div class="text-2xl font-bold text-purple-600 mb-2">${profile.results.enneagram}</div>
             <div class="mt-2">
               ${
                 profile.results.enneagramCertainty != null
-                  ? `<p class="mb-1" data-i18n="results.modal.certainty">Certitude</p>
+                  ? `<p class="mb-1" data-i18n="results.details.certainty">Certitude</p>
                      <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
                        <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-purple-500 transition-all duration-1000" data-width="${profile.results.enneagramCertainty}" style="width:0"></div>
                        <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.enneagramCertainty}%</span>
                      </div>`
-                  : `<p data-i18n="results.modal.pending">Certitude : Données en cours...</p>`
+                  : `<p data-i18n="results.details.pending">Certitude : Données en cours...</p>`
               }
             </div>
           </div>
@@ -3891,34 +3897,34 @@ function showPrivacyPolicy() {
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
           ${
             profile.results.overallCertainty != null
-              ? `<p class="mb-1" data-i18n="results.modal.overallCertainty">Certitude globale</p>
+              ? `<p class="mb-1" data-i18n="results.details.overallCertainty">Certitude globale</p>
                  <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
                    <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-green-500 transition-all duration-1000" data-width="${profile.results.overallCertainty}" style="width:0"></div>
                    <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.overallCertainty}%</span>
                  </div>`
-              : `<p data-i18n="results.modal.pending">Certitude : Données en cours...</p>`
+              : `<p data-i18n="results.details.pending">Certitude : Données en cours...</p>`
           }
-          <p class="text-sm text-gray-600 mt-2" data-i18n="results.modal.basedOnRelatives">Basé sur les évaluations de vos proches</p>
-          ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2" data-i18n="results.modal.increaseCertainty">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
+          <p class="text-sm text-gray-600 mt-2" data-i18n="results.details.basedOnRelatives">Basé sur les évaluations de vos proches</p>
+          ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2" data-i18n="results.details.increaseCertainty">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
         </div>
 
 
         <!-- Graphiques MBTI & Ennéagramme -->
         <div class="grid md:grid-cols-2 gap-6 mb-6">
           <div class="bg-white rounded-lg p-4">
-            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="results.modal.mbtiDichotomies">Dichotomies MBTI</h4>
+            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="results.details.mbtiDichotomies">Dichotomies MBTI</h4>
             <canvas id="mbtiChart" height="220"></canvas>
           </div>
           <div class="bg-white rounded-lg p-4">
-            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="results.modal.enneagramTypes">Types Ennéagramme</h4>
+            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="results.details.enneagramTypes">Types Ennéagramme</h4>
             <canvas id="enneagramChart" height="220"></canvas>
           </div>
         </div>
 
         <div id="ai-profile-summary" class="mt-6 bg-gray-50 rounded-lg p-5 shadow-sm mb-6">
-            <h4 class="font-semibold text-gray-900 text-lg mb-3" data-i18n="results.modal.aiSummaryTitle">Description succincte du profil par Psycho'Bot</h4>
+            <h4 class="font-semibold text-gray-900 text-lg mb-3" data-i18n="results.details.aiSummaryTitle">Description succincte du profil par Psycho'Bot</h4>
             <div id="ai-summary-content" class="relative text-sm leading-relaxed text-gray-700 max-h-80 overflow-y-auto">
-                <span data-i18n="results.modal.generating">Génération en cours…</span>
+                <span data-i18n="results.details.generating">Génération en cours…</span>
                 <div id="scroll-indicator" aria-hidden="true" class="pointer-events-none hidden absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-white flex items-end justify-center pb-1 text-gray-500">
                     <span class="text-xl animate-bounce">⌄</span>
                 </div>
@@ -3927,23 +3933,23 @@ function showPrivacyPolicy() {
 
                             <!-- Détail des évaluations -->
                         <div class="mb-6">
-                            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="results.modal.detailTitle">Détail des évaluations</h4>
+                            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="results.details.detailTitle">Détail des évaluations</h4>
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                                     <div>
-                                        <span class="text-sm font-medium text-gray-700" data-i18n="results.modal.selfEvaluation">Auto-évaluation</span>
+                                        <span class="text-sm font-medium text-gray-700" data-i18n="results.details.selfEvaluation">Auto-évaluation</span>
                                         <div class="text-xs text-gray-500">${profile.self.mbti} — type ${profile.self.enneagram}</div>
                                     </div>
-                                    <span class="text-sm text-green-600 font-medium" data-i18n="results.modal.completed">✓ Complétée</span>
+                                    <span class="text-sm text-green-600 font-medium" data-i18n="results.details.completed">✓ Complétée</span>
                                 </div>
                                 ${profile.externalEvaluations.map(eval => `
                                     <div class="flex items-center justify-between p-3 ${eval.completed ? 'bg-green-50' : 'bg-gray-50'} rounded-lg">
                                         <div>
                                             <span class="text-sm font-medium text-gray-700">${eval.relation}</span>
-                                            <div class="text-xs text-gray-500">${eval.mbti} — type ${eval.enneagram} — MBTI : <strong>Cohérence ${eval.coherenceMBTI}</strong> — Ennéagramme : <strong>Cohérence ${eval.coherenceEnneagramme}</strong></div>
+                                            <div class="text-xs text-gray-500">${eval.mbti} — type ${eval.enneagram} — MBTI : <strong>${coherenceLabel} ${eval.coherenceMBTI}</strong> — Ennéagramme : <strong>${coherenceLabel} ${eval.coherenceEnneagramme}</strong></div>
                                         </div>
                                           <span class="text-sm ${eval.completed ? 'text-green-600' : 'text-gray-500'} font-medium">
-                                              ${eval.completed ? `<span data-i18n="results.modal.completedOn">✓ Complétée le</span> ${new Date(eval.completedAt).toLocaleDateString('fr-FR')}` : `<span data-i18n="results.modal.pendingShort">⏳ En attente</span>`}
+                                              ${eval.completed ? `<span data-i18n="results.details.completedOn">✓ Complétée le</span> ${new Date(eval.completedAt).toLocaleDateString('fr-FR')}` : `<span data-i18n="results.details.pendingShort">⏳ En attente</span>`}
                                           </span>
                                     </div>
                                 `).join('')}
@@ -3951,11 +3957,11 @@ function showPrivacyPolicy() {
                         </div>
 
 <div class="mt-8 mb-6 p-4 rounded-lg bg-gray-100 border border-gray-300 text-xs text-gray-700 leading-relaxed">
-  <p class="mb-2"><strong data-i18n="results.modal.coherence.title"> Cohérence</strong> : <span data-i18n="results.modal.coherence.desc">détermine dans quelle mesure les réponses d’un proche sont logiquement stables.</span></p>
+  <p class="mb-2"><strong data-i18n="results.details.coherence.title"> Cohérence</strong> : <span data-i18n="results.details.coherence.desc">détermine dans quelle mesure les réponses d’un proche sont logiquement stables.</span></p>
   <ul class="list-disc list-inside space-y-1">
-    <li data-i18n="results.modal.coherence.strong"><strong>Forte</strong> → peu voire pas de contradictions, réponses alignées</li>
-    <li data-i18n="results.modal.coherence.medium"><strong>Moyenne</strong> → quelques hésitations ou contradictions</li>
-    <li data-i18n="results.modal.coherence.weak"><strong>Faible</strong> → réponses peu cohérentes entre elles</li>
+    <li data-i18n="results.details.coherence.strong"><strong>Forte</strong> → peu voire pas de contradictions, réponses alignées</li>
+    <li data-i18n="results.details.coherence.medium"><strong>Moyenne</strong> → quelques hésitations ou contradictions</li>
+    <li data-i18n="results.details.coherence.weak"><strong>Faible</strong> → réponses peu cohérentes entre elles</li>
   </ul>
 </div>
 
@@ -3970,11 +3976,11 @@ function showPrivacyPolicy() {
                         <div class="flex space-x-3">
                             <button class="download-pdf-btn flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                                 <i class="fas fa-download mr-2"></i>
-                                <span data-i18n="results.modal.downloadPdf">Télécharger PDF</span>
+                                <span data-i18n="results.details.downloadPdf">Télécharger PDF</span>
                             </button>
                             <button onclick="shareProfileResults('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                                 <i class="fas fa-share mr-2"></i>
-                                <span data-i18n="results.modal.share">Partager</span>
+                                <span data-i18n="results.details.share">Partager</span>
                             </button>
                         </div>
                     </div>
@@ -3985,6 +3991,9 @@ function showPrivacyPolicy() {
     document.body.appendChild(resultsModal);
     initCountUp(resultsModal);
     addPDFDownloadHandler(resultsModal);
+    applyTranslations();
+    const titleEl = resultsModal.querySelector('[data-i18n="results.details.title"]');
+    if (titleEl) { titleEl.innerHTML = titleEl.innerHTML.replace('{name}', profile.name); }
 
             // Animer les barres de certitude
             resultsModal.querySelectorAll('.certainty-bar').forEach(bar => {
@@ -4429,7 +4438,7 @@ function showPrivacyPolicy() {
                         <div class="mt-4">
                             <div class="flex justify-between text-sm text-gray-600 mb-1">
                                 <span data-i18n="profileModal.step2.progress">Progression globale</span>
-                                <span id="progress-text" data-i18n="profileModal.step2.progressText">0/4 terminé</span>
+                                <span id="progress-text">0/4</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
                                 <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
