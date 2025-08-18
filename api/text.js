@@ -55,7 +55,7 @@ Règles:
 Contexte:
 - Analyse croisée: auto-évaluation + 3 évaluations externes (famille, ami, partenaire, collègue).
 - Modèles: MBTI et Ennéagramme.
-- Pondérations: Auto-éval 0%, Famille 30%, Partenaire 25%, Ami 25%, Collègue 15%.
+- Pondérations: Auto-éval 0%, uniquement là à titre informatif. Résultat calculé en fonction de la convergence des réponses des proches et le niveau de cohérence interne de chaque évaluateur.
 
 Si la question sort du cadre: refuse poliment et recentre.
       `.trim()
