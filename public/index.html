@@ -2016,20 +2016,16 @@ function displayResults(results) {
             return `
                 <div class="max-w-4xl mx-auto">
                     <div class="text-center">
-                        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                            Vos résultats
-                        </h2>
-                        <p class="mt-4 text-xl text-gray-600">
-                            Voici votre profil de personnalité basé sur vos réponses
-                        </p>
+                        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl" data-i18n="results.summary.title">Vos résultats</h2>
+                        <p class="mt-4 text-xl text-gray-600" data-i18n="results.summary.subtitle">Voici votre profil de personnalité basé sur vos réponses</p>
                     </div>
                     
                     <div class="mt-12 bg-white shadow-xl rounded-lg overflow-hidden">
                         <div class="px-6 py-8">
                             <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
                                 <div>
-                                    <h3 class="text-2xl font-bold text-gray-900">Votre profil</h3>
-                                    <p class="mt-1 text-gray-500">Analyse complétée le ${new Date().toLocaleDateString('fr-FR')}</p>
+                                    <h3 class="text-2xl font-bold text-gray-900" data-i18n="results.profile.title">Votre profil</h3>
+                                    <p class="mt-1 text-gray-500"><span data-i18n="results.profile.completedOn">Analyse complétée le</span> ${new Date().toLocaleDateString('fr-FR')}</p>
                                 </div>
                                 <div class="mt-4 md:mt-0">
                                     <span class="personality-badge bg-green-100 text-green-800">${results.mbtiType}</span>
@@ -2041,21 +2037,21 @@ function displayResults(results) {
                             <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
                                 <div class="flex items-center justify-between">
                                     <div>
-                                        <h4 class="text-lg font-medium text-blue-900">Votre code unique</h4>
-                                        <p class="text-sm text-blue-700 mt-1">Partagez ce code avec vos proches pour qu'ils puissent vous évaluer</p>
+                                        <h4 class="text-lg font-medium text-blue-900" data-i18n="results.code.title">Votre code unique</h4>
+                                        <p class="text-sm text-blue-700 mt-1" data-i18n="results.code.share">Partagez ce code avec vos proches pour qu'ils puissent vous évaluer</p>
                                     </div>
                                     <div class="flex items-center space-x-3">
                                         <div class="bg-white border-2 border-blue-300 rounded-lg px-4 py-2">
                                             <span class="text-2xl font-bold text-blue-900 tracking-wider" id="unique-code">${results.code}</span>
                                         </div>
-                                        <button onclick="copyCode('${results.code}')" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
-                                            <i class="fas fa-copy mr-1"></i> Copier
-                                        </button>
+                                          <button onclick="copyCode('${results.code}')" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+                                            <i class="fas fa-copy mr-1"></i> <span data-i18n="results.code.copy">Copier</span>
+                                          </button>
                                     </div>
                                 </div>
                             </div>
                             
-                         <div class="pc-info-banner" role="note" aria-live="polite" style="text-align: center;">
+                         <div class="pc-info-banner" role="note" aria-live="polite" style="text-align: center;" data-i18n="results.banner.info">
   Voici les profils avec lesquels vous vous identifiez. Partagez votre code unique à 3 proches, puis consultez vos résultats détaillés dans la section 
   <strong>« Mon profil »</strong> ou <strong>« Retrouver un profil »</strong>.
 </div>
@@ -2063,7 +2059,7 @@ function displayResults(results) {
 
                             <div class="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">
                                 <div>
-                                    <h4 class="text-lg font-medium text-gray-900">Profil MBTI</h4>
+                                    <h4 class="text-lg font-medium text-gray-900" data-i18n="results.mbti.title">Profil MBTI</h4>
                                     <div class="mt-4 bg-green-50 rounded-lg p-4">
                                         <p class="text-gray-700 font-medium">${results.mbtiType}</p>
                                         <p class="text-gray-600 text-sm mt-1">${mbtiDescriptions[results.mbtiType]}</p>
@@ -2071,7 +2067,7 @@ function displayResults(results) {
                                 </div>
 
                                 <div>
-                                    <h4 class="text-lg font-medium text-gray-900">Profil Ennéagramme</h4>
+                                    <h4 class="text-lg font-medium text-gray-900" data-i18n="results.enneagram.title">Profil Ennéagramme</h4>
                                     <div class="mt-4 bg-blue-50 rounded-lg p-4">
                                         <p class="text-gray-700 font-medium">Type ${results.enneagramType}</p>
                                         <p class="text-gray-600 text-sm mt-1">${enneagramDescriptions[results.enneagramType]}</p>
@@ -2081,13 +2077,13 @@ function displayResults(results) {
                             
                             <div class="mt-8 flex flex-wrap justify-center gap-4">
                                 <button onclick="shareCode()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
-                                    <i class="fas fa-share mr-2"></i> Partager
+                                    <i class="fas fa-share mr-2"></i> <span data-i18n="results.buttons.share">Partager</span>
                                 </button>
                                 <button class="download-pdf-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                    <i class="fas fa-download mr-2"></i> Télécharger PDF
+                                    <i class="fas fa-download mr-2"></i> <span data-i18n="results.buttons.downloadPdf">Télécharger PDF</span>
                                 </button>
                                 <button onclick="restartTest()" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                    <i class="fas fa-redo mr-2"></i> Refaire le test
+                                    <i class="fas fa-redo mr-2"></i> <span data-i18n="results.buttons.restart">Refaire le test</span>
                                 </button>
                             </div>
                         </div>
@@ -3685,14 +3681,15 @@ function showPrivacyPolicy() {
                             <i class="fas fa-clock text-yellow-400 text-xl"></i>
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-medium text-yellow-800">Évaluations en cours</h3>
+                            <h3 class="text-sm font-medium text-yellow-800" data-i18n="profile.pending.title">Évaluations en cours</h3>
                             <div class="mt-2 text-sm text-yellow-700">
-                                <p>Il reste <strong>${remaining} ${personText}</strong> qui ${remaining === 1 ? 'doit' : 'doivent'} compléter l’évaluation pour améliorer le niveau de certitude de votre profil et accéder à votre page de résultats détaillés. Cette page présente votre profil MBTI et votre profil Ennéagramme, leur niveau de certitude respectif, des graphiques pour y voir plus clair, une description personnalisée de votre profil par Psycho’Bot, ainsi que les résultats de chaque évaluateur et leur cohérence interne.</p>
-                                <p class="mt-1">Partagez votre code unique avec vos proches pour qu’ils puissent vous évaluer et vous donner accès à cette page.</p>
+                                <p data-i18n="profile.pending.text">Il reste <strong>${remaining} ${personText}</strong> qui ${remaining === 1 ? 'doit' : 'doivent'} compléter l’évaluation pour améliorer le niveau de certitude de votre profil et accéder à votre page de résultats détaillés. Cette page présente votre profil MBTI et votre profil Ennéagramme, leur niveau de certitude respectif, des graphiques pour y voir plus clair, une description personnalisée de votre profil par Psycho’Bot, ainsi que les résultats de chaque évaluateur et leur cohérence interne.</p>
+                                <p class="mt-1" data-i18n="profile.pending.share">Partagez votre code unique avec vos proches pour qu’ils puissent vous évaluer et vous donner accès à cette page.</p>
                             </div>
                         </div>
                     </div>
                 `;
+                applyTranslations();
                 updateResultsButtonState(remaining);
             }
         }
@@ -3823,7 +3820,7 @@ function showPrivacyPolicy() {
             resultsModal.innerHTML = `
                 <div class="modal-content" style="max-width: 800px;">
                     <div class="modal-header">
-                        <h2 class="text-xl font-bold text-gray-900" data-i18n="home.modal.results.title">Résultats Détaillés - ${profile.name}</h2>
+                        <h2 class="text-xl font-bold text-gray-900" data-i18n="results.modal.title">Résultats Détaillés - ${profile.name}</h2>
                         <span class="close" onclick="closeResultsModal()">&times;</span>
                     </div>
                     <div class="modal-body">
@@ -3831,39 +3828,39 @@ function showPrivacyPolicy() {
                             <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
                                 <i class="fas fa-chart-pie text-green-600 text-2xl"></i>
                             </div>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2" data-i18n="home.modal.results.analysis">Analyse Complète</h3>
-                            <p class="text-sm text-gray-500"><span data-i18n="home.modal.results.code">Code:</span> <span class="font-mono font-bold">${code}</span></p>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2" data-i18n="results.modal.analysis">Analyse Complète</h3>
+                            <p class="text-sm text-gray-500"><span data-i18n="results.modal.code">Code:</span> <span class="font-mono font-bold">${code}</span></p>
                         </div>
 
                         <!-- Résultats MBTI et Ennéagramme -->
         <div class="grid md:grid-cols-2 gap-6 mb-6">
           <div class="bg-blue-50 rounded-lg p-4">
-            <h4 class="font-semibold text-blue-900 mb-2" data-i18n="home.modal.results.mbtiTitle">Type MBTI</h4>
+            <h4 class="font-semibold text-blue-900 mb-2" data-i18n="results.modal.mbtiTitle">Type MBTI</h4>
             <div class="text-2xl font-bold text-blue-600 mb-2">${profile.results.mbti}</div>
             <div class="mt-2">
               ${
                 profile.results.mbtiCertainty != null
-                  ? `<p class="mb-1" data-i18n="home.modal.results.certainty">Certitude</p>
+                  ? `<p class="mb-1" data-i18n="results.modal.certainty">Certitude</p>
                      <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
                        <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-blue-500 transition-all duration-1000" data-width="${profile.results.mbtiCertainty}" style="width:0"></div>
                        <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.mbtiCertainty}%</span>
                      </div>`
-                  : `<p data-i18n="home.modal.results.pending">Certitude : Données en cours...</p>`
+                  : `<p data-i18n="results.modal.pending">Certitude : Données en cours...</p>`
               }
             </div>
           </div>
           <div class="bg-purple-50 rounded-lg p-4">
-            <h4 class="font-semibold text-purple-900 mb-2" data-i18n="home.modal.results.enneagramTitle">Ennéagramme</h4>
+            <h4 class="font-semibold text-purple-900 mb-2" data-i18n="results.modal.enneagramTitle">Ennéagramme</h4>
             <div class="text-2xl font-bold text-purple-600 mb-2">${profile.results.enneagram}</div>
             <div class="mt-2">
               ${
                 profile.results.enneagramCertainty != null
-                  ? `<p class="mb-1" data-i18n="home.modal.results.certainty">Certitude</p>
+                  ? `<p class="mb-1" data-i18n="results.modal.certainty">Certitude</p>
                      <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
                        <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-purple-500 transition-all duration-1000" data-width="${profile.results.enneagramCertainty}" style="width:0"></div>
                        <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.enneagramCertainty}%</span>
                      </div>`
-                  : `<p data-i18n="home.modal.results.pending">Certitude : Données en cours...</p>`
+                  : `<p data-i18n="results.modal.pending">Certitude : Données en cours...</p>`
               }
             </div>
           </div>
@@ -3873,34 +3870,34 @@ function showPrivacyPolicy() {
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
           ${
             profile.results.overallCertainty != null
-              ? `<p class="mb-1" data-i18n="home.modal.results.overallCertainty">Certitude globale</p>
+              ? `<p class="mb-1" data-i18n="results.modal.overallCertainty">Certitude globale</p>
                  <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
                    <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-green-500 transition-all duration-1000" data-width="${profile.results.overallCertainty}" style="width:0"></div>
                    <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.overallCertainty}%</span>
                  </div>`
-              : `<p data-i18n="home.modal.results.pending">Certitude : Données en cours...</p>`
+              : `<p data-i18n="results.modal.pending">Certitude : Données en cours...</p>`
           }
-          <p class="text-sm text-gray-600 mt-2" data-i18n="home.modal.results.basedOnRelatives">Basé sur les évaluations de vos proches</p>
-          ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2" data-i18n="home.modal.results.increaseCertainty">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
+          <p class="text-sm text-gray-600 mt-2" data-i18n="results.modal.basedOnRelatives">Basé sur les évaluations de vos proches</p>
+          ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2" data-i18n="results.modal.increaseCertainty">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
         </div>
 
 
         <!-- Graphiques MBTI & Ennéagramme -->
         <div class="grid md:grid-cols-2 gap-6 mb-6">
           <div class="bg-white rounded-lg p-4">
-            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="home.modal.results.mbtiDichotomies">Dichotomies MBTI</h4>
+            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="results.modal.mbtiDichotomies">Dichotomies MBTI</h4>
             <canvas id="mbtiChart" height="220"></canvas>
           </div>
           <div class="bg-white rounded-lg p-4">
-            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="home.modal.results.enneagramTypes">Types Ennéagramme</h4>
+            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="results.modal.enneagramTypes">Types Ennéagramme</h4>
             <canvas id="enneagramChart" height="220"></canvas>
           </div>
         </div>
 
         <div id="ai-profile-summary" class="mt-6 bg-gray-50 rounded-lg p-5 shadow-sm mb-6">
-            <h4 class="font-semibold text-gray-900 text-lg mb-3" data-i18n="home.modal.results.aiSummaryTitle">Description succincte du profil par Psycho'Bot</h4>
+            <h4 class="font-semibold text-gray-900 text-lg mb-3" data-i18n="results.modal.aiSummaryTitle">Description succincte du profil par Psycho'Bot</h4>
             <div id="ai-summary-content" class="relative text-sm leading-relaxed text-gray-700 max-h-80 overflow-y-auto">
-                <span data-i18n="home.modal.results.generating">Génération en cours…</span>
+                <span data-i18n="results.modal.generating">Génération en cours…</span>
                 <div id="scroll-indicator" aria-hidden="true" class="pointer-events-none hidden absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-white flex items-end justify-center pb-1 text-gray-500">
                     <span class="text-xl animate-bounce">⌄</span>
                 </div>
@@ -3909,14 +3906,14 @@ function showPrivacyPolicy() {
 
                             <!-- Détail des évaluations -->
                         <div class="mb-6">
-                            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="home.modal.results.detailTitle">Détail des évaluations</h4>
+                            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="results.modal.detailTitle">Détail des évaluations</h4>
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                                     <div>
-                                        <span class="text-sm font-medium text-gray-700" data-i18n="home.modal.results.selfEvaluation">Auto-évaluation</span>
+                                        <span class="text-sm font-medium text-gray-700" data-i18n="results.modal.selfEvaluation">Auto-évaluation</span>
                                         <div class="text-xs text-gray-500">${profile.self.mbti} — type ${profile.self.enneagram}</div>
                                     </div>
-                                    <span class="text-sm text-green-600 font-medium" data-i18n="home.modal.results.completed">✓ Complétée</span>
+                                    <span class="text-sm text-green-600 font-medium" data-i18n="results.modal.completed">✓ Complétée</span>
                                 </div>
                                 ${profile.externalEvaluations.map(eval => `
                                     <div class="flex items-center justify-between p-3 ${eval.completed ? 'bg-green-50' : 'bg-gray-50'} rounded-lg">
@@ -3924,20 +3921,20 @@ function showPrivacyPolicy() {
                                             <span class="text-sm font-medium text-gray-700">${eval.relation}</span>
                                             <div class="text-xs text-gray-500">${eval.mbti} — type ${eval.enneagram} — MBTI : <strong>Cohérence ${eval.coherenceMBTI}</strong> — Ennéagramme : <strong>Cohérence ${eval.coherenceEnneagramme}</strong></div>
                                         </div>
-                                        <span class="text-sm ${eval.completed ? 'text-green-600' : 'text-gray-500'} font-medium">
-                                            ${eval.completed ? '✓ Complétée le ' + new Date(eval.completedAt).toLocaleDateString('fr-FR') : '⏳ En attente'}
-                                        </span>
+                                          <span class="text-sm ${eval.completed ? 'text-green-600' : 'text-gray-500'} font-medium">
+                                              ${eval.completed ? `<span data-i18n="results.modal.completedOn">✓ Complétée le</span> ${new Date(eval.completedAt).toLocaleDateString('fr-FR')}` : `<span data-i18n="results.modal.pendingShort">⏳ En attente</span>`}
+                                          </span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
 
 <div class="mt-8 mb-6 p-4 rounded-lg bg-gray-100 border border-gray-300 text-xs text-gray-700 leading-relaxed">
-  <p class="mb-2"><strong data-i18n="home.modal.results.coherence.title"> Cohérence</strong> : <span data-i18n="home.modal.results.coherence.desc">détermine dans quelle mesure les réponses d’un proche sont logiquement stables.</span></p>
+  <p class="mb-2"><strong data-i18n="results.modal.coherence.title"> Cohérence</strong> : <span data-i18n="results.modal.coherence.desc">détermine dans quelle mesure les réponses d’un proche sont logiquement stables.</span></p>
   <ul class="list-disc list-inside space-y-1">
-    <li data-i18n="home.modal.results.coherence.strong"><strong>Forte</strong> → peu voire pas de contradictions, réponses alignées</li>
-    <li data-i18n="home.modal.results.coherence.medium"><strong>Moyenne</strong> → quelques hésitations ou contradictions</li>
-    <li data-i18n="home.modal.results.coherence.weak"><strong>Faible</strong> → réponses peu cohérentes entre elles</li>
+    <li data-i18n="results.modal.coherence.strong"><strong>Forte</strong> → peu voire pas de contradictions, réponses alignées</li>
+    <li data-i18n="results.modal.coherence.medium"><strong>Moyenne</strong> → quelques hésitations ou contradictions</li>
+    <li data-i18n="results.modal.coherence.weak"><strong>Faible</strong> → réponses peu cohérentes entre elles</li>
   </ul>
 </div>
 
@@ -3952,11 +3949,11 @@ function showPrivacyPolicy() {
                         <div class="flex space-x-3">
                             <button class="download-pdf-btn flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                                 <i class="fas fa-download mr-2"></i>
-                                <span data-i18n="home.modal.results.downloadPdf">Télécharger PDF</span>
+                                <span data-i18n="results.modal.downloadPdf">Télécharger PDF</span>
                             </button>
                             <button onclick="shareProfileResults('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                                 <i class="fas fa-share mr-2"></i>
-                                <span data-i18n="home.modal.results.share">Partager</span>
+                                <span data-i18n="results.modal.share">Partager</span>
                             </button>
                         </div>
                     </div>
