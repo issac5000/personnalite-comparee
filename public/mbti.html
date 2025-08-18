@@ -2972,7 +2972,7 @@ function displayResults(results) {
             showModal('À propos du projet', content);
         }
 
-        // Fonctions pour les pages légales et contact
+      // Fonctions pour les pages légales et contact
 function showPrivacyPolicy() {
   const lang = localStorage.getItem('lang') || 'fr';
   const date = new Date().toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US');
@@ -3121,7 +3121,6 @@ function showSupport() {
   `;
   showModal('<span data-i18n="footer.contact.support.title">Support</span>', content);
 }
-
 
         // Fonction pour démarrer l'évaluation externe
         function startExternalEvaluation() {
