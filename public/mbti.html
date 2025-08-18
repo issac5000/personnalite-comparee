@@ -2201,451 +2201,450 @@ function displayResults(results) {
         // Descriptions détaillées MBTI
         const mbtiDetailedDescriptions = {
             'INTJ': {
-                title: 'INTJ - L\'Architecte',
+                title: '<span data-i18n="mbti.modals.intj.title">INTJ - L\'Architecte</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les INTJ sont des visionnaires stratégiques avec un plan pour tout. Ils sont indépendants, déterminés et ont une forte capacité à voir les possibilités futures.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.intj.paragraph1">Les INTJ sont des visionnaires stratégiques avec un plan pour tout. Ils sont indépendants, déterminés et ont une forte capacité à voir les possibilités futures.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.intj.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.intj.list">
                             <li>Penseurs stratégiques et visionnaires</li>
                             <li>Indépendants et autonomes</li>
                             <li>Orientés vers les objectifs à long terme</li>
                             <li>Excellents planificateurs</li>
                             <li>Préfèrent travailler seuls ou en petits groupes</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.intj.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.intj.functions">
                             <p><strong>Dominante :</strong> Intuition Introvertie (Ni)</p>
                             <p><strong>Auxiliaire :</strong> Pensée Extravertie (Te)</p>
                             <p><strong>Tertiaire :</strong> Sentiment Introverti (Fi)</p>
                             <p><strong>Inférieure :</strong> Sensation Extravertie (Se)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Architecte, ingénieur, scientifique, consultant en stratégie, développeur de logiciels, chercheur.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.intj.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.intj.paragraph2">Architecte, ingénieur, scientifique, consultant en stratégie, développeur de logiciels, chercheur.</p>
                     </div>
                 `
             },
             'INTP': {
-                title: 'INTP - Le Penseur',
+                title: '<span data-i18n="mbti.modals.intp.title">INTP - Le Penseur</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les INTP sont des penseurs logiques et créatifs, toujours à la recherche de nouvelles idées et possibilités théoriques.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.intp.paragraph1">Les INTP sont des penseurs logiques et créatifs, toujours à la recherche de nouvelles idées et possibilités théoriques.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.intp.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.intp.list">
                             <li>Analystes logiques et objectifs</li>
                             <li>Curieux et ouverts aux nouvelles idées</li>
                             <li>Indépendants et flexibles</li>
                             <li>Excellents résolveurs de problèmes</li>
                             <li>Préfèrent la théorie à la pratique</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.intp.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.intp.functions">
                             <p><strong>Dominante :</strong> Pensée Introvertie (Ti)</p>
                             <p><strong>Auxiliaire :</strong> Intuition Extravertie (Ne)</p>
                             <p><strong>Tertiaire :</strong> Sensation Introvertie (Si)</p>
                             <p><strong>Inférieure :</strong> Sentiment Extraverti (Fe)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Chercheur, philosophe, mathématicien, programmeur, analyste, professeur d'université.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.intp.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.intp.paragraph2">Chercheur, philosophe, mathématicien, programmeur, analyste, professeur d'université.</p>
                     </div>
                 `
-            }
-            ,
+            },
             'ISTJ': {
-                title: 'ISTJ - Le Logisticien',
+                title: '<span data-i18n="mbti.modals.istj.title">ISTJ - Le Logisticien</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ISTJ sont sérieux et fiables. Ils respectent les règles et traditions, travaillent méthodiquement et prennent leurs responsabilités au sérieux. Leur approche est pragmatique et organisée.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.istj.paragraph1">Les ISTJ sont sérieux et fiables. Ils respectent les règles et traditions, travaillent méthodiquement et prennent leurs responsabilités au sérieux. Leur approche est pragmatique et organisée.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.istj.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.istj.list">
                             <li>Responsables, pratiques et factuels</li>
                             <li>Respectent les traditions et les structures établies</li>
                             <li>Mettent l'accent sur la précision et la loyauté</li>
                             <li>Préférent la stabilité et la planification</li>
                             <li>Peuvent être réservés et rigides face au changement</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.istj.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.istj.functions">
                             <p><strong>Dominante :</strong> Sensation Introvertie (Si)</p>
                             <p><strong>Auxiliaire :</strong> Pensée Extravertie (Te)</p>
                             <p><strong>Tertiaire :</strong> Sentiment Introverti (Fi)</p>
                             <p><strong>Inférieure :</strong> Intuition Extravertie (Ne)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Comptable, auditeur, administrateur, officier militaire, juge, gestionnaire de projet.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.istj.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.istj.paragraph2">Comptable, auditeur, administrateur, officier militaire, juge, gestionnaire de projet.</p>
                     </div>
                 `
             },
             'ISTP': {
-                title: 'ISTP - Le Virtuose',
+                title: '<span data-i18n="mbti.modals.istp.title">ISTP - Le Virtuose</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ISTP sont pragmatiques et analytiques. Ils aiment comprendre comment fonctionnent les choses et s'attaquer à des problèmes concrets. Flexibles et observateurs, ils préfèrent apprendre par l'expérience.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.istp.paragraph1">Les ISTP sont pragmatiques et analytiques. Ils aiment comprendre comment fonctionnent les choses et s'attaquer à des problèmes concrets. Flexibles et observateurs, ils préfèrent apprendre par l'expérience.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.istp.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.istp.list">
                             <li>Calmes et réalistes</li>
                             <li>Analytiques et logiques</li>
                             <li>Aiment démonter et réparer des objets</li>
                             <li>S'adaptent rapidement aux situations de crise</li>
                             <li>Peuvent paraître distants émotionnellement</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.istp.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.istp.functions">
                             <p><strong>Dominante :</strong> Pensée Introvertie (Ti)</p>
                             <p><strong>Auxiliaire :</strong> Sensation Extravertie (Se)</p>
                             <p><strong>Tertiaire :</strong> Intuition Introvertie (Ni)</p>
                             <p><strong>Inférieure :</strong> Sentiment Extraverti (Fe)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Mécanicien, ingénieur, pilote, technicien, enquêteur.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.istp.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.istp.paragraph2">Mécanicien, ingénieur, pilote, technicien, enquêteur.</p>
                     </div>
                 `
             },
             'ISFJ': {
-                title: 'ISFJ - Le Protecteur',
+                title: '<span data-i18n="mbti.modals.isfj.title">ISFJ - Le Protecteur</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ISFJ sont chaleureux et consciencieux. Ils veillent à préserver l'harmonie et la sécurité de leur entourage. Ils respectent les traditions et sont attentifs aux besoins des autres.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.isfj.paragraph1">Les ISFJ sont chaleureux et consciencieux. Ils veillent à préserver l'harmonie et la sécurité de leur entourage. Ils respectent les traditions et sont attentifs aux besoins des autres.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.isfj.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.isfj.list">
                             <li>Bienveillants, loyaux et responsables</li>
                             <li>Organisés et méthodiques</li>
                             <li>Souvent modestes et discrets</li>
                             <li>Se soucient des besoins des autres avant les leurs</li>
                             <li>Peuvent être réticents face au changement</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.isfj.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.isfj.functions">
                             <p><strong>Dominante :</strong> Sensation Introvertie (Si)</p>
                             <p><strong>Auxiliaire :</strong> Sentiment Extraverti (Fe)</p>
                             <p><strong>Tertiaire :</strong> Pensée Introvertie (Ti)</p>
                             <p><strong>Inférieure :</strong> Intuition Extravertie (Ne)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Infirmier, enseignant, bibliothécaire, assistant social, gestionnaire administratif.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.isfj.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.isfj.paragraph2">Infirmier, enseignant, bibliothécaire, assistant social, gestionnaire administratif.</p>
                     </div>
                 `
             },
             'ISFP': {
-                title: 'ISFP - L\'Aventurier',
+                title: '<span data-i18n="mbti.modals.isfp.title">ISFP - L\'Aventurier</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ISFP sont sensibles, discrets et artistiques. Ils apprécient l'harmonie, la beauté et la liberté de s'exprimer. Ils vivent l’instant présent et recherchent l'équilibre.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.isfp.paragraph1">Les ISFP sont sensibles, discrets et artistiques. Ils apprécient l'harmonie, la beauté et la liberté de s'exprimer. Ils vivent l’instant présent et recherchent l'équilibre.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.isfp.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.isfp.list">
                             <li>Créatifs et artistiques</li>
                             <li>Empathiques et chaleureux</li>
                             <li>Discrets et réservés</li>
                             <li>Apprécient la liberté et l’indépendance</li>
                             <li>Peuvent éviter les conflits et les planifications rigides</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.isfp.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.isfp.functions">
                             <p><strong>Dominante :</strong> Sentiment Introverti (Fi)</p>
                             <p><strong>Auxiliaire :</strong> Sensation Extravertie (Se)</p>
                             <p><strong>Tertiaire :</strong> Intuition Introvertie (Ni)</p>
                             <p><strong>Inférieure :</strong> Pensée Extravertie (Te)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Artiste, designer, photographe, chef cuisinier, travailleur social.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.isfp.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.isfp.paragraph2">Artiste, designer, photographe, chef cuisinier, travailleur social.</p>
                     </div>
                 `
             },
             'INFJ': {
-                title: 'INFJ - L\'Avocat',
+                title: '<span data-i18n="mbti.modals.infj.title">INFJ - L\'Avocat</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les INFJ sont perspicaces et idéalistes. Ils sont guidés par leurs valeurs et cherchent à comprendre les motivations profondes des autres. Ils sont créatifs et se consacrent à aider autrui.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.infj.paragraph1">Les INFJ sont perspicaces et idéalistes. Ils sont guidés par leurs valeurs et cherchent à comprendre les motivations profondes des autres. Ils sont créatifs et se consacrent à aider autrui.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.infj.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.infj.list">
                             <li>Visionnaires et orientés vers un sens profond</li>
                             <li>Empathiques et compatissants</li>
                             <li>Créatifs et originaux</li>
                             <li>Organisés et déterminés</li>
                             <li>Peuvent se sentir incompris ou retirés</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.infj.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.infj.functions">
                             <p><strong>Dominante :</strong> Intuition Introvertie (Ni)</p>
                             <p><strong>Auxiliaire :</strong> Sentiment Extraverti (Fe)</p>
                             <p><strong>Tertiaire :</strong> Pensée Introvertie (Ti)</p>
                             <p><strong>Inférieure :</strong> Sensation Extravertie (Se)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Conseiller, psychologue, écrivain, enseignant, humanitaire.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.infj.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.infj.paragraph2">Conseiller, psychologue, écrivain, enseignant, humanitaire.</p>
                     </div>
                 `
             },
             'INFP': {
-                title: 'INFP - Le Médiateur',
+                title: '<span data-i18n="mbti.modals.infp.title">INFP - Le Médiateur</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les INFP sont idéalistes et empathiques. Guidés par leurs valeurs, ils cherchent un sens profond à la vie et s’efforcent de rendre le monde meilleur. Ils sont créatifs et sensibles.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.infp.paragraph1">Les INFP sont idéalistes et empathiques. Guidés par leurs valeurs, ils cherchent un sens profond à la vie et s’efforcent de rendre le monde meilleur. Ils sont créatifs et sensibles.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.infp.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.infp.list">
                             <li>Idéalistes et guidés par leurs valeurs</li>
                             <li>Empathiques et compatissants</li>
                             <li>Créatifs et expressifs</li>
                             <li>Aiment l'authenticité et l'individualité</li>
                             <li>Peuvent être réservés et éviter les conflits</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.infp.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.infp.functions">
                             <p><strong>Dominante :</strong> Sentiment Introverti (Fi)</p>
                             <p><strong>Auxiliaire :</strong> Intuition Extravertie (Ne)</p>
                             <p><strong>Tertiaire :</strong> Sensation Introvertie (Si)</p>
                             <p><strong>Inférieure :</strong> Pensée Extravertie (Te)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Écrivain, psychologue, conseiller, artiste, musicien.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.infp.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.infp.paragraph2">Écrivain, psychologue, conseiller, artiste, musicien.</p>
                     </div>
                 `
             },
             'ENTJ': {
-                title: 'ENTJ - Le Commandant',
+                title: '<span data-i18n="mbti.modals.entj.title">ENTJ - Le Commandant</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ENTJ sont des leaders nés, charismatiques et logiques. Ils aiment structurer des organisations, planifier l'avenir et relever des défis. Ils sont déterminés et axés sur l’efficacité.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.entj.paragraph1">Les ENTJ sont des leaders nés, charismatiques et logiques. Ils aiment structurer des organisations, planifier l'avenir et relever des défis. Ils sont déterminés et axés sur l’efficacité.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.entj.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.entj.list">
                             <li>Leaders stratégiques et assertifs</li>
                             <li>Décisifs et organisés</li>
                             <li>Adeptes de la planification et de l'exécution</li>
                             <li>Orientés vers les objectifs et la réussite</li>
                             <li>Peuvent paraître autoritaires ou impatients</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.entj.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.entj.functions">
                             <p><strong>Dominante :</strong> Pensée Extravertie (Te)</p>
                             <p><strong>Auxiliaire :</strong> Intuition Introvertie (Ni)</p>
                             <p><strong>Tertiaire :</strong> Sensation Extravertie (Se)</p>
                             <p><strong>Inférieure :</strong> Sentiment Introverti (Fi)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Directeur général, avocat, chef de projet, politicien, entrepreneur.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.entj.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.entj.paragraph2">Directeur général, avocat, chef de projet, politicien, entrepreneur.</p>
                     </div>
                 `
             },
             'ENTP': {
-                title: 'ENTP - L\'Innovateur',
+                title: '<span data-i18n="mbti.modals.entp.title">ENTP - L\'Innovateur</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ENTP sont créatifs et curieux. Ils aiment explorer de nouvelles idées, débattre et remettre en question le statu quo. Flexibles, ils préfèrent les possibilités ouvertes aux routines strictes.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.entp.paragraph1">Les ENTP sont créatifs et curieux. Ils aiment explorer de nouvelles idées, débattre et remettre en question le statu quo. Flexibles, ils préfèrent les possibilités ouvertes aux routines strictes.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.entp.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.entp.list">
                             <li>Inventifs et plein d'esprit</li>
                             <li>Aiment débattre et argumenter</li>
                             <li>S'adaptent rapidement à de nouveaux concepts</li>
                             <li>Aiment les défis intellectuels</li>
                             <li>Peuvent s'ennuyer avec la routine et la gestion des détails</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.entp.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.entp.functions">
                             <p><strong>Dominante :</strong> Intuition Extravertie (Ne)</p>
                             <p><strong>Auxiliaire :</strong> Pensée Introvertie (Ti)</p>
                             <p><strong>Tertiaire :</strong> Sentiment Extraverti (Fe)</p>
                             <p><strong>Inférieure :</strong> Sensation Introvertie (Si)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Avocat, consultant, entrepreneur, inventeur, journaliste.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.entp.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.entp.paragraph2">Avocat, consultant, entrepreneur, inventeur, journaliste.</p>
                     </div>
                 `
             },
             'ENFJ': {
-                title: 'ENFJ - Le Donateur',
+                title: '<span data-i18n="mbti.modals.enfj.title">ENFJ - Le Donateur</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ENFJ sont charismatiques et attentifs aux autres. Ils comprennent intuitivement les besoins des gens et aiment motiver et inspirer. Ils recherchent l’harmonie et le développement personnel et collectif.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.enfj.paragraph1">Les ENFJ sont charismatiques et attentifs aux autres. Ils comprennent intuitivement les besoins des gens et aiment motiver et inspirer. Ils recherchent l’harmonie et le développement personnel et collectif.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.enfj.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.enfj.list">
                             <li>Chaleureux, empathiques et organisés</li>
                             <li>Communicateurs naturels</li>
                             <li>Aident les autres à réaliser leur potentiel</li>
                             <li>Orientés vers les valeurs et l'harmonie</li>
                             <li>Peuvent s'oublier au profit des autres</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.enfj.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.enfj.functions">
                             <p><strong>Dominante :</strong> Sentiment Extraverti (Fe)</p>
                             <p><strong>Auxiliaire :</strong> Intuition Introvertie (Ni)</p>
                             <p><strong>Tertiaire :</strong> Sensation Extravertie (Se)</p>
                             <p><strong>Inférieure :</strong> Pensée Introvertie (Ti)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Professeur, coach, psychologue, coordinateur d’événements, diplomate.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.enfj.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.enfj.paragraph2">Professeur, coach, psychologue, coordinateur d’événements, diplomate.</p>
                     </div>
                 `
             },
             'ENFP': {
-                title: 'ENFP - L\'Inspirateur',
+                title: '<span data-i18n="mbti.modals.enfp.title">ENFP - L\'Inspirateur</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ENFP sont enthousiastes et créatifs. Ils s’épanouissent dans l'exploration de nouvelles idées et inspirent les autres grâce à leur vision optimiste. Ils cherchent l’authenticité et la liberté.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.enfp.paragraph1">Les ENFP sont enthousiastes et créatifs. Ils s’épanouissent dans l'exploration de nouvelles idées et inspirent les autres grâce à leur vision optimiste. Ils cherchent l’authenticité et la liberté.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.enfp.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.enfp.list">
                             <li>Énergétiques et imaginatifs</li>
                             <li>Empathiques et communicatifs</li>
                             <li>S'épanouissent dans les relations</li>
                             <li>Aiment l'innovation et la diversité</li>
                             <li>Peuvent se disperser et négliger les détails</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.enfp.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.enfp.functions">
                             <p><strong>Dominante :</strong> Intuition Extravertie (Ne)</p>
                             <p><strong>Auxiliaire :</strong> Sentiment Introverti (Fi)</p>
                             <p><strong>Tertiaire :</strong> Pensée Extravertie (Te)</p>
                             <p><strong>Inférieure :</strong> Sensation Introvertie (Si)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Journaliste, conseiller, animateur, auteur, professionnel des relations publiques.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.enfp.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.enfp.paragraph2">Journaliste, conseiller, animateur, auteur, professionnel des relations publiques.</p>
                     </div>
                 `
             },
             'ESTP': {
-                title: 'ESTP - L\'Entrepreneur',
+                title: '<span data-i18n="mbti.modals.estp.title">ESTP - L\'Entrepreneur</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ESTP sont énergiques et orientés vers l'action. Ils aiment vivre l'instant présent et résoudre des situations concrètes. Adaptables et sociables, ils prennent des décisions rapides.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.estp.paragraph1">Les ESTP sont énergiques et orientés vers l'action. Ils aiment vivre l'instant présent et résoudre des situations concrètes. Adaptables et sociables, ils prennent des décisions rapides.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.estp.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.estp.list">
                             <li>Dynamiques et aventuriers</li>
                             <li>Pragmatiques et réalistes</li>
                             <li>Orientés vers les résultats immédiats</li>
                             <li>Bons communicateurs et négociateurs</li>
                             <li>Peuvent se montrer impatients et risquer l'impulsivité</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.estp.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.estp.functions">
                             <p><strong>Dominante :</strong> Sensation Extravertie (Se)</p>
                             <p><strong>Auxiliaire :</strong> Pensée Introvertie (Ti)</p>
                             <p><strong>Tertiaire :</strong> Sentiment Extraverti (Fe)</p>
                             <p><strong>Inférieure :</strong> Intuition Introvertie (Ni)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Entrepreneur, détective, pilote, vendeur, pompier.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.estp.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.estp.paragraph2">Entrepreneur, détective, pilote, vendeur, pompier.</p>
                     </div>
                 `
             },
             'ESTJ': {
-                title: 'ESTJ - L\'Exécutif',
+                title: '<span data-i18n="mbti.modals.estj.title">ESTJ - L\'Exécutif</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ESTJ sont organisés et directs. Ils se fient aux faits et aiment structurer les activités pour obtenir des résultats efficaces. Ils valorisent la tradition et l’ordre.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.estj.paragraph1">Les ESTJ sont organisés et directs. Ils se fient aux faits et aiment structurer les activités pour obtenir des résultats efficaces. Ils valorisent la tradition et l’ordre.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.estj.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.estj.list">
                             <li>Pragmatiques et responsables</li>
                             <li>Directs et orientés vers l'action</li>
                             <li>Logiques et objectifs</li>
                             <li>Aiment organiser et diriger</li>
                             <li>Peuvent être inflexibles ou autoritaires</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.estj.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.estj.functions">
                             <p><strong>Dominante :</strong> Pensée Extravertie (Te)</p>
                             <p><strong>Auxiliaire :</strong> Sensation Introvertie (Si)</p>
                             <p><strong>Tertiaire :</strong> Intuition Extravertie (Ne)</p>
                             <p><strong>Inférieure :</strong> Sentiment Introverti (Fi)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Gestionnaire, officier militaire, policier, juge, chef de projet.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.estj.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.estj.paragraph2">Gestionnaire, officier militaire, policier, juge, chef de projet.</p>
                     </div>
                 `
             },
             'ESFP': {
-                title: 'ESFP - L\'Amuseur',
+                title: '<span data-i18n="mbti.modals.esfp.title">ESFP - L\'Amuseur</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ESFP sont spontanés et sociables. Ils aiment profiter de la vie et attirer l'attention. Pratiques et chaleureux, ils encouragent les autres à vivre pleinement chaque moment.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.esfp.paragraph1">Les ESFP sont spontanés et sociables. Ils aiment profiter de la vie et attirer l'attention. Pratiques et chaleureux, ils encouragent les autres à vivre pleinement chaque moment.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.esfp.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.esfp.list">
                             <li>Sociables et enthousiastes</li>
                             <li>Spontanés et énergiques</li>
                             <li>Aiment le divertissement et la variété</li>
                             <li>Observateurs et pratiques</li>
                             <li>Peuvent être sensibles aux critiques et éviter la planification</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.esfp.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.esfp.functions">
                             <p><strong>Dominante :</strong> Sensation Extravertie (Se)</p>
                             <p><strong>Auxiliaire :</strong> Sentiment Introverti (Fi)</p>
                             <p><strong>Tertiaire :</strong> Pensée Extravertie (Te)</p>
                             <p><strong>Inférieure :</strong> Intuition Introvertie (Ni)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Acteur, animateur, hôte, vendeur, infirmier pédiatrique.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.esfp.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.esfp.paragraph2">Acteur, animateur, hôte, vendeur, infirmier pédiatrique.</p>
                     </div>
                 `
             },
             'ESFJ': {
-                title: 'ESFJ - Le Consul',
+                title: '<span data-i18n="mbti.modals.esfj.title">ESFJ - Le Consul</span>',
                 content: `
                     <div class="space-y-4">
-                        <p class="text-gray-700">Les ESFJ sont aimables et sociables. Ils prennent soin des autres et veillent à maintenir l'harmonie. Organisés et consciencieux, ils travaillent pour soutenir leur communauté.</p>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Caractéristiques principales :</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <p class="text-gray-700" data-i18n="mbti.modals.esfj.paragraph1">Les ESFJ sont aimables et sociables. Ils prennent soin des autres et veillent à maintenir l'harmonie. Organisés et consciencieux, ils travaillent pour soutenir leur communauté.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.esfj.heading1">Caractéristiques principales :</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1" data-i18n="mbti.modals.esfj.list">
                             <li>Chaleureux et serviables</li>
                             <li>Organisés et responsables</li>
                             <li>Centrés sur la communauté et la tradition</li>
                             <li>Communicateurs empathiques</li>
                             <li>Peuvent être sensibles à la critique et rechercher l'approbation</li>
                         </ul>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Fonctions cognitives :</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg">
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.esfj.heading2">Fonctions cognitives :</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg" data-i18n="mbti.modals.esfj.functions">
                             <p><strong>Dominante :</strong> Sentiment Extraverti (Fe)</p>
                             <p><strong>Auxiliaire :</strong> Sensation Introvertie (Si)</p>
                             <p><strong>Tertiaire :</strong> Intuition Extravertie (Ne)</p>
                             <p><strong>Inférieure :</strong> Pensée Introvertie (Ti)</p>
                         </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900">Carrières typiques :</h3>
-                        <p class="text-gray-700">Infirmier, enseignant, gestionnaire d'événements, conseiller, travailleur social.</p>
+
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="mbti.modals.esfj.heading3">Carrières typiques :</h3>
+                        <p class="text-gray-700" data-i18n="mbti.modals.esfj.paragraph2">Infirmier, enseignant, gestionnaire d'événements, conseiller, travailleur social.</p>
                     </div>
                 `
             }
