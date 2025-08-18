@@ -1971,6 +1971,8 @@ function displayResults(results) {
         initCountUp(resultsSection);
         addPDFDownloadHandler(resultsSection);
 
+        applyTranslations();
+
         setTimeout(() => {
             resultsSection.scrollIntoView({ behavior: 'smooth' });
         }, 100);
@@ -1982,36 +1984,14 @@ function displayResults(results) {
 
         // Génération du HTML des résultats
         function generateResultsHTML(results) {
-            const mbtiDescriptions = {
-                'INTJ': 'L\'Architecte - Visionnaires stratégiques avec un plan pour tout.',
-                'INTP': 'Le Penseur - Penseurs logiques et créatifs, toujours à la recherche de nouvelles idées.',
-                'ENTJ': 'Le Commandant - Leaders naturels, charismatiques et déterminés.',
-                'ENTP': 'L\'Innovateur - Inventifs et curieux, excellents pour trouver des solutions originales.',
-                'INFJ': 'L\'Avocat - Idéalistes créatifs et perspicaces, motivés par leurs valeurs profondes.',
-                'INFP': 'Le Médiateur - Poétiques, gentils et altruistes, toujours désireux d\'aider.',
-                'ENFJ': 'Le Donateur - Charismatiques et empathiques, motivés par le désir d\'aider les autres.',
-                'ENFP': 'L\'Inspirateur - Enthousiastes, créatifs et sociables, toujours à la recherche de nouvelles expériences.',
-                'ISTJ': 'Le Logisticien - Pratiques et factuels, fiables et responsables.',
-                'ISFJ': 'Le Protecteur - Chaleureux et consciencieux, toujours prêts à protéger leurs proches.',
-                'ESTJ': 'L\'Exécutif - Excellents administrateurs, incomparables pour gérer avec efficacité.',
-                'ESFJ': 'Le Consul - Extraordinairement attentionnés, sociables et populaires.',
-                'ISTP': 'Le Virtuose - Mécaniciens audacieux et pratiques, maîtres de tous les types d\'outils.',
-                'ISFP': 'L\'Aventurier - Artistes flexibles et charmants, toujours prêts à explorer.',
-                'ESTP': 'L\'Entrepreneur - Intelligents, énergiques et très perceptifs.',
-                'ESFP': 'L\'Amuseur - Spontanés, énergiques et enthousiastes.'
-            };
-            
-            const enneagramDescriptions = {
-                '1': 'Le Perfectionniste - Motivé par le besoin de vivre correctement et d\'améliorer le monde.',
-                '2': 'L\'Altruiste - Motivé par le besoin d\'être aimé et d\'aider les autres.',
-                '3': 'Le Bâtisseur - Motivé par le besoin de réussir et d\'être reconnu.',
-                '4': 'L\'Artiste - Motivé par le besoin d\'exprimer son authenticité unique.',
-                '5': 'L\'Investigateur - Motivé par le besoin de comprendre le monde.',
-                '6': 'Le Loyaliste - Motivé par le besoin de sécurité et de soutien.',
-                '7': 'L\'Enthousiaste - Motivé par le besoin de maintenir le bonheur et l\'enthousiasme.',
-                '8': 'Le Challenger - Motivé par le besoin d\'être autonome et de contrôler sa vie.',
-                '9': 'Le Médiateur - Motivé par le besoin de maintenir la paix intérieure et extérieure.'
-            };
+            const lang = localStorage.getItem('lang') || 'fr';
+            const mbtiDescKey = `mbti.types.${results.mbtiType}.desc`;
+            const mbtiDesc = translations[lang][mbtiDescKey] || '';
+
+            const enneaNameKey = `enneagramme.types.${results.enneagramType}.name`;
+            const enneaName = translations[lang][enneaNameKey] || '';
+            const enneaDescKey = `enneagramme.types.${results.enneagramType}.desc`;
+            const enneaDesc = translations[lang][enneaDescKey] || '';
             
             return `
                 <div class="max-w-4xl mx-auto">
@@ -2062,15 +2042,15 @@ function displayResults(results) {
                                     <h4 class="text-lg font-medium text-gray-900" data-i18n="results.mbti.title">Profil MBTI</h4>
                                     <div class="mt-4 bg-green-50 rounded-lg p-4">
                                         <p class="text-gray-700 font-medium">${results.mbtiType}</p>
-                                        <p class="text-gray-600 text-sm mt-1">${mbtiDescriptions[results.mbtiType]}</p>
+                                        <p class="text-gray-600 text-sm mt-1" data-i18n="${mbtiDescKey}">${mbtiDesc}</p>
                                     </div>
                                 </div>
 
                                 <div>
                                     <h4 class="text-lg font-medium text-gray-900" data-i18n="results.enneagram.title">Profil Ennéagramme</h4>
                                     <div class="mt-4 bg-blue-50 rounded-lg p-4">
-                                        <p class="text-gray-700 font-medium">Type ${results.enneagramType}</p>
-                                        <p class="text-gray-600 text-sm mt-1">${enneagramDescriptions[results.enneagramType]}</p>
+                                        <p class="text-gray-700 font-medium">Type ${results.enneagramType} - <span data-i18n="${enneaNameKey}">${enneaName}</span></p>
+                                        <p class="text-gray-600 text-sm mt-1" data-i18n="${enneaDescKey}">${enneaDesc}</p>
                                     </div>
                                 </div>
                             </div>
