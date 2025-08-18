@@ -3426,20 +3426,17 @@ function showPrivacyPolicy() {
                         <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                             <i class="fas fa-check text-green-600 text-xl"></i>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-900 mb-4">Évaluation terminée !</h2>
-                        <p class="text-gray-600 mb-6">
-                            Merci d'avoir pris le temps d'évaluer cette personne. Votre évaluation a été enregistrée avec le code <strong>${code}</strong>.
-                        </p>
-                        <p class="text-sm text-gray-500 mb-6">
-                            La personne recevra ses résultats complets une fois que toutes les évaluations seront terminées.
-                        </p>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4" data-i18n="evaluation.done.title">Évaluation terminée !</h2>
+                        <p class="text-gray-600 mb-6" data-i18n="evaluation.done.text"></p>
                         <button id="close-evaluation-modal" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-black hover:bg-gray-800">
-                            <i class="fas fa-home mr-2"></i> Retour à l'accueil
+                            <i class="fas fa-home mr-2"></i> <span data-i18n="evaluation.done.button">Retour à l'accueil</span>
                         </button>
                     </div>
                 </div>
             `;
             document.body.insertAdjacentHTML('beforeend', modalHTML);
+            applyTranslations();
+            setEvaluationDoneText(code);
             const modal = document.getElementById('evaluation-modal');
             requestAnimationFrame(() => {
                 modal.classList.remove('opacity-0', 'scale-95');
@@ -3670,32 +3667,55 @@ function showPrivacyPolicy() {
                             <i class="fas fa-check-circle text-green-400 text-xl"></i>
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-medium text-green-800">Analyse complète !</h3>
+                            <h3 class="text-sm font-medium text-green-800" data-i18n="profile.complete.title">Analyse complète !</h3>
                             <div class="mt-2 text-sm text-green-700">
-                                <p>Félicitations ! Toutes les évaluations ont été complétées. Vous pouvez maintenant consulter votre profil de personnalité complet.</p>
+                                <p data-i18n="profile.complete.text">Félicitations !</p>
+                                <p data-i18n="profile.complete.explanation">Toutes les évaluations ont été complétées. Vous pouvez maintenant consulter votre profil de personnalité complet.</p>
                             </div>
                         </div>
                     </div>
                 `;
+                applyTranslations();
                 updateResultsButtonState(0);
             } else {
                 statusMessage.className = 'rounded-lg p-4 mb-4 bg-yellow-50 border border-yellow-200';
-                const personText = remaining === 1 ? 'personne' : 'personnes';
                 statusMessage.innerHTML = `
                     <div class="flex">
                         <div class="flex-shrink-0">
                             <i class="fas fa-clock text-yellow-400 text-xl"></i>
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-medium text-yellow-800">Évaluations en cours</h3>
+                            <h3 class="text-sm font-medium text-yellow-800" data-i18n="profile.pending.title">Évaluations en cours</h3>
                             <div class="mt-2 text-sm text-yellow-700">
-                                <p>Il reste <strong>${remaining} ${personText}</strong> qui ${remaining === 1 ? 'doit' : 'doivent'} compléter l’évaluation pour améliorer le niveau de certitude de votre profil et accéder à votre page de résultats détaillés. Cette page présente votre profil MBTI et votre profil Ennéagramme, leur niveau de certitude respectif, des graphiques pour y voir plus clair, une description personnalisée de votre profil par Psycho’Bot, ainsi que les résultats de chaque évaluateur et leur cohérence interne.</p>
-                                <p class="mt-1">Partagez votre code unique avec vos proches pour qu’ils puissent vous évaluer et vous donner accès à cette page.</p>
+                                <p data-i18n="profile.incomplete.text"></p>
+                                <p class="mt-1" data-i18n="profile.pending.share">Partagez votre code unique avec vos proches pour qu’ils puissent vous évaluer et vous donner accès à cette page.</p>
                             </div>
                         </div>
                     </div>
                 `;
+                applyTranslations();
+                setIncompleteMessage(remaining);
                 updateResultsButtonState(remaining);
+            }
+        }
+
+        function setIncompleteMessage(remaining) {
+            const lang = localStorage.getItem('lang') || 'fr';
+            const template = translations[lang]['profile.incomplete.text'];
+            const person = remaining === 1 ? (lang === 'fr' ? 'personne' : 'person') : (lang === 'fr' ? 'personnes' : 'people');
+            const verb = remaining === 1 ? (lang === 'fr' ? 'doit' : 'needs') : (lang === 'fr' ? 'doivent' : 'need');
+            const el = document.querySelector('[data-i18n="profile.incomplete.text"]');
+            if (el && template) {
+                el.innerHTML = template.replace('{count}', remaining).replace('{person}', person).replace('{verb}', verb);
+            }
+        }
+
+        function setEvaluationDoneText(code) {
+            const lang = localStorage.getItem('lang') || 'fr';
+            const template = translations[lang]['evaluation.done.text'];
+            const el = document.querySelector('[data-i18n="evaluation.done.text"]');
+            if (el && template) {
+                el.innerHTML = template.replace('{code}', code);
             }
         }
 
@@ -4420,11 +4440,11 @@ function showPrivacyPolicy() {
                     <div class="flex space-x-3">
                         <button onclick="shareCode()" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                             <i class="fas fa-share mr-2"></i>
-                            Partager mon code
+                            <span data-i18n="profile.complete.button.share">Partager mon code</span>
                         </button>
                         <button id="seeResultsBtn" onclick="viewResults()" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                             <i class="fas fa-chart-pie mr-2"></i>
-                            Voir mes résultats
+                            <span data-i18n="profile.complete.button.results">Voir mes résultats</span>
                         </button>
                     </div>
                 </div>
