@@ -173,19 +173,70 @@ function showTermsOfService(){
 function showLegalNotices(){
   const content = `
     <div class="space-y-4">
-      <p class="text-gray-700">Personnalité Comparée — Site éducatif hébergé par Vercel.</p>
-      <h4 class="font-semibold text-gray-900">Marques et mentions légales spécifiques</h4>
-      <p class="text-gray-700">
+      <h3 class="text-lg font-semibold text-gray-900" data-i18n="footer.legal.mentions.title">Mentions Légales</h3>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.editor.title">Éditeur du site</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.editor.text">
+        <strong>Personnalité Comparée</strong><br>
+        Site web éducatif et informatif sur les tests de personnalité (MBTI et Ennéagramme)<br>
+        Contact : <a href="mailto:contact@personnalitecomparee.com" class="text-blue-600 hover:underline">contact@personnalitecomparee.com</a>
+      </p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.hosting.title">Hébergement</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.hosting.text">
+        Ce site est hébergé par <strong>Vercel Inc.</strong><br>
+        340 S Lemon Ave #4133<br>
+        Walnut, CA 91789, États-Unis<br>
+        <a href="https://vercel.com" target="_blank" rel="noopener" class="text-blue-600 hover:underline">https://vercel.com</a>
+      </p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.ip.title">Propriété intellectuelle</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.ip.text">
+        L’ensemble du contenu de ce site (textes, éléments graphiques, code source) est protégé par les lois en vigueur sur la propriété intellectuelle.<br>
+        Les modèles MBTI et Ennéagramme sont des systèmes conceptuels utilisés ici uniquement à des fins pédagogiques et informatives.
+      </p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.liability.title">Responsabilité</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.liability.text">
+        Les informations fournies sur ce site le sont à titre indicatif et ne constituent en aucun cas un conseil professionnel, médical ou psychologique. L’utilisateur reste seul responsable de l’usage qu’il fait des informations et résultats proposés.
+      </p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.trademarks.title">Marques et mentions légales spécifiques</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.trademarks.mbti">
         MBTI est une marque déposée appartenant à The Myers-Briggs Company. Le présent site utilise ce terme à des fins pédagogiques et informatives uniquement. Nous ne sommes ni affiliés, ni agréés, ni soutenus par The Myers-Briggs Company.
       </p>
-      <p class="text-gray-700">
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.trademarks.enneagram">
         L’utilisation du mot "Ennéagramme" fait référence au système de typologie de la personnalité bien connu, dont l’usage est libre. Aucun lien n’est revendiqué avec des organismes officiels comme The Enneagram Institute.
       </p>
     </div>
   `;
-  showModal('Mentions légales', content);
+  showModal('<span data-i18n="footer.legal.mentions.title">Mentions Légales</span>', content);
 }
 function showContact(){
-  const content = `<p class="text-gray-700">Écrivez-nous à <a href="mailto:contact@personnalitecomparee.com" class="text-blue-600 underline">contact@personnalitecomparee.com</a>.</p>`;
-  showModal('Contact', content);
+  const content = `
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900" data-i18n="footer.contact.support.title">Support</h3>
+
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h4 class="font-semibold text-blue-900" data-i18n="footer.contact.support.email.title">Email</h4>
+        <p class="text-blue-700" data-i18n="footer.contact.support.email.text"></p>
+      </div>
+
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h4 class="font-semibold text-blue-900" data-i18n="footer.contact.support.tech.title">Support technique</h4>
+        <p class="text-blue-700" data-i18n="footer.contact.support.tech.text">Pour toute question technique ou problème avec le test, n'hésitez pas à nous écrire en détaillant votre problème.</p>
+      </div>
+
+      <div class="bg-green-50 p-4 rounded-lg">
+        <h4 class="font-semibold text-green-900" data-i18n="footer.contact.support.suggestions.title">Suggestions</h4>
+        <p class="text-green-700" data-i18n="footer.contact.support.suggestions.text">Vos suggestions d'amélioration sont les bienvenues ! Aidez-nous à améliorer l'expérience utilisateur.</p>
+      </div>
+
+      <div class="bg-yellow-50 p-4 rounded-lg">
+        <h4 class="font-semibold text-yellow-900" data-i18n="footer.contact.support.time.title">Temps de réponse</h4>
+        <p class="text-yellow-700" data-i18n="footer.contact.support.time.text">Nous nous efforçons de répondre à tous les messages dans les 48 heures.</p>
+      </div>
+    </div>
+  `;
+  showModal('<span data-i18n="footer.contact.support.title">Support</span>', content);
 }
