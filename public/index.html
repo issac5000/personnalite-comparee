@@ -1971,6 +1971,8 @@ function displayResults(results) {
         initCountUp(resultsSection);
         addPDFDownloadHandler(resultsSection);
 
+        applyTranslations();
+
         setTimeout(() => {
             resultsSection.scrollIntoView({ behavior: 'smooth' });
         }, 100);
