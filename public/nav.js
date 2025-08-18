@@ -107,7 +107,7 @@
     if (termsLink) {
       termsLink.addEventListener('click', function(e) {
         e.preventDefault();
-        showTermsOfUse();
+        showTermsOfService();
       });
     }
 
@@ -123,7 +123,7 @@
     if (cookiesLink) {
       cookiesLink.addEventListener('click', function(e) {
         e.preventDefault();
-        showCookiesPolicy();
+        showCookies();
       });
     }
 
@@ -131,7 +131,7 @@
     if (supportLink) {
       supportLink.addEventListener('click', function(e) {
         e.preventDefault();
-        showContactSupport();
+        showSupport();
       });
     }
   });

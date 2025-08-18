@@ -779,7 +779,7 @@
                 </div>
                 
                 <div class="flex justify-center">
-                    <button type="button" onclick="startExternalEvaluation()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+                    <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                         <span data-i18n="evalStartBtn">Commencer l'évaluation</span> <i class="fas fa-play ml-2"></i>
                     </button>
                 </div>
@@ -1064,16 +1064,16 @@
                 <div>
                     <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase" data-i18n="footer.legal_title">Légal</h3>
                     <ul class="mt-4 space-y-4">
-                        <li><a href="#" onclick="event.preventDefault(); showPrivacyPolicy();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.privacy">Confidentialité</a></li>
-                        <li><a href="#" onclick="event.preventDefault(); showTermsOfService();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.terms">Conditions d'utilisation</a></li>
-                        <li><a href="#" onclick="event.preventDefault(); showLegalNotices();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.legal">Mentions légales</a></li>
-                        <li><a href="#" onclick="event.preventDefault(); showCookies();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.cookies">Cookies</a></li>
+                        <li><a href="#" id="privacy-link" onclick="event.preventDefault(); showPrivacyPolicy();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.privacy">Confidentialité</a></li>
+                        <li><a href="#" id="terms-link" onclick="event.preventDefault(); showTermsOfService();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.terms">Conditions d'utilisation</a></li>
+                        <li><a href="#" id="legal-link" onclick="event.preventDefault(); showLegalNotices();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.legal">Mentions légales</a></li>
+                        <li><a href="#" id="cookies-link" onclick="event.preventDefault(); showCookies();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.cookies">Cookies</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase" data-i18n="footer.contact_title">Contact</h3>
                     <ul class="mt-4 space-y-4">
-                        <li><a href="#" onclick="event.preventDefault(); showSupport();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.support">Support</a></li>
+                        <li><a href="#" id="support-link" onclick="event.preventDefault(); showSupport();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.support">Support</a></li>
                         <li class="flex space-x-6 pt-2">
                             <a href="#" class="text-gray-400 hover:text-white transition-colors">
                                 <span class="sr-only" data-i18n="social.facebook">Facebook</span>
@@ -3021,7 +3021,7 @@ function showTermsOfService() {
   `;
   showModal('<span data-i18n="footer.legal.terms.title">Conditions d\'Utilisation</span>', content);
 }
-
+function showLegalNotices() {
   const content = `
     <div class="space-y-4">
       <h3 class="text-lg font-semibold text-gray-900" data-i18n="footer.legal.mentions.title">Mentions Légales</h3>
@@ -3104,6 +3104,12 @@ function showSupport() {
   `;
   showModal('<span data-i18n="footer.contact.support.title">Support</span>', content);
 }
+
+window.showPrivacyPolicy = showPrivacyPolicy;
+window.showTermsOfService = showTermsOfService;
+window.showLegalNotices = showLegalNotices;
+window.showCookies = showCookies;
+window.showSupport = showSupport;
 
         // Fonction pour démarrer l'évaluation externe
         function startExternalEvaluation() {
