@@ -77,6 +77,9 @@ function showModal(title, content) {
         <div class="modal-body">${content}</div>
       </div>
     </div>`;
+  if (typeof applyTranslations === 'function') {
+    applyTranslations();
+  }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); }, { once: true });
   document.getElementById('current-modal').addEventListener('click', e => {
     if (e.target === e.currentTarget) closeModal();
