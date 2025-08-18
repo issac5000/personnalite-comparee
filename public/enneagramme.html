@@ -2070,7 +2070,7 @@ function displayResults(results) {
                     <div class="modal-content">
                         <div class="modal-header">
                             <h2 class="text-xl font-bold text-gray-900">${title}</h2>
-                            <span class="close" onclick="closeModal()" data-i18n="shareFallback.close">&times;</span>
+                            <span class="close" onclick="closeModal()">&times;</span>
                         </div>
                         <div class="modal-body">
                             ${content}
@@ -2079,6 +2079,9 @@ function displayResults(results) {
                 </div>
             `;
             modalContainer.innerHTML = modalHTML;
+            if (typeof applyTranslations === 'function') {
+                applyTranslations();
+            }
             
             // Fermer avec ESC
             document.addEventListener('keydown', function(e) {
@@ -2562,13 +2565,13 @@ function displayResults(results) {
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="enneagramme.modals.1.intro">Les Type 1 sont motivés par le besoin de vivre correctement, d'améliorer le monde et d'éviter la colère.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.1.motivationsTitle">Motivations profondes :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.motivationsTitle">Motivations profondes :</h3>
                         <div class="bg-red-50 p-4 rounded-lg">
                             <p data-i18n="enneagramme.modals.1.fear"><strong>Peur fondamentale :</strong> Être corrompu, défectueux ou mauvais</p>
                             <p data-i18n="enneagramme.modals.1.desire"><strong>Désir fondamental :</strong> Être bon, vertueux et parfait</p>
                         </div>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.1.traitsTitle">Caractéristiques :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.traitsTitle">Caractéristiques :</h3>
                         <ul class="list-disc list-inside text-gray-700 space-y-1">
                             <li data-i18n="enneagramme.modals.1.traits1">Idéalistes et responsables</li>
                             <li data-i18n="enneagramme.modals.1.traits2">Fort sens moral et éthique</li>
@@ -2577,10 +2580,10 @@ function displayResults(results) {
                             <li data-i18n="enneagramme.modals.1.traits5">Peuvent être rigides et colériques</li>
                         </ul>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.1.healthyTitle">En santé :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.healthyTitle">En santé :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.1.healthy">Sages, discernants, réalistes et nobles. Peuvent être moralement héroïques.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.1.stressTitle">En stress :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.stressTitle">En stress :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.1.stress">Deviennent critiques, perfectionnistes et peuvent exploser de colère.</p>
                     </div>
                 `
@@ -2591,13 +2594,13 @@ function displayResults(results) {
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="enneagramme.modals.2.intro">Les Type 2 sont motivés par le besoin d'être aimés et nécessaires. Ils sont empathiques, chaleureux et généreux, mais peuvent devenir possessifs et trop axés sur la reconnaissance.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.2.motivationsTitle">Motivations profondes :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.motivationsTitle">Motivations profondes :</h3>
                         <div class="bg-green-50 p-4 rounded-lg">
                             <p data-i18n="enneagramme.modals.2.fear"><strong>Peur fondamentale :</strong> Ne pas être aimés ou être inutiles</p>
                             <p data-i18n="enneagramme.modals.2.desire"><strong>Désir fondamental :</strong> Se sentir appréciés, aimés et nécessaires</p>
                         </div>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.2.traitsTitle">Caractéristiques :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.traitsTitle">Caractéristiques :</h3>
                         <ul class="list-disc list-inside text-gray-700 space-y-1">
                             <li data-i18n="enneagramme.modals.2.traits1">Empathiques et chaleureux</li>
                             <li data-i18n="enneagramme.modals.2.traits2">Serviables et généreux</li>
@@ -2606,10 +2609,10 @@ function displayResults(results) {
                             <li data-i18n="enneagramme.modals.2.traits5">Parfois possessifs ou envahissants</li>
                         </ul>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.2.healthyTitle">En santé :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.healthyTitle">En santé :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.2.healthy">Ils sont altruistes, aimants et désintéressés. Ils soutiennent les autres de manière authentique sans attendre de retour.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.2.stressTitle">En stress :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.stressTitle">En stress :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.2.stress">Ils peuvent devenir envahissants, ressentir de la jalousie et s'épuiser en donnant trop.</p>
                     </div>
                 `
@@ -2620,13 +2623,13 @@ function displayResults(results) {
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="enneagramme.modals.3.intro">Les Type 3 sont motivés par le besoin de réussir et d'être admirés. Ambitieux et énergiques, ils sont adaptables et conscients de leur image, mais peuvent devenir préoccupés par leur statut.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.3.motivationsTitle">Motivations profondes :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.motivationsTitle">Motivations profondes :</h3>
                         <div class="bg-yellow-50 p-4 rounded-lg">
                             <p data-i18n="enneagramme.modals.3.fear"><strong>Peur fondamentale :</strong> Ne pas avoir de valeur personnelle</p>
                             <p data-i18n="enneagramme.modals.3.desire"><strong>Désir fondamental :</strong> Se sentir précieux et admiré pour leurs réalisations</p>
                         </div>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.3.traitsTitle">Caractéristiques :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.traitsTitle">Caractéristiques :</h3>
                         <ul class="list-disc list-inside text-gray-700 space-y-1">
                             <li data-i18n="enneagramme.modals.3.traits1">Ambitieux et charismatiques</li>
                             <li data-i18n="enneagramme.modals.3.traits2">Efficaces et compétitifs</li>
@@ -2635,10 +2638,10 @@ function displayResults(results) {
                             <li data-i18n="enneagramme.modals.3.traits5">Peuvent négliger leurs émotions ou celles des autres</li>
                         </ul>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.3.healthyTitle">En santé :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.healthyTitle">En santé :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.3.healthy">Ils sont authentiques, inspirants et encouragent les autres à réussir. Ils assument leurs valeurs personnelles plutôt que de rechercher uniquement la reconnaissance.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.3.stressTitle">En stress :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.stressTitle">En stress :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.3.stress">Ils peuvent devenir obsédés par leur image, ignorer leurs besoins émotionnels et craindre l'échec.</p>
                     </div>
                 `
@@ -2649,13 +2652,13 @@ function displayResults(results) {
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="enneagramme.modals.4.intro">Les Type 4 recherchent l'authenticité et un sens personnel. Sensibles et créatifs, ils veulent être compris et exprimer leur individualité. Ils peuvent être introspectifs et parfois mélancoliques.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.4.motivationsTitle">Motivations profondes :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.motivationsTitle">Motivations profondes :</h3>
                         <div class="bg-blue-50 p-4 rounded-lg">
                             <p data-i18n="enneagramme.modals.4.fear"><strong>Peur fondamentale :</strong> Ne pas avoir d'identité ou de valeur personnelle</p>
                             <p data-i18n="enneagramme.modals.4.desire"><strong>Désir fondamental :</strong> Trouver leur véritable identité et s'exprimer de manière authentique</p>
                         </div>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.4.traitsTitle">Caractéristiques :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.traitsTitle">Caractéristiques :</h3>
                         <ul class="list-disc list-inside text-gray-700 space-y-1">
                             <li data-i18n="enneagramme.modals.4.traits1">Sensibles et introspectifs</li>
                             <li data-i18n="enneagramme.modals.4.traits2">Créatifs et expressifs</li>
@@ -2664,10 +2667,10 @@ function displayResults(results) {
                             <li data-i18n="enneagramme.modals.4.traits5">Recherchent souvent un sens et une connexion profonde</li>
                         </ul>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.4.healthyTitle">En santé :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.healthyTitle">En santé :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.4.healthy">Ils sont hautement créatifs, inspirés et capables de transformer leur expérience personnelle en quelque chose d'universel.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.4.stressTitle">En stress :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.stressTitle">En stress :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.4.stress">Ils peuvent se sentir incompris, se retirer et devenir auto‑indulgents ou envieux des autres.</p>
                     </div>
                 `
@@ -2678,13 +2681,13 @@ function displayResults(results) {
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="enneagramme.modals.5.intro">Les Type 5 veulent comprendre le monde. Ils sont observateurs, innovants et autonomes. Ils peuvent se retirer pour préserver leur énergie et développer leurs connaissances.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.5.motivationsTitle">Motivations profondes :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.motivationsTitle">Motivations profondes :</h3>
                         <div class="bg-blue-50 p-4 rounded-lg">
                             <p data-i18n="enneagramme.modals.5.fear"><strong>Peur fondamentale :</strong> Être impuissant, inutile ou incapable</p>
                             <p data-i18n="enneagramme.modals.5.desire"><strong>Désir fondamental :</strong> Être compétent et comprendre l'environnement</p>
                         </div>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.5.traitsTitle">Caractéristiques :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.traitsTitle">Caractéristiques :</h3>
                         <ul class="list-disc list-inside text-gray-700 space-y-1">
                             <li data-i18n="enneagramme.modals.5.traits1">Observateurs et analytiques</li>
                             <li data-i18n="enneagramme.modals.5.traits2">Innovants et créatifs</li>
@@ -2693,10 +2696,10 @@ function displayResults(results) {
                             <li data-i18n="enneagramme.modals.5.traits5">Peuvent se couper de leurs émotions ou des autres</li>
                         </ul>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.5.healthyTitle">En santé :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.healthyTitle">En santé :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.5.healthy">Ils sont visionnaires, pionniers et apportent des idées novatrices qui améliorent la société.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.5.stressTitle">En stress :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.stressTitle">En stress :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.5.stress">Ils peuvent devenir détachés, trop rationnels et éviter la participation sociale.</p>
                     </div>
                 `
@@ -2707,13 +2710,13 @@ function displayResults(results) {
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="enneagramme.modals.6.intro">Les Type 6 recherchent la sécurité et la confiance. Loyaux et fiables, ils anticipent les problèmes et recherchent le soutien. Ils peuvent osciller entre la prudence et l'audace.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.6.motivationsTitle">Motivations profondes :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.motivationsTitle">Motivations profondes :</h3>
                         <div class="bg-indigo-50 p-4 rounded-lg">
                             <p data-i18n="enneagramme.modals.6.fear"><strong>Peur fondamentale :</strong> Être sans soutien ou sans direction</p>
                             <p data-i18n="enneagramme.modals.6.desire"><strong>Désir fondamental :</strong> Être en sécurité et soutenu</p>
                         </div>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.6.traitsTitle">Caractéristiques :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.traitsTitle">Caractéristiques :</h3>
                         <ul class="list-disc list-inside text-gray-700 space-y-1">
                             <li data-i18n="enneagramme.modals.6.traits1">Fiables et dévoués</li>
                             <li data-i18n="enneagramme.modals.6.traits2">Consciencieux et travailleurs</li>
@@ -2722,10 +2725,10 @@ function displayResults(results) {
                             <li data-i18n="enneagramme.modals.6.traits5">Parfois anxieux ou sceptiques</li>
                         </ul>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.6.healthyTitle">En santé :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.healthyTitle">En santé :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.6.healthy">Ils sont courageux, engagés et se mettent au service d'une cause plus grande qu'eux.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.6.stressTitle">En stress :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.stressTitle">En stress :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.6.stress">Ils peuvent devenir méfiants, autoritaires ou excessivement anxieux.</p>
                     </div>
                 `
@@ -2736,13 +2739,13 @@ function displayResults(results) {
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="enneagramme.modals.7.intro">Les Type 7 sont optimistes et aventuriers. Ils recherchent des expériences stimulantes et veulent éviter la douleur et l'ennui. Souvent joyeux, ils peuvent se disperser.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.7.motivationsTitle">Motivations profondes :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.motivationsTitle">Motivations profondes :</h3>
                         <div class="bg-orange-50 p-4 rounded-lg">
                             <p data-i18n="enneagramme.modals.7.fear"><strong>Peur fondamentale :</strong> Être privés ou coincés dans la souffrance</p>
                             <p data-i18n="enneagramme.modals.7.desire"><strong>Désir fondamental :</strong> Être heureux, satisfaits et libres</p>
                         </div>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.7.traitsTitle">Caractéristiques :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.traitsTitle">Caractéristiques :</h3>
                         <ul class="list-disc list-inside text-gray-700 space-y-1">
                             <li data-i18n="enneagramme.modals.7.traits1">Extravertis et optimistes</li>
                             <li data-i18n="enneagramme.modals.7.traits2">Polyvalents et spontanés</li>
@@ -2751,10 +2754,10 @@ function displayResults(results) {
                             <li data-i18n="enneagramme.modals.7.traits5">Peuvent être dispersés ou éviter la douleur à tout prix</li>
                         </ul>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.7.healthyTitle">En santé :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.healthyTitle">En santé :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.7.healthy">Ils canaliseront leur énergie dans des objectifs significatifs et apprécieront la simplicité et la gratitude.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.7.stressTitle">En stress :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.stressTitle">En stress :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.7.stress">Ils peuvent fuir les responsabilités, se disperser ou chercher des distractions excessives.</p>
                     </div>
                 `
@@ -2765,13 +2768,13 @@ function displayResults(results) {
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="enneagramme.modals.8.intro">Les Type 8 valorisent l'indépendance et la protection. Ils sont confiants, forts et veulent se protéger et protéger les autres. Ils peuvent devenir dominants s'ils se sentent menacés.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.8.motivationsTitle">Motivations profondes :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.motivationsTitle">Motivations profondes :</h3>
                         <div class="bg-red-50 p-4 rounded-lg">
                             <p data-i18n="enneagramme.modals.8.fear"><strong>Peur fondamentale :</strong> Être blessés ou contrôlés par autrui</p>
                             <p data-i18n="enneagramme.modals.8.desire"><strong>Désir fondamental :</strong> Être maîtres de leur vie et protéger les faibles</p>
                         </div>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.8.traitsTitle">Caractéristiques :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.traitsTitle">Caractéristiques :</h3>
                         <ul class="list-disc list-inside text-gray-700 space-y-1">
                             <li data-i18n="enneagramme.modals.8.traits1">Assertifs et décisifs</li>
                             <li data-i18n="enneagramme.modals.8.traits2">Confiants et protecteurs</li>
@@ -2780,10 +2783,10 @@ function displayResults(results) {
                             <li data-i18n="enneagramme.modals.8.traits5">Peuvent être contrôlants ou impulsifs</li>
                         </ul>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.8.healthyTitle">En santé :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.healthyTitle">En santé :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.8.healthy">Ils utilisent leur force pour améliorer le monde et protéger les vulnérables. Ils sont magnanimes et courageux.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.8.stressTitle">En stress :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.stressTitle">En stress :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.8.stress">Ils peuvent devenir dominateurs, se méfier des autres et réagir avec colère.</p>
                     </div>
                 `
@@ -2794,13 +2797,13 @@ function displayResults(results) {
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="enneagramme.modals.9.intro">Les Type 9 recherchent la paix intérieure et extérieure. Ils sont réceptifs, conciliants et stables. Ils fuient les conflits et peuvent devenir complaisants pour préserver l'harmonie.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.9.motivationsTitle">Motivations profondes :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.motivationsTitle">Motivations profondes :</h3>
                         <div class="bg-teal-50 p-4 rounded-lg">
                             <p data-i18n="enneagramme.modals.9.fear"><strong>Peur fondamentale :</strong> Perdre la connexion ou être séparé des autres</p>
                             <p data-i18n="enneagramme.modals.9.desire"><strong>Désir fondamental :</strong> Maintenir la paix et l'harmonie</p>
                         </div>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.9.traitsTitle">Caractéristiques :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.traitsTitle">Caractéristiques :</h3>
                         <ul class="list-disc list-inside text-gray-700 space-y-1">
                             <li data-i18n="enneagramme.modals.9.traits1">Réceptifs et rassurants</li>
                             <li data-i18n="enneagramme.modals.9.traits2">Stables et accommodants</li>
@@ -2809,10 +2812,10 @@ function displayResults(results) {
                             <li data-i18n="enneagramme.modals.9.traits5">Peuvent devenir complaisants ou inertes</li>
                         </ul>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.9.healthyTitle">En santé :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.healthyTitle">En santé :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.9.healthy">Ils apportent la paix et la cohésion, aident les autres à coopérer et deviennent des sources d'unité.</p>
 
-                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.9.stressTitle">En stress :</h3>
+                        <h3 class="text-lg font-semibold text-gray-900" data-i18n="enneagramme.modals.stressTitle">En stress :</h3>
                         <p class="text-gray-700" data-i18n="enneagramme.modals.9.stress">Ils peuvent ignorer leurs propres besoins, éviter les conflits et se dissocier émotionnellement.</p>
                     </div>
                 `
