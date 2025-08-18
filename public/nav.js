@@ -94,5 +94,45 @@
         }
       });
     });
+
+    const privacyLink = document.getElementById('privacy-link');
+    if (privacyLink) {
+      privacyLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        showPrivacyPolicy();
+      });
+    }
+
+    const termsLink = document.getElementById('terms-link');
+    if (termsLink) {
+      termsLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        showTermsOfUse();
+      });
+    }
+
+    const legalLink = document.getElementById('legal-link');
+    if (legalLink) {
+      legalLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        showLegalNotices();
+      });
+    }
+
+    const cookiesLink = document.getElementById('cookies-link');
+    if (cookiesLink) {
+      cookiesLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        showCookiesPolicy();
+      });
+    }
+
+    const supportLink = document.getElementById('support-link');
+    if (supportLink) {
+      supportLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        showContactSupport();
+      });
+    }
   });
 })();
