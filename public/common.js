@@ -165,10 +165,20 @@ function showEnneagramDetails(type){
 function showPrivacyPolicy(){
   const content = `<p class="text-gray-700">Nous collectons uniquement les réponses nécessaires au fonctionnement du site. Aucune donnée personnelle n'est partagée.</p>`;
   showModal('Politique de Confidentialité', content);
+  if (window.i18n && typeof window.i18n.translate === 'function') {
+    window.i18n.translate();
+  } else if (typeof applyTranslations === 'function') {
+    applyTranslations();
+  }
 }
 function showTermsOfService(){
   const content = `<p class="text-gray-700">L'utilisation du site est soumise à votre acceptation de nos conditions d'utilisation.</p>`;
   showModal("Conditions d'utilisation", content);
+  if (window.i18n && typeof window.i18n.translate === 'function') {
+    window.i18n.translate();
+  } else if (typeof applyTranslations === 'function') {
+    applyTranslations();
+  }
 }
 function showLegalNotices(){
   const content = `
