@@ -2165,8 +2165,8 @@ function displayResults(results) {
             const modalHTML = `
                 <div class="modal show" id="current-modal">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h2 class="text-xl font-bold text-gray-900">${title}</h2>
+                <div class="modal-header">
+                            ${title}
                             <span class="close" onclick="closeModal()">&times;</span>
                         </div>
                         <div class="modal-body">
@@ -2176,6 +2176,7 @@ function displayResults(results) {
                 </div>
             `;
             modalContainer.innerHTML = modalHTML;
+            applyTranslations();
             
             // Fermer avec ESC
             document.addEventListener('keydown', function(e) {
@@ -2201,7 +2202,7 @@ function displayResults(results) {
         // Descriptions détaillées MBTI
         const mbtiDetailedDescriptions = {
             'INTJ': {
-                title: '<span data-i18n="mbti.modals.intj.title">INTJ - L\'Architecte</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.intj.title">INTJ - L\'Architecte</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.intj.paragraph1">Les INTJ sont des visionnaires stratégiques avec un plan pour tout. Ils sont indépendants, déterminés et ont une forte capacité à voir les possibilités futures.</p>
@@ -2229,7 +2230,7 @@ function displayResults(results) {
                 `
             },
             'INTP': {
-                title: '<span data-i18n="mbti.modals.intp.title">INTP - Le Penseur</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.intp.title">INTP - Le Penseur</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.intp.paragraph1">Les INTP sont des penseurs logiques et créatifs, toujours à la recherche de nouvelles idées et possibilités théoriques.</p>
@@ -2257,7 +2258,7 @@ function displayResults(results) {
                 `
             },
             'ISTJ': {
-                title: '<span data-i18n="mbti.modals.istj.title">ISTJ - Le Logisticien</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.istj.title">ISTJ - Le Logisticien</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.istj.paragraph1">Les ISTJ sont sérieux et fiables. Ils respectent les règles et traditions, travaillent méthodiquement et prennent leurs responsabilités au sérieux. Leur approche est pragmatique et organisée.</p>
@@ -2285,7 +2286,7 @@ function displayResults(results) {
                 `
             },
             'ISTP': {
-                title: '<span data-i18n="mbti.modals.istp.title">ISTP - Le Virtuose</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.istp.title">ISTP - Le Virtuose</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.istp.paragraph1">Les ISTP sont pragmatiques et analytiques. Ils aiment comprendre comment fonctionnent les choses et s'attaquer à des problèmes concrets. Flexibles et observateurs, ils préfèrent apprendre par l'expérience.</p>
@@ -2313,7 +2314,7 @@ function displayResults(results) {
                 `
             },
             'ISFJ': {
-                title: '<span data-i18n="mbti.modals.isfj.title">ISFJ - Le Protecteur</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.isfj.title">ISFJ - Le Protecteur</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.isfj.paragraph1">Les ISFJ sont chaleureux et consciencieux. Ils veillent à préserver l'harmonie et la sécurité de leur entourage. Ils respectent les traditions et sont attentifs aux besoins des autres.</p>
@@ -2341,7 +2342,7 @@ function displayResults(results) {
                 `
             },
             'ISFP': {
-                title: '<span data-i18n="mbti.modals.isfp.title">ISFP - L\'Aventurier</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.isfp.title">ISFP - L\'Aventurier</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.isfp.paragraph1">Les ISFP sont sensibles, discrets et artistiques. Ils apprécient l'harmonie, la beauté et la liberté de s'exprimer. Ils vivent l’instant présent et recherchent l'équilibre.</p>
@@ -2369,7 +2370,7 @@ function displayResults(results) {
                 `
             },
             'INFJ': {
-                title: '<span data-i18n="mbti.modals.infj.title">INFJ - L\'Avocat</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.infj.title">INFJ - L\'Avocat</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.infj.paragraph1">Les INFJ sont perspicaces et idéalistes. Ils sont guidés par leurs valeurs et cherchent à comprendre les motivations profondes des autres. Ils sont créatifs et se consacrent à aider autrui.</p>
@@ -2397,7 +2398,7 @@ function displayResults(results) {
                 `
             },
             'INFP': {
-                title: '<span data-i18n="mbti.modals.infp.title">INFP - Le Médiateur</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.infp.title">INFP - Le Médiateur</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.infp.paragraph1">Les INFP sont idéalistes et empathiques. Guidés par leurs valeurs, ils cherchent un sens profond à la vie et s’efforcent de rendre le monde meilleur. Ils sont créatifs et sensibles.</p>
@@ -2425,7 +2426,7 @@ function displayResults(results) {
                 `
             },
             'ENTJ': {
-                title: '<span data-i18n="mbti.modals.entj.title">ENTJ - Le Commandant</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.entj.title">ENTJ - Le Commandant</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.entj.paragraph1">Les ENTJ sont des leaders nés, charismatiques et logiques. Ils aiment structurer des organisations, planifier l'avenir et relever des défis. Ils sont déterminés et axés sur l’efficacité.</p>
@@ -2453,7 +2454,7 @@ function displayResults(results) {
                 `
             },
             'ENTP': {
-                title: '<span data-i18n="mbti.modals.entp.title">ENTP - L\'Innovateur</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.entp.title">ENTP - L\'Innovateur</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.entp.paragraph1">Les ENTP sont créatifs et curieux. Ils aiment explorer de nouvelles idées, débattre et remettre en question le statu quo. Flexibles, ils préfèrent les possibilités ouvertes aux routines strictes.</p>
@@ -2481,7 +2482,7 @@ function displayResults(results) {
                 `
             },
             'ENFJ': {
-                title: '<span data-i18n="mbti.modals.enfj.title">ENFJ - Le Donateur</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.enfj.title">ENFJ - Le Donateur</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.enfj.paragraph1">Les ENFJ sont charismatiques et attentifs aux autres. Ils comprennent intuitivement les besoins des gens et aiment motiver et inspirer. Ils recherchent l’harmonie et le développement personnel et collectif.</p>
@@ -2509,7 +2510,7 @@ function displayResults(results) {
                 `
             },
             'ENFP': {
-                title: '<span data-i18n="mbti.modals.enfp.title">ENFP - L\'Inspirateur</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.enfp.title">ENFP - L\'Inspirateur</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.enfp.paragraph1">Les ENFP sont enthousiastes et créatifs. Ils s’épanouissent dans l'exploration de nouvelles idées et inspirent les autres grâce à leur vision optimiste. Ils cherchent l’authenticité et la liberté.</p>
@@ -2537,7 +2538,7 @@ function displayResults(results) {
                 `
             },
             'ESTP': {
-                title: '<span data-i18n="mbti.modals.estp.title">ESTP - L\'Entrepreneur</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.estp.title">ESTP - L\'Entrepreneur</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.estp.paragraph1">Les ESTP sont énergiques et orientés vers l'action. Ils aiment vivre l'instant présent et résoudre des situations concrètes. Adaptables et sociables, ils prennent des décisions rapides.</p>
@@ -2565,7 +2566,7 @@ function displayResults(results) {
                 `
             },
             'ESTJ': {
-                title: '<span data-i18n="mbti.modals.estj.title">ESTJ - L\'Exécutif</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.estj.title">ESTJ - L\'Exécutif</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.estj.paragraph1">Les ESTJ sont organisés et directs. Ils se fient aux faits et aiment structurer les activités pour obtenir des résultats efficaces. Ils valorisent la tradition et l’ordre.</p>
@@ -2593,7 +2594,7 @@ function displayResults(results) {
                 `
             },
             'ESFP': {
-                title: '<span data-i18n="mbti.modals.esfp.title">ESFP - L\'Amuseur</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.esfp.title">ESFP - L\'Amuseur</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.esfp.paragraph1">Les ESFP sont spontanés et sociables. Ils aiment profiter de la vie et attirer l'attention. Pratiques et chaleureux, ils encouragent les autres à vivre pleinement chaque moment.</p>
@@ -2621,7 +2622,7 @@ function displayResults(results) {
                 `
             },
             'ESFJ': {
-                title: '<span data-i18n="mbti.modals.esfj.title">ESFJ - Le Consul</span>',
+                title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.esfj.title">ESFJ - Le Consul</h2>',
                 content: `
                     <div class="space-y-4">
                         <p class="text-gray-700" data-i18n="mbti.modals.esfj.paragraph1">Les ESFJ sont aimables et sociables. Ils prennent soin des autres et veillent à maintenir l'harmonie. Organisés et consciencieux, ils travaillent pour soutenir leur communauté.</p>
