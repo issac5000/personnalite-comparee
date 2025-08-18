@@ -1965,7 +1965,6 @@ function displayResults(results) {
     if (autoEvalSection) {
         autoEvalSection.parentNode.insertBefore(resultsSection, autoEvalSection.nextSibling);
         initCountUp(resultsSection);
-        addPDFDownloadHandler(resultsSection);
 
         setTimeout(() => {
             resultsSection.scrollIntoView({ behavior: 'smooth' });
@@ -2078,9 +2077,6 @@ function displayResults(results) {
                             <div class="mt-8 flex flex-wrap justify-center gap-4">
                                 <button onclick="shareCode()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                                     <i class="fas fa-share mr-2"></i> Partager
-                                </button>
-                                <button class="download-pdf-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                    <i class="fas fa-download mr-2"></i> Télécharger PDF
                                 </button>
                                 <button onclick="restartTest()" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <i class="fas fa-redo mr-2"></i> Refaire le test
@@ -3042,78 +3038,72 @@ function showPrivacyPolicy() {
        function showLegalNotices() {
   const content = `
     <div class="space-y-4">
-      <h3 class="text-lg font-semibold text-gray-900">Mentions Légales</h3>
-      
-      <h4 class="font-semibold text-gray-900">Éditeur du site</h4>
-      <p class="text-gray-700">
+      <h3 class="text-lg font-semibold text-gray-900" data-i18n="footer.legal.mentions.title">Mentions Légales</h3>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.editor.title">Éditeur du site</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.editor.text">
         <strong>Personnalité Comparée</strong><br>
         Site web éducatif et informatif sur les tests de personnalité (MBTI et Ennéagramme)<br>
         Contact : <a href="mailto:contact@personnalitecomparee.com" class="text-blue-600 hover:underline">contact@personnalitecomparee.com</a>
       </p>
-      
-      <h4 class="font-semibold text-gray-900">Hébergement</h4>
-      <p class="text-gray-700">
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.hosting.title">Hébergement</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.hosting.text">
         Ce site est hébergé par <strong>Vercel Inc.</strong><br>
         340 S Lemon Ave #4133<br>
         Walnut, CA 91789, États-Unis<br>
         <a href="https://vercel.com" target="_blank" rel="noopener" class="text-blue-600 hover:underline">https://vercel.com</a>
       </p>
-      
-      <h4 class="font-semibold text-gray-900">Propriété intellectuelle</h4>
-      <p class="text-gray-700">
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.ip.title">Propriété intellectuelle</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.ip.text">
         L’ensemble du contenu de ce site (textes, éléments graphiques, code source) est protégé par les lois en vigueur sur la propriété intellectuelle.<br>
         Les modèles MBTI et Ennéagramme sont des systèmes conceptuels utilisés ici uniquement à des fins pédagogiques et informatives.
       </p>
-      
-      <h4 class="font-semibold text-gray-900">Responsabilité</h4>
-      <p class="text-gray-700">
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.liability.title">Responsabilité</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.liability.text">
         Les informations fournies sur ce site le sont à titre indicatif et ne constituent en aucun cas un conseil professionnel, médical ou psychologique. L’utilisateur reste seul responsable de l’usage qu’il fait des informations et résultats proposés.
       </p>
-      
-      <h4 class="font-semibold text-gray-900">Cookies et stockage local</h4>
-      <p class="text-gray-700">
-        Ce site n’utilise pas de cookies de suivi.<br>
-        Seules certaines données nécessaires au fonctionnement (comme la progression dans le test ou le code d’accès aux résultats) sont stockées localement dans le navigateur ou dans notre base de données Supabase.
-      </p>
 
-      <h4 class="font-semibold text-gray-900">Marques et mentions légales spécifiques</h4>
-      <p class="text-gray-700">
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.trademarks.title">Marques et mentions légales spécifiques</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.trademarks.mbti">
         MBTI est une marque déposée appartenant à The Myers-Briggs Company. Le présent site utilise ce terme à des fins pédagogiques et informatives uniquement. Nous ne sommes ni affiliés, ni agréés, ni soutenus par The Myers-Briggs Company.
       </p>
-      <p class="text-gray-700">
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.trademarks.enneagram">
         L’utilisation du mot "Ennéagramme" fait référence au système de typologie de la personnalité bien connu, dont l’usage est libre. Aucun lien n’est revendiqué avec des organismes officiels comme The Enneagram Institute.
       </p>
     </div>
   `;
-  showModal('Mentions Légales', content);
+  showModal('<span data-i18n="footer.legal.mentions.title">Mentions Légales</span>', content);
 }
         function showContact() {
             const content = `
                 <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Nous Contacter</h3>
-                    
+                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="footer.contact.support.title">Support</h3>
+
                     <div class="bg-blue-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-blue-900">Email</h4>
-                        <p class="text-blue-700"><a href="mailto:contact@personnalitecomparee.com?subject=Support%20Personnalit%C3%A9%20Compar%C3%A9e" class="text-blue-700 hover:underline">contact@personnalitecomparee.com</a></p>
+                        <h4 class="font-semibold text-blue-900" data-i18n="footer.contact.support.email.title">Email</h4>
+                        <p class="text-blue-700" data-i18n="footer.contact.support.email.text"></p>
                     </div>
-                    
+
                     <div class="bg-blue-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-blue-900">Support technique</h4>
-                        <p class="text-blue-700">Pour toute question technique ou problème avec le test, n'hésitez pas à nous écrire en détaillant votre problème.</p>
+                        <h4 class="font-semibold text-blue-900" data-i18n="footer.contact.support.tech.title">Support technique</h4>
+                        <p class="text-blue-700" data-i18n="footer.contact.support.tech.text">Pour toute question technique ou problème avec le test, n'hésitez pas à nous écrire en détaillant votre problème.</p>
                     </div>
-                    
+
                     <div class="bg-green-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-green-900">Suggestions</h4>
-                        <p class="text-green-700">Vos suggestions d'amélioration sont les bienvenues ! Aidez-nous à améliorer l'expérience utilisateur.</p>
+                        <h4 class="font-semibold text-green-900" data-i18n="footer.contact.support.suggestions.title">Suggestions</h4>
+                        <p class="text-green-700" data-i18n="footer.contact.support.suggestions.text">Vos suggestions d'amélioration sont les bienvenues ! Aidez-nous à améliorer l'expérience utilisateur.</p>
                     </div>
-                    
+
                     <div class="bg-yellow-50 p-4 rounded-lg">
-                        <h4 class="font-semibold text-yellow-900">Temps de réponse</h4>
-                        <p class="text-yellow-700">Nous nous efforçons de répondre à tous les messages dans les 48 heures.</p>
+                        <h4 class="font-semibold text-yellow-900" data-i18n="footer.contact.support.time.title">Temps de réponse</h4>
+                        <p class="text-yellow-700" data-i18n="footer.contact.support.time.text">Nous nous efforçons de répondre à tous les messages dans les 48 heures.</p>
                     </div>
                 </div>
             `;
-            showModal('Contact', content);
+            showModal('<span data-i18n="footer.contact.support.title">Support</span>', content);
         }
 
         // Fonction pour démarrer l'évaluation externe
@@ -3977,10 +3967,6 @@ function showPrivacyPolicy() {
 
                         <!-- Actions -->
                         <div class="flex space-x-3">
-                            <button class="download-pdf-btn flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                                <i class="fas fa-download mr-2"></i>
-                                Télécharger PDF
-                            </button>
                             <button onclick="shareProfileResults('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                                 <i class="fas fa-share mr-2"></i>
                                 Partager
@@ -3993,7 +3979,6 @@ function showPrivacyPolicy() {
             // Ajouter la modale au DOM
     document.body.appendChild(resultsModal);
     initCountUp(resultsModal);
-    addPDFDownloadHandler(resultsModal);
 
             // Animer les barres de certitude
             resultsModal.querySelectorAll('.certainty-bar').forEach(bar => {
@@ -4231,54 +4216,6 @@ function showPrivacyPolicy() {
             }
         }
 
-        function addPDFDownloadHandler(root) {
-            const btn = root.querySelector('.download-pdf-btn');
-            if (btn) {
-                btn.addEventListener('click', downloadResultsPDF);
-            }
-        }
-
-        function downloadResultsPDF() {
-            let container = document.querySelector('#results-modal .modal-content');
-            let actionsSelector = '.flex.space-x-3';
-            if (!container) {
-                container = document.querySelector('.bg-blue-50 .bg-white.shadow-xl');
-                actionsSelector = '.flex.flex-wrap.justify-center.gap-4';
-            }
-            if (!container) return;
-
-            const clone = container.cloneNode(true);
-
-            const actions = clone.querySelector(actionsSelector);
-            if (actions) actions.remove();
-
-            const canvases = container.querySelectorAll('canvas');
-            const cloneCanvases = clone.querySelectorAll('canvas');
-            canvases.forEach((canvas, idx) => {
-                const img = document.createElement('img');
-                img.src = canvas.toDataURL('image/png');
-                const rect = canvas.getBoundingClientRect();
-                img.style.width = rect.width + 'px';
-                img.style.height = rect.height + 'px';
-                cloneCanvases[idx].replaceWith(img);
-            });
-
-            clone.style.position = 'absolute';
-            clone.style.left = '-9999px';
-            document.body.appendChild(clone);
-
-            const opt = {
-                margin: 0,
-                filename: 'personnalite-comparee-resultats.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(clone).save().then(() => {
-                document.body.removeChild(clone);
-            });
-        }
 
         async function shareProfileResults(code) {
             const result = await fetchUserProfileFromSupabase(code);

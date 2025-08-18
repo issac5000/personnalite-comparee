@@ -1970,7 +1970,6 @@ function displayResults(results) {
     if (autoEvalSection) {
         autoEvalSection.parentNode.insertBefore(resultsSection, autoEvalSection.nextSibling);
         initCountUp(resultsSection);
-        addPDFDownloadHandler(resultsSection);
 
         applyTranslations();
 
@@ -2059,9 +2058,6 @@ function displayResults(results) {
                             <div class="mt-8 flex flex-wrap justify-center gap-4">
                                 <button onclick="shareCode()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
                                     <i class="fas fa-share mr-2"></i> <span data-i18n="results.buttons.share">Partager</span>
-                                </button>
-                                <button class="download-pdf-btn inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                    <i class="fas fa-download mr-2"></i> <span data-i18n="results.buttons.downloadPdf">Télécharger PDF</span>
                                 </button>
                                 <button onclick="restartTest()" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <i class="fas fa-redo mr-2"></i> <span data-i18n="results.buttons.restart">Refaire le test</span>
@@ -3974,10 +3970,6 @@ window.showSupport = showSupport;
 
                         <!-- Actions -->
                         <div class="flex space-x-3">
-                            <button class="download-pdf-btn flex-1 inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                                <i class="fas fa-download mr-2"></i>
-                                <span data-i18n="results.details.downloadPdf">Télécharger PDF</span>
-                            </button>
                             <button onclick="shareProfileResults('${code}')" class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
                                 <i class="fas fa-share mr-2"></i>
                                 <span data-i18n="results.details.share">Partager</span>
@@ -3990,7 +3982,6 @@ window.showSupport = showSupport;
             // Ajouter la modale au DOM
     document.body.appendChild(resultsModal);
     initCountUp(resultsModal);
-    addPDFDownloadHandler(resultsModal);
     applyTranslations();
     const titleEl = resultsModal.querySelector('[data-i18n="results.details.title"]');
     if (titleEl) { titleEl.innerHTML = titleEl.innerHTML.replace('{name}', profile.name); }
@@ -4241,54 +4232,6 @@ window.showSupport = showSupport;
             }
         }
 
-        function addPDFDownloadHandler(root) {
-            const btn = root.querySelector('.download-pdf-btn');
-            if (btn) {
-                btn.addEventListener('click', downloadResultsPDF);
-            }
-        }
-
-        function downloadResultsPDF() {
-            let container = document.querySelector('#results-modal .modal-content');
-            let actionsSelector = '.flex.space-x-3';
-            if (!container) {
-                container = document.querySelector('.bg-blue-50 .bg-white.shadow-xl');
-                actionsSelector = '.flex.flex-wrap.justify-center.gap-4';
-            }
-            if (!container) return;
-
-            const clone = container.cloneNode(true);
-
-            const actions = clone.querySelector(actionsSelector);
-            if (actions) actions.remove();
-
-            const canvases = container.querySelectorAll('canvas');
-            const cloneCanvases = clone.querySelectorAll('canvas');
-            canvases.forEach((canvas, idx) => {
-                const img = document.createElement('img');
-                img.src = canvas.toDataURL('image/png');
-                const rect = canvas.getBoundingClientRect();
-                img.style.width = rect.width + 'px';
-                img.style.height = rect.height + 'px';
-                cloneCanvases[idx].replaceWith(img);
-            });
-
-            clone.style.position = 'absolute';
-            clone.style.left = '-9999px';
-            document.body.appendChild(clone);
-
-            const opt = {
-                margin: 0,
-                filename: 'personnalite-comparee-resultats.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(clone).save().then(() => {
-                document.body.removeChild(clone);
-            });
-        }
 
         async function shareProfileResults(code) {
             const result = await fetchUserProfileFromSupabase(code);
