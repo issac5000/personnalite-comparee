@@ -707,8 +707,16 @@
 <script src="lang.js"></script>
 <script src="i18n.js"></script>
 
-<!-- Modales pour les descriptions détaillées -->
-<div id="modal-container"></div>
+<!-- Modale affichée dynamiquement -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 overflow-y-auto max-h-[90vh]">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="modal-title text-xl font-bold"></h2>
+      <button onclick="document.getElementById('modal').classList.add('hidden')" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+    </div>
+    <div class="modal-body space-y-2 text-sm text-gray-700"></div>
+  </div>
+</div>
 
 <!-- Script des modales légales -->
 <script>
