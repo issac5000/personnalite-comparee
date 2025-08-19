@@ -2,7 +2,7 @@ const translations = {
   fr: {
     siteTitle: "Personnalité Comparée | Test MBTI & Ennéagramme Gratuit",
     heroTitle: "Et si vous vous connaissiez<br><span class=\"text-blue-600 font-medium\"><strong>vraiment</strong></span> ?",
-    heroSubtitle: "La première plateforme qui combine <span class=\"font-medium text-slate-800\">test MBTI</span> & <span class=\"font-medium text-slate-800\">Ennéagramme</span>, validation par l’entourage et <span class=\"font-medium text-slate-800\">IA spécialisée</span> pour répondre à toutes vos questions.",
+    heroSubtitle: "La première plateforme qui combine test dérivé MBTI & Ennéagramme, validation par l’entourage et IA spécialisée pour répondre à toutes vos questions.",
     indicatorMBTI: "16 profils MBTI",
     indicatorEnneagram: "9 types Ennéagramme",
     indicatorValidation: "Validation par les proches",
@@ -1106,7 +1106,7 @@ const translations = {
   en: {
     siteTitle: "Compared Personality | Free MBTI & Enneagram Test",
     heroTitle: "What if you <br><span class=\"text-blue-600 font-medium\"><strong>really</strong></span> knew yourself?",
-    heroSubtitle: "The first platform combining <span class=\"font-medium text-slate-800\">MBTI test</span> & <span class=\"font-medium text-slate-800\">Enneagram</span>, feedback from friends and <span class=\"font-medium text-slate-800\">specialized AI</span> to answer all your questions.",
+    heroSubtitle: "The first platform combining MBTI-inspired & Enneagram test, feedback from relatives, and specialized AI to answer all your questions.",
     indicatorMBTI: "16 MBTI profiles",
     indicatorEnneagram: "9 Enneagram types",
     indicatorValidation: "Validation by relatives",
