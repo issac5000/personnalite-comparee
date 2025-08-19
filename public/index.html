@@ -2920,41 +2920,41 @@ function displayResults(results) {
         function showAboutProject() {
             const content = `
                 <div class="space-y-4">
-                    <p class="text-gray-700">"Personnalité Comparée" est né de la volonté de créer un outil plus objectif pour comprendre sa personnalité.</p>
-                    
-                    <h3 class="text-lg font-semibold text-gray-900">Notre approche unique :</h3>
+                    <p class="text-gray-700" data-i18n="home.modal.paragraph1">"Personnalité Comparée" est né de la volonté de créer un outil plus objectif pour comprendre sa personnalité.</p>
+
+                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="home.modal.subtitle1">Notre approche unique :</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="bg-blue-50 p-4 rounded-lg text-center">
                             <i class="fas fa-eye text-blue-600 text-2xl mb-2"></i>
-                            <h4 class="font-semibold">Vision objective</h4>
-                            <p class="text-sm text-gray-600">Combiner plusieurs perspectives pour une analyse plus complète</p>
+                            <h4 class="font-semibold" data-i18n="home.modal.card1.title">Vision objective</h4>
+                            <p class="text-sm text-gray-600" data-i18n="home.modal.card1.text">Combiner plusieurs perspectives pour une analyse plus complète</p>
                         </div>
                         <div class="bg-blue-50 p-4 rounded-lg text-center">
                             <i class="fas fa-shield-alt text-blue-600 text-2xl mb-2"></i>
-                            <h4 class="font-semibold">Confidentialité</h4>
-                            <p class="text-sm text-gray-600">Vos données sont protégées et ne sont jamais partagées</p>
+                            <h4 class="font-semibold" data-i18n="home.modal.card2.title">Confidentialité</h4>
+                            <p class="text-sm text-gray-600" data-i18n="home.modal.card2.text">Vos données sont protégées et ne sont jamais partagées</p>
                         </div>
                         <div class="bg-green-50 p-4 rounded-lg text-center">
                             <i class="fas fa-graduation-cap text-green-600 text-2xl mb-2"></i>
-                            <h4 class="font-semibold">Base scientifique</h4>
-                            <p class="text-sm text-gray-600">Fondé sur les recherches en psychologie de la personnalité</p>
+                            <h4 class="font-semibold" data-i18n="home.modal.card3.title">Base scientifique</h4>
+                            <p class="text-sm text-gray-600" data-i18n="home.modal.card3.text">Fondé sur les recherches en psychologie de la personnalité</p>
                         </div>
                     </div>
-                    
-                    <h3 class="text-lg font-semibold text-gray-900">Pourquoi cette approche ?</h3>
-                    <p class="text-gray-700">Contrairement aux tests traditionnels qui reposent uniquement sur l'auto-évaluation, notre approche combine votre perception avec celle de votre entourage pour un résultat plus nuancé et fidèle.</p>
-                    
-                    <h3 class="text-lg font-semibold text-gray-900">Comment ça marche ?</h3>
+
+                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="home.modal.subtitle2">Pourquoi cette approche ?</h3>
+                    <p class="text-gray-700" data-i18n="home.modal.paragraph2">Contrairement aux tests traditionnels qui reposent uniquement sur l'auto-évaluation, notre approche combine votre perception avec celle de votre entourage pour un résultat plus nuancé et fidèle.</p>
+
+                    <h3 class="text-lg font-semibold text-gray-900" data-i18n="home.modal.subtitle3">Comment ça marche ?</h3>
                     <ol class="list-decimal list-inside text-gray-700 space-y-1">
-                        <li>Vous répondez à 20 questions d'auto-évaluation</li>
-                        <li>Vous partagez votre code unique avec vos proches</li>
-                        <li>Ils répondent à 20 questions sur votre personnalité</li>
-                        <li>Notre algorithme combine toutes les réponses avec une pondération scientifique</li>
-                        <li>Vous obtenez votre profil MBTI et Ennéagramme avec un score de certitude</li>
+                        <li data-i18n="home.modal.list.item1">Vous répondez à 20 questions d'auto-évaluation</li>
+                        <li data-i18n="home.modal.list.item2">Vous partagez votre code unique avec vos proches</li>
+                        <li data-i18n="home.modal.list.item3">Ils répondent à 20 questions sur votre personnalité</li>
+                        <li data-i18n="home.modal.list.item4">Notre algorithme combine toutes les réponses avec une pondération scientifique</li>
+                        <li data-i18n="home.modal.list.item5">Vous obtenez votre profil MBTI et Ennéagramme avec un score de certitude</li>
                     </ol>
                 </div>
             `;
-            showModal('À propos du projet', content);
+            showModal('<span data-i18n="home.modal.title">À propos du projet</span>', content);
         }
 
         // Fonctions pour les pages légales et contact
