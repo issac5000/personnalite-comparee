@@ -852,7 +852,7 @@ function displayQuestion(index) {
       <div class="px-6 py-4">
         <div class="flex justify-between items-center mb-4">
           <span class="text-sm font-medium text-blue-600">
-            Question ${index + 1}/${AUTO_QUESTIONS.length}
+            <span data-i18n="question.label">Question</span> ${index + 1}/${AUTO_QUESTIONS.length}
           </span>
           <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
             <div class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-500"
@@ -882,8 +882,11 @@ function displayQuestion(index) {
       </div>
     </div>
   `;
-            
+
             questionsContainer.innerHTML = questionHTML;
+            if (typeof applyTranslations === 'function') {
+                applyTranslations();
+            }
             
             // Écouter les changements de réponse
             const radioButtons = questionsContainer.querySelectorAll('input[type="radio"]');
@@ -2635,10 +2638,10 @@ function showSupport() {
             const relation = localStorage.getItem('externalEvaluationRelation');
             
             const relationLabels = {
-                'family': 'Membre de la famille',
-                'partner': 'Partenaire amoureux',
-                'friend': 'Ami(e)',
-                'colleague': 'Collègue de travail'
+                'family': '<span data-i18n="evalRelationFamily">Membre de la famille</span>',
+                'partner': '<span data-i18n="evalRelationPartner">Partenaire amoureux</span>',
+                'friend': '<span data-i18n="evalRelationFriend">Ami(e)</span>',
+                'colleague': '<span data-i18n="evalRelationColleague">Collègue de travail</span>'
             };
             
             const content = `
@@ -2646,8 +2649,8 @@ function showSupport() {
 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                         <div class="bg-blue-600 px-6 py-4 flex justify-between items-center">
                             <div>
-                                <h2 class="text-2xl font-bold text-white">Évaluation externe</h2>
-                                <p class="text-blue-100 mt-1">Code: ${code} | Relation: ${relationLabels[relation]}</p>
+                                <h2 class="text-2xl font-bold text-white" data-i18n="home.modal.externalEval.title">Évaluation externe</h2>
+                                <p class="text-blue-100 mt-1"><span data-i18n="home.modal.externalEval.codeLabel">Code:</span> ${code} | <span data-i18n="home.modal.externalEval.relationLabel">Relation:</span> ${relationLabels[relation]}</p>
                             </div>
                             <span class="close" onclick="closeModal()" style="color: white;">&times;</span>
                         </div>
@@ -2658,13 +2661,13 @@ function showSupport() {
                                 </div>
                                 <div class="mt-6 flex justify-between">
                                     <button type="button" id="prev-external-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" style="display: none;">
-                                        <i class="fas fa-arrow-left mr-2"></i> Question précédente
+                                        <i class="fas fa-arrow-left mr-2"></i> <span data-i18n="home.modal.externalEval.prev">Question précédente</span>
                                     </button>
                                     <button type="button" id="next-external-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800">
-                                        Question suivante <i class="fas fa-arrow-right ml-2"></i>
+                                        <span data-i18n="home.modal.externalEval.next">Question suivante</span> <i class="fas fa-arrow-right ml-2"></i>
                                     </button>
                                     <button type="submit" id="submit-eval" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700" style="display: none;">
-                                        <i class="fas fa-check mr-2"></i> Terminer l'évaluation
+                                        <i class="fas fa-check mr-2"></i> <span data-i18n="home.modal.externalEval.submit">Terminer l'évaluation</span>
                                     </button>
                                 </div>
                             </form>
@@ -2674,6 +2677,9 @@ function showSupport() {
             `;
 
             showModal('', content);
+            if (typeof applyTranslations === 'function') {
+                applyTranslations();
+            }
 
             // Masquer l'en-tête par défaut de la modale et ajuster la taille
             const defaultHeader = document.querySelector('#current-modal .modal-header');
@@ -2715,7 +2721,7 @@ function showSupport() {
             questionsContent.innerHTML = `
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm font-medium text-blue-600">Question ${index + 1}/${EXTERNAL_QUESTIONS.length}</span>
+                        <span class="text-sm font-medium text-blue-600"><span data-i18n="question.label">Question</span> ${index + 1}/${EXTERNAL_QUESTIONS.length}</span>
                         <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
                             <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
                         </div>
@@ -2738,6 +2744,9 @@ function showSupport() {
                     </div>
                 </div>
             `;
+            if (typeof applyTranslations === 'function') {
+                applyTranslations();
+            }
 
             // Écouter les changements de réponse
             const radioButtons = questionsContent.querySelectorAll('input[type="radio"]');
