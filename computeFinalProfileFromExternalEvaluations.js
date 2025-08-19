@@ -1,5 +1,5 @@
 /**
- * Compute final MBTI and Enneagram profile from a set of external evaluations.
+ * Compute final MBTI-inspired and Enneagram profile from a set of external evaluations.
  *
  * The previous implementation performed a simple average of every external
  * evaluation.  This file now integrates two additional mechanisms:
@@ -8,7 +8,7 @@
  *   2.  External convergence weighting – a light bonus/malus is applied
  *       depending on how much an evaluation agrees with the majority.
  *
- * The core logic for deriving MBTI type, cognitive functions and Enneagram
+ * The core logic for deriving MBTI-inspired type, cognitive functions and Enneagram
  * type remains unchanged; only the weighting of the raw scores is affected.
  */
 
