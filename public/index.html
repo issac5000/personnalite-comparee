@@ -1169,11 +1169,11 @@ if (window.location.href.includes("external")) {
 }
 
 
-        // État de l'application
-        let currentQuestionIndex = 0;
-        let answers = {};
-        let testType = 'auto'; // 'auto' ou 'proche'
-        let userCode = genererUniqueCode();
+      let userCode;
+(async () => {
+  userCode = await genererUniqueCodeEtCreerLigne();
+})();
+
 
 
 
@@ -1946,7 +1946,7 @@ async function calculateResults() {
 
     const certaintyScore = Math.round((mbtiCertainty + enneagramCertainty) / 2);
 
-    const uniqueCode = genererUniqueCode();
+const uniqueCode = await genererUniqueCodeEtCreerLigne();
 
     const userProfile = {
         code: uniqueCode,
