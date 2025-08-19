@@ -1104,7 +1104,7 @@ const translations = {
     "shareCodeAlert": "Voici ton code à donner à 3 proches : "
   },
   en: {
-    siteTitle: "Compared Personality | Free MBTI & Enneagram Test",
+    siteTitle: "Compared Personality | Free MBTI-inspired & Enneagram Test",
     heroTitle: "What if you <br><span class=\"text-blue-600 font-medium\"><strong>really</strong></span> knew yourself?",
     heroSubtitle: "The first platform combining <span class=\"font-medium text-slate-800\">MBTI®-inspired test</span> & <span class=\"font-medium text-slate-800\">Enneagram</span>, feedback from relatives, and <span class=\"font-medium text-slate-800\">specialized AI</span> to answer all your questions.",
     indicatorMBTI: "16 MBTI profiles",
