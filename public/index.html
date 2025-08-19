@@ -1413,9 +1413,12 @@ function displayQuestion(index) {
       </div>
     </div>
   `;
-            
+
             questionsContainer.innerHTML = questionHTML;
-            
+            if (typeof applyTranslations === 'function') {
+                applyTranslations();
+            }
+
             // Écouter les changements de réponse
             const radioButtons = questionsContainer.querySelectorAll('input[type="radio"]');
             radioButtons.forEach(radio => {
@@ -3144,10 +3147,10 @@ window.showSupport = showSupport;
             const relation = localStorage.getItem('externalEvaluationRelation');
             
             const relationLabels = {
-                'family': 'Membre de la famille',
-                'partner': 'Partenaire amoureux',
-                'friend': 'Ami(e)',
-                'colleague': 'Collègue de travail'
+                'family': '<span data-i18n="evalRelationFamily">Membre de la famille</span>',
+                'partner': '<span data-i18n="evalRelationPartner">Partenaire amoureux</span>',
+                'friend': '<span data-i18n="evalRelationFriend">Ami(e)</span>',
+                'colleague': '<span data-i18n="evalRelationColleague">Collègue de travail</span>'
             };
             
             const content = `
@@ -3183,6 +3186,9 @@ window.showSupport = showSupport;
             `;
 
             showModal('', content);
+            if (typeof applyTranslations === 'function') {
+                applyTranslations();
+            }
 
             // Masquer l'en-tête par défaut de la modale et ajuster la taille
             const defaultHeader = document.querySelector('#current-modal .modal-header');
@@ -3220,7 +3226,7 @@ window.showSupport = showSupport;
             
             const progress = ((index + 1) / EXTERNAL_QUESTIONS.length) * 100;
             const questionsContent = document.getElementById('external-questions-content');
-            
+
             questionsContent.innerHTML = `
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-4">
@@ -3247,6 +3253,9 @@ window.showSupport = showSupport;
                     </div>
                 </div>
             `;
+            if (typeof applyTranslations === 'function') {
+                applyTranslations();
+            }
 
             // Écouter les changements de réponse
             const radioButtons = questionsContent.querySelectorAll('input[type="radio"]');
