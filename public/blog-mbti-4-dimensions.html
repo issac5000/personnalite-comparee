@@ -599,6 +599,8 @@
         </article>
     </main>
     <p class="text-xs text-gray-500 text-center mb-4">MBTI® est une marque déposée de The Myers-Briggs Company. Ce site propose une approche inspirée et n’est ni affilié, ni agréé, ni soutenu par cette société.</p>
+    <!-- Footer -->
+    <p class="text-xs text-gray-500 text-center mb-4">MBTI® est une marque déposée de The Myers-Briggs Company. Ce site propose une approche inspirée et n’est ni affilié, ni agréé, ni soutenu par cette société.</p>
     <footer class="bg-gray-800">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -606,46 +608,46 @@
                     <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase" data-i18n="footer.brand_title">Personnalité Comparée</h3>
                     <ul class="mt-4 space-y-4">
                         <li><a href="index.html" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.home">Accueil</a></li>
-                        <li><a href="mbti.html" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.mbti">MBTI</a></li>
-                        <li><a href="enneagramme.html" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.enneagram">Ennéagramme</a></li>
-                        <li><a href="blog.html" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.blog">Blog</a></li>
-        <li><a href="index.html#home-ia" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.ai">IA spécialisée</a></li>
-        <li><a href="index.html#home-faq" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.faq">FAQ</a></li>
+        <li><a href="mbti.html" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.mbti">Modèle dérivé MBTI</a></li>
+        <li><a href="enneagramme.html" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.enneagram">Ennéagramme</a></li>
+        <li><a href="blog.html" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.blog">Blog</a></li>
+        <li><a href="#home-ia" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.ai">IA spécialisée</a></li>
+        <li><a href="#home-faq" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.faq">FAQ</a></li>
 
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase" data-i18n="footer.tests_title">Tests</h3>
                     <ul class="mt-4 space-y-4">
-                        <li><a href="index.html#home-mbti" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.auto_eval">Auto-évaluation</a></li>
-                        <li><a href="index.html#home-enneagramme" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.evaluate_friend">Évaluer un proche</a></li>
+                        <li><a href="#home-mbti" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.auto_eval">Auto-évaluation</a></li>
+                        <li><a href="#home-enneagramme" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.evaluate_friend">Évaluer un proche</a></li>
                         <li><a href="#retourver-profil" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.my_profile">Mon profil</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase" data-i18n="footer.legal_title">Légal</h3>
                     <ul class="mt-4 space-y-4">
-                        <li><a href="#" onclick="event.preventDefault(); showPrivacyPolicy();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.privacy">Confidentialité</a></li>
-                        <li><a href="#" onclick="event.preventDefault(); showTermsOfService();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.terms">Conditions d'utilisation</a></li>
-                        <li><a href="#" onclick="event.preventDefault(); showLegalNotices();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.legal">Mentions légales</a></li>
-                        <li><a href="#" onclick="event.preventDefault(); showLegalNotices();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.cookies">Cookies</a></li>
+                        <li><a href="#" id="privacy-link" onclick="event.preventDefault(); showPrivacyPolicy();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.privacy">Confidentialité</a></li>
+                        <li><a href="#" id="terms-link" onclick="event.preventDefault(); showTermsOfService();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.terms">Conditions d'utilisation</a></li>
+                        <li><a href="#" id="legal-link" onclick="event.preventDefault(); showLegalNotices();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.legal">Mentions légales</a></li>
+                        <li><a href="#" id="cookies-link" onclick="event.preventDefault(); showCookies();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.cookies">Cookies</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase" data-i18n="footer.contact_title">Contact</h3>
                     <ul class="mt-4 space-y-4">
-                        <li><a href="#" onclick="event.preventDefault(); showContact();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.support">Support</a></li>
+                        <li><a href="#" id="support-link" onclick="event.preventDefault(); showSupport();" class="text-base text-gray-300 hover:text-white transition-colors" data-i18n="footer.support">Support</a></li>
                         <li class="flex space-x-6 pt-2">
                             <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                                <span class="sr-only">Facebook</span>
+                                <span class="sr-only" data-i18n="social.facebook">Facebook</span>
                                 <i class="fab fa-facebook-f"></i>
                             </a>
                             <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                                <span class="sr-only">Instagram</span>
+                                <span class="sr-only" data-i18n="social.instagram">Instagram</span>
                                 <i class="fab fa-instagram"></i>
                             </a>
                             <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                                <span class="sr-only">TikTok</span>
+                                <span class="sr-only" data-i18n="social.tiktok">TikTok</span>
                                 <i class="fab fa-tiktok"></i>
                             </a>
                         </li>
@@ -659,6 +661,8 @@
             </div>
         </div>
     </footer>
+    <script src="questions-v2.js"></script>
+
 <script>
   const mobileMenuButton = document.getElementById('mobile-menu-button');
   const mobileMenu = document.getElementById('mobile-menu');
