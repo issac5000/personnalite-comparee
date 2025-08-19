@@ -721,10 +721,42 @@
 <!-- Script des modales légales -->
 <script>
   function showModal(title, content) {
-    const modal = document.getElementById('modal');
-    modal.querySelector('.modal-title').innerHTML = title;
-    modal.querySelector('.modal-body').innerHTML = content;
-    modal.classList.remove('hidden');
+    const modalContainer = document.getElementById('modal-container');
+    const modalHTML = `
+      <div class="modal show" id="current-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="text-xl font-bold text-gray-900">${title}</h2>
+            <span class="close" onclick="closeModal()">&times;</span>
+          </div>
+          <div class="modal-body">
+            ${content}
+          </div>
+        </div>
+      </div>
+    `;
+    modalContainer.innerHTML = modalHTML;
+    if (typeof applyTranslations === 'function') {
+      applyTranslations();
+    }
+    // Fermer avec ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    }, { once: true });
+    // Fermer en cliquant à l'extérieur
+    document.getElementById('current-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('current-modal');
+    if (modal) {
+      modal.classList.remove('show');
+      setTimeout(() => {
+        document.getElementById('modal-container').innerHTML = '';
+      }, 300);
+    }
   }
 
   function showPrivacyPolicy() {
