@@ -1102,37 +1102,47 @@
 
    
       
-    <script>
-        // Configuration et données
-                // Récupère les questions externes depuis Supabase si l'utilisateur est un proche
-let questions = AUTO_QUESTIONS;
-// 🔐 Génére un code aléatoire
-function genererUniqueCode() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let code = "";
-  for (let i = 0; i < 6; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
-}
+   <script>
+  // Configuration et données
+  // Récupère les questions externes depuis Supabase si l'utilisateur est un proche
+  let questions = AUTO_QUESTIONS;
 
-// 🔄 Envoie vers Supabase
-async function enregistrerQuestionsPourProches(questionsAutoEvaluation, userCode) {
-  // Mettre à jour l'enregistrement existant avec les questions pour les proches
-  const { data, error } = await supabase
-    .from("users")
-    .update({
-      external_questions: questionsAutoEvaluation
-    })
-    .eq('code', userCode);
+  // 🔐 Génére un code aléatoire
+  async function genererUniqueCodeEtCreerLigne() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let code = "";
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
 
-  if (error) {
-    console.error("❌ Erreur lors de l'enregistrement Supabase :", error);
-  } else {
-    console.log("✅ Questions pour proches enregistrées avec succès :", data);
-    alert((translations[document.documentElement.lang] || translations.fr).shareCodeAlert + userCode);
+    // Crée immédiatement la ligne dans Supabase avec ce code
+    const { error } = await supabase.from("users").insert({ code: code });
+    if (error) {
+      console.error("❌ Erreur lors de la création initiale du code dans Supabase :", error);
+    } else {
+      console.log("✅ Ligne 'users' créée avec le code :", code);
+    }
+
+    return code;
   }
-}
+
+  // 🔄 Envoie vers Supabase
+  async function enregistrerQuestionsPourProches(questionsAutoEvaluation, userCode) {
+    // Mettre à jour l'enregistrement existant avec les questions pour les proches
+    const { data, error } = await supabase
+      .from("users")
+      .update({
+        external_questions: questionsAutoEvaluation
+      })
+      .eq('code', userCode);
+
+    if (error) {
+      console.error("❌ Erreur lors de l'enregistrement Supabase :", error);
+    } else {
+      console.log("✅ Questions pour proches enregistrées avec succès :", data);
+      alert((translations[document.documentElement.lang] || translations.fr).shareCodeAlert + userCode);
+    }
+  }
 
 
 if (window.location.href.includes("external")) {
