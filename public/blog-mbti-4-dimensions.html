@@ -598,7 +598,6 @@
             <a href="blog.html" class="inline-block mt-8 mb-8 px-4 py-2 bg-black text-white rounded hover:bg-gray-800" data-i18n="blog.mbti4.back">← Retour au blog</a>
         </article>
     </main>
-    <p class="text-xs text-gray-500 text-center mb-4">MBTI® est une marque déposée de The Myers-Briggs Company. Ce site propose une approche inspirée et n’est ni affilié, ni agréé, ni soutenu par cette société.</p>
     <!-- Footer -->
     <p class="text-xs text-gray-500 text-center mb-4">MBTI® est une marque déposée de The Myers-Briggs Company. Ce site propose une approche inspirée et n’est ni affilié, ni agréé, ni soutenu par cette société.</p>
     <footer class="bg-gray-800">
@@ -708,4 +707,160 @@
 <script src="lang.js"></script>
 <script src="i18n.js"></script>
 </body>
+
+  // Fonctions pour les pages légales et contact
+function showPrivacyPolicy() {
+  const lang = localStorage.getItem('lang') || 'fr';
+  const date = new Date().toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US');
+  const content = `
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900" data-i18n="footer.legal.privacy.title">Politique de Confidentialité</h3>
+      <p class="text-gray-700"><span data-i18n="footer.legal.privacy.update">Dernière mise à jour :</span> ${date}</p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.privacy.collected.title">1. Données collectées</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.privacy.collected.desc">Nous collectons uniquement les réponses fournies lors&nbsp;:</p>
+      <ul class="list-disc pl-6 text-gray-700">
+        <li data-i18n="footer.legal.privacy.collected.item1">de vos auto-évaluations ;</li>
+        <li data-i18n="footer.legal.privacy.collected.item2">des évaluations réalisées par vos proches.</li>
+      </ul>
+      <p class="text-gray-700" data-i18n="footer.legal.privacy.collected.note">Aucune autre donnée personnelle (nom, e-mail, localisation, etc.) n’est demandée ni enregistrée.</p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.privacy.purpose.title">2. Finalité de la collecte</h4>
+      <ul class="list-disc pl-6 text-gray-700">
+        <li data-i18n="footer.legal.privacy.purpose.item1">Calculer et afficher votre profil de personnalité ;</li>
+        <li data-i18n="footer.legal.privacy.purpose.item2">Générer les résultats finaux à partir des évaluations reçues.</li>
+      </ul>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.privacy.storage.title">3. Stockage des données</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.privacy.storage.text">Vos réponses sont stockées de manière sécurisée dans notre base de données <strong>Supabase</strong>. Elles ne sont pas enregistrées ailleurs.</p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.privacy.sharing.title">4. Partage des données</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.privacy.sharing.text">Nous ne vendons, n’échangeons et ne partageons <strong>aucune</strong> donnée avec des tiers. Seules les personnes disposant de votre code unique peuvent consulter vos résultats.</p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.privacy.security.title">5. Sécurité</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.privacy.security.text">Supabase applique des mesures de sécurité standards (chiffrement en transit, contrôles d’accès). Nous limitons l’accès aux données aux seules finalités décrites ci-dessus.</p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.privacy.retention.title">6. Durée de conservation</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.privacy.retention.text">Les réponses sont conservées tant que votre code unique reste valide dans notre base. Vous pouvez demander leur suppression à tout moment.</p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.privacy.rights.title">7. Vos droits</h4>
+      <ul class="list-disc pl-6 text-gray-700">
+        <li data-i18n="footer.legal.privacy.rights.item1">Demander une copie de vos données ;</li>
+        <li data-i18n="footer.legal.privacy.rights.item2">Demander la suppression définitive de vos données.</li>
+      </ul>
+      <p class="text-gray-700" data-i18n="footer.legal.privacy.rights.contact">Pour exercer ces droits, contactez-nous via la section <strong>Support</strong> du site.</p>
+    </div>
+  `;
+  showModal('<span data-i18n="footer.legal.privacy.title">Politique de Confidentialité</span>', content);
+}
+
+function showTermsOfService() {
+  const lang = localStorage.getItem('lang') || 'fr';
+  const date = new Date().toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US');
+  const content = `
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900" data-i18n="footer.legal.terms.title">Conditions d'Utilisation</h3>
+      <p class="text-gray-700"><span data-i18n="footer.legal.terms.update">Dernière mise à jour :</span> ${date}</p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.terms.use.title">Utilisation du service</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.terms.use.text">Ce service est fourni gratuitement à des fins éducatives et de développement personnel. Il ne remplace pas un conseil professionnel en psychologie.</p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.terms.accuracy.title">Précision des résultats</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.terms.accuracy.text">Les résultats sont basés sur des modèles psychologiques reconnus mais ne constituent pas un diagnostic médical ou psychologique.</p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.terms.liability.title">Responsabilité</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.terms.liability.text">L'utilisation de ce service se fait sous votre propre responsabilité. Nous ne sommes pas responsables des décisions prises sur la base des résultats.</p>
+    </div>
+  `;
+  showModal('<span data-i18n="footer.legal.terms.title">Conditions d\'Utilisation</span>', content);
+}
+function showLegalNotices() {
+  const content = `
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900" data-i18n="footer.legal.mentions.title">Mentions Légales</h3>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.editor.title">Éditeur du site</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.editor.text">
+        <strong>Personnalité Comparée</strong><br>
+        Site web éducatif et informatif sur les tests de personnalité (MBTI et Ennéagramme)<br>
+        Contact : <a href="mailto:contact@personnalitecomparee.com" class="text-blue-600 hover:underline">contact@personnalitecomparee.com</a>
+      </p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.hosting.title">Hébergement</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.hosting.text">
+        Ce site est hébergé par <strong>Vercel Inc.</strong><br>
+        340 S Lemon Ave #4133<br>
+        Walnut, CA 91789, États-Unis<br>
+        <a href="https://vercel.com" target="_blank" rel="noopener" class="text-blue-600 hover:underline">https://vercel.com</a>
+      </p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.ip.title">Propriété intellectuelle</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.ip.text">
+        L’ensemble du contenu de ce site (textes, éléments graphiques, code source) est protégé par les lois en vigueur sur la propriété intellectuelle.<br>
+        Les modèles MBTI et Ennéagramme sont des systèmes conceptuels utilisés ici uniquement à des fins pédagogiques et informatives.
+      </p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.liability.title">Responsabilité</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.liability.text">
+        Les informations fournies sur ce site le sont à titre indicatif et ne constituent en aucun cas un conseil professionnel, médical ou psychologique. L’utilisateur reste seul responsable de l’usage qu’il fait des informations et résultats proposés.
+      </p>
+
+      <h4 class="font-semibold text-gray-900" data-i18n="footer.legal.mentions.trademarks.title">Marques et mentions légales spécifiques</h4>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.trademarks.mbti">
+        MBTI est une marque déposée appartenant à The Myers-Briggs Company. Le présent site utilise ce terme à des fins pédagogiques et informatives uniquement. Nous ne sommes ni affiliés, ni agréés, ni soutenus par The Myers-Briggs Company.
+      </p>
+      <p class="text-gray-700" data-i18n="footer.legal.mentions.trademarks.enneagram">
+        L’utilisation du mot "Ennéagramme" fait référence au système de typologie de la personnalité bien connu, dont l’usage est libre. Aucun lien n’est revendiqué avec des organismes officiels comme The Enneagram Institute.
+      </p>
+    </div>
+  `;
+  showModal('<span data-i18n="footer.legal.mentions.title">Mentions Légales</span>', content);
+}
+function showCookies() {
+  const content = `
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900" data-i18n="footer.legal.cookies.title">Cookies et stockage local</h3>
+      <p class="text-gray-700" data-i18n="footer.legal.cookies.text">
+        Ce site n’utilise pas de cookies de suivi.<br>
+        Seules certaines données nécessaires au fonctionnement (comme la progression dans le test ou le code d’accès aux résultats) sont stockées localement dans le navigateur ou dans notre base de données Supabase.
+      </p>
+    </div>
+  `;
+  showModal('<span data-i18n="footer.legal.cookies.title">Cookies et stockage local</span>', content);
+}
+
+function showSupport() {
+  const content = `
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900" data-i18n="footer.contact.support.title">Support</h3>
+
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h4 class="font-semibold text-blue-900" data-i18n="footer.contact.support.email.title">Email</h4>
+        <p class="text-blue-700" data-i18n="footer.contact.support.email.text"></p>
+      </div>
+
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h4 class="font-semibold text-blue-900" data-i18n="footer.contact.support.tech.title">Support technique</h4>
+        <p class="text-blue-700" data-i18n="footer.contact.support.tech.text">Pour toute question technique ou problème avec le test, n'hésitez pas à nous écrire en détaillant votre problème.</p>
+      </div>
+
+      <div class="bg-green-50 p-4 rounded-lg">
+        <h4 class="font-semibold text-green-900" data-i18n="footer.contact.support.suggestions.title">Suggestions</h4>
+        <p class="text-green-700" data-i18n="footer.contact.support.suggestions.text">Vos suggestions d'amélioration sont les bienvenues ! Aidez-nous à améliorer l'expérience utilisateur.</p>
+      </div>
+
+      <div class="bg-yellow-50 p-4 rounded-lg">
+        <h4 class="font-semibold text-yellow-900" data-i18n="footer.contact.support.time.title">Temps de réponse</h4>
+        <p class="text-yellow-700" data-i18n="footer.contact.support.time.text">Nous nous efforçons de répondre à tous les messages dans les 48 heures.</p>
+      </div>
+    </div>
+  `;
+  showModal('<span data-i18n="footer.contact.support.title">Support</span>', content);
+}
+
+window.showPrivacyPolicy = showPrivacyPolicy;
+window.showTermsOfService = showTermsOfService;
+window.showLegalNotices = showLegalNotices;
+window.showCookies = showCookies;
+window.showSupport = showSupport;
 </html>
