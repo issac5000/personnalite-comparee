@@ -1116,15 +1116,17 @@ function genererUniqueCode() {
   return code;
 }
 
-// 🔄 Envoie vers Supabase
+// 🔄 Envoie vers Supabase (corrigé avec UPSERT)
 async function enregistrerQuestionsPourProches(questionsAutoEvaluation, userCode) {
-  // Mettre à jour l'enregistrement existant avec les questions pour les proches
   const { data, error } = await supabase
     .from("users")
-    .update({
-      external_questions: questionsAutoEvaluation
-    })
-    .eq('code', userCode);
+    .upsert(
+      {
+        code: userCode,
+        external_questions: questionsAutoEvaluation
+      },
+      { onConflict: "code" }
+    );
 
   if (error) {
     console.error("❌ Erreur lors de l'enregistrement Supabase :", error);
