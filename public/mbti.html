@@ -4748,7 +4748,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleSuggestions(); // les cacher si ce n’est pas déjà le cas
     appendMessage('user',q);
     // Tracking : message utilisateur envoyé
-    trackEvent('chat_message_sent', { messageLength: q.length });
+    saveEvent('chat_message_sent', null, null, { messageLength: q.length });
     setTyping(true);
 
     try{
@@ -4757,13 +4757,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const botMsg = data.message || "(pas de réponse)";
       appendMessage('assistant', botMsg, {typing:true});
       // Tracking : réponse du bot
-      trackEvent('chat_message_received', { messageLength: botMsg.length });
+      saveEvent('chat_message_received', null, null, { messageLength: botMsg.length });
     }catch(e){
       console.error(e);
       const errMsg = "Oups, problème de connexion. Réessaye dans quelques secondes.";
       appendMessage('assistant', errMsg,{typing:false});
       // Tracking même en cas d'erreur réseau
-      trackEvent('chat_message_received', { messageLength: errMsg.length });
+      saveEvent('chat_message_received', null, null, { messageLength: errMsg.length });
     }finally{
       setTyping(false);
     }
@@ -4844,182 +4844,6 @@ addChatStyles();
 <script src="https://unpkg.com/@supabase/supabase-js"></script>
 
 <script>
-/* ========================
-   Analytics – Personnalité Comparée
-   ======================== */
-
-// ====== CONFIG SUPABASE ======
-// Utilise les constantes déclarées plus haut pour créer le client Supabase
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// ====== Utils ======
-function generateSessionId() {
-  if (window.crypto?.randomUUID) return crypto.randomUUID();
-  return 'xxxxxxxxyxxxxxxx'.replace(/[xy]/g, c => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-function parseUTM() {
-  const params = new URLSearchParams(window.location.search);
-  const utm = {};
-  ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(k=>{ const v=params.get(k); if(v) utm[k]=v; });
-  return Object.keys(utm).length ? utm : null;
-}
-
-// ====== Session locale ======
-let sessionId = localStorage.getItem('session_id');
-const hasVisited = localStorage.getItem('hasVisited');
-const isReturning = hasVisited === 'true';
-if (!sessionId) {
-  sessionId = generateSessionId();
-  localStorage.setItem('session_id', sessionId);
-}
-if (!hasVisited) localStorage.setItem('hasVisited','true');
-
-const firstRefKey = 'pc_first_referrer';
-let firstReferrer = localStorage.getItem(firstRefKey);
-if (!firstReferrer && document.referrer) {
-  firstReferrer = document.referrer;
-  localStorage.setItem(firstRefKey, firstReferrer);
-}
-const firstUtmKey = 'pc_first_utm';
-let firstUtm = null;
-try { firstUtm = JSON.parse(localStorage.getItem(firstUtmKey) || 'null'); } catch {}
-const currentUtm = parseUTM();
-if (!firstUtm && currentUtm) {
-  firstUtm = currentUtm;
-  localStorage.setItem(firstUtmKey, JSON.stringify(firstUtm));
-}
-
-// ====== Contexte navigateur ======
-const userAgent = (typeof navigator !== 'undefined' && navigator.userAgent) ? navigator.userAgent : 'unknown';
-const isBot = /vercel-screenshot|bot|crawl|spider/i.test(userAgent);
-const deviceType = userAgent !== 'unknown' && /Mobi|Android/i.test(userAgent) ? 'mobile' : 'desktop';
-const language = (typeof navigator !== 'undefined' && (navigator.language || (navigator.languages && navigator.languages[0]))) || 'unknown';
-const viewport = (typeof window !== 'undefined' && typeof window.innerWidth === 'number' && typeof window.innerHeight === 'number')
-  ? { width: window.innerWidth, height: window.innerHeight }
-  : { width: 0, height: 0 };
-const screenSize = (typeof screen !== 'undefined' && typeof screen.width === 'number' && typeof screen.height === 'number')
-  ? { width: screen.width, height: screen.height }
-  : { width: 0, height: 0 };
-let tzOffset = 0;
-try { tzOffset = new Date().getTimezoneOffset(); } catch { tzOffset = 0; }
-
-// ====== Geo sans cache ======
-async function getGeoData() {
-  try {
-    const res = await fetch('https://get.geojs.io/v1/ip/geo.json', { cache: 'no-store' });
-    const data = await res.json();
-    console.log('🌍 Geo brut:', data);
-    const country = data.country_name || data.country || data.country_code || data.country_code3;
-    const city = data.city || data.region;
-    return {
-      country: country && country.trim() ? country : 'Inconnu',
-      city: city && city.trim() ? city : 'Inconnu',
-      ip: data.ip || 'unknown'
-    };
-  } catch (err) {
-    console.error('❌ Geo fetch error:', err);
-    return { country: 'Inconnu', city: 'Inconnu', ip: 'unknown' };
-  }
-}
-
-// ====== Création / MAJ de la session ======
-async function upsertSession(initialEventName = 'page_view') {
-  if (!supabase) return false;
-  if (isBot) return false;
-  try {
-    const geo = await getGeoData();
-    const payload = {
-      session_id: sessionId,
-      first_referrer: firstReferrer ?? null,
-      first_utm: firstUtm ?? null,
-      user_agent: userAgent ?? 'unknown',
-      device_type: deviceType ?? 'desktop',
-      language: language ?? 'unknown',
-      tz_offset: tzOffset ?? 0,
-      viewport: viewport ?? { width: 0, height: 0 },
-      screen: screenSize ?? { width: 0, height: 0 },
-      engagement_ms: 0,
-      is_returning: isReturning ?? false,
-      last_page_url: location.href ?? '',
-      last_event_name: initialEventName ?? '',
-      last_activity_at: new Date().toISOString(),
-      country: geo.country ?? 'Inconnu',
-      city: geo.city ?? 'Inconnu',
-      ip: geo.ip ?? 'unknown'
-    };
-    const required = ['session_id','user_agent','device_type','language','tz_offset','viewport','screen','country','city','ip'];
-    const hasAll = required.every(k => payload[k] !== undefined && payload[k] !== null);
-    if (!hasAll) {
-      console.warn('❗ Missing keys in session payload', payload);
-      return false;
-    }
-    console.log('➡️ Session upsert payload:', payload);
-    const { error } = await supabase
-      .from('sessions')
-      .upsert(payload, { onConflict: ['session_id'] });
-    if (error) {
-      console.error('❌ Session upsert error:', error);
-      return false;
-    }
-    return true;
-  } catch (err) {
-    console.error('❌ upsertSession exception:', err);
-    return false;
-  }
-}
-
-// ====== Envoi d’événements ======
-async function trackEvent(eventName, meta = {}) {
-  if (!supabase || isBot) return;
-  try {
-    const event_category = eventName.includes('click') ? 'Interaction' : 'Navigation';
-    const { error: e1 } = await supabase.from('events').insert({
-      session_id: sessionId,
-      event_name: eventName,
-      event_category,
-      page_url: location.href,
-      referrer: document.referrer || null,
-      utm: currentUtm,
-      user_agent: userAgent,
-      meta,
-      element_selector: meta.element || null
-    });
-    if (e1) console.error('❌ Event insert error:', e1);
-    const { error: e2 } = await supabase
-      .from('sessions')
-      .update({
-        last_activity_at: new Date().toISOString(),
-        last_event_name: eventName,
-        last_page_url: location.href
-      })
-      .eq('session_id', sessionId);
-    if (e2) console.error('❌ Session update error:', e2);
-  } catch (err) {
-    console.error('❌ trackEvent exception:', err);
-  }
-}
-
-// ====== Init ======
-(async () => {
-  const ok = await upsertSession('page_view');
-  if (!ok) return;
-  await trackEvent('page_view');
-
-  document.addEventListener('click', (e) => {
-    let selector = '';
-    if (e.target.id) selector = '#' + e.target.id;
-    else if (e.target.className) {
-      selector = e.target.tagName.toLowerCase() + '.' + e.target.className.toString().trim().replace(/\s+/g, '.');
-    } else selector = e.target.tagName.toLowerCase();
-  trackEvent('click', { element: selector });
-  });
-})();
-</script>
 
 <script src="nav.js"></script>
 <script src="lang.js"></script>
@@ -5076,18 +4900,25 @@ async function trackEvent(eventName, meta = {}) {
     }
   }
 
-  // -------- Pageview --------
-  saveEvent("Pageview", null, null, { url: window.location.href });
+  window.saveEvent = saveEvent;
 
-  // -------- Clicks --------
-  document.addEventListener("click", (e) => {
-    let selector = null;
-    if (e.target.id) selector = `#${e.target.id}`;
-    else if (e.target.className) selector = `.${e.target.className}`;
-    else selector = e.target.tagName.toLowerCase();
+  // ====== Init ======
+  (async () => {
+    // On enregistre un page_view dès l'ouverture
+    await saveEvent('Pageview');
 
-    saveEvent("Interaction", selector, null, { element: selector });
-  });
+    // On capte les clics
+    document.addEventListener('click', (e) => {
+      let selector = '';
+      if (e.target.id) selector = '#' + e.target.id;
+      else if (e.target.className) {
+        selector = e.target.tagName.toLowerCase() + '.' +
+          e.target.className.toString().trim().replace(/\s+/g, '.');
+      } else selector = e.target.tagName.toLowerCase();
+
+      saveEvent('Click', selector, null, { element: selector });
+    });
+  })();
 
   // -------- Scroll tracking (25%, 50%, 75%, 100%) --------
   let scrollTracked = {25: false, 50: false, 75: false, 100: false};
