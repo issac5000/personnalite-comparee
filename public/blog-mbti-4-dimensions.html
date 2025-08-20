@@ -1037,18 +1037,15 @@ function viewResults(){ alert('Fonctionnalité à venir'); }
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"; 
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // -------- Générer / récupérer un session_id --------
-  const sessionId = localStorage.getItem("session_id") || crypto.randomUUID();
-  localStorage.setItem("session_id", sessionId);
+  let sessionId;
 
-  // -------- Helper pour sauver un event --------
   async function saveEvent(eventCategory, elementSelector = null, value = null, meta = {}) {
     try {
       await supabase.from("events").insert([{
         session_id: sessionId,
         event_name: eventCategory,          // ⚠️ obligatoire en base
         event_category: eventCategory,
-        element_selector,
+        element_selector: elementSelector,
         value,
         meta,
         page_url: window.location.href,
@@ -1060,18 +1057,25 @@ function viewResults(){ alert('Fonctionnalité à venir'); }
     }
   }
 
-  // -------- Pageview --------
-  saveEvent("Pageview", null, null, { url: window.location.href });
+  window.saveEvent = saveEvent;
 
-  // -------- Clicks --------
-  document.addEventListener("click", (e) => {
-    let selector = null;
-    if (e.target.id) selector = `#${e.target.id}`;
-    else if (e.target.className) selector = `.${e.target.className}`;
-    else selector = e.target.tagName.toLowerCase();
+  (async () => {
+    sessionId = localStorage.getItem("session_id") || crypto.randomUUID();
+    localStorage.setItem("session_id", sessionId);
 
-    saveEvent("Click", selector, null, { element: selector });
-  });
+    trackEvent("page_view");
+
+    document.addEventListener('click', (e) => {
+      let selector = '';
+      if (e.target.id) selector = '#' + e.target.id;
+      else if (e.target.className) {
+        selector = e.target.tagName.toLowerCase() + '.' +
+          e.target.className.toString().trim().replace(/\s+/g, '.');
+      } else selector = e.target.tagName.toLowerCase();
+
+      saveEvent('Click', selector, null, { element: selector });
+    });
+  })();
 
   // -------- Scroll tracking (25%, 50%, 75%, 100%) --------
   let scrollTracked = {25: false, 50: false, 75: false, 100: false};
