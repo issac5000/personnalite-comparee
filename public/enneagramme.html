@@ -4728,11 +4728,8 @@ addChatStyles();
   #pc-constellation{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none;}
 </style>
 
- <!-- Supabase UMD (expose window.supabase) -->
+<!-- Supabase UMD (expose window.supabase) -->
 <script src="https://unpkg.com/@supabase/supabase-js"></script>
-
-<script>
-
 <script src="nav.js"></script>
 <script src="lang.js"></script>
 <script src="i18n.js"></script>
@@ -4765,9 +4762,8 @@ addChatStyles();
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"; 
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // -------- Générer / récupérer un session_id --------
-  const sessionId = localStorage.getItem("session_id") || crypto.randomUUID();
-  localStorage.setItem("session_id", sessionId);
+  // -------- Déclaration du session_id --------
+  let sessionId;
 
   // -------- Helper pour sauver un event --------
   async function saveEvent(eventCategory, elementSelector = null, value = null, meta = {}) {
@@ -4776,7 +4772,7 @@ addChatStyles();
         session_id: sessionId,
         event_name: eventCategory,          // ⚠️ obligatoire en base
         event_category: eventCategory,
-        element_selector,
+        element_selector: elementSelector,
         value,
         meta,
         page_url: window.location.href,
@@ -4792,10 +4788,11 @@ addChatStyles();
 
   // ====== Init ======
   (async () => {
-    // On enregistre un page_view dès l'ouverture
-    await saveEvent('Pageview');
+    sessionId = localStorage.getItem("session_id") || crypto.randomUUID();
+    localStorage.setItem("session_id", sessionId);
 
-    // On capte les clics
+    trackEvent("page_view");
+
     document.addEventListener('click', (e) => {
       let selector = '';
       if (e.target.id) selector = '#' + e.target.id;
