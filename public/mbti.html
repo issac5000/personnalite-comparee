@@ -5049,18 +5049,27 @@ async function trackEvent(eventName, meta = {}) {
  <script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"; 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"; 
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // -------- Générer / récupérer un session_id --------
+  const sessionId = localStorage.getItem("session_id") || crypto.randomUUID();
+  localStorage.setItem("session_id", sessionId);
 
   // -------- Helper pour sauver un event --------
   async function saveEvent(eventCategory, elementSelector = null, value = null, meta = {}) {
     try {
       await supabase.from("events").insert([{
+        session_id: sessionId,
+        event_name: eventCategory,          // ⚠️ obligatoire en base
         event_category: eventCategory,
-        element_selector: elementSelector,
-        value: value,
-        meta: meta
+        element_selector,
+        value,
+        meta,
+        page_url: window.location.href,
+        referrer: document.referrer,
+        user_agent: navigator.userAgent
       }]);
     } catch (err) {
       console.error("Erreur enregistrement event:", err);
@@ -5151,8 +5160,6 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
   // Charge les stats à l'ouverture
   loadFormStats();
 </script>
-
-
 
 </body>
 </html>
