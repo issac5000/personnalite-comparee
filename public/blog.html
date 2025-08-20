@@ -4182,7 +4182,6 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleSuggestions(); // les cacher si ce n’est pas déjà le cas
     appendMessage('user',q);
     // Tracking : message utilisateur envoyé
-    saveEvent('chat_message_sent', null, null, { messageLength: q.length });
     setTyping(true);
 
     try{
@@ -4191,13 +4190,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const botMsg = data.message || "(pas de réponse)";
       appendMessage('assistant', botMsg, {typing:true});
       // Tracking : réponse du bot
-      saveEvent('chat_message_received', null, null, { messageLength: botMsg.length });
     }catch(e){
       console.error(e);
       const errMsg = "Oups, problème de connexion. Réessaye dans quelques secondes.";
       appendMessage('assistant', errMsg,{typing:false});
       // Tracking même en cas d'erreur réseau
-      saveEvent('chat_message_received', null, null, { messageLength: errMsg.length });
     }finally{
       setTyping(false);
     }
@@ -4279,55 +4276,6 @@ addChatStyles();
 <script src="nav.js"></script>
 <script src="lang.js"></script>
 <script src="i18n.js"></script>
-
-<script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-  const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg";
-  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  let sessionId;
-
-  async function saveEvent(eventCategory, elementSelector = null, value = null, meta = {}) {
-    try {
-      await supabase.from("events").insert([
-        {
-          session_id: sessionId,
-          event_name: eventCategory,          // ⚠️ obligatoire en base
-          event_category: eventCategory,
-          element_selector: elementSelector,
-          value,
-          meta,
-          page_url: window.location.href,
-          referrer: document.referrer,
-          user_agent: navigator.userAgent
-        }
-      ]);
-    } catch (err) {
-      console.error("Erreur enregistrement event:", err);
-    }
-  }
-  window.saveEvent = saveEvent;
-
-  (async () => {
-    sessionId = localStorage.getItem("session_id") || crypto.randomUUID();
-    localStorage.setItem("session_id", sessionId);
-
-    trackEvent("page_view");
-
-    document.addEventListener('click', (e) => {
-      let selector = '';
-      if (e.target.id) selector = '#' + e.target.id;
-      else if (e.target.className) {
-        selector = e.target.tagName.toLowerCase() + '.' +
-          e.target.className.toString().trim().replace(/\s+/g, '.');
-      } else selector = e.target.tagName.toLowerCase();
-
-      saveEvent('Click', selector, null, { element: selector });
-    });
-  })();
-</script>
 
 
 
