@@ -1457,8 +1457,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         enneagram_scores: userProfile.enneagramScores,
         mbti_type: userProfile.mbtiType,
         enneagram_type: userProfile.enneagramType,
-        certainty_score: 0,
-        function_scores: userProfile.functionScores
+        certainty_score: 0
       })
       .select()
       .single();
