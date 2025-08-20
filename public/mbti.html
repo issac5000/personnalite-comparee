@@ -1947,6 +1947,7 @@ async function calculateResults() {
         timestamp: Date.now()
     };
 
+    userProfile.functionScores = userProfile.mbtiScores;
     await saveUserProfileToSupabase(userProfile);
     localStorage.setItem('userProfile_' + uniqueCode, JSON.stringify(userProfile));
     
