@@ -4855,6 +4855,24 @@ window.addEventListener('scroll', () => {
 
   // -------- Déclaration du session_id --------
   let sessionId;
+  async function trackEvent(eventName, extraData = {}) {
+    try {
+      const { error } = await supabase.from("events").insert([{
+        session_id: sessionId,
+        event_name: eventName,
+        element_selector: extraData.element_selector || null,
+        value: extraData.value || null,
+        meta: extraData.meta || {},
+        page_url: window.location.href,
+        referrer: document.referrer,
+        user_agent: navigator.userAgent
+      }]);
+      if (error) console.error("Erreur enregistrement event:", error);
+    } catch (err) {
+      console.error("Erreur trackEvent:", err);
+    }
+  }
+
 
   // -------- Helper pour sauver un event --------
   async function saveEvent(eventCategory, elementSelector = null, value = null, meta = {}) {
