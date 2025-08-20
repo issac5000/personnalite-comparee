@@ -986,7 +986,7 @@
     else if (e.target.className) selector = `.${e.target.className}`;
     else selector = e.target.tagName.toLowerCase();
 
-    saveEvent("Interaction", selector, null, { element: selector });
+    saveEvent("Click", selector, null, { element: selector });
   });
 
   // -------- Scroll tracking (25%, 50%, 75%, 100%) --------
