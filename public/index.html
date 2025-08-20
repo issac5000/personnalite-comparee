@@ -5025,85 +5025,110 @@ window.addEventListener('scroll', () => {
 }, { once: true });
 </script>
 
-<script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+ <script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-  // === CONFIG SUPABASE ===
-  const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjM4NTg3NjEsImV4cCI6MjAzOTQzNDc2MX0.VZyYd8bA0DPNsPkjgjXwJhBMdrsn_8w0Ck4PaOp8ZKk";
-  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjM4NTg3NjEsImV4cCI6MjAzOTQzNDc2MX0.VZyYd8bA0DPNsPkjgjXwJhBMdrsn_8w0Ck4PaOp8ZKk";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // === HELPER : récupérer sélecteur unique d’un élément ===
-  function getElementSelector(el) {
-    if (!el) return "unknown";
-    if (el.id) return `#${el.id}`;
-    if (el.className) return `.${el.className.toString().replace(/\s+/g, ".")}`;
-    return el.tagName.toLowerCase();
-  }
-
-  // === TRACKER : insérer un événement ===
-  async function trackEvent({ category, event_category, element }) {
+  // -------- Helper pour sauver un event --------
+  async function saveEvent(eventCategory, elementSelector = null, value = null, meta = {}) {
     try {
-      const { error } = await supabase.from("events").insert([
-        {
-          category: category, // ex: "interaction"
-          event_category: event_category, // ex: "click" ou "pageview"
-          element_selector: element || null,
-          elapsed_time: Math.round(performance.now()), // ms depuis chargement
-          value: 1
-        }
-      ]);
-      if (error) console.error("Erreur tracking Supabase:", error.message);
+      await supabase.from("events").insert([{
+        event_category: eventCategory,
+        element_selector: elementSelector,
+        value: value,
+        meta: meta
+      }]);
     } catch (err) {
-      console.error("Track Event crash:", err);
+      console.error("Erreur enregistrement event:", err);
     }
   }
 
-  // === 1) TRACK PAGEVIEW ===
-  trackEvent({
-    category: "navigation",
-    event_category: "pageview",
-    element: window.location.pathname
-  });
+  // -------- Pageview --------
+  saveEvent("Pageview", null, null, { url: window.location.href });
 
-  // === 2) TRACK CLICKS ===
+  // -------- Clicks --------
   document.addEventListener("click", (e) => {
-    const selector = getElementSelector(e.target);
-    trackEvent({
-      category: "interaction",
-      event_category: "click",
-      element: selector
-    });
+    let selector = null;
+    if (e.target.id) selector = `#${e.target.id}`;
+    else if (e.target.className) selector = `.${e.target.className}`;
+    else selector = e.target.tagName.toLowerCase();
+
+    saveEvent("Interaction", selector, null, { element: selector });
   });
 
-  // === 3) TRACK SCROLL (25% / 50% / 75% / 100%) ===
-  let scrollMilestones = [0.25, 0.5, 0.75, 1.0];
+  // -------- Scroll tracking (25%, 50%, 75%, 100%) --------
+  let scrollTracked = {25: false, 50: false, 75: false, 100: false};
   window.addEventListener("scroll", () => {
-    const scrolled = window.scrollY + window.innerHeight;
-    const fullHeight = document.documentElement.scrollHeight;
-    const ratio = scrolled / fullHeight;
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = Math.round((scrollTop / docHeight) * 100);
 
-    scrollMilestones.forEach((m, idx) => {
-      if (ratio >= m) {
-        trackEvent({
-          category: "interaction",
-          event_category: `scroll_${m * 100}%`,
-          element: window.location.pathname
-        });
-        scrollMilestones.splice(idx, 1); // éviter doublons
+    [25,50,75,100].forEach(p => {
+      if (scrolled >= p && !scrollTracked[p]) {
+        scrollTracked[p] = true;
+        saveEvent("Scroll", null, p, { percent: p });
       }
     });
   });
 
-  // === 4) TRACK TIME ON PAGE (quitte la page) ===
-  window.addEventListener("beforeunload", () => {
-    const elapsed = Math.round(performance.now() / 1000); // en secondes
-    trackEvent({
-      category: "engagement",
-      event_category: "time_on_page",
-      element: `${elapsed}s`
-    });
+  // -------- Temps passé sur la page (heartbeat toutes les 15s) --------
+  let seconds = 0;
+  setInterval(() => {
+    seconds += 15;
+    saveEvent("Time", null, seconds, { url: window.location.href });
+  }, 15000);
+
+  // -------- Form Submits --------
+  document.addEventListener("submit", (e) => {
+    let selector = e.target.id ? `#${e.target.id}` : e.target.tagName.toLowerCase();
+    saveEvent("FormSubmit", selector, null, { formAction: e.target.action || null });
   });
+
+  // -------- Stats Form Submits --------
+  async function loadFormStats() {
+    const { data, error } = await supabase
+      .from("events")
+      .select("occurred_at")
+      .eq("event_category", "FormSubmit");
+
+    if (error) {
+      console.error("Erreur récupération stats:", error);
+      return;
+    }
+
+    // Regroupe par jour
+    const stats = {};
+    data.forEach(ev => {
+      const day = new Date(ev.occurred_at).toISOString().split("T")[0];
+      stats[day] = (stats[day] || 0) + 1;
+    });
+
+    // Affichage dans ton HTML
+    const container = document.getElementById("form-stats");
+    if (!container) return;
+
+    container.innerHTML = "";
+    let total = 0;
+    Object.entries(stats)
+      .sort((a, b) => b[0].localeCompare(a[0]))
+      .forEach(([day, count]) => {
+        total += count;
+        const p = document.createElement("p");
+        p.textContent = `${day} : ${count} formulaire(s)`;
+        container.appendChild(p);
+      });
+
+    // Ajoute un total en haut
+    const totalDiv = document.createElement("div");
+    totalDiv.innerHTML = `<strong>Total formulaires soumis : ${total}</strong>`;
+    container.prepend(totalDiv);
+  }
+
+  // Charge les stats à l'ouverture
+  loadFormStats();
 </script>
 
 
