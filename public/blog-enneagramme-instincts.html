@@ -946,14 +946,68 @@
 <script src="lang.js"></script>
 <script src="i18n.js"></script>
 
- <script type="module">
+<script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
   const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"; 
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  // -------- Utils --------
+  const nowIso = () => new Date().toISOString();
+  const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? 'mobile'
+    : /Tablet|iPad/i.test(navigator.userAgent) ? 'tablet' : 'desktop';
+  const language = (navigator.language || 'en').slice(0,2);
+  const tz_offset = -new Date().getTimezoneOffset(); // en minutes (ex: +120 pour CET)
+  const viewport = { width: window.innerWidth, height: window.innerHeight };
+  const screenInfo = { width: window.screen?.width || 0, height: window.screen?.height || 0 };
+  const parseUTM = () => {
+    const p = new URLSearchParams(location.search);
+    const keys = ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"];
+    const obj = {};
+    keys.forEach(k => { if (p.get(k)) obj[k] = p.get(k); });
+    return Object.keys(obj).length ? obj : null;
+  };
+
+  // -------- Déclaration du session_id --------
   let sessionId;
+  let seconds = 0; // pour engagement_ms
+
+  // -------- Insertion/Mise à jour sessions --------
+  async function upsertSession(firstLoad=false, lastEventName=null) {
+    const payload = {
+      session_id: sessionId,
+      last_activity_at: nowIso(),
+      last_page_url: window.location.href,
+      user_agent: navigator.userAgent,
+      device_type: deviceType,
+      language,
+      tz_offset,
+      viewport,
+      screen: screenInfo
+    };
+    if (firstLoad) {
+      payload.first_seen_at = nowIso();
+      payload.first_referrer = document.referrer || null;
+      payload.first_utm = parseUTM();
+      // calcul simple is_returning via localStorage
+      const hasVisited = !!localStorage.getItem("pc_has_visited");
+      payload.is_returning = hasVisited;
+    }
+    if (lastEventName) payload.last_event_name = lastEventName;
+    // on envoie engagement_ms en ms (overwrite avec la valeur actuelle)
+    payload.engagement_ms = seconds * 1000;
+
+    // upsert sur session_id
+    try {
+      await supabase.from("sessions")
+        .upsert([payload], { onConflict: "session_id" });
+    } catch (e) {
+      console.error("Erreur upsert sessions:", e);
+    }
+  }
+
+  // -------- Event tracking (écrit events + rafraîchit sessions.last_activity_at) --------
   async function trackEvent(eventName, extraData = {}) {
     try {
       const { error } = await supabase.from("events").insert([{
@@ -969,10 +1023,13 @@
       if (error) console.error("Erreur enregistrement event:", error);
     } catch (err) {
       console.error("Erreur trackEvent:", err);
+    } finally {
+      // on tient à jour la session (last_activity_at + last_event_name + engagement_ms)
+      upsertSession(false, eventName);
     }
   }
 
-
+  // -------- Helper pour sauver un event --------
   async function saveEvent(eventCategory, elementSelector = null, value = null, meta = {}) {
     try {
       await supabase.from("events").insert([{
@@ -988,17 +1045,27 @@
       }]);
     } catch (err) {
       console.error("Erreur enregistrement event:", err);
+    } finally {
+      upsertSession(false, eventCategory);
     }
   }
-
   window.saveEvent = saveEvent;
 
+  // ====== Init ======
   (async () => {
     sessionId = localStorage.getItem("session_id") || crypto.randomUUID();
     localStorage.setItem("session_id", sessionId);
 
+    // upsert initial (crée si nouveau, met à jour sinon)
+    await upsertSession(true, "page_view");
+
+    // flag visiteur (pour is_returning sur les prochaines visites)
+    localStorage.setItem("pc_has_visited", "1");
+
+    // premier event
     trackEvent("page_view");
 
+    // Clicks
     document.addEventListener('click', (e) => {
       let selector = '';
       if (e.target.id) selector = '#' + e.target.id;
@@ -1006,7 +1073,6 @@
         selector = e.target.tagName.toLowerCase() + '.' +
           e.target.className.toString().trim().replace(/\s+/g, '.');
       } else selector = e.target.tagName.toLowerCase();
-
       saveEvent('Click', selector, null, { element: selector });
     });
   })();
@@ -1027,9 +1093,9 @@
   });
 
   // -------- Temps passé sur la page (heartbeat toutes les 15s) --------
-  let seconds = 0;
   setInterval(() => {
     seconds += 15;
+    // event "Time" + MAJ sessions (last_activity_at + engagement_ms)
     saveEvent("Time", null, seconds, { url: window.location.href });
   }, 15000);
 
@@ -1082,6 +1148,7 @@
   // Charge les stats à l'ouverture
   loadFormStats();
 </script>
+
 
 </body>
 </html>
