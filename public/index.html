@@ -1601,17 +1601,19 @@ const { mbtiType: extMbtiType, enneagramType: extEnneagramTypeRaw } =
   getProfileFromScores(functionScores, enneagramScores);
 const extEnneagramType = String(extEnneagramTypeRaw);
 
-// 2) Insert avec les types
 const { error: insertError } = await supabase
   .from('external_evaluations')
   .insert({
     user_id: userId,
     relation: relation,
+    // ← ajoute cette ligne :
+    function_scores: functionScores,
     mbti_scores: functionScores,
     enneagram_scores: enneagramScores,
     mbti_type: extMbtiType,
     enneagram_type: extEnneagramType
   });
+
 
                 if (insertError) {
                     console.error('Erreur lors de l’enregistrement de l’évaluation externe :', insertError);
