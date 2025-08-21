@@ -1596,15 +1596,23 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     return;
                 }
                 const userId = user.id;
-                // Insérer l'évaluation
-                const { error: insertError } = await supabase
-                    .from('external_evaluations')
-                    .insert({
-                        user_id: userId,
-                        relation: relation,
-                        mbti_scores: functionScores,
-                        enneagram_scores: enneagramScores
-                    });
+              // 1) Calcul des types à partir des scores fournis
+const { mbtiType: extMbtiType, enneagramType: extEnneagramTypeRaw } =
+  getProfileFromScores(functionScores, enneagramScores);
+const extEnneagramType = String(extEnneagramTypeRaw);
+
+// 2) Insert avec les types
+const { error: insertError } = await supabase
+  .from('external_evaluations')
+  .insert({
+    user_id: userId,
+    relation: relation,
+    mbti_scores: functionScores,
+    enneagram_scores: enneagramScores,
+    mbti_type: extMbtiType,
+    enneagram_type: extEnneagramType
+  });
+
                 if (insertError) {
                     console.error('Erreur lors de l’enregistrement de l’évaluation externe :', insertError);
                 } else {
