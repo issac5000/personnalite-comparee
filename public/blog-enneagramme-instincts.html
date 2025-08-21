@@ -1013,6 +1013,7 @@
       const { error } = await supabase.from("events").insert([{
         session_id: sessionId,
         event_name: eventName,
+        event_category: eventName,   // ✅ ajout pour éviter event_category null
         element_selector: extraData.element_selector || null,
         value: extraData.value || null,
         meta: extraData.meta || {},
@@ -1024,7 +1025,6 @@
     } catch (err) {
       console.error("Erreur trackEvent:", err);
     } finally {
-      // on tient à jour la session (last_activity_at + last_event_name + engagement_ms)
       upsertSession(false, eventName);
     }
   }
