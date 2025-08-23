@@ -28,19 +28,24 @@ if (mobileMenuButton && mobileMenu) {
 
 document.addEventListener('DOMContentLoaded', () => {
   const langTrigger = document.getElementById('lang-trigger');
+  const langTriggerCompact = document.getElementById('lang-trigger-compact');
+  const langCode = document.getElementById('lang-code');
   const langMenu = document.getElementById('lang-menu');
   const langDropdown = document.getElementById('lang-dropdown');
-  if (!langTrigger || !langMenu) return;
+  const langTriggers = [langTrigger, langTriggerCompact].filter(Boolean);
+  if (langTriggers.length === 0 || !langMenu) return;
 
   const closeLangMenu = () => {
     langMenu.classList.add('hidden');
-    langTrigger.setAttribute('aria-expanded', 'false');
+    langTriggers.forEach(t => t.setAttribute('aria-expanded', 'false'));
   };
 
-  langTrigger.addEventListener('click', () => {
-    const expanded = langTrigger.getAttribute('aria-expanded') === 'true';
-    langTrigger.setAttribute('aria-expanded', String(!expanded));
-    langMenu.classList.toggle('hidden', expanded);
+  langTriggers.forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const hidden = langMenu.classList.contains('hidden');
+      langMenu.classList.toggle('hidden', !hidden);
+      langTriggers.forEach(t => t.setAttribute('aria-expanded', String(hidden)));
+    });
   });
 
   langMenu.querySelectorAll('.lang-option').forEach(opt => {
@@ -49,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
       i18n.setLanguage(lang);
       localStorage.setItem('pc_lang', lang);
       renderI18n();
+      if (langCode) langCode.textContent = lang.toUpperCase();
       if (typeof updatePlaceholders === 'function') updatePlaceholders();
       closeLangMenu();
     });
@@ -67,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const savedLang = localStorage.getItem('pc_lang') || 'en';
   i18n.setLanguage(savedLang);
   renderI18n();
+  if (langCode) langCode.textContent = savedLang.toUpperCase();
   if (typeof updatePlaceholders === 'function') updatePlaceholders();
 });
 
