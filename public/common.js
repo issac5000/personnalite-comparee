@@ -27,18 +27,19 @@ if (mobileMenuButton && mobileMenu) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const langButton = document.getElementById('lang-button');
+  const langTrigger = document.getElementById('lang-trigger');
   const langMenu = document.getElementById('lang-menu');
-  if (!langButton || !langMenu) return;
+  const langDropdown = document.getElementById('lang-dropdown');
+  if (!langTrigger || !langMenu) return;
 
   const closeLangMenu = () => {
     langMenu.classList.add('hidden');
-    langButton.setAttribute('aria-expanded', 'false');
+    langTrigger.setAttribute('aria-expanded', 'false');
   };
 
-  langButton.addEventListener('click', () => {
-    const expanded = langButton.getAttribute('aria-expanded') === 'true';
-    langButton.setAttribute('aria-expanded', String(!expanded));
+  langTrigger.addEventListener('click', () => {
+    const expanded = langTrigger.getAttribute('aria-expanded') === 'true';
+    langTrigger.setAttribute('aria-expanded', String(!expanded));
     langMenu.classList.toggle('hidden', expanded);
   });
 
@@ -54,13 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('click', e => {
-    if (!langButton.contains(e.target) && !langMenu.contains(e.target)) {
-      closeLangMenu();
-    }
-  });
-
-  document.addEventListener('focusin', e => {
-    if (!langButton.contains(e.target) && !langMenu.contains(e.target)) {
+    if (langDropdown && !langDropdown.contains(e.target)) {
       closeLangMenu();
     }
   });
@@ -195,7 +190,7 @@ function showMBTIDetails(type){
   if (d) showModal(d.title, d.content);
 }
 
-const enneagramDetailedDescriptions = {
+window.enneagramDetailedDescriptions = window.enneagramDetailedDescriptions || {
   '1':{title:'Type 1 - Le Perfectionniste',content:'<p>Éthique, engagé et cherche la perfection.</p>'},
   '2':{title:'Type 2 - L\'Altruiste',content:'<p>Chaleureux et serviable, orienté vers les autres.</p>'},
   '3':{title:'Type 3 - Le Performant',content:'<p>Ambitieux, axé sur la réussite.</p>'},
@@ -207,7 +202,7 @@ const enneagramDetailedDescriptions = {
   '9':{title:'Type 9 - Le Médiateur',content:'<p>Calme, cherche l’harmonie.</p>'}
 };
 function showEnneagramDetails(type){
-  const d = enneagramDetailedDescriptions[type];
+  const d = window.enneagramDetailedDescriptions[type];
   if (d) showModal(d.title, d.content);
 }
 
