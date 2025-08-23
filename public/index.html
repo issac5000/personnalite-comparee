@@ -3812,10 +3812,11 @@ window.showSupport = showSupport;
                 return;
             }
 
-            if (initial.evaluations.length === 0) {
-                alert('Il est nécessaire de compléter l'ensemble des évaluations pour avoir accès à votre page de résultats détaillés. Envoyez votre code unique à vos proches pour qu'ils puissent compléter votre profil et vous donner accès à vos résultats !');
-                return;
-            }
+       if (initial.evaluations.length === 0) {
+  alert("Il est nécessaire de compléter l'ensemble des évaluations pour avoir accès à votre page de résultats détaillés. Envoyez votre code unique à vos proches pour qu'ils puissent compléter votre profil et vous donner accès à vos résultats !");
+  return;
+}
+
 
             const selfProfile = getProfileFromScores(initial.user.mbti_scores || {}, initial.user.enneagram_scores || {});
 
