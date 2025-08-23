@@ -27,26 +27,20 @@ if (mobileMenuButton && mobileMenu) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const langTriggers = [document.getElementById('lang-trigger'), document.getElementById('lang-trigger-compact')].filter(Boolean);
+  const langTrigger = document.getElementById('lang-trigger');
   const langMenu = document.getElementById('lang-menu');
   const langDropdown = document.getElementById('lang-dropdown');
-  const langCode = document.getElementById('lang-code');
-  if (!langMenu || !langTriggers.length) return;
+  if (!langTrigger || !langMenu) return;
 
-  const updateLangCode = () => {
-    if (langCode) langCode.textContent = i18n.currentLang.toUpperCase();
+  const closeLangMenu = () => {
+    langMenu.classList.add('hidden');
+    langTrigger.setAttribute('aria-expanded', 'false');
   };
 
-  const setExpanded = expanded => {
-    langMenu.classList.toggle('hidden', !expanded);
-    langTriggers.forEach(t => t.setAttribute('aria-expanded', String(expanded)));
-  };
-
-  langTriggers.forEach(trigger => {
-    trigger.addEventListener('click', () => {
-      const expanded = langMenu.classList.contains('hidden');
-      setExpanded(expanded);
-    });
+  langTrigger.addEventListener('click', () => {
+    const expanded = langTrigger.getAttribute('aria-expanded') === 'true';
+    langTrigger.setAttribute('aria-expanded', String(!expanded));
+    langMenu.classList.toggle('hidden', expanded);
   });
 
   langMenu.querySelectorAll('.lang-option').forEach(opt => {
@@ -56,26 +50,24 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('pc_lang', lang);
       renderI18n();
       if (typeof updatePlaceholders === 'function') updatePlaceholders();
-      updateLangCode();
-      setExpanded(false);
+      closeLangMenu();
     });
   });
 
   document.addEventListener('click', e => {
     if (langDropdown && !langDropdown.contains(e.target)) {
-      setExpanded(false);
+      closeLangMenu();
     }
   });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') setExpanded(false);
+    if (e.key === 'Escape') closeLangMenu();
   });
 
   const savedLang = localStorage.getItem('pc_lang') || 'en';
   i18n.setLanguage(savedLang);
   renderI18n();
   if (typeof updatePlaceholders === 'function') updatePlaceholders();
-  updateLangCode();
 });
 
 const homeMenuContainer = document.getElementById('home-menu-container');
