@@ -26,6 +26,32 @@ if (mobileMenuButton && mobileMenu) {
   });
 }
 
+const langButton = document.getElementById('lang-button');
+const langMenu = document.getElementById('lang-menu');
+if (langButton && langMenu) {
+  langButton.addEventListener('click', () => {
+    const expanded = langButton.getAttribute('aria-expanded') === 'true';
+    langButton.setAttribute('aria-expanded', String(!expanded));
+    langMenu.classList.toggle('hidden', expanded);
+  });
+  langMenu.querySelectorAll('.lang-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const lang = opt.getAttribute('data-lang');
+      i18n.setLanguage(lang);
+      renderI18n();
+      if (typeof updatePlaceholders === 'function') updatePlaceholders();
+      langMenu.classList.add('hidden');
+      langButton.setAttribute('aria-expanded', 'false');
+    });
+  });
+  document.addEventListener('click', e => {
+    if (!langButton.contains(e.target) && !langMenu.contains(e.target)) {
+      langMenu.classList.add('hidden');
+      langButton.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
 const homeMenuContainer = document.getElementById('home-menu-container');
 const homeMenuButton = document.getElementById('home-menu-button');
 const homeMenu = document.getElementById('home-menu');
