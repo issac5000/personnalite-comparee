@@ -2251,7 +2251,47 @@ const translations = {
 
 const i18n = {
   t(key) {
-    const lang = document.documentElement.lang || 'fr';
+    const lang = (typeof document !== 'undefined' && document.documentElement.lang) || 'fr';
     return key.split('.').reduce((obj, k) => obj && obj[k], translations[lang]) || key;
   }
 };
+
+// =========================
+// Questionnaires (FR & EN)
+// =========================
+let AUTO_QUESTIONS;
+let EXTERNAL_QUESTIONS;
+
+if (typeof module !== 'undefined' && module.exports) {
+  ({ AUTO_QUESTIONS, EXTERNAL_QUESTIONS } = require('./questions-v2.js'));
+} else if (typeof window !== 'undefined') {
+  AUTO_QUESTIONS = window.AUTO_QUESTIONS;
+  EXTERNAL_QUESTIONS = window.EXTERNAL_QUESTIONS;
+}
+
+function translateQuestions(base, type) {
+  return base.map(q => ({
+    ...q,
+    question: translations.en[`questionnaire.${type}.q${q.id}.title`],
+    options: q.options.map((opt, idx) => ({
+      ...opt,
+      text: translations.en[`questionnaire.${type}.q${q.id}.option${idx + 1}`]
+    }))
+  }));
+}
+
+const AUTO_QUESTIONS_EN = translateQuestions(AUTO_QUESTIONS, 'auto');
+const EXTERNAL_QUESTIONS_EN = translateQuestions(EXTERNAL_QUESTIONS, 'externe');
+
+const LANG = {
+  fr: { AUTO_QUESTIONS, EXTERNAL_QUESTIONS },
+  en: { AUTO_QUESTIONS: AUTO_QUESTIONS_EN, EXTERNAL_QUESTIONS: EXTERNAL_QUESTIONS_EN }
+};
+
+if (typeof window !== 'undefined') {
+  window.LANG = LANG;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { translations, i18n, LANG };
+}
