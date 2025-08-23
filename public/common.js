@@ -26,31 +26,54 @@ if (mobileMenuButton && mobileMenu) {
   });
 }
 
-const langButton = document.getElementById('lang-button');
-const langMenu = document.getElementById('lang-menu');
-if (langButton && langMenu) {
+document.addEventListener('DOMContentLoaded', () => {
+  const langButton = document.getElementById('lang-button');
+  const langMenu = document.getElementById('lang-menu');
+  if (!langButton || !langMenu) return;
+
+  const closeLangMenu = () => {
+    langMenu.classList.add('hidden');
+    langButton.setAttribute('aria-expanded', 'false');
+  };
+
   langButton.addEventListener('click', () => {
     const expanded = langButton.getAttribute('aria-expanded') === 'true';
     langButton.setAttribute('aria-expanded', String(!expanded));
     langMenu.classList.toggle('hidden', expanded);
   });
+
   langMenu.querySelectorAll('.lang-option').forEach(opt => {
     opt.addEventListener('click', () => {
       const lang = opt.getAttribute('data-lang');
       i18n.setLanguage(lang);
+      localStorage.setItem('pc_lang', lang);
       renderI18n();
       if (typeof updatePlaceholders === 'function') updatePlaceholders();
-      langMenu.classList.add('hidden');
-      langButton.setAttribute('aria-expanded', 'false');
+      closeLangMenu();
     });
   });
+
   document.addEventListener('click', e => {
     if (!langButton.contains(e.target) && !langMenu.contains(e.target)) {
-      langMenu.classList.add('hidden');
-      langButton.setAttribute('aria-expanded', 'false');
+      closeLangMenu();
     }
   });
-}
+
+  document.addEventListener('focusin', e => {
+    if (!langButton.contains(e.target) && !langMenu.contains(e.target)) {
+      closeLangMenu();
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLangMenu();
+  });
+
+  const savedLang = localStorage.getItem('pc_lang') || 'en';
+  i18n.setLanguage(savedLang);
+  renderI18n();
+  if (typeof updatePlaceholders === 'function') updatePlaceholders();
+});
 
 const homeMenuContainer = document.getElementById('home-menu-container');
 const homeMenuButton = document.getElementById('home-menu-button');
@@ -149,7 +172,7 @@ function checkProfileCode() {
 function shareCode(){ alert('Fonctionnalité à venir'); }
 function viewResults(){ alert('Fonctionnalité à venir'); }
 
-const mbtiDetailedDescriptions = {
+window.mbtiDetailedDescriptions = window.mbtiDetailedDescriptions || {
   INTJ:{title:"INTJ - L'Architecte",content:'<p>Visionnaires stratégiques avec un plan pour tout.</p>'},
   ENTJ:{title:"ENTJ - Le Commandant",content:'<p>Leaders naturels, charismatiques et déterminés.</p>'},
   INTP:{title:"INTP - Le Penseur",content:'<p>Penseurs logiques et créatifs, en quête d’idées.</p>'},
@@ -168,7 +191,7 @@ const mbtiDetailedDescriptions = {
   ESFP:{title:"ESFP - L'Artiste",content:'<p>Spontanés, débordant d’énergie et de joie de vivre.</p>'}
 };
 function showMBTIDetails(type){
-  const d = mbtiDetailedDescriptions[type];
+  const d = window.mbtiDetailedDescriptions[type];
   if (d) showModal(d.title, d.content);
 }
 

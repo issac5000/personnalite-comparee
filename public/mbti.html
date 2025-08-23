@@ -2212,7 +2212,7 @@ function displayResults(results) {
         }
 
         // Descriptions détaillées MBTI
-        const mbtiDetailedDescriptions = {
+        window.mbtiDetailedDescriptions = window.mbtiDetailedDescriptions || {
             'INTJ': {
                 title: '<h2 class="text-xl font-bold text-gray-900" data-i18n="mbti.modals.intj.title">INTJ - L\'Architecte</h2>',
                 content: `
@@ -2930,7 +2930,7 @@ function displayResults(results) {
 
         // Fonctions pour afficher les détails
         function showMBTIDetails(type) {
-            const details = mbtiDetailedDescriptions[type];
+            const details = window.mbtiDetailedDescriptions[type];
             if (details) {
                 showModal(details.title, details.content);
             } else {
