@@ -127,12 +127,41 @@
       });
     }
 
-    const supportLink = document.getElementById('support-link');
-    if (supportLink) {
-      supportLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        showSupport();
-      });
-    }
-  });
-})();
+      const supportLink = document.getElementById('support-link');
+      if (supportLink) {
+        supportLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          showSupport();
+        });
+      }
+
+      const langToggle=document.getElementById('lang-toggle');
+      const langMenu=document.getElementById('lang-menu');
+      if(langToggle&&langMenu){
+        const changeLanguage=lang=>{
+          if(window.i18n&&typeof i18n.setLanguage==='function'){
+            i18n.setLanguage(lang);
+          }
+          if(typeof renderI18n==='function') renderI18n();
+          if(typeof switchLang==='function') switchLang(lang);
+          if(typeof applyTranslations==='function') applyTranslations();
+          if(typeof updatePlaceholders==='function') updatePlaceholders();
+        };
+        langToggle.addEventListener('click',e=>{
+          e.stopPropagation();
+          langMenu.classList.toggle('hidden');
+        });
+        langMenu.querySelectorAll('button[data-lang]').forEach(btn=>{
+          btn.addEventListener('click',()=>{
+            changeLanguage(btn.getAttribute('data-lang'));
+            langMenu.classList.add('hidden');
+          });
+        });
+        document.addEventListener('click',e=>{
+          if(!langMenu.contains(e.target)&&!langToggle.contains(e.target)){
+            langMenu.classList.add('hidden');
+          }
+        });
+      }
+    });
+  })();

@@ -433,8 +433,14 @@
             <div class="flex-shrink-0 flex items-center">
                 <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span id="brand-home" class="ml-3 text-[1.05rem] sm:text-xl font-bold text-black" data-i18n="brand.name">Personnalité Comparée</span>
             </div>
-            <div class="language-switcher ml-4 flex gap-0 text-sm font-bold">
-                <button onclick="switchLang('fr'); updatePlaceholders();" data-i18n="lang.fr">FR</button><span> | </span><button onclick="switchLang('en'); updatePlaceholders();" data-i18n="lang.en">EN</button>
+            <div class="relative ml-4">
+                <button id="lang-toggle" class="p-2" aria-haspopup="true" aria-expanded="false">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12A9 9 0 113 12a9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3.6v16.8"/></svg>
+                </button>
+                <div id="lang-menu" class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg ring-1 ring-black/5 hidden z-50">
+                    <button data-lang="en" class="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100"><span class="mr-2">🇬🇧</span> English</button>
+                    <button data-lang="fr" class="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100"><span class="mr-2">🇫🇷</span> Français</button>
+                </div>
             </div>
         </div>
         <nav class="desktop-nav hidden md:ml-6 md:flex md:items-center md:space-x-8">
