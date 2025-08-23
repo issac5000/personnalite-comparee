@@ -1118,6 +1118,9 @@ const translations = {
     "questionnaire.externe.q20.option3": "Il se jette dans l’action sans perdre de temps.",
     "questionnaire.externe.q20.option4": "Il cherche à rendre service et à créer de l'harmonie autour de lui.",
     "question.label": "Question",
+    alerts: {
+      missingEvaluations: "Il est nécessaire de compléter l'ensemble des évaluations pour avoir accès à votre page de résultats détaillés. Envoyez votre code unique à vos proches pour qu'ils puissent compléter votre profil et vous donner accès à vos résultats !"
+    },
     "shareCodeAlert": "Voici ton code à donner à 3 proches : "
   },
   en: {
@@ -2239,6 +2242,16 @@ const translations = {
     "questionnaire.externe.q20.option3": "He throws himself into action without wasting time.",
     "questionnaire.externe.q20.option4": "He seeks to be helpful and create harmony around him.",
     "question.label": "Question",
+    alerts: {
+      missingEvaluations: "You need to complete all evaluations to access your detailed results page. Share your unique code with your relatives so they can complete your profile and give you access to your results!"
+    },
     "shareCodeAlert": "Here is your code to give to 3 relatives: "
+  }
+};
+
+const i18n = {
+  t(key) {
+    const lang = document.documentElement.lang || 'fr';
+    return key.split('.').reduce((obj, k) => obj && obj[k], translations[lang]) || key;
   }
 };

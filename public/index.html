@@ -3824,7 +3824,7 @@ window.showSupport = showSupport;
                 initial.user.enneagram_scores && Object.keys(initial.user.enneagram_scores).length > 0;
 
             if (!selfCompleted || initial.evaluations.length < 3) {
-                alert("Il est nécessaire de compléter l'ensemble des évaluations pour avoir accès à votre page de résultats détaillés. Envoyez votre code unique à vos proches pour qu'ils puissent compléter votre profil et vous donner accès à vos résultats !");
+                alert(i18n.t('alerts.missingEvaluations'));
                 return;
             }
 
