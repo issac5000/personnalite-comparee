@@ -146,6 +146,7 @@
           if(typeof switchLang==='function') switchLang(lang);
           if(typeof applyTranslations==='function') applyTranslations();
           if(typeof updatePlaceholders==='function') updatePlaceholders();
+          if(typeof updateQuestionsLanguage==='function') updateQuestionsLanguage();
         };
         langToggle.addEventListener('click',e=>{
           e.stopPropagation();

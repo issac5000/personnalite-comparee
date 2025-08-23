@@ -1050,7 +1050,17 @@
     <script>
         // Configuration et données
                 // Récupère les questions externes depuis Supabase si l'utilisateur est un proche
-let questions = AUTO_QUESTIONS;
+let questions = LANG[document.documentElement.lang || 'fr'].AUTO_QUESTIONS;
+let externalQuestions = LANG[document.documentElement.lang || 'fr'].EXTERNAL_QUESTIONS;
+
+function enrichExternalQuestions() {
+    externalQuestions.forEach(q => {
+        if (!q.options.some(opt => opt.text === 'Je ne sais pas')) {
+            q.options.push({ text: 'Je ne sais pas', functions: {}, enneagram: {} });
+        }
+    });
+}
+enrichExternalQuestions();
 // 🔐 Génére un code aléatoire
 function genererUniqueCode() {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -1093,7 +1103,8 @@ if (window.location.href.includes("external")) {
       .eq("code", code)
       .then(({ data, error }) => {
         if (!error && data && data.length > 0 && data[0].external_questions) {
-          questions = data[0].external_questions;
+          externalQuestions = data[0].external_questions;
+          enrichExternalQuestions();
           console.log("Questions externes chargées :", questions);
           afficherQuestions(); // appel explicite
         } else {
@@ -1125,6 +1136,22 @@ if (window.location.href.includes("external")) {
             setupEvaluationForm();
             loadFirstQuestion();
             initCountUp();
+        }
+
+        function updateQuestionsLanguage() {
+            const lang = document.documentElement.lang || 'fr';
+            questions = LANG[lang].AUTO_QUESTIONS;
+            externalQuestions = LANG[lang].EXTERNAL_QUESTIONS;
+            enrichExternalQuestions();
+            displayQuestion(currentQuestionIndex);
+            updateNavigationButtons();
+            if (typeof displayExternalQuestion === 'function') {
+                displayExternalQuestion(currentExternalQuestionIndex);
+                updateExternalNavigationButtons();
+            }
+        }
+        if (typeof window !== 'undefined') {
+            window.updateQuestionsLanguage = updateQuestionsLanguage;
         }
 
         // Menu mobile
@@ -1280,18 +1307,18 @@ if (window.location.href.includes("external")) {
        // Affichage d'une question
 function displayQuestion(index) {
   const questionsContainer = document.getElementById('questions-container');
-  const question = AUTO_QUESTIONS[index];
+  const question = questions[index];
 
   if (!question || !questionsContainer) return;
 
-  const progress = ((index + 1) / AUTO_QUESTIONS.length) * 100;
+  const progress = ((index + 1) / questions.length) * 100;
 
   const questionHTML = `
     <div class="question-container fade active bg-transparent overflow-hidden">
       <div class="px-6 py-4">
         <div class="flex justify-between items-center mb-4">
           <span class="text-sm font-medium text-blue-600">
-            Question ${index + 1}/${AUTO_QUESTIONS.length}
+            Question ${index + 1}/${questions.length}
           </span>
           <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
             <div class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-500"
@@ -1359,8 +1386,8 @@ function displayQuestion(index) {
             
             if (nextButton) {
                 nextButton.addEventListener('click', function() {
-                    if (answers[AUTO_QUESTIONS[currentQuestionIndex].id] !== undefined) {
-                        if (currentQuestionIndex < AUTO_QUESTIONS.length - 1) {
+                    if (answers[questions[currentQuestionIndex].id] !== undefined) {
+                        if (currentQuestionIndex < questions.length - 1) {
                             currentQuestionIndex++;
                             displayQuestion(currentQuestionIndex);
                         }
@@ -1372,7 +1399,7 @@ function displayQuestion(index) {
             
             if (finishButton) {
                 finishButton.addEventListener('click', function() {
-                    if (Object.keys(answers).length === AUTO_QUESTIONS.length) {
+                    if (Object.keys(answers).length === questions.length) {
                         calculateResults();
                     } else {
                         alert('Veuillez répondre à toutes les questions avant de terminer.');
@@ -1391,8 +1418,8 @@ function displayQuestion(index) {
                 prevButton.style.display = currentQuestionIndex > 0 ? 'inline-flex' : 'none';
             }
             
-            const isLastQuestion = currentQuestionIndex === AUTO_QUESTIONS.length - 1;
-            const hasAnswer = answers[AUTO_QUESTIONS[currentQuestionIndex].id] !== undefined;
+            const isLastQuestion = currentQuestionIndex === questions.length - 1;
+            const hasAnswer = answers[questions[currentQuestionIndex].id] !== undefined;
             
             if (nextButton && finishButton) {
                 if (isLastQuestion) {
@@ -1799,7 +1826,7 @@ async function calculateResults() {
     Object.keys(answers).forEach(questionId => {
         const questionIndex = parseInt(questionId) - 1;
         const answerIndex = answers[questionId];
-        const question = AUTO_QUESTIONS[questionIndex];
+        const question = questions[questionIndex];
         const selectedOption = question.options[answerIndex];
         
         Object.keys(selectedOption.mbti).forEach(trait => {
@@ -3145,22 +3172,24 @@ function showSupport() {
         
         // Questions pour l'évaluation externe (20 questions)
         // Ajout de l'option "Je ne sais pas" à chaque question d'évaluation externe
-        EXTERNAL_QUESTIONS.forEach(q => {
-            q.options.push({ text: "Je ne sais pas", functions: {}, enneagram: {} });
+        externalQuestions.forEach(q => {
+            if (!q.options.some(opt => opt.text === "Je ne sais pas")) {
+                q.options.push({ text: "Je ne sais pas", functions: {}, enneagram: {} });
+            }
         });
 
         // Fonction pour afficher une question externe
         function displayExternalQuestion(index) {
-            const question = EXTERNAL_QUESTIONS[index];
+            const question = externalQuestions[index];
             if (!question) return;
-            
-            const progress = ((index + 1) / EXTERNAL_QUESTIONS.length) * 100;
+
+            const progress = ((index + 1) / externalQuestions.length) * 100;
             const questionsContent = document.getElementById('external-questions-content');
             
             questionsContent.innerHTML = `
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm font-medium text-blue-600">Question ${index + 1}/${EXTERNAL_QUESTIONS.length}</span>
+                        <span class="text-sm font-medium text-blue-600">Question ${index + 1}/${externalQuestions.length}</span>
                         <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
                             <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
                         </div>
@@ -3216,8 +3245,8 @@ function showSupport() {
             
             if (nextButton) {
                 nextButton.addEventListener('click', function() {
-                    if (externalAnswers[EXTERNAL_QUESTIONS[currentExternalQuestionIndex].id] !== undefined) {
-                        if (currentExternalQuestionIndex < EXTERNAL_QUESTIONS.length - 1) {
+                    if (externalAnswers[externalQuestions[currentExternalQuestionIndex].id] !== undefined) {
+                        if (currentExternalQuestionIndex < externalQuestions.length - 1) {
                             currentExternalQuestionIndex++;
                             displayExternalQuestion(currentExternalQuestionIndex);
                         }
@@ -3238,8 +3267,8 @@ function showSupport() {
                 prevButton.style.display = currentExternalQuestionIndex > 0 ? 'inline-flex' : 'none';
             }
 
-            const isLastQuestion = currentExternalQuestionIndex === EXTERNAL_QUESTIONS.length - 1;
-            const hasAnswer = externalAnswers[EXTERNAL_QUESTIONS[currentExternalQuestionIndex].id] !== undefined;
+            const isLastQuestion = currentExternalQuestionIndex === externalQuestions.length - 1;
+            const hasAnswer = externalAnswers[externalQuestions[currentExternalQuestionIndex].id] !== undefined;
 
             if (nextButton && finishButton) {
                 if (isLastQuestion) {
@@ -3288,7 +3317,7 @@ function showSupport() {
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 if (btn.disabled) return;
-                if (Object.keys(externalAnswers).length !== EXTERNAL_QUESTIONS.length) {
+                if (Object.keys(externalAnswers).length !== externalQuestions.length) {
                     alert('Veuillez répondre à toutes les questions avant de terminer.');
                     return;
                 }
@@ -3328,7 +3357,7 @@ function showSupport() {
             const mbtiScores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
             const enneagramScores = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
             Object.keys(externalAnswers).forEach(questionId => {
-                const question = EXTERNAL_QUESTIONS.find(q => q.id === parseInt(questionId));
+                const question = externalQuestions.find(q => q.id === parseInt(questionId));
                 const value = externalAnswers[questionId];
                 if (value === 0) {
                     return;
