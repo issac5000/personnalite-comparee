@@ -252,7 +252,7 @@ const EXTERNAL_QUESTIONS = [
       },
       {
         "text": "Il aime faire plaisir et attend une reconnaissance en retour.",
-        "functions": { "Fe": 2, },
+        "functions": { "Fe": 2 },
         "enneagram": { "2": 2, "3": 1 }
       },
       {
