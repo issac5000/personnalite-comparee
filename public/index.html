@@ -1112,12 +1112,12 @@
         </div>
     </footer>
     <script src="questions-v2.js"></script>
-      
+
    <script>
         // Configuration et données
-                // Récupère les questions externes depuis Supabase si l'utilisateur est un proche
-let questions = LANG[document.documentElement.lang || 'fr'].AUTO_QUESTIONS;
-let externalQuestions = LANG[document.documentElement.lang || 'fr'].EXTERNAL_QUESTIONS;
+        // Récupère les questions externes depuis Supabase si l'utilisateur est un proche
+let questions = [];
+let externalQuestions = [];
 
 function enrichExternalQuestions() {
     externalQuestions.forEach(q => {
@@ -1126,7 +1126,15 @@ function enrichExternalQuestions() {
         }
     });
 }
-enrichExternalQuestions();
+
+function loadQuestions() {
+    const lang = document.documentElement.lang || 'fr';
+    if (window.LANG && window.LANG[lang]) {
+        questions = window.LANG[lang].AUTO_QUESTIONS;
+        externalQuestions = window.LANG[lang].EXTERNAL_QUESTIONS;
+        enrichExternalQuestions();
+    }
+}
 // 🔐 Génére un code aléatoire
 function genererUniqueCode() {
   
@@ -1196,6 +1204,7 @@ if (window.location.href.includes("external")) {
         });
 
         function initializeApp() {
+            loadQuestions();
             setupMobileMenu();
             setupDesktopDropdowns();
             setupFAQ();
@@ -1219,10 +1228,7 @@ if (window.location.href.includes("external")) {
         }
 
         function updateQuestionsLanguage() {
-            const lang = document.documentElement.lang || 'fr';
-            questions = LANG[lang].AUTO_QUESTIONS;
-            externalQuestions = LANG[lang].EXTERNAL_QUESTIONS;
-            enrichExternalQuestions();
+            loadQuestions();
             displayQuestion(currentQuestionIndex);
             updateNavigationButtons();
             if (typeof displayExternalQuestion === 'function') {

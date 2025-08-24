@@ -2299,6 +2299,8 @@ const LANG = {
 };
 
 if (typeof window !== 'undefined') {
+  window.translations = translations;
+  window.i18n = i18n;
   window.LANG = LANG;
 }
 
