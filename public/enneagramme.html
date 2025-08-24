@@ -3165,14 +3165,14 @@ function showSupport() {
                             <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
                         </div>
                     </div>
-                    <h3 class="text-xl font-medium text-gray-900 mb-6" data-i18n="questionnaire.externe.q${question.id}.title">${question.question}</h3>
+                    <h3 class="text-xl font-medium text-gray-900 mb-6" data-i18n="questionnaire.external.q${question.id}.title">${question.question}</h3>
                     
                     <div class="space-y-4">
                         ${question.options.map((option, optionIndex) => {
                             const value = optionIndex === question.options.length - 1 ? 0 : optionIndex + 1;
                             const extraClass = optionIndex === question.options.length - 1 ? ' mt-1' : '';
                             const dataChoice = value === 0 ? ' data-choice="unknown"' : '';
-                            const dataI18n = value === 0 ? 'question.option.dontknow' : `questionnaire.externe.q${question.id}.option${optionIndex + 1}`;
+                            const dataI18n = value === 0 ? 'question.option.dontknow' : `questionnaire.external.q${question.id}.option${optionIndex + 1}`;
                             return `
                             <div class="flex items-start${extraClass}">
                                 <input id="eq${question.id}-${optionIndex}" name="external_question${question.id}" type="radio" value="${value}"${dataChoice} class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 mt-1" ${externalAnswers[question.id] === value ? 'checked' : ''}>
