@@ -2066,8 +2066,8 @@ const translations = {
       missingEvaluations: "You need to complete all evaluations to access your detailed results page. Share your unique code with your relatives so they can complete your profile and give you access to your results!"
     },
     "shareCodeAlert": "Here is your code to give to 3 relatives: ",
-    "questions.auto.1.question": "When a plan starts in a spin, what are you doing first?",
-    "questions.auto.1.option1": "I question point by point until clarifying.",
+    "questions.auto.1.question": "When a plan goes off track, what do you do first?",
+    "questions.auto.1.option1": "I question point by point until it's clear.",
     "questions.auto.1.option2": "I reframe and fix a simple and measurable plan.",
     "questions.auto.1.option3": "I take a step back to grasp the overall meaning.",
     "questions.auto.1.option4": "I test live and adjust as you go.",
