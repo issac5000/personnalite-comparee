@@ -2280,7 +2280,7 @@ const translations = {
 const i18n = {
   t(key) {
     const lang = document.documentElement.lang || 'fr';
-    return translations[lang][key] || key;
+    return key.split('.').reduce((obj, k) => obj && obj[k], translations[lang]) || key;
+
   }
 };
-
