@@ -1135,8 +1135,8 @@ const translations = {
     "questionnaire.external.q20.option1": "Alignement personnel et intégrité.",
     "questionnaire.external.q20.option2": "Soutien relationnel et fédération.",
     "questionnaire.external.q20.option3": "Capacité à délivrer et organiser.",
-    "questionnaire.external.q20.option4": "Clarté intellectuelle et précision.",
-  }
+    "questionnaire.external.q20.option4": "Clarté intellectuelle et précision."
+  },
   en: {
     siteTitle: "Compared Personality | Free MBTI-inspired & Enneagram Test",
     heroTitle: "What if you <br><span class=\"text-blue-600 font-medium\"><strong>really</strong></span> knew yourself?",
