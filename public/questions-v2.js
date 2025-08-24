@@ -271,18 +271,18 @@ const EXTERNAL_QUESTIONS = [
 
   {
     id: 7,
-    question: "Dans ses relations :",
+    question: "Dans ses relations votre proche a tendance à :",
     options: [
-      { text: "Apaise les tensions et cherche l’harmonie.", functions: { Fe: 3, Ti: -1 }, enneagram: { "9": 2, "2": 1 } },
-      { text: "Affirme son authenticité et ses ressentis.", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "6": 1 } },
-      { text: "Donne des directives claires et concrètes.", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Privilégie la précision et la logique.", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "Apaiser les tensions et chercher l’harmonie.", functions: { Fe: 3, Ti: -1 }, enneagram: { "9": 2, "2": 1 } },
+      { text: "Affirmer son authenticité et ses ressentis.", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "6": 1 } },
+      { text: "Donner des directives claires et concrètes.", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
+      { text: "Privilégier la précision et la logique.", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
     ]
   },
 
   {
     id: 8,
-    question: "Face à une nouvelle idée :",
+    question: "Face à une nouvelle idée votre proche :",
     options: [
       { text: "Cherche comment ça a été fait ailleurs.", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
       { text: "Imagine d’autres pistes à partir de là.", functions: { Ne: 3, Si: -1 }, enneagram: { "7": 2, "3": 1 } },
@@ -326,7 +326,7 @@ const EXTERNAL_QUESTIONS = [
 
   {
     id: 14,
-    question: "Style général :",
+    question: "Le style général de votre proche :",
     options: [
       { text: "Plutôt stable et régulier(ère).", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
       { text: "Plutôt aventureux(se) et curieux(se).", functions: { Ne: 3, Si: -1 }, enneagram: { "7": 2, "3": 1 } },
@@ -337,7 +337,7 @@ const EXTERNAL_QUESTIONS = [
 
   {
     id: 15,
-    question: "Dans les débats :",
+    question: "Dans les débats votre proche :",
     options: [
       { text: "Reste axé(e) résultats et décisions.", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
       { text: "Priorise la clarté conceptuelle.", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } },
@@ -348,7 +348,7 @@ const EXTERNAL_QUESTIONS = [
 
   {
     id: 18,
-    question: "Style de décision :",
+    question: "Le style style de décision de votre proche :",
     options: [
       { text: "Pragmatique, terrain d’abord.", functions: { Se: 3, Ni: -1, Te: 1 }, enneagram: { "8": 2, "3": 1 } },
       { text: "Structuré, étapes et critères.", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { "3": 2, "1": 1 } },
@@ -359,7 +359,7 @@ const EXTERNAL_QUESTIONS = [
 
   {
     id: 19,
-    question: "Dans la durée :",
+    question: "Dans la durée votre proche :",
     options: [
       { text: "Tient le cap par habitudes solides.", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
       { text: "Rafraîchit par des idées nouvelles.", functions: { Ne: 3, Si: -1 }, enneagram: { "7": 2, "3": 1 } },
