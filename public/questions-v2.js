@@ -20,7 +20,7 @@ const AUTO_QUESTIONS = [
         "text": "Je prends du recul pour saisir le sens global.",
         "i18nKey": "questionnaire.auto.q1.option3",
         "functions": { "Ni": 3, "Se": -1 },
-        "enneagram": { "5": 1, "9": 2 }
+        "enneagram": { "5": 1, "9": 2, "6": 2 }
       },
       {
         "text": "Je teste en direct et j’ajuste au fur et à mesure.",
@@ -45,13 +45,13 @@ const AUTO_QUESTIONS = [
         "text": "Je pèse l’impact humain et la cohésion du groupe.",
         "i18nKey": "questionnaire.auto.q2.option2",
         "functions": { "Fe": 3, "Ti": -1, "Ne": 1 },
-        "enneagram": { "2": 2, "9": 1 }
+        "enneagram": { "2": 2, "9": 1, "6": 1 }
       },
       {
         "text": "Je tranche selon l’efficacité et les priorités.",
         "i18nKey": "questionnaire.auto.q2.option3",
         "functions": { "Te": 3, "Fi": -1, "Si": 1 },
-        "enneagram": { "1": 1, "3": 2 }
+        "enneagram": { "1": 1, "3": 2, "5": 1 }
       },
       {
         "text": "Je vérifie la cohérence logique avant tout.",
@@ -144,13 +144,13 @@ const AUTO_QUESTIONS = [
         "text": "Je brainstorme à fond et je garde le meilleur.",
         "i18nKey": "questionnaire.auto.q5.option3",
         "functions": { "Ne": 3, "Si": -1, "Ti": 1 },
-        "enneagram": { "5": 1, "7": 2 }
+        "enneagram": { "5": 1, "7": 1 }
       },
       {
         "text": "Je passe tout de suite à l’action tangible.",
         "i18nKey": "questionnaire.auto.q5.option4",
         "functions": { "Se": 3, "Ni": -1 },
-        "enneagram": { "3": 1, "8": 2 }
+        "enneagram": { "3": 1, "8": 2, "7": 1 }
       }
     ]
   },
@@ -324,7 +324,7 @@ const AUTO_QUESTIONS = [
         "text": "Je garde mon authenticité sans surjouer.",
         "i18nKey": "questionnaire.auto.q11.option2",
         "functions": { "Fi": 3, "Te": -1 },
-        "enneagram": { "4": 2, "6": 1 }
+        "enneagram": { "4": 2, "5": 1 }
       },
       {
         "text": "Je clarifie les critères et responsabilités.",
@@ -429,7 +429,7 @@ const AUTO_QUESTIONS = [
         "text": "Je propose des alternatives créatives.",
         "i18nKey": "questionnaire.auto.q14.option4",
         "functions": { "Ne": 3, "Si": -1 },
-        "enneagram": { "3": 1, "7": 2 }
+        "enneagram": { "4": 2, "7": 1 }
       }
     ]
   },
