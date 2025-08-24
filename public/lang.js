@@ -1092,7 +1092,7 @@ const translations = {
     "questions.external.12.option2": "Cherche les mots qui rassemblent.",
     "questions.external.12.option3": "Met en avant la structure et le résultat.",
     "questions.external.12.option4": "Démontre la cohérence logique.",
-    "questions.external.13.question": "Face à l’erreur votre proche :",
+    "questions.external.13.question": "Face à l’erreur votre proche :",
     "questions.external.13.option1": "Corrige le process durablement.",
     "questions.external.13.option2": "Comprend le mécanisme de la faille.",
     "questions.external.13.option3": "Repère les patterns annonciateurs.",
