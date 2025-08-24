@@ -1,11 +1,18 @@
-function applyTranslations(lang) {
-  const selectedLang = lang || localStorage.getItem('lang') || 'fr';
-  document.documentElement.setAttribute('lang', selectedLang);
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    const translation = translations[selectedLang] && translations[selectedLang][key];
-    if (translation !== undefined) {
-      el.innerHTML = translation;
+function applyTranslations(lang = null) {
+  // si pas de langue en paramètre, on prend celle du localStorage ou FR par défaut
+  if (!lang) {
+    lang = localStorage.getItem('lang') || 'fr';
+  }
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    const value = translations[lang] ? translations[lang][key] : null;
+
+    // on écrase toujours le texte si une traduction existe
+    if (value !== undefined && value !== null) {
+      el.innerHTML = value;
+    } else {
+      console.warn(`❌ Traduction manquante pour ${key} (${lang})`);
     }
   });
 }
