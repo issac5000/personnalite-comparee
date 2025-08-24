@@ -1,222 +1,222 @@
 const AUTO_QUESTIONS = [
   {
     id: 1,
-    question: "Quand un plan part en vrille, tu fais quoi en premier ?",
+    question: "When a plan goes off track, what's your first move?",
     i18nKey: "questions.auto.1.question",
     options: [
-      { text: "Je questionne point par point jusqu’à clarifier.", i18nKey: "questions.auto.1.option1", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { "5": 2, "1": 1 } },
-      { text: "Je recadre et fixe un plan simple et mesurable.", i18nKey: "questions.auto.1.option2", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Je prends du recul pour saisir le sens global.", i18nKey: "questions.auto.1.option3", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Je teste en direct et j’ajuste au fur et à mesure.", i18nKey: "questions.auto.1.option4", functions: { Se: 3, Ni: -1, Ne: 1 }, enneagram: { "8": 2, "7": 1 } }
+      { text: "I question point by point until it's clear.", i18nKey: "questions.auto.1.option1", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { 5: 2, 1: 1 } },
+      { text: "I reframe and set a simple, measurable plan.", i18nKey: "questions.auto.1.option2", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "I step back to grasp the overall meaning.", i18nKey: "questions.auto.1.option3", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "I test live and adjust as I go.", i18nKey: "questions.auto.1.option4", functions: { Se: 3, Ni: -1, Ne: 1 }, enneagram: { 8: 2, 7: 1 } }
     ]
   },
   {
     id: 2,
-    question: "Face à une décision sensible :",
+    question: "Faced with a sensitive decision:",
     i18nKey: "questions.auto.2.question",
     options: [
-      { text: "Je reste fidèle à mes convictions, même si c’est impopulaire.", i18nKey: "questions.auto.2.option1", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "Je pèse l’impact humain et la cohésion du groupe.", i18nKey: "questions.auto.2.option2", functions: { Fe: 3, Ti: -1, Ne: 1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Je tranche selon l’efficacité et les priorités.", i18nKey: "questions.auto.2.option3", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { "3": 2, "1": 1 } },
-      { text: "Je vérifie la cohérence logique avant tout.", i18nKey: "questions.auto.2.option4", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "I stay true to my convictions, even if it's unpopular.", i18nKey: "questions.auto.2.option1", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "I weigh the human impact and group cohesion.", i18nKey: "questions.auto.2.option2", functions: { Fe: 3, Ti: -1, Ne: 1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "I decide based on efficiency and priorities.", i18nKey: "questions.auto.2.option3", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { 3: 2, 1: 1 } },
+      { text: "I check the logical consistency above all.", i18nKey: "questions.auto.2.option4", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
   {
     id: 3,
-    question: "Ta manière d’apprendre quelque chose de nouveau :",
+    question: "Your way of learning something new:",
     i18nKey: "questions.auto.3.question",
     options: [
-      { text: "Je relie les concepts à des expériences passées fiables.", i18nKey: "questions.auto.3.option1", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Je capte les signaux faibles et j’anticipe la suite.", i18nKey: "questions.auto.3.option2", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "J’explore plusieurs pistes en parallèle, par curiosité.", i18nKey: "questions.auto.3.option3", functions: { Ne: 3, Si: -1 }, enneagram: { "7": 2, "5": 1 } },
-      { text: "Je manipule concrètement pour sentir comment ça réagit.", i18nKey: "questions.auto.3.option4", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } }
+      { text: "I link concepts to reliable past experiences.", i18nKey: "questions.auto.3.option1", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "I pick up subtle cues and anticipate what's next.", i18nKey: "questions.auto.3.option2", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "I explore several avenues in parallel out of curiosity.", i18nKey: "questions.auto.3.option3", functions: { Ne: 3, Si: -1 }, enneagram: { 7: 2, 5: 1 } },
+      { text: "I handle things concretely to feel how they react.", i18nKey: "questions.auto.3.option4", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } }
     ]
   },
   {
     id: 4,
-    question: "Dans un conflit :",
+    question: "In a conflict:",
     i18nKey: "questions.auto.4.question",
     options: [
-      { text: "Je protège la paix du groupe et j’apaise.", i18nKey: "questions.auto.4.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { "9": 2, "2": 1 } },
-      { text: "Je reste droit avec mes valeurs, quitte à froisser.", i18nKey: "questions.auto.4.option2", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "1": 1 } },
-      { text: "Je pose des critères, propose une structure de sortie.", i18nKey: "questions.auto.4.option3", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { "1": 2, "3": 1 } },
-      { text: "Je clarifie les zones d’incohérence pour déminer.", i18nKey: "questions.auto.4.option4", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { "5": 2, "6": 1 } }
+      { text: "I protect group harmony and calm things down.", i18nKey: "questions.auto.4.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { 9: 2, 2: 1 } },
+      { text: "I stand by my values, even if it ruffles feathers.", i18nKey: "questions.auto.4.option2", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 1: 1 } },
+      { text: "I set criteria and propose an exit structure.", i18nKey: "questions.auto.4.option3", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { 1: 2, 3: 1 } },
+      { text: "I clarify inconsistencies to defuse tension.", i18nKey: "questions.auto.4.option4", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { 5: 2, 6: 1 } }
     ]
   },
   {
     id: 5,
-    question: "Quand tu démarres un projet :",
+    question: "When you start a project:",
     i18nKey: "questions.auto.5.question",
     options: [
-      { text: "Je liste les étapes et j’avance de façon cadrée.", i18nKey: "questions.auto.5.option1", functions: { Si: 3, Ne: -1, Te: 1 }, enneagram: { "1": 2, "6": 1 } },
-      { text: "Je visionne l’issue idéale et le chemin implicite.", i18nKey: "questions.auto.5.option2", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Je brainstorme à fond et je garde le meilleur.", i18nKey: "questions.auto.5.option3", functions: { Ne: 3, Si: -1, Ti: 1 }, enneagram: { "7": 2, "5": 1 } },
-      { text: "Je passe tout de suite à l’action tangible.", i18nKey: "questions.auto.5.option4", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "3": 1 } }
+      { text: "I list the steps and move forward in an organized way.", i18nKey: "questions.auto.5.option1", functions: { Si: 3, Ne: -1, Te: 1 }, enneagram: { 1: 2, 6: 1 } },
+      { text: "I envision the ideal outcome and the implicit path.", i18nKey: "questions.auto.5.option2", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "I brainstorm thoroughly and keep the best ideas.", i18nKey: "questions.auto.5.option3", functions: { Ne: 3, Si: -1, Ti: 1 }, enneagram: { 7: 2, 5: 1 } },
+      { text: "I jump straight into tangible action.", i18nKey: "questions.auto.5.option4", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 3: 1 } }
     ]
   },
   {
     id: 6,
-    question: "Dans un groupe :",
+    question: "In a group:",
     i18nKey: "questions.auto.6.question",
     options: [
-      { text: "Je crée de l’harmonie et je connecte les gens.", i18nKey: "questions.auto.6.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Je garde mon indépendance et mes limites internes.", i18nKey: "questions.auto.6.option2", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "J’organise pour avancer et livrer.", i18nKey: "questions.auto.6.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "J’analyse la logique de ce qui se passe.", i18nKey: "questions.auto.6.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "I create harmony and connect people.", i18nKey: "questions.auto.6.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "I maintain my independence and internal boundaries.", i18nKey: "questions.auto.6.option2", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "I organize to move forward and deliver.", i18nKey: "questions.auto.6.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "I analyze the logic of what's happening.", i18nKey: "questions.auto.6.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
   {
     id: 7,
-    question: "Sous pression courte :",
+    question: "Under short-term pressure:",
     i18nKey: "questions.auto.7.question",
     options: [
-      { text: "Je réagis vite et je tire parti du terrain.", i18nKey: "questions.auto.7.option1", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } },
-      { text: "Je simplifie et je fixe un cap clair.", i18nKey: "questions.auto.7.option2", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "1": 1 } },
-      { text: "Je cherche la ligne directrice cachée.", i18nKey: "questions.auto.7.option3", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Je m’appuie sur ce qui a déjà fait ses preuves.", i18nKey: "questions.auto.7.option4", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } }
+      { text: "I react quickly and make use of the situation.", i18nKey: "questions.auto.7.option1", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } },
+      { text: "I simplify and set a clear course.", i18nKey: "questions.auto.7.option2", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 1: 1 } },
+      { text: "I look for the hidden guiding line.", i18nKey: "questions.auto.7.option3", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "I rely on what has already proven itself.", i18nKey: "questions.auto.7.option4", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } }
     ]
   },
   {
     id: 8,
-    question: "Pour trancher un désaccord technique :",
+    question: "To settle a technical disagreement:",
     i18nKey: "questions.auto.8.question",
     options: [
-      { text: "Je teste en conditions réelles.", i18nKey: "questions.auto.8.option1", functions: { Se: 3, Ni: -1, Te: 1 }, enneagram: { "8": 2, "3": 1 } },
-      { text: "Je compare avec des standards et des précédents.", i18nKey: "questions.auto.8.option2", functions: { Si: 3, Ne: -1, Ti: 1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Je modélise le problème et j’en déduis la solution.", i18nKey: "questions.auto.8.option3", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { "5": 2, "1": 1 } },
-      { text: "Je cherche la solution qui préserve la cohésion.", i18nKey: "questions.auto.8.option4", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } }
+      { text: "I test in real conditions.", i18nKey: "questions.auto.8.option1", functions: { Se: 3, Ni: -1, Te: 1 }, enneagram: { 8: 2, 3: 1 } },
+      { text: "I compare with standards and precedents.", i18nKey: "questions.auto.8.option2", functions: { Si: 3, Ne: -1, Ti: 1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "I model the problem and deduce the solution.", i18nKey: "questions.auto.8.option3", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { 5: 2, 1: 1 } },
+      { text: "I seek the solution that preserves cohesion.", i18nKey: "questions.auto.8.option4", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } }
     ]
   },
   {
     id: 9,
-    question: "Ta relation aux règles :",
+    question: "Your relationship to rules:",
     i18nKey: "questions.auto.9.question",
     options: [
-      { text: "Je respecte si ça a du sens et de l’historique.", i18nKey: "questions.auto.9.option1", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Je les change si elles bloquent l’efficacité.", i18nKey: "questions.auto.9.option2", functions: { Te: 3, Fi: -1 }, enneagram: { "8": 2, "3": 1 } },
-      { text: "Je m’en écarte si ça heurte mes valeurs.", i18nKey: "questions.auto.9.option3", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "Je les discute si elles sont illogiques.", i18nKey: "questions.auto.9.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "I respect them if they make sense and have history.", i18nKey: "questions.auto.9.option1", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "I change them if they block efficiency.", i18nKey: "questions.auto.9.option2", functions: { Te: 3, Fi: -1 }, enneagram: { 8: 2, 3: 1 } },
+      { text: "I ignore them if they clash with my values.", i18nKey: "questions.auto.9.option3", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "I question them if they're illogical.", i18nKey: "questions.auto.9.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
   {
     id: 10,
-    question: "Quand tu te projettes :",
+    question: "When you look ahead:",
     i18nKey: "questions.auto.10.question",
     options: [
-      { text: "Je vois le fil conducteur des événements.", i18nKey: "questions.auto.10.option1", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "J’imagine plusieurs scénarios alternatifs.", i18nKey: "questions.auto.10.option2", functions: { Ne: 3, Si: -1 }, enneagram: { "7": 2, "5": 1 } },
-      { text: "Je transpose ce qui a marché hier.", i18nKey: "questions.auto.10.option3", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Je me base sur ce que je peux tester tout de suite.", i18nKey: "questions.auto.10.option4", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } }
+      { text: "I see the thread linking events.", i18nKey: "questions.auto.10.option1", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "I imagine several alternative scenarios.", i18nKey: "questions.auto.10.option2", functions: { Ne: 3, Si: -1 }, enneagram: { 7: 2, 5: 1 } },
+      { text: "I transpose what worked before.", i18nKey: "questions.auto.10.option3", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "I rely on what I can test immediately.", i18nKey: "questions.auto.10.option4", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } }
     ]
   },
   {
     id: 11,
-    question: "Vis-à-vis des autres :",
+    question: "Regarding others:",
     i18nKey: "questions.auto.11.question",
     options: [
-      { text: "Je veux qu’on se sente respectés et entendus.", i18nKey: "questions.auto.11.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Je garde mon authenticité sans surjouer.", i18nKey: "questions.auto.11.option2", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "6": 1 } },
-      { text: "Je clarifie les critères et responsabilités.", i18nKey: "questions.auto.11.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "1": 1 } },
-      { text: "Je clarifie les concepts pour éviter le flou.", i18nKey: "questions.auto.11.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "I want everyone to feel respected and heard.", i18nKey: "questions.auto.11.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "I keep my authenticity without overplaying.", i18nKey: "questions.auto.11.option2", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 6: 1 } },
+      { text: "I clarify criteria and responsibilities.", i18nKey: "questions.auto.11.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 1: 1 } },
+      { text: "I clarify concepts to avoid vagueness.", i18nKey: "questions.auto.11.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
   {
     id: 12,
-    question: "Quand tu doutes :",
+    question: "When you doubt:",
     i18nKey: "questions.auto.12.question",
     options: [
-      { text: "Je reviens aux faits et aux traces du passé.", i18nKey: "questions.auto.12.option1", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Je cherche le pattern sous-jacent.", i18nKey: "questions.auto.12.option2", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Je multiplie les pistes et je compare.", i18nKey: "questions.auto.12.option3", functions: { Ne: 3, Si: -1, Ti: 1 }, enneagram: { "7": 2, "5": 1 } },
-      { text: "Je fais un test rapide sur le terrain.", i18nKey: "questions.auto.12.option4", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } }
+      { text: "I go back to facts and traces from the past.", i18nKey: "questions.auto.12.option1", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "I look for the underlying pattern.", i18nKey: "questions.auto.12.option2", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "I multiply possibilities and compare.", i18nKey: "questions.auto.12.option3", functions: { Ne: 3, Si: -1, Ti: 1 }, enneagram: { 7: 2, 5: 1 } },
+      { text: "I do a quick field test.", i18nKey: "questions.auto.12.option4", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } }
     ]
   },
   {
     id: 13,
-    question: "Ta manière d’être efficace :",
+    question: "How you stay effective:",
     i18nKey: "questions.auto.13.question",
     options: [
-      { text: "Des critères, des jalons, du concret.", i18nKey: "questions.auto.13.option1", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { "3": 2, "1": 1 } },
-      { text: "Un modèle clair et logique.", i18nKey: "questions.auto.13.option2", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { "5": 2, "1": 1 } },
-      { text: "Des choix alignés à mes valeurs.", i18nKey: "questions.auto.13.option3", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "Des actions visibles et mesurables.", i18nKey: "questions.auto.13.option4", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "3": 1 } }
+      { text: "Criteria, milestones, something concrete.", i18nKey: "questions.auto.13.option1", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { 3: 2, 1: 1 } },
+      { text: "A clear, logical model.", i18nKey: "questions.auto.13.option2", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { 5: 2, 1: 1 } },
+      { text: "Choices aligned with my values.", i18nKey: "questions.auto.13.option3", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "Visible, measurable actions.", i18nKey: "questions.auto.13.option4", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 3: 1 } }
     ]
   },
   {
     id: 14,
-    question: "Quand quelqu’un propose une idée bancale :",
+    question: "When someone suggests a shaky idea:",
     i18nKey: "questions.auto.14.question",
     options: [
-      { text: "Je l’encadre et je reformule en plan faisable.", i18nKey: "questions.auto.14.option1", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Je questionne jusqu’à trouver la faille.", i18nKey: "questions.auto.14.option2", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } },
-      { text: "J’essaie de valoriser et d’inclure la personne.", i18nKey: "questions.auto.14.option3", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Je propose des alternatives créatives.", i18nKey: "questions.auto.14.option4", functions: { Ne: 3, Si: -1 }, enneagram: { "7": 2, "3": 1 } }
+      { text: "I frame it and reformulate it into a workable plan.", i18nKey: "questions.auto.14.option1", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "I question it until I find the flaw.", i18nKey: "questions.auto.14.option2", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } },
+      { text: "I try to value and include the person.", i18nKey: "questions.auto.14.option3", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "I propose creative alternatives.", i18nKey: "questions.auto.14.option4", functions: { Ne: 3, Si: -1 }, enneagram: { 7: 2, 3: 1 } }
     ]
   },
   {
     id: 15,
-    question: "Ta préférence au quotidien :",
+    question: "Your daily preference:",
     i18nKey: "questions.auto.15.question",
     options: [
-      { text: "Routines et repères stables.", i18nKey: "questions.auto.15.option1", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Découvertes et variations.", i18nKey: "questions.auto.15.option2", functions: { Ne: 3, Si: -1 }, enneagram: { "7": 2, "3": 1 } },
-      { text: "Vision de fond et continuité interne.", i18nKey: "questions.auto.15.option3", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Action et retour immédiat.", i18nKey: "questions.auto.15.option4", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } }
+      { text: "Routines and stable reference points.", i18nKey: "questions.auto.15.option1", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "Discoveries and variety.", i18nKey: "questions.auto.15.option2", functions: { Ne: 3, Si: -1 }, enneagram: { 7: 2, 3: 1 } },
+      { text: "Underlying vision and inner continuity.", i18nKey: "questions.auto.15.option3", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "Action and immediate feedback.", i18nKey: "questions.auto.15.option4", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } }
     ]
   },
   {
     id: 16,
-    question: "Quand tu aides :",
+    question: "When you help:",
     i18nKey: "questions.auto.16.question",
     options: [
-      { text: "Je crée du lien et je facilite les échanges.", i18nKey: "questions.auto.16.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Je respecte l’autonomie et les limites de chacun.", i18nKey: "questions.auto.16.option2", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "Je mets des outils/process utiles.", i18nKey: "questions.auto.16.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "1": 1 } },
-      { text: "Je clarifie pour que la personne comprenne seule.", i18nKey: "questions.auto.16.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "I create connection and facilitate exchanges.", i18nKey: "questions.auto.16.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "I respect each person's autonomy and boundaries.", i18nKey: "questions.auto.16.option2", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "I provide useful tools/processes.", i18nKey: "questions.auto.16.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 1: 1 } },
+      { text: "I clarify so the person can understand on their own.", i18nKey: "questions.auto.16.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
   {
     id: 17,
-    question: "Sous incertitude :",
+    question: "Under uncertainty:",
     i18nKey: "questions.auto.17.question",
     options: [
-      { text: "Je me fie aux indices profonds.", i18nKey: "questions.auto.17.option1", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Je multiplie les essais rapides.", i18nKey: "questions.auto.17.option2", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } },
-      { text: "Je crée plusieurs hypothèses concurrentes.", i18nKey: "questions.auto.17.option3", functions: { Ne: 3, Si: -1, Ti: 1 }, enneagram: { "7": 2, "5": 1 } },
-      { text: "Je reviens aux précédents et aux règles.", i18nKey: "questions.auto.17.option4", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } }
+      { text: "I rely on deep clues.", i18nKey: "questions.auto.17.option1", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "I multiply quick trials.", i18nKey: "questions.auto.17.option2", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } },
+      { text: "I create several competing hypotheses.", i18nKey: "questions.auto.17.option3", functions: { Ne: 3, Si: -1, Ti: 1 }, enneagram: { 7: 2, 5: 1 } },
+      { text: "I go back to precedents and rules.", i18nKey: "questions.auto.17.option4", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } }
     ]
   },
   {
     id: 18,
-    question: "Quand tu t’exprimes :",
+    question: "When you express yourself:",
     i18nKey: "questions.auto.18.question",
     options: [
-      { text: "Je parle de ce qui est vrai pour moi.", i18nKey: "questions.auto.18.option1", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "Je cherche les mots qui rassemblent.", i18nKey: "questions.auto.18.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Je structure et je vais droit au but.", i18nKey: "questions.auto.18.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Je précise chaque terme pour éviter le flou.", i18nKey: "questions.auto.18.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "I speak about what's true for me.", i18nKey: "questions.auto.18.option1", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "I look for words that bring people together.", i18nKey: "questions.auto.18.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "I structure and go straight to the point.", i18nKey: "questions.auto.18.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "I specify each term to avoid vagueness.", i18nKey: "questions.auto.18.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
   {
     id: 19,
-    question: "Face à une erreur :",
+    question: "When faced with a mistake:",
     i18nKey: "questions.auto.19.question",
     options: [
-      { text: "Je corrige le process pour que ça n’arrive plus.", i18nKey: "questions.auto.19.option1", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { "1": 2, "3": 1 } },
-      { text: "Je comprends le mécanisme qui a déraillé.", i18nKey: "questions.auto.19.option2", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { "5": 2, "1": 1 } },
-      { text: "Je repère les signes avant-coureurs.", i18nKey: "questions.auto.19.option3", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Je fais un test terrain pour sécuriser.", i18nKey: "questions.auto.19.option4", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } }
+      { text: "I fix the process so it doesn't happen again.", i18nKey: "questions.auto.19.option1", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { 1: 2, 3: 1 } },
+      { text: "I understand the mechanism that went off track.", i18nKey: "questions.auto.19.option2", functions: { Ti: 3, Fe: -1, Ni: 1 }, enneagram: { 5: 2, 1: 1 } },
+      { text: "I spot the warning signs.", i18nKey: "questions.auto.19.option3", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "I run a field test to secure.", i18nKey: "questions.auto.19.option4", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } }
     ]
   },
   {
     id: 20,
-    question: "Ta motivation profonde :",
+    question: "Your deep motivation:",
     i18nKey: "questions.auto.20.question",
     options: [
-      { text: "Être aligné avec qui je suis.", i18nKey: "questions.auto.20.option1", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "Élever les autres et la relation.", i18nKey: "questions.auto.20.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Transformer en résultats concrets.", i18nKey: "questions.auto.20.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Comprendre et clarifier le vrai.", i18nKey: "questions.auto.20.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "Being aligned with who I am.", i18nKey: "questions.auto.20.option1", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "Lifting others and the relationship.", i18nKey: "questions.auto.20.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "Turning things into concrete results.", i18nKey: "questions.auto.20.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "Understanding and clarifying the truth.", i18nKey: "questions.auto.20.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   }
 ];
@@ -225,193 +225,193 @@ const EXTERNAL_QUESTIONS = [
 
   {
     id: 1,
-    question: "Quand un imprévu arrive, votre proche :",
+    question: "When something unexpected happens, your relative:",
     i18nKey: "questions.external.1.question",
     options: [
-      { text: "Agit vite et ajuste en direct.", i18nKey: "questions.external.1.option1", functions: { Se: 3, Ni: -1, Te: 1 }, enneagram: { "8": 2, "7": 1 } },
-      { text: "Prend du recul pour capter le sens global.", i18nKey: "questions.external.1.option2", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Cherche un précédent et une règle applicable.", i18nKey: "questions.external.1.option3", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Déplie la logique du problème avant d’agir.", i18nKey: "questions.external.1.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "Acts quickly and adjusts on the spot.", i18nKey: "questions.external.1.option1", functions: { Se: 3, Ni: -1, Te: 1 }, enneagram: { 8: 2, 7: 1 } },
+      { text: "Steps back to grasp the overall meaning.", i18nKey: "questions.external.1.option2", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "Looks for a precedent and an applicable rule.", i18nKey: "questions.external.1.option3", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "Unfolds the logic of the problem before acting.", i18nKey: "questions.external.1.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
 
   {
     id: 2,
-    question: "Dans une discussion de groupe, il/elle :",
+    question: "In a group discussion, he/she:",
     i18nKey: "questions.external.2.question",
     options: [
-      { text: "Encourage chacun à participer et garde l’harmonie.", i18nKey: "questions.external.2.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Exprime ses idées avec authenticité, même si ça dérange.", i18nKey: "questions.external.2.option2", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "6": 1 } },
-      { text: "Recentre la discussion vers un objectif concret.", i18nKey: "questions.external.2.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Pose des questions pour clarifier la logique.", i18nKey: "questions.external.2.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "Encourages everyone to participate and keeps harmony.", i18nKey: "questions.external.2.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "Expresses ideas authentically, even if it bothers others.", i18nKey: "questions.external.2.option2", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 6: 1 } },
+      { text: "Refocuses the discussion toward a concrete goal.", i18nKey: "questions.external.2.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "Asks questions to clarify the logic.", i18nKey: "questions.external.2.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
 
   {
     id: 3,
-    question: "Son rapport aux valeurs :",
+    question: "Their relation to values:",
     i18nKey: "questions.external.3.question",
     options: [
-      { text: "Reste authentique même si c’est impopulaire.", i18nKey: "questions.external.3.option1", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "Privilégie la cohésion et le ressenti du groupe.", i18nKey: "questions.external.3.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Fait primer l’efficacité mesurable.", i18nKey: "questions.external.3.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Fait primer la justesse logique.", i18nKey: "questions.external.3.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "Stays authentic even if it's unpopular.", i18nKey: "questions.external.3.option1", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "Favors cohesion and the group's feelings.", i18nKey: "questions.external.3.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "Prioritizes measurable efficiency.", i18nKey: "questions.external.3.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "Prioritizes logical accuracy.", i18nKey: "questions.external.3.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
 
   {
     id: 4,
-    question: "Quand il/elle apprend quelque chose de nouveau :",
+    question: "When they learn something new:",
     i18nKey: "questions.external.4.question",
     options: [
-      { text: "S’appuie sur ses expériences et repères passés.", i18nKey: "questions.external.4.option1", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Expérimente rapidement pour voir ce que ça donne.", i18nKey: "questions.external.4.option2", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } },
-      { text: "Imagine des scénarios alternatifs et créatifs.", i18nKey: "questions.external.4.option3", functions: { Ne: 3, Si: -1 }, enneagram: { "7": 2, "5": 1 } },
-      { text: "Capte le sens profond sans tout expliquer.", i18nKey: "questions.external.4.option4", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } }
+      { text: "Relies on past experiences and references.", i18nKey: "questions.external.4.option1", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "Experiments quickly to see what happens.", i18nKey: "questions.external.4.option2", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } },
+      { text: "Imagines alternative and creative scenarios.", i18nKey: "questions.external.4.option3", functions: { Ne: 3, Si: -1 }, enneagram: { 7: 2, 5: 1 } },
+      { text: "Grasps the deeper meaning without explaining everything.", i18nKey: "questions.external.4.option4", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } }
     ]
   },
 
   {
     id: 5,
-    question: "Quand il/elle doit gérer un problème pratique :",
+    question: "When they have to handle a practical problem:",
     i18nKey: "questions.external.5.question",
     options: [
-      { text: "Cherche une règle ou un exemple du passé.", i18nKey: "questions.external.5.option1", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Teste une solution concrète tout de suite.", i18nKey: "questions.external.5.option2", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } },
-      { text: "Cherche une explication logique détaillée.", i18nKey: "questions.external.5.option3", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } },
-      { text: "Se demande comment garder la cohésion humaine.", i18nKey: "questions.external.5.option4", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } }
+      { text: "Looks for a rule or example from the past.", i18nKey: "questions.external.5.option1", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "Tests a concrete solution right away.", i18nKey: "questions.external.5.option2", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } },
+      { text: "Seeks a detailed logical explanation.", i18nKey: "questions.external.5.option3", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } },
+      { text: "Wonders how to maintain human cohesion.", i18nKey: "questions.external.5.option4", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } }
     ]
   },
 
   {
     id: 6,
-    question: "Quand il/elle prend des décisions rapides :",
+    question: "When they make quick decisions:",
     i18nKey: "questions.external.6.question",
     options: [
-      { text: "S’appuie sur ses intuitions globales.", i18nKey: "questions.external.6.option1", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Suit ses valeurs personnelles sans compromis.", i18nKey: "questions.external.6.option2", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "Se concentre sur l’efficacité immédiate.", i18nKey: "questions.external.6.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Teste directement sur le terrain.", i18nKey: "questions.external.6.option4", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } }
+      { text: "Relies on broad intuitions.", i18nKey: "questions.external.6.option1", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "Follows personal values without compromise.", i18nKey: "questions.external.6.option2", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "Focuses on immediate efficiency.", i18nKey: "questions.external.6.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "Tests directly in the field.", i18nKey: "questions.external.6.option4", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } }
     ]
   },
 
   {
     id: 7,
-    question: "Dans ses relations votre proche a tendance à :",
+    question: "In relationships, your relative tends to:",
     i18nKey: "questions.external.7.question",
     options: [
-      { text: "Apaiser les tensions et chercher l’harmonie.", i18nKey: "questions.external.7.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { "9": 2, "2": 1 } },
-      { text: "Affirmer son authenticité et ses ressentis.", i18nKey: "questions.external.7.option2", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "6": 1 } },
-      { text: "Donner des directives claires et concrètes.", i18nKey: "questions.external.7.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Privilégier la précision et la logique.", i18nKey: "questions.external.7.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "Ease tensions and seek harmony.", i18nKey: "questions.external.7.option1", functions: { Fe: 3, Ti: -1 }, enneagram: { 9: 2, 2: 1 } },
+      { text: "Assert their authenticity and feelings.", i18nKey: "questions.external.7.option2", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 6: 1 } },
+      { text: "Give clear, concrete directions.", i18nKey: "questions.external.7.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "Favor precision and logic.", i18nKey: "questions.external.7.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
 
   {
     id: 8,
-    question: "Face à une nouvelle idée votre proche :",
+    question: "When faced with a new idea, your relative:",
     i18nKey: "questions.external.8.question",
     options: [
-      { text: "Cherche comment ça a été fait ailleurs.", i18nKey: "questions.external.8.option1", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Imagine d’autres pistes à partir de là.", i18nKey: "questions.external.8.option2", functions: { Ne: 3, Si: -1 }, enneagram: { "7": 2, "3": 1 } },
-      { text: "Capte directement où ça peut mener.", i18nKey: "questions.external.8.option3", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Teste concrètement et observe le résultat.", i18nKey: "questions.external.8.option4", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } }
+      { text: "Looks at how it's been done elsewhere.", i18nKey: "questions.external.8.option1", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "Imagines other avenues from there.", i18nKey: "questions.external.8.option2", functions: { Ne: 3, Si: -1 }, enneagram: { 7: 2, 3: 1 } },
+      { text: "Immediately senses where it can lead.", i18nKey: "questions.external.8.option3", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "Tests it concretely and observes the result.", i18nKey: "questions.external.8.option4", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } }
     ]
   },
 
   {
     id: 9,
-    question: "Quand il/elle exprime une opinion :",
+    question: "When he/she expresses an opinion:",
     i18nKey: "questions.external.9.question",
     options: [
-      { text: "Met en avant sa vérité personnelle.", i18nKey: "questions.external.9.option1", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "Adapte son discours pour rassembler.", i18nKey: "questions.external.9.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Structure en étapes logiques et mesurables.", i18nKey: "questions.external.9.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Défend une cohérence intellectuelle.", i18nKey: "questions.external.9.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "Highlights personal truth.", i18nKey: "questions.external.9.option1", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "Adapts speech to bring people together.", i18nKey: "questions.external.9.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "Structures it in logical, measurable steps.", i18nKey: "questions.external.9.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "Defends intellectual coherence.", i18nKey: "questions.external.9.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
 
   {
     id: 10,
-    question: "Son rapport aux règles :",
+    question: "Their relationship to rules:",
     i18nKey: "questions.external.10.question",
     options: [
-      { text: "S’appuie dessus pour sécuriser.", i18nKey: "questions.external.10.option1", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Les change si elles freinent le résultat.", i18nKey: "questions.external.10.option2", functions: { Te: 3, Fi: -1 }, enneagram: { "8": 2, "3": 1 } },
-      { text: "Les discute si elles sont illogiques.", i18nKey: "questions.external.10.option3", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } },
-      { text: "S’en écarte si ça heurte ses valeurs.", i18nKey: "questions.external.10.option4", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } }
+      { text: "Relies on them for security.", i18nKey: "questions.external.10.option1", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "Changes them if they hinder results.", i18nKey: "questions.external.10.option2", functions: { Te: 3, Fi: -1 }, enneagram: { 8: 2, 3: 1 } },
+      { text: "Challenges them if they're illogical.", i18nKey: "questions.external.10.option3", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } },
+      { text: "Strays from them if they clash with personal values.", i18nKey: "questions.external.10.option4", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } }
     ]
   },
 
   {
     id: 12,
-    question: "Quand il/elle défend un point :",
+    question: "When he/she defends a point:",
     i18nKey: "questions.external.12.question",
     options: [
-      { text: "S’aligne à ses valeurs internes.", i18nKey: "questions.external.12.option1", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "Cherche les mots qui rassemblent.", i18nKey: "questions.external.12.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Met en avant la structure et le résultat.", i18nKey: "questions.external.12.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Démontre la cohérence logique.", i18nKey: "questions.external.12.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "Aligns with internal values.", i18nKey: "questions.external.12.option1", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "Seeks words that bring people together.", i18nKey: "questions.external.12.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "Highlights structure and outcome.", i18nKey: "questions.external.12.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "Demonstrates logical coherence.", i18nKey: "questions.external.12.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
 
   {
     id: 14,
-    question: "Le style général de votre proche :",
+    question: "Your relative's general style:",
     i18nKey: "questions.external.14.question",
     options: [
-      { text: "Plutôt stable et régulier(ère).", i18nKey: "questions.external.14.option1", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Plutôt aventureux(se) et curieux(se).", i18nKey: "questions.external.14.option2", functions: { Ne: 3, Si: -1 }, enneagram: { "7": 2, "3": 1 } },
-      { text: "Plutôt visionnaire et synthétique.", i18nKey: "questions.external.14.option3", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Plutôt pragmatique et physique.", i18nKey: "questions.external.14.option4", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } }
+      { text: "Rather stable and consistent.", i18nKey: "questions.external.14.option1", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "Rather adventurous and curious.", i18nKey: "questions.external.14.option2", functions: { Ne: 3, Si: -1 }, enneagram: { 7: 2, 3: 1 } },
+      { text: "Rather visionary and synthetic.", i18nKey: "questions.external.14.option3", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "Rather pragmatic and hands-on.", i18nKey: "questions.external.14.option4", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } }
     ]
   },
 
   {
     id: 15,
-    question: "Dans les débats votre proche :",
+    question: "In debates, your relative:",
     i18nKey: "questions.external.15.question",
     options: [
-      { text: "Reste axé(e) résultats et décisions.", i18nKey: "questions.external.15.option1", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Priorise la clarté conceptuelle.", i18nKey: "questions.external.15.option2", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } },
-      { text: "Cherche la cohésion et la paix.", i18nKey: "questions.external.15.option3", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Affirme son authenticité tranquille.", i18nKey: "questions.external.15.option4", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } }
+      { text: "Stays focused on results and decisions.", i18nKey: "questions.external.15.option1", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "Prioritizes conceptual clarity.", i18nKey: "questions.external.15.option2", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } },
+      { text: "Seeks cohesion and peace.", i18nKey: "questions.external.15.option3", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "Asserts a calm authenticity.", i18nKey: "questions.external.15.option4", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } }
     ]
   },
 
   {
     id: 18,
-    question: "Le style style de décision de votre proche :",
+    question: "Your relative's decision-making style:",
     i18nKey: "questions.external.18.question",
     options: [
-      { text: "Pragmatique, terrain d’abord.", i18nKey: "questions.external.18.option1", functions: { Se: 3, Ni: -1, Te: 1 }, enneagram: { "8": 2, "3": 1 } },
-      { text: "Structuré, étapes et critères.", i18nKey: "questions.external.18.option2", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { "3": 2, "1": 1 } },
-      { text: "Intuitif, capture la direction implicite.", i18nKey: "questions.external.18.option3", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Logique, démontre avant de trancher.", i18nKey: "questions.external.18.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "Pragmatic, hands-on first.", i18nKey: "questions.external.18.option1", functions: { Se: 3, Ni: -1, Te: 1 }, enneagram: { 8: 2, 3: 1 } },
+      { text: "Structured, with steps and criteria.", i18nKey: "questions.external.18.option2", functions: { Te: 3, Fi: -1, Si: 1 }, enneagram: { 3: 2, 1: 1 } },
+      { text: "Intuitive, captures the implicit direction.", i18nKey: "questions.external.18.option3", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "Logical, demonstrates before deciding.", i18nKey: "questions.external.18.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   },
 
   {
     id: 19,
-    question: "Dans la durée votre proche :",
+    question: "Over time, your relative:",
     i18nKey: "questions.external.19.question",
     options: [
-      { text: "Tient le cap par habitudes solides.", i18nKey: "questions.external.19.option1", functions: { Si: 3, Ne: -1 }, enneagram: { "6": 2, "1": 1 } },
-      { text: "Rafraîchit par des idées nouvelles.", i18nKey: "questions.external.19.option2", functions: { Ne: 3, Si: -1 }, enneagram: { "7": 2, "3": 1 } },
-      { text: "Garde la cohérence de fond.", i18nKey: "questions.external.19.option3", functions: { Ni: 3, Se: -1 }, enneagram: { "5": 1, "9": 2 } },
-      { text: "Assure par des actions tangibles.", i18nKey: "questions.external.19.option4", functions: { Se: 3, Ni: -1 }, enneagram: { "8": 2, "7": 1 } }
+      { text: "Stays the course through solid habits.", i18nKey: "questions.external.19.option1", functions: { Si: 3, Ne: -1 }, enneagram: { 6: 2, 1: 1 } },
+      { text: "Refreshes things with new ideas.", i18nKey: "questions.external.19.option2", functions: { Ne: 3, Si: -1 }, enneagram: { 7: 2, 3: 1 } },
+      { text: "Maintains underlying coherence.", i18nKey: "questions.external.19.option3", functions: { Ni: 3, Se: -1 }, enneagram: { 5: 1, 9: 2 } },
+      { text: "Secures things through tangible actions.", i18nKey: "questions.external.19.option4", functions: { Se: 3, Ni: -1 }, enneagram: { 8: 2, 7: 1 } }
     ]
   },
 
   {
     id: 20,
-    question: "Ce qu’on retient le plus de lui/elle :",
+    question: "What people remember most about them:",
     i18nKey: "questions.external.20.question",
     options: [
-      { text: "Alignement personnel et intégrité.", i18nKey: "questions.external.20.option1", functions: { Fi: 3, Te: -1 }, enneagram: { "4": 2, "9": 1 } },
-      { text: "Soutien relationnel et fédération.", i18nKey: "questions.external.20.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { "2": 2, "9": 1 } },
-      { text: "Capacité à délivrer et organiser.", i18nKey: "questions.external.20.option3", functions: { Te: 3, Fi: -1 }, enneagram: { "3": 2, "8": 1 } },
-      { text: "Clarté intellectuelle et précision.", i18nKey: "questions.external.20.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { "5": 2, "1": 1 } }
+      { text: "Personal alignment and integrity.", i18nKey: "questions.external.20.option1", functions: { Fi: 3, Te: -1 }, enneagram: { 4: 2, 9: 1 } },
+      { text: "Relational support and team-building.", i18nKey: "questions.external.20.option2", functions: { Fe: 3, Ti: -1 }, enneagram: { 2: 2, 9: 1 } },
+      { text: "Ability to deliver and organize.", i18nKey: "questions.external.20.option3", functions: { Te: 3, Fi: -1 }, enneagram: { 3: 2, 8: 1 } },
+      { text: "Intellectual clarity and precision.", i18nKey: "questions.external.20.option4", functions: { Ti: 3, Fe: -1 }, enneagram: { 5: 2, 1: 1 } }
     ]
   }
 ];
