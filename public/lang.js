@@ -2273,7 +2273,7 @@ const translations = {
     "questionnaire.external.q20.option1": "Personal alignment and integrity.",
     "questionnaire.external.q20.option2": "Relationship support and federation.",
     "questionnaire.external.q20.option3": "Ability to deliver and organize.",
-    "questionnaire.external.q20.option4": "Intellectual clarity and precision.",
+    "questionnaire.external.q20.option4": "Intellectual clarity and precision."
   }
 };
 
