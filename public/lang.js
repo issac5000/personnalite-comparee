@@ -2277,14 +2277,6 @@ const translations = {
   }
 };
 
-// Expose translations for browser and Node
-if (typeof window !== "undefined") {
-  window.translations = translations;
-}
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = translations;
-}
-
 const i18n = {
   t(key) {
     const lang = document.documentElement.lang || 'fr';
