@@ -3932,54 +3932,57 @@ window.showSupport = showSupport;
                             <p class="text-sm text-gray-500"><span data-i18n="results.details.code">Code:</span> <span class="font-mono font-bold">${code}</span></p>
                         </div>
 
-                        <!-- Résultats MBTI et Ennéagramme -->
-        <div class="grid md:grid-cols-2 gap-6 mb-6">
-          <div class="bg-blue-50 rounded-lg p-4">
-            <h4 class="font-semibold text-blue-900 mb-2" data-i18n="results.details.mbtiTitle">Type MBTI</h4>
-            <div class="text-2xl font-bold text-blue-600 mb-2">${profile.results.mbti}</div>
-            <div class="mt-2">
-              ${
-                profile.results.mbtiCertainty != null
-                  ? `<p class="mb-1" data-i18n="results.details.certainty">Certitude</p>
-                     <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
-                       <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-blue-500 transition-all duration-1000" data-width="${profile.results.mbtiCertainty}" style="width:0"></div>
-                       <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.mbtiCertainty}%</span>
-                     </div>`
-                  : `<p data-i18n="results.details.pending">Certitude : Données en cours...</p>`
-              }
-            </div>
-          </div>
-          <div class="bg-purple-50 rounded-lg p-4">
-            <h4 class="font-semibold text-purple-900 mb-2" data-i18n="results.details.enneagramTitle">Ennéagramme</h4>
-            <div class="text-2xl font-bold text-purple-600 mb-2">${profile.results.enneagram}</div>
-            <div class="mt-2">
-              ${
-                profile.results.enneagramCertainty != null
-                  ? `<p class="mb-1" data-i18n="results.details.certainty">Certitude</p>
-                     <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
-                       <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-purple-500 transition-all duration-1000" data-width="${profile.results.enneagramCertainty}" style="width:0"></div>
-                       <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.enneagramCertainty}%</span>
-                     </div>`
-                  : `<p data-i18n="results.details.pending">Certitude : Données en cours...</p>`
-              }
-            </div>
-          </div>
-        </div>
+                       <!-- Résultats MBTI et Ennéagramme -->
+<div class="grid md:grid-cols-2 gap-6 mb-6">
+  <!-- MBTI -->
+  <div class="bg-blue-50 rounded-2xl p-6 shadow-sm">
+    <h4 class="font-semibold text-blue-900 mb-2" data-i18n="results.details.mbtiTitle">Type MBTI</h4>
+    <div class="text-2xl font-bold text-blue-600 mb-2">${profile.results.mbti}</div>
+    <div class="mt-2">
+      ${
+        profile.results.mbtiCertainty != null
+          ? `<p class="mb-1" data-i18n="results.details.certainty">Certitude</p>
+             <div class="relative w-full bg-gray-200 h-6 rounded-full overflow-hidden" data-aos="fade-right">
+               <div class="certainty-bar absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-blue-300 via-blue-400 to-blue-500 transition-all duration-1000" data-width="${profile.results.mbtiCertainty}" style="width:0"></div>
+               <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.mbtiCertainty}%</span>
+             </div>`
+          : `<p data-i18n="results.details.pending">Certitude : Données en cours...</p>`
+      }
+    </div>
+  </div>
 
-        <!-- Certitude globale -->
-        <div class="bg-gray-50 rounded-lg p-4 mb-6">
-          ${
-            profile.results.overallCertainty != null
-              ? `<p class="mb-1" data-i18n="results.details.overallCertainty">Certitude globale</p>
-                 <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
-                   <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-green-500 transition-all duration-1000" data-width="${profile.results.overallCertainty}" style="width:0"></div>
-                   <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.overallCertainty}%</span>
-                 </div>`
-              : `<p data-i18n="results.details.pending">Certitude : Données en cours...</p>`
-          }
-          <p class="text-sm text-gray-600 mt-2" data-i18n="results.details.basedOnRelatives">Basé sur les évaluations de vos proches</p>
-          ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2" data-i18n="results.details.increaseCertainty">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
-        </div>
+  <!-- Ennéagramme -->
+  <div class="bg-purple-50 rounded-2xl p-6 shadow-sm">
+    <h4 class="font-semibold text-purple-900 mb-2" data-i18n="results.details.enneagramTitle">Ennéagramme</h4>
+    <div class="text-2xl font-bold text-purple-600 mb-2">${profile.results.enneagram}</div>
+    <div class="mt-2">
+      ${
+        profile.results.enneagramCertainty != null
+          ? `<p class="mb-1" data-i18n="results.details.certainty">Certitude</p>
+             <div class="relative w-full bg-gray-200 h-6 rounded-full overflow-hidden" data-aos="fade-right">
+               <div class="certainty-bar absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-purple-300 via-purple-400 to-purple-500 transition-all duration-1000" data-width="${profile.results.enneagramCertainty}" style="width:0"></div>
+               <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.enneagramCertainty}%</span>
+             </div>`
+          : `<p data-i18n="results.details.pending">Certitude : Données en cours...</p>`
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Certitude globale -->
+<div class="bg-gray-50 rounded-2xl p-6 shadow-sm mb-6">
+  ${
+    profile.results.overallCertainty != null
+      ? `<p class="mb-1" data-i18n="results.details.overallCertainty">Certitude globale</p>
+         <div class="relative w-full bg-gray-200 h-6 rounded-full overflow-hidden" data-aos="fade-right">
+           <div class="certainty-bar absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-green-300 via-green-400 to-green-500 transition-all duration-1000" data-width="${profile.results.overallCertainty}" style="width:0"></div>
+           <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.overallCertainty}%</span>
+         </div>`
+      : `<p data-i18n="results.details.pending">Certitude : Données en cours...</p>`
+  }
+  <p class="text-sm text-gray-600 mt-2" data-i18n="results.details.basedOnRelatives">Basé sur les évaluations de vos proches</p>
+  ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2" data-i18n="results.details.increaseCertainty">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
+</div>
 
 
         <!-- Graphiques MBTI & Ennéagramme -->
