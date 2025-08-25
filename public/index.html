@@ -4103,6 +4103,20 @@ window.showSupport = showSupport;
     const titleEl = resultsModal.querySelector('[data-i18n="results.details.title"]');
     if (titleEl) { titleEl.innerHTML = titleEl.innerHTML.replace('{name}', profile.name); }
 
+    // Texte carrière : MBTI > Ennéagramme > fallback
+    const careerEl = document.getElementById("careerProfileText");
+    if (careerEl && translations[lang] && translations[lang].results && translations[lang].results.career) {
+        const mbti = (profile.results.mbti || "").toUpperCase();
+        const ennea = String(profile.results.enneagram || "");
+        const careerText =
+            (translations[lang].results.career.mbti &&
+             translations[lang].results.career.mbti[mbti]) ||
+            (translations[lang].results.career.ennea &&
+             translations[lang].results.career.ennea[ennea]) ||
+            translations[lang].results.career.fallback;
+        careerEl.innerText = careerText;
+    }
+
     const resultType = profile.results.mbti;
     const mirrorType = OPPOSITE_TYPES[resultType] || "—";
     const mirrorEl = document.getElementById("mirrorProfileText");
