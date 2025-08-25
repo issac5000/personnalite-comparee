@@ -4002,24 +4002,41 @@ window.showSupport = showSupport;
                             </div>
                         </div>
 
-<div class="mt-8">
-  <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-    <span class="material-icons text-blue-500">work_outline</span>
-    <span data-i18n="results.career.title">Carrière & Passions probables</span>
-  </h3>
-  <p class="mt-2 text-gray-700" data-i18n="results.career.text">
-    Les personnes avec ce profil s’épanouissent souvent dans des contextes où leurs qualités naturelles peuvent s’exprimer. 
-    Elles aiment travailler dans des environnements qui valorisent leur manière unique de voir et d’agir.
-  </p>
-</div>
+<div class="mt-10 bg-white shadow-lg rounded-2xl border border-gray-200 overflow-hidden">
+  <!-- En-tête -->
+  <div class="px-6 py-4 border-b bg-gradient-to-r from-blue-50 to-purple-50">
+    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+      <span class="material-icons text-blue-600">insights</span>
+      <span data-i18n="results.detailed.title">Résultats complémentaires</span>
+    </h2>
+  </div>
 
-<div class="mt-8">
-  <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-    <span class="material-icons text-purple-500">mirror</span>
-    <span data-i18n="results.mirror.title">Profil miroir (opposé)</span>
-  </h3>
-  <div class="mt-2 p-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-700">
-    <p id="mirrorProfileText" data-i18n="results.mirror.text"></p>
+  <!-- Contenu -->
+  <div class="p-6 space-y-8">
+
+    <!-- Carrière & Passions -->
+    <div>
+      <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+        <span class="material-icons text-blue-500">work_outline</span>
+        <span data-i18n="results.career.title">Carrière & Passions probables</span>
+      </h3>
+      <p class="mt-2 text-gray-700 leading-relaxed" data-i18n="results.career.text">
+        Les personnes avec ce profil s’épanouissent souvent dans des contextes où leurs qualités naturelles peuvent s’exprimer. 
+        Elles aiment travailler dans des environnements qui valorisent leur manière unique de voir et d’agir.
+      </p>
+    </div>
+
+    <!-- Profil miroir -->
+    <div>
+      <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+        <span class="material-icons text-purple-500">mirror</span>
+        <span data-i18n="results.mirror.title">Profil miroir (opposé)</span>
+      </h3>
+      <div class="mt-2 p-4 rounded-xl border border-gray-200 bg-gray-50">
+        <p id="mirrorProfileText" class="text-gray-700 leading-relaxed" data-i18n="results.mirror.text"></p>
+      </div>
+    </div>
+
   </div>
 </div>
 
