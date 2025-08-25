@@ -68,43 +68,7 @@
             font-size: 0.875rem;
             font-weight: 500;
         }
-
-        #autoEvalCard {
-            position: relative;
-            overflow: hidden;
-        }
-        #autoEvalCard .water-fill {
-            position: absolute;
-            inset: 0;
-            bottom: 0;
-            height: 100%;
-            transform: translateY(100%);
-            transition: transform 600ms cubic-bezier(.25,.8,.25,1);
-            background: linear-gradient(to top, rgba(59,130,246,.35), rgba(59,130,246,.15));
-        }
-        #autoEvalCard .water-fill svg {
-            position: absolute;
-            bottom: 0;
-            width: 200%;
-            height: 100%;
-        }
-        #autoEvalCard .wave {
-            fill: rgba(59,130,246,0.5);
-            animation: wave-drift 8s linear infinite;
-        }
-        #autoEvalCard .wave2 {
-            fill: rgba(59,130,246,0.6);
-            animation-duration: 12s;
-        }
-        @keyframes wave-drift {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            #autoEvalCard .wave { animation: none; }
-            #autoEvalCard .water-fill { transition-duration: 200ms; }
-        }
-
+        
         /* Styles pour les modales */
         .modal {
             display: none;
@@ -729,36 +693,26 @@
                 Répondez à ces 20 questions pour commencer votre analyse
             </p>
         </div>
-        <!-- Encadré parent -->
-        <div id="autoEvalCard" class="mt-12 mb-4 rounded-[2rem] shadow-sm border border-gray-200 bg-gray-50 relative overflow-hidden">
-            <div aria-hidden="true" class="absolute inset-0 pointer-events-none">
-                <div class="water-fill">
-                    <svg viewBox="0 0 1200 100" preserveAspectRatio="none" class="absolute bottom-0 w-[200%] h-full">
-                        <path class="wave wave1" d="M0 30 Q 60 0 120 30 T 240 30 T 360 30 T 480 30 T 600 30 T 720 30 T 840 30 T 960 30 T 1080 30 T 1200 30 V100 H0 Z" />
-                        <path class="wave wave2" d="M0 30 Q 60 0 120 30 T 240 30 T 360 30 T 480 30 T 600 30 T 720 30 T 840 30 T 960 30 T 1080 30 T 1200 30 V100 H0 Z" />
-                    </svg>
-                </div>
-            </div>
-            <span data-water-percent class="absolute top-2 right-4 text-xs text-gray-500" aria-live="polite"></span>
-            <div class="px-6 py-8 relative z-10">
-                <!-- Container questions -->
-                <div id="questions-container" class="space-y-6">
-                    <!-- Les questions dynamiques viendront ici -->
-                    <!-- IMPORTANT : retirer 'shadow', 'border', 'rounded' sur chaque question individuelle -->
-                </div>
 
-                <!-- Navigation boutons -->
-                <div class="mt-8 flex justify-center">
-                    <button id="prev-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
-                        <i class="fas fa-arrow-left mr-2"></i> <span data-i18n="prevQuestion">Question précédente</span>
-                    </button>
-                    <button id="next-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
-                        <span data-i18n="nextQuestion">Question suivante</span> <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
-                    <button id="finish-test" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
-                        <span data-i18n="finishTest">Terminer le test</span> <i class="fas fa-check ml-2"></i>
-                    </button>
-                </div>
+        <!-- Encadré parent -->
+        <div class="mt-12 mb-4 rounded-[2rem] shadow-sm border border-gray-200 px-6 py-8 bg-gray-50">
+            <!-- Container questions -->
+            <div id="questions-container" class="space-y-6">
+                <!-- Les questions dynamiques viendront ici -->
+                <!-- IMPORTANT : retirer 'shadow', 'border', 'rounded' sur chaque question individuelle -->
+            </div>
+
+            <!-- Navigation boutons -->
+<div class="mt-8 flex justify-center">
+                <button id="prev-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
+                    <i class="fas fa-arrow-left mr-2"></i> <span data-i18n="prevQuestion">Question précédente</span>
+                </button>
+                <button id="next-question" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+                    <span data-i18n="nextQuestion">Question suivante</span> <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="finish-test" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" style="display: none;">
+                    <span data-i18n="finishTest">Terminer le test</span> <i class="fas fa-check ml-2"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -1158,7 +1112,6 @@
         </div>
     </footer>
     <script src="questions-v2.js"></script>
-    <script src="waterProgress.js"></script>
       
    <script>
         // Configuration et données
@@ -1238,9 +1191,7 @@ if (window.location.href.includes("external")) {
             setupSmoothScrolling();
             setupProgressBars();
             setupEvaluationForm();
-            initWaterFill();
             loadFirstQuestion();
-            setWaterProgress(computeProgress(currentQuestionIndex, Object.keys(answers).length));
             initCountUp();
             updatePlaceholders();
         }
@@ -1489,12 +1440,10 @@ function displayQuestion(index) {
                     answers[question.id] = parseInt(this.value);
                     saveProgress();
                     updateNavigationButtons();
-                    setWaterProgress(computeProgress(currentQuestionIndex, Object.keys(answers).length));
                 });
             });
-
+            
             updateNavigationButtons();
-            setWaterProgress(computeProgress(currentQuestionIndex, Object.keys(answers).length));
         }
 
         // Configuration de la navigation entre questions
