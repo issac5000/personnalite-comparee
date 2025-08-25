@@ -935,9 +935,45 @@ const translations = {
     "results.detailed.title": "Résultats complémentaires",
 
     "results.career.title": "Carrière & Passions probables",
-    "results.career.text": "Les personnes avec ce profil s’épanouissent souvent dans des contextes où leurs qualités naturelles peuvent s’exprimer. Elles aiment travailler dans des environnements qui valorisent leur manière unique de voir et d’agir.",
+    "results.career.text": "Ce profil aime explorer des environnements variés et s’épanouit dans des contextes flexibles.",
     "results.mirror.title": "Profil miroir (opposé)",
     "results.mirror.text": "Ton profil miroir est {mirror}. Il représente une approche presque inverse de la tienne.",
+
+    results: {
+      career: {
+        title: "Carrière & Passions probables",
+        fallback: "Ce profil aime explorer des environnements variés et s’épanouit dans des contextes flexibles.",
+        mbti: {
+          "ISTJ": "Rigoureux et fiables, ils s’épanouissent dans des environnements structurés : gestion, finance, droit, administration.",
+          "ISFJ": "Protecteurs et attentionnés, ils trouvent leur place dans les métiers du soin, de l’enseignement ou de l’assistance sociale.",
+          "INFJ": "Visionnaires et profonds, ils aiment la psychologie, le conseil, l’écriture ou les arts.",
+          "INTJ": "Stratèges et indépendants, ils excellent en recherche, entrepreneuriat, ingénierie ou innovation.",
+          "ISTP": "Pragmatiques et aventuriers, ils brillent dans les métiers techniques, artisanaux, ou liés à l’action concrète.",
+          "ISFP": "Créatifs et sensibles, ils s’épanouissent dans l’art, le design, la musique ou les métiers de terrain.",
+          "INFP": "Idéalistes et inspirés, ils aiment l’écriture, la psychologie, la pédagogie ou les ONG.",
+          "INTP": "Analystes et inventifs, ils se retrouvent dans la recherche, l’informatique, l’enseignement ou les sciences.",
+          "ESTP": "Dynamiques et spontanés, ils adorent le commerce, le sport, l’entrepreneuriat et les métiers pratiques.",
+          "ESFP": "Chaleureux et expressifs, ils excellent dans le spectacle, l’événementiel, la vente ou l’éducation.",
+          "ENFP": "Enthousiastes et créatifs, ils s’épanouissent dans le marketing, la communication, l’art ou l’entrepreneuriat.",
+          "ENTP": "Innovants et vifs d’esprit, ils adorent le business, le débat, la création de projets et les environnements compétitifs.",
+          "ESTJ": "Organisés et efficaces, ils se retrouvent dans le management, l’armée, l’administration ou la logistique.",
+          "ESFJ": "Sociables et serviables, ils brillent dans l’enseignement, les soins, la médiation ou les métiers de relation.",
+          "ENFJ": "Leaders empathiques, ils aiment la formation, la politique, la communication et les projets communautaires.",
+          "ENTJ": "Décisifs et ambitieux, ils s’épanouissent dans la direction d’entreprise, le droit, la stratégie et l’innovation."
+        },
+        ennea: {
+          "1": "Les perfectionnistes trouvent leur équilibre dans les environnements où la rigueur et l’éthique sont valorisées : droit, justice, enseignement, conseil.",
+          "2": "Les altruistes s’épanouissent dans les métiers du soin, de l’accompagnement, de la pédagogie et du social.",
+          "3": "Les performants aiment les environnements compétitifs : business, communication, sport, entrepreneuriat.",
+          "4": "Les créatifs s’expriment dans l’art, la littérature, la psychologie, la musique et tout métier d’expression personnelle.",
+          "5": "Les investigateurs prospèrent dans la recherche, l’informatique, l’enseignement, les sciences et les analyses poussées.",
+          "6": "Les loyaux trouvent leur place dans les métiers stables et sécurisés : fonction publique, armée, enseignement, structures collectives.",
+          "7": "Les épicuriens aiment les environnements dynamiques : voyage, événementiel, restauration, création de projets multiples.",
+          "8": "Les leaders s’imposent dans l’entrepreneuriat, la politique, le management et les métiers de pouvoir.",
+          "9": "Les médiateurs s’épanouissent dans les métiers calmes, relationnels et équilibrés : médiation, ressources humaines, soins, spiritualité."
+        }
+      }
+    },
 
     "question.label": "Question",
     alerts: {
@@ -2080,9 +2116,45 @@ const translations = {
     "results.detailed.title": "Complementary Results",
 
     "results.career.title": "Career & Likely Passions",
-    "results.career.text": "People with this profile often thrive in contexts where their natural qualities can be expressed. They enjoy working in environments that value their unique way of seeing and acting.",
+    "results.career.text": "This profile enjoys exploring diverse environments and thrives in flexible contexts.",
     "results.mirror.title": "Mirror Profile (opposite)",
     "results.mirror.text": "Your mirror profile is {mirror}. It represents an almost inverse approach to yours.",
+
+    results: {
+      career: {
+        title: "Career & Likely Passions",
+        fallback: "This profile enjoys exploring diverse environments and thrives in flexible contexts.",
+        mbti: {
+          "ISTJ": "Diligent and reliable, they thrive in structured environments: management, finance, law, administration.",
+          "ISFJ": "Protective and caring, they shine in healthcare, teaching, or social assistance.",
+          "INFJ": "Visionary and deep, they are drawn to psychology, counseling, writing, or the arts.",
+          "INTJ": "Strategic and independent, they excel in research, entrepreneurship, engineering, or innovation.",
+          "ISTP": "Pragmatic and adventurous, they succeed in technical trades, crafts, or hands-on professions.",
+          "ISFP": "Creative and sensitive, they thrive in art, design, music, or fieldwork.",
+          "INFP": "Idealistic and inspired, they enjoy writing, psychology, education, or NGO work.",
+          "INTP": "Analytical and inventive, they gravitate toward research, IT, teaching, or science.",
+          "ESTP": "Energetic and spontaneous, they thrive in business, sports, entrepreneurship, or practical trades.",
+          "ESFP": "Warm and expressive, they shine in entertainment, events, sales, or education.",
+          "ENFP": "Enthusiastic and creative, they flourish in marketing, communication, arts, or entrepreneurship.",
+          "ENTP": "Innovative and quick-witted, they excel in business, debate, project creation, and competitive settings.",
+          "ESTJ": "Organized and efficient, they find success in management, military, administration, or logistics.",
+          "ESFJ": "Sociable and service-oriented, they thrive in teaching, healthcare, mediation, or relational jobs.",
+          "ENFJ": "Empathetic leaders, they enjoy training, politics, communication, and community projects.",
+          "ENTJ": "Decisive and ambitious, they thrive in business leadership, law, strategy, and innovation."
+        },
+        ennea: {
+          "1": "Perfectionists thrive in environments where rigor and ethics are valued: law, justice, teaching, consulting.",
+          "2": "Helpers flourish in healthcare, support, teaching, and social work.",
+          "3": "Achievers thrive in competitive settings: business, communication, sports, entrepreneurship.",
+          "4": "Creatives express themselves in arts, literature, psychology, music, and personal expression fields.",
+          "5": "Investigators thrive in research, IT, teaching, sciences, and deep analysis.",
+          "6": "Loyalists succeed in stable, secure professions: public service, military, teaching, collective structures.",
+          "7": "Enthusiasts enjoy dynamic fields: travel, events, hospitality, and project creation.",
+          "8": "Challengers thrive in entrepreneurship, politics, management, and leadership roles.",
+          "9": "Peacemakers flourish in calm, relational, and balanced fields: mediation, HR, healthcare, spirituality."
+        }
+      }
+    },
 
     "question.label": "Question",
     alerts: {
