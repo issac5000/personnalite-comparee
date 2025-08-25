@@ -3985,30 +3985,31 @@ window.showSupport = showSupport;
 </div>
 
 
-      <!-- Graphiques MBTI & Ennéagramme -->
-<div class="grid md:grid-cols-2 gap-6 mb-6">
+     <!-- Graphiques MBTI & Ennéagramme -->
+<div class="grid md:grid-cols-2 gap-6 mb-6 w-full">
   <!-- MBTI -->
-  <div class="bg-blue-50 rounded-2xl p-6 shadow-sm border border-blue-100">
+  <div class="bg-blue-50 rounded-2xl p-4 sm:p-6 shadow-sm border border-blue-100 w-full overflow-hidden">
     <h4 class="font-semibold text-blue-900 mb-4 flex items-center gap-2">
       <span class="material-icons text-blue-500">bar_chart</span>
       <span data-i18n="results.details.mbtiDichotomies">Dichotomies MBTI</span>
     </h4>
-    <div class="bg-white rounded-xl p-4 shadow-inner">
-      <canvas id="mbtiChart" height="220"></canvas>
+    <div class="bg-white rounded-xl p-3 sm:p-4 shadow-inner w-full overflow-hidden">
+      <canvas id="mbtiChart" class="w-full h-auto" style="max-width: 100%;"></canvas>
     </div>
   </div>
 
   <!-- Ennéagramme -->
-  <div class="bg-purple-50 rounded-2xl p-6 shadow-sm border border-purple-100">
+  <div class="bg-purple-50 rounded-2xl p-4 sm:p-6 shadow-sm border border-purple-100 w-full overflow-hidden">
     <h4 class="font-semibold text-purple-900 mb-4 flex items-center gap-2">
       <span class="material-icons text-purple-500">pie_chart</span>
       <span data-i18n="results.details.enneagramTypes">Types Ennéagramme</span>
     </h4>
-    <div class="bg-white rounded-xl p-4 shadow-inner">
-      <canvas id="enneagramChart" height="220"></canvas>
+    <div class="bg-white rounded-xl p-3 sm:p-4 shadow-inner w-full overflow-hidden">
+      <canvas id="enneagramChart" class="w-full h-auto" style="max-width: 100%;"></canvas>
     </div>
   </div>
 </div>
+
 
 <!-- Résumé IA -->
 <div id="ai-profile-summary" class="mt-6 mb-8 bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
