@@ -934,8 +934,6 @@ const translations = {
 
     "results.detailed.title": "Résultats complémentaires",
 
-    "results.career.title": "Carrière & Passions probables",
-    "results.career.text": "Ce profil aime explorer des environnements variés et s’épanouit dans des contextes flexibles.",
     "results.mirror.title": "Profil miroir (opposé)",
     "results.mirror.text": "Ton profil miroir est {mirror}. Il représente une approche presque inverse de la tienne.",
 
@@ -2115,8 +2113,6 @@ const translations = {
 
     "results.detailed.title": "Complementary Results",
 
-    "results.career.title": "Career & Likely Passions",
-    "results.career.text": "This profile enjoys exploring diverse environments and thrives in flexible contexts.",
     "results.mirror.title": "Mirror Profile (opposite)",
     "results.mirror.text": "Your mirror profile is {mirror}. It represents an almost inverse approach to yours.",
 

@@ -1989,7 +1989,8 @@ const uniqueCode = genererUniqueCode();
 }
 
 function displayResults(results) {
-    const resultsHTML = generateResultsHTML(results);
+    const finalResults = results;
+    const resultsHTML = generateResultsHTML(finalResults);
     
     const resultsSection = document.createElement('div');
     resultsSection.className = 'bg-blue-50 py-16 px-4 sm:px-6 lg:px-8';
@@ -2002,14 +2003,19 @@ function displayResults(results) {
 
         applyTranslations();
         const lang = document.documentElement.lang || 'fr';
-        const mbti = results.mbtiType;
-        const ennea = results.enneagramType;
+        const mbti = finalResults.mbtiType;
+        const ennea = finalResults.enneagramType;
+
         let careerText =
-          translations[lang]["results"]["career"]["mbti"][mbti] ||
-          translations[lang]["results"]["career"]["ennea"][ennea] ||
+          (translations[lang]["results"]["career"]["mbti"] &&
+           translations[lang]["results"]["career"]["mbti"][mbti]) ||
+
+          (translations[lang]["results"]["career"]["ennea"] &&
+           translations[lang]["results"]["career"]["ennea"][ennea]) ||
+
           translations[lang]["results"]["career"]["fallback"];
-        const careerEl = document.querySelector('[data-i18n="results.career.text"]');
-        if (careerEl) careerEl.innerText = careerText;
+
+        document.querySelector('[data-i18n="results.career.text"]').innerText = careerText;
 
         setTimeout(() => {
             resultsSection.scrollIntoView({ behavior: 'smooth' });
