@@ -2001,6 +2001,15 @@ function displayResults(results) {
         initCountUp(resultsSection);
 
         applyTranslations();
+        const lang = document.documentElement.lang || 'fr';
+        const mbti = results.mbtiType;
+        const ennea = results.enneagramType;
+        let careerText =
+          translations[lang]["results"]["career"]["mbti"][mbti] ||
+          translations[lang]["results"]["career"]["ennea"][ennea] ||
+          translations[lang]["results"]["career"]["fallback"];
+        const careerEl = document.querySelector('[data-i18n="results.career.text"]');
+        if (careerEl) careerEl.innerText = careerText;
 
         setTimeout(() => {
             resultsSection.scrollIntoView({ behavior: 'smooth' });
