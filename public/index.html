@@ -18,6 +18,7 @@
     <link rel="icon" type="image/jpeg" href="/flavicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -3875,6 +3876,13 @@ window.showSupport = showSupport;
             displayDetailedResults(finalProfile, userCode);
         }
 
+        const OPPOSITE_TYPES = {
+            ISTJ: "ENFP", ISFJ: "ENTP", INFJ: "ESTP", INTJ: "ESFP",
+            ISTP: "ENFJ", ISFP: "ENTJ", INFP: "ESTJ", INTP: "ESFJ",
+            ESTP: "INFJ", ESFP: "INTJ", ENFP: "ISTJ", ENTP: "ISFJ",
+            ESTJ: "INFP", ESFJ: "INTP", ENFJ: "ISTP", ENTJ: "ISFP"
+        };
+
         function displayDetailedResults(profile, code) {
             const lang = localStorage.getItem('lang') || 'fr';
             const coherenceLabel = translations[lang]['results.details.coherence.label'];
@@ -3994,6 +4002,27 @@ window.showSupport = showSupport;
                             </div>
                         </div>
 
+<div class="mt-8">
+  <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+    <span class="material-icons text-blue-500">work_outline</span>
+    <span data-i18n="results.career.title">Carrière & Passions probables</span>
+  </h3>
+  <p class="mt-2 text-gray-700" data-i18n="results.career.text">
+    Les personnes avec ce profil s’épanouissent souvent dans des contextes où leurs qualités naturelles peuvent s’exprimer. 
+    Elles aiment travailler dans des environnements qui valorisent leur manière unique de voir et d’agir.
+  </p>
+</div>
+
+<div class="mt-8">
+  <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+    <span class="material-icons text-purple-500">mirror</span>
+    <span data-i18n="results.mirror.title">Profil miroir (opposé)</span>
+  </h3>
+  <div class="mt-2 p-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-700">
+    <p id="mirrorProfileText" data-i18n="results.mirror.text"></p>
+  </div>
+</div>
+
 <div class="mt-8 mb-6 p-4 rounded-lg bg-gray-100 border border-gray-300 text-xs text-gray-700 leading-relaxed">
   <p class="mb-2"><strong data-i18n="results.details.coherence.title"> Cohérence</strong> : <span data-i18n="results.details.coherence.desc">détermine dans quelle mesure les réponses d’un proche sont logiquement stables.</span></p>
   <ul class="list-disc list-inside space-y-1">
@@ -4027,6 +4056,14 @@ window.showSupport = showSupport;
     applyTranslations();
     const titleEl = resultsModal.querySelector('[data-i18n="results.details.title"]');
     if (titleEl) { titleEl.innerHTML = titleEl.innerHTML.replace('{name}', profile.name); }
+
+    const resultType = profile.results.mbti;
+    const mirrorType = OPPOSITE_TYPES[resultType] || "—";
+    const mirrorEl = document.getElementById("mirrorProfileText");
+    if (mirrorEl) {
+        mirrorEl.innerHTML = (translations[lang]["results.mirror.text"] || "")
+            .replace("{mirror}", `<strong>${mirrorType}</strong>`);
+    }
 
             // Animer les barres de certitude
             resultsModal.querySelectorAll('.certainty-bar').forEach(bar => {
