@@ -401,28 +401,6 @@
   border: none !important;
 }
 
-        .bubble-container {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .bubble {
-            position: absolute;
-            bottom: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.25);
-            animation: rise 6s linear forwards;
-        }
-        @keyframes rise {
-            from { transform: translateY(0) scale(1); opacity: 0.6; }
-            to { transform: translateY(-120%) scale(0.5); opacity: 0; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .bubble-container { display: none; }
-        }
-
     </style>
 
     <!-- Open Graph -->
@@ -717,10 +695,9 @@
         </div>
 
         <!-- Encadré parent -->
-        <div id="autoEvalCard" class="mt-12 mb-4 rounded-[2rem] shadow-sm border border-gray-200 px-6 py-8 bg-gray-50 relative">
-            <div class="bubble-container" aria-hidden="true"></div>
+        <div class="mt-12 mb-4 rounded-[2rem] shadow-sm border border-gray-200 px-6 py-8 bg-gray-50">
             <!-- Container questions -->
-            <div id="questions-container" class="space-y-6 relative z-10">
+            <div id="questions-container" class="space-y-6">
                 <!-- Les questions dynamiques viendront ici -->
                 <!-- IMPORTANT : retirer 'shadow', 'border', 'rounded' sur chaque question individuelle -->
             </div>
@@ -1196,8 +1173,6 @@ if (window.location.href.includes("external")) {
   // État de l'application
         let currentQuestionIndex = 0;
         let answers = {};
-        let bubbleContainer;
-        let prefersReducedMotion = false;
         let testType = 'auto'; // 'auto' ou 'proche'
         let userCode = genererUniqueCode();
 
@@ -1217,7 +1192,6 @@ if (window.location.href.includes("external")) {
             setupProgressBars();
             setupEvaluationForm();
             loadFirstQuestion();
-            initBubbles();
             initCountUp();
             updatePlaceholders();
         }
@@ -1231,34 +1205,6 @@ if (window.location.href.includes("external")) {
                     el.placeholder = translation;
                 }
             });
-        }
-
-        function initBubbles() {
-            bubbleContainer = document.querySelector('#autoEvalCard .bubble-container');
-            prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        }
-
-        function setWaterProgress(percent) {
-            const bar = document.getElementById('water-progress');
-            if (bar) {
-                bar.style.width = percent + '%';
-            }
-            if (prefersReducedMotion || !bubbleContainer) return;
-            const count = Math.floor(Math.random() * 4) + 2;
-            for (let i = 0; i < count; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                const size = Math.floor(Math.random() * 21) + 10;
-                bubble.style.width = `${size}px`;
-                bubble.style.height = `${size}px`;
-                bubble.style.left = `${Math.random() * 100}%`;
-                bubble.style.animationDuration = `${Math.random() * 3 + 5}s`;
-                bubbleContainer.appendChild(bubble);
-                bubble.addEventListener('animationend', () => bubble.remove());
-                if (bubbleContainer.childElementCount > 20) {
-                    bubbleContainer.removeChild(bubbleContainer.firstElementChild);
-                }
-            }
         }
 
         // Menu mobile
@@ -1452,7 +1398,8 @@ function displayQuestion(index) {
             <span data-i18n="question.label">Question</span> ${index + 1}/${AUTO_QUESTIONS.length}
           </span>
           <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
-            <div id="water-progress" class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-500"></div>
+            <div class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-500"
+                 style="width: ${progress}%"></div>
           </div>
         </div>
 
@@ -1485,7 +1432,6 @@ function displayQuestion(index) {
             if (typeof applyTranslations === 'function') {
                 applyTranslations();
             }
-            setWaterProgress(progress);
 
             // Écouter les changements de réponse
             const radioButtons = questionsContainer.querySelectorAll('input[type="radio"]');
