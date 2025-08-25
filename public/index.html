@@ -76,26 +76,27 @@
         #autoEvalCard .water-fill {
             position: absolute;
             inset: 0;
-            transform: translateY(100%);
-            transition: transform 700ms cubic-bezier(.22,.61,.36,1);
             pointer-events: none;
         }
         #autoEvalCard .water-fill::after {
             content: "";
             position: absolute;
             inset: 0;
-            background: radial-gradient(closest-side at 50% 20%, rgba(255,255,255,0.12), rgba(255,255,255,0) 70%);
-            filter: blur(8px);
-            pointer-events: none;
+            background: radial-gradient(60% 25% at 50% 18%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%);
+            mix-blend-mode: screen;
         }
         #autoEvalCard .water-svg {
             display: block;
             width: 100%;
             height: 100%;
         }
+        #autoEvalCard .water-level {
+            will-change: transform;
+            transition: transform 700ms cubic-bezier(.22,.61,.36,1);
+        }
         @media (prefers-reduced-motion: reduce) {
             #autoEvalCard .ripple-anim { display: none; }
-            #autoEvalCard .water-fill { transition-duration: 300ms; }
+            #autoEvalCard .water-level { transition-duration: 300ms; }
         }
 
         /* Styles pour les modales */
@@ -724,27 +725,28 @@
         </div>
         <!-- Encadré parent -->
         <div id="autoEvalCard" class="mt-12 mb-4 rounded-[2rem] shadow-sm border border-gray-200 bg-gray-50 relative overflow-hidden">
-            <div aria-hidden="true" class="absolute inset-0 pointer-events-none">
-                <div class="water-fill" aria-hidden="true">
-                    <svg class="water-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-                        <defs>
-                            <linearGradient id="waterGradient" x1="0" y1="1" x2="0" y2="0">
-                                <stop offset="0%" stop-color="hsla(215, 90%, 58%, 0.25)" />
-                                <stop offset="60%" stop-color="hsla(215, 90%, 60%, 0.18)" />
-                                <stop offset="100%" stop-color="hsla(215, 90%, 65%, 0.10)" />
-                            </linearGradient>
-                            <filter id="waterRipple">
-                                <feTurbulence type="fractalNoise" baseFrequency="0.008 0.02" numOctaves="2" seed="2">
-                                    <animate class="ripple-anim" attributeName="baseFrequency" dur="8s" values="0.008 0.02;0.01 0.025;0.008 0.02" repeatCount="indefinite" />
-                                </feTurbulence>
-                                <feDisplacementMap in="SourceGraphic" scale="6" xChannelSelector="R" yChannelSelector="G">
-                                    <animate class="ripple-anim" attributeName="scale" dur="8s" values="5;8;5" repeatCount="indefinite" />
-                                </feDisplacementMap>
-                            </filter>
-                        </defs>
-                        <rect width="100" height="100" fill="url(#waterGradient)" filter="url(#waterRipple)" />
-                    </svg>
-                </div>
+            <div class="water-fill" aria-hidden="true" pointer-events="none">
+                <svg class="water-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="waterGradient" x1="0" y1="1" x2="0" y2="0">
+                            <stop offset="0%" stop-color="hsla(215, 90%, 60%, 0.28)" />
+                            <stop offset="100%" stop-color="hsla(215, 90%, 60%, 0.10)" />
+                        </linearGradient>
+                        <filter id="waterRipple" filterUnits="objectBoundingBox" x="-20%" y="-20%" width="140%" height="140%">
+                            <feTurbulence type="fractalNoise" baseFrequency="0.006 0.018" numOctaves="2" seed="3">
+                                <animate class="ripple-anim" attributeName="baseFrequency" dur="8s" values="0.006 0.018; 0.007 0.02; 0.006 0.018" repeatCount="indefinite" />
+                            </feTurbulence>
+                            <feDisplacementMap in="SourceGraphic" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+                        </filter>
+                        <mask id="waterLevelMask">
+                            <rect width="100%" height="100%" fill="#000" />
+                            <g class="water-level" transform="translateY(100%)">
+                                <rect width="100%" height="100%" fill="#fff" />
+                            </g>
+                        </mask>
+                    </defs>
+                    <rect width="100" height="100" fill="url(#waterGradient)" filter="url(#waterRipple)" mask="url(#waterLevelMask)" />
+                </svg>
             </div>
             <span data-water-percent class="absolute top-2 right-4 text-xs text-gray-500" aria-live="polite"></span>
             <div class="px-6 py-8 relative z-10">
