@@ -3985,27 +3985,44 @@ window.showSupport = showSupport;
 </div>
 
 
-        <!-- Graphiques MBTI & Ennéagramme -->
-        <div class="grid md:grid-cols-2 gap-6 mb-6">
-          <div class="bg-white rounded-lg p-4">
-            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="results.details.mbtiDichotomies">Dichotomies MBTI</h4>
-            <canvas id="mbtiChart" height="220"></canvas>
-          </div>
-          <div class="bg-white rounded-lg p-4">
-            <h4 class="font-semibold text-gray-900 mb-3" data-i18n="results.details.enneagramTypes">Types Ennéagramme</h4>
-            <canvas id="enneagramChart" height="220"></canvas>
-          </div>
-        </div>
+      <!-- Graphiques MBTI & Ennéagramme -->
+<div class="grid md:grid-cols-2 gap-6 mb-6">
+  <!-- MBTI -->
+  <div class="bg-blue-50 rounded-2xl p-6 shadow-sm border border-blue-100">
+    <h4 class="font-semibold text-blue-900 mb-4 flex items-center gap-2">
+      <span class="material-icons text-blue-500">bar_chart</span>
+      <span data-i18n="results.details.mbtiDichotomies">Dichotomies MBTI</span>
+    </h4>
+    <div class="bg-white rounded-xl p-4 shadow-inner">
+      <canvas id="mbtiChart" height="220"></canvas>
+    </div>
+  </div>
 
-        <div id="ai-profile-summary" class="mt-6 bg-gray-50 rounded-lg p-5 shadow-sm mb-6">
-            <h4 class="font-semibold text-gray-900 text-lg mb-3" data-i18n="results.details.aiSummaryTitle">Description succincte du profil par Psycho'Bot</h4>
-            <div id="ai-summary-content" class="relative text-sm leading-relaxed text-gray-700 max-h-80 overflow-y-auto">
-                <span data-i18n="results.details.generating">Génération en cours…</span>
-                <div id="scroll-indicator" aria-hidden="true" class="pointer-events-none hidden absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-white flex items-end justify-center pb-1 text-gray-500">
-                    <span class="text-xl animate-bounce">⌄</span>
-                </div>
-            </div>
-        </div>
+  <!-- Ennéagramme -->
+  <div class="bg-purple-50 rounded-2xl p-6 shadow-sm border border-purple-100">
+    <h4 class="font-semibold text-purple-900 mb-4 flex items-center gap-2">
+      <span class="material-icons text-purple-500">pie_chart</span>
+      <span data-i18n="results.details.enneagramTypes">Types Ennéagramme</span>
+    </h4>
+    <div class="bg-white rounded-xl p-4 shadow-inner">
+      <canvas id="enneagramChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Résumé IA -->
+<div id="ai-profile-summary" class="mt-6 bg-gradient-to-r from-gray-50 via-gray-100 to-gray-50 rounded-2xl p-6 shadow-md border border-gray-200">
+  <h4 class="font-semibold text-gray-900 text-lg mb-4 flex items-center gap-2">
+    <span class="material-icons text-green-500">psychology</span>
+    <span data-i18n="results.details.aiSummaryTitle">Description succincte du profil par Psycho'Bot</span>
+  </h4>
+  <div id="ai-summary-content" class="relative text-sm leading-relaxed text-gray-700 max-h-80 overflow-y-auto bg-white rounded-xl p-4 shadow-inner">
+    <span data-i18n="results.details.generating">Génération en cours…</span>
+    <div id="scroll-indicator" aria-hidden="true" class="pointer-events-none hidden absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-white flex items-end justify-center pb-1 text-gray-500">
+      <span class="text-xl animate-bounce">⌄</span>
+    </div>
+  </div>
+</div>
 
                             <!-- Détail des évaluations -->
                         <div class="mb-6">
