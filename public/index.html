@@ -76,26 +76,33 @@
         #autoEvalCard .water-fill {
             position: absolute;
             inset: 0;
+            bottom: 0;
+            height: 100%;
             transform: translateY(100%);
-            transition: transform 700ms cubic-bezier(.22,.61,.36,1);
-            pointer-events: none;
+            transition: transform 600ms cubic-bezier(.25,.8,.25,1);
+            background: linear-gradient(to top, rgba(59,130,246,.35), rgba(59,130,246,.15));
         }
-        #autoEvalCard .water-fill::after {
-            content: "";
+        #autoEvalCard .water-fill svg {
             position: absolute;
-            inset: 0;
-            background: radial-gradient(closest-side at 50% 20%, rgba(255,255,255,0.12), rgba(255,255,255,0) 70%);
-            filter: blur(8px);
-            pointer-events: none;
-        }
-        #autoEvalCard .water-svg {
-            display: block;
-            width: 100%;
+            bottom: 0;
+            width: 200%;
             height: 100%;
         }
+        #autoEvalCard .wave {
+            fill: rgba(59,130,246,0.5);
+            animation: wave-drift 8s linear infinite;
+        }
+        #autoEvalCard .wave2 {
+            fill: rgba(59,130,246,0.6);
+            animation-duration: 12s;
+        }
+        @keyframes wave-drift {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
         @media (prefers-reduced-motion: reduce) {
-            #autoEvalCard .ripple-anim { display: none; }
-            #autoEvalCard .water-fill { transition-duration: 300ms; }
+            #autoEvalCard .wave { animation: none; }
+            #autoEvalCard .water-fill { transition-duration: 200ms; }
         }
 
         /* Styles pour les modales */
@@ -725,24 +732,10 @@
         <!-- Encadré parent -->
         <div id="autoEvalCard" class="mt-12 mb-4 rounded-[2rem] shadow-sm border border-gray-200 bg-gray-50 relative overflow-hidden">
             <div aria-hidden="true" class="absolute inset-0 pointer-events-none">
-                <div class="water-fill" aria-hidden="true">
-                    <svg class="water-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-                        <defs>
-                            <linearGradient id="waterGradient" x1="0" y1="1" x2="0" y2="0">
-                                <stop offset="0%" stop-color="hsla(215, 90%, 58%, 0.25)" />
-                                <stop offset="60%" stop-color="hsla(215, 90%, 60%, 0.18)" />
-                                <stop offset="100%" stop-color="hsla(215, 90%, 65%, 0.10)" />
-                            </linearGradient>
-                            <filter id="waterRipple">
-                                <feTurbulence type="fractalNoise" baseFrequency="0.008 0.02" numOctaves="2" seed="2">
-                                    <animate class="ripple-anim" attributeName="baseFrequency" dur="8s" values="0.008 0.02;0.01 0.025;0.008 0.02" repeatCount="indefinite" />
-                                </feTurbulence>
-                                <feDisplacementMap in="SourceGraphic" scale="6" xChannelSelector="R" yChannelSelector="G">
-                                    <animate class="ripple-anim" attributeName="scale" dur="8s" values="5;8;5" repeatCount="indefinite" />
-                                </feDisplacementMap>
-                            </filter>
-                        </defs>
-                        <rect width="100" height="100" fill="url(#waterGradient)" filter="url(#waterRipple)" />
+                <div class="water-fill">
+                    <svg viewBox="0 0 1200 100" preserveAspectRatio="none" class="absolute bottom-0 w-[200%] h-full">
+                        <path class="wave wave1" d="M0 30 Q 60 0 120 30 T 240 30 T 360 30 T 480 30 T 600 30 T 720 30 T 840 30 T 960 30 T 1080 30 T 1200 30 V100 H0 Z" />
+                        <path class="wave wave2" d="M0 30 Q 60 0 120 30 T 240 30 T 360 30 T 480 30 T 600 30 T 720 30 T 840 30 T 960 30 T 1080 30 T 1200 30 V100 H0 Z" />
                     </svg>
                 </div>
             </div>
