@@ -1,845 +1,1006 @@
 const AUTO_QUESTIONS = [
   {
-    "id": 1,
-    "question": "Quand un plan part en vrille, tu fais quoi en premier ?",
+    "id": 1,      
+    "question": "Quelle citation reflète le mieux ta vision du monde ?",
     "i18nKey": "questionnaire.auto.q1.title",
     "options": [
       {
-        "text": "Je questionne point par point jusqu’à clarifier.",
+        "text": "Aristote : « L’esprit est gouverné par la logique. »",
         "i18nKey": "questionnaire.auto.q1.option1",
-        "functions": { "Ti": 3, "Fe": -1, "Ni": 1 },
-        "enneagram": { "1": 1, "5": 2 }
+        "functions": { "Ti": 3, "Te": 3, "Fe": -3, "Fi": -3 },
+        "enneagram": { "5": 3, "6": 2, "7": 2, "2": -3, "4": -3 }
       },
       {
-        "text": "Je recadre et fixe un plan simple et mesurable.",
+        "text": "Kierkegaard : « La vérité est d’abord une question de subjectivité. »",
         "i18nKey": "questionnaire.auto.q1.option2",
-        "functions": { "Te": 3, "Fi": -1, "Si": 1 },
-        "enneagram": { "3": 2, "8": 1 }
-      },
-      {
-        "text": "Je prends du recul pour saisir le sens global.",
-        "i18nKey": "questionnaire.auto.q1.option3",
-        "functions": { "Ni": 3, "Se": -1 },
-        "enneagram": { "5": 1, "9": 2, "6": 2 }
-      },
-      {
-        "text": "Je teste en direct et j’ajuste au fur et à mesure.",
-        "i18nKey": "questionnaire.auto.q1.option4",
-        "functions": { "Se": 3, "Ni": -1, "Ne": 1 },
-        "enneagram": { "7": 1, "8": 2 }
+        "functions": { "Fi": 3, "Fe": 3, "Ti": -3, "Te": -3 },
+        "enneagram": { "2": 3, "4": 3, "9": 3, "5": -3, "6": -2, "7": -2 }
       }
     ]
   },
   {
-    "id": 2,
-    "question": "Face à une décision sensible :",
+    "id": 2,     
+    "question": "Laquelle de ces suites de mots te correspond le plus ?",
     "i18nKey": "questionnaire.auto.q2.title",
     "options": [
       {
-        "text": "Je reste fidèle à mes convictions, même si c’est impopulaire.",
+        "text": "valeurs, authenticité, intégrité, conviction, profondeur, identité, cohérence, intériorité, sensibilité",
         "i18nKey": "questionnaire.auto.q2.option1",
-        "functions": { "Fi": 3, "Te": -1 },
-        "enneagram": { "4": 2, "9": 1 }
+        "functions": { "Fi": 3, "Fe": 1, "Te": -3, "Ti": -1 },
+        "enneagram": { "4": 3, "9": 1 }
       },
       {
-        "text": "Je pèse l’impact humain et la cohésion du groupe.",
+        "text": "harmonie, relation, consensus, empathie, coopération, chaleur, soutien, adaptation, inclusion",
         "i18nKey": "questionnaire.auto.q2.option2",
-        "functions": { "Fe": 3, "Ti": -1, "Ne": 1 },
-        "enneagram": { "2": 2, "9": 1, "6": 1 }
+        "functions": { "Fe": 3, "Fi": 1, "Ti": -3, "Te": -1 },
+        "enneagram": { "2": 3, "9": 1 }
       },
       {
-        "text": "Je tranche selon l’efficacité et les priorités.",
+        "text": "logique, analyse, structure, précision, objectivité, réflexion, schémas, clarté, scepticisme",
         "i18nKey": "questionnaire.auto.q2.option3",
-        "functions": { "Te": 3, "Fi": -1, "Si": 1 },
-        "enneagram": { "1": 1, "3": 2, "5": 1 }
+        "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
+        "enneagram": { "5": 3, "6": 1 }
       },
       {
-        "text": "Je vérifie la cohérence logique avant tout.",
+        "text": "efficacité, organisation, performance, stratégie, planification, action, mesure, pragmatisme",
         "i18nKey": "questionnaire.auto.q2.option4",
-        "functions": { "Ti": 3, "Fe": -1, "Ni": 1 },
-        "enneagram": { "1": 1, "5": 2 }
+        "functions": { "Te": 3, "Ti": 1, "Fi": -3, "Fe": -1 },
+        "enneagram": { "3": 3, "8": 3 }
       }
     ]
   },
   {
-    "id": 3,
-    "question": "Ta manière d’apprendre quelque chose de nouveau :",
+    "id": 3,    
+    "question": "Laquelle de ces affirmations te correspond le plus ?",
     "i18nKey": "questionnaire.auto.q3.title",
     "options": [
       {
-        "text": "Je relie les concepts à des expériences passées fiables.",
+        "text": "« Qui ne tente rien n’a rien. »",
         "i18nKey": "questionnaire.auto.q3.option1",
-        "functions": { "Si": 3, "Ne": -1 },
-        "enneagram": { "1": 1, "6": 2 }
+        "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+        "enneagram": { "8": 3, "3": 2 }
       },
       {
-        "text": "Je capte les signaux faibles et j’anticipe la suite.",
+        "text": "« Mieux vaut prévenir que guérir. »",
         "i18nKey": "questionnaire.auto.q3.option2",
-        "functions": { "Ni": 3, "Se": -1 },
-        "enneagram": { "5": 1, "9": 2 }
-      },
-      {
-        "text": "J’explore plusieurs pistes en parallèle, par curiosité.",
-        "i18nKey": "questionnaire.auto.q3.option3",
-        "functions": { "Ne": 3, "Si": -1 },
-        "enneagram": { "5": 1, "7": 2 }
-      },
-      {
-        "text": "Je manipule concrètement pour sentir comment ça réagit.",
-        "i18nKey": "questionnaire.auto.q3.option4",
-        "functions": { "Se": 3, "Ni": -1 },
-        "enneagram": { "7": 1, "8": 2 }
+        "functions": { "Si": 3, "Ni": 1, "Ne": -3, "Se": -1 },
+        "enneagram": { "6": 3, "1": 1 }
       }
     ]
   },
   {
-    "id": 4,
-    "question": "Dans un conflit :",
+    "id": 4,    
+    "question": "Laquelle de ces suites de mots te décrit le mieux ?",
     "i18nKey": "questionnaire.auto.q4.title",
     "options": [
       {
-        "text": "Je protège la paix du groupe et j’apaise.",
+        "text": "vision, symboles, anticipation, signification, futur, profondeur, connexion, synthèse, destin, révélation",
         "i18nKey": "questionnaire.auto.q4.option1",
-        "functions": { "Fe": 3, "Ti": -1 },
-        "enneagram": { "2": 1, "9": 2 }
+        "functions": { "Ni": 3, "Se": -3 },
+        "enneagram": { "4": 1, "9": 1 }
       },
       {
-        "text": "Je reste droit avec mes valeurs, quitte à froisser.",
+        "text": "possibilités, idées, associations, créativité, improvisation, ouverture, exploration, adaptation",
         "i18nKey": "questionnaire.auto.q4.option2",
-        "functions": { "Fi": 3, "Te": -1 },
-        "enneagram": { "1": 1, "4": 2 }
+        "functions": { "Ne": 3, "Se": 1, "Si": -3 },
+        "enneagram": { "4": 3, "7": 1 }
       },
       {
-        "text": "Je pose des critères, propose une structure de sortie.",
+        "text": "mémoire, habitude, tradition, stabilité, sécurité, expérience, repères, constance, confort",
         "i18nKey": "questionnaire.auto.q4.option3",
-        "functions": { "Te": 3, "Fi": -1, "Si": 1 },
-        "enneagram": { "1": 2, "3": 1 }
+        "functions": { "Si": 3, "Ni": 1, "Ne": -3, "Se": -1 },
+        "enneagram": { "6": 3, "1": 1 }
       },
       {
-        "text": "Je clarifie les zones d’incohérence pour déminer.",
+        "text": "action, spontanéité, intensité, plaisir, présence, expérimentation, réactivité, mouvement",
         "i18nKey": "questionnaire.auto.q4.option4",
-        "functions": { "Ti": 3, "Fe": -1, "Ni": 1 },
-        "enneagram": { "5": 2, "6": 1 }
+        "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+        "enneagram": { "8": 3, "7": 2 }
       }
     ]
   },
   {
-    "id": 5,
-    "question": "Quand tu démarres un projet :",
+    "id": 5,   
+    "question": "Laquelle de ces descriptions reflète le mieux ta motivation profonde ?",
     "i18nKey": "questionnaire.auto.q5.title",
     "options": [
       {
-        "text": "Je liste les étapes et j’avance de façon cadrée.",
+        "text": "Être aligné avec qui je suis",
         "i18nKey": "questionnaire.auto.q5.option1",
-        "functions": { "Si": 3, "Ne": -1, "Te": 1 },
-        "enneagram": { "1": 2, "6": 1 }
+        "functions": { "Fi": 3, "Ti": 1, "Te": -3, "Fe": -1 },
+        "enneagram": { "4": 3 }
       },
       {
-        "text": "Je visionne l’issue idéale et le chemin implicite.",
+        "text": "Élever les autres et renforcer la relation",
         "i18nKey": "questionnaire.auto.q5.option2",
-        "functions": { "Ni": 3, "Se": -1 },
-        "enneagram": { "5": 1, "9": 2 }
+        "functions": { "Fe": 3, "Te": 1, "Ti": -3, "Fi": -1 },
+        "enneagram": { "2": 3 }
       },
       {
-        "text": "Je brainstorme à fond et je garde le meilleur.",
+        "text": "Obtenir des résultats concrets",
         "i18nKey": "questionnaire.auto.q5.option3",
-        "functions": { "Ne": 3, "Si": -1, "Ti": 1 },
-        "enneagram": { "5": 1, "7": 1 }
+        "functions": { "Te": 3 },
+        "enneagram": { "3": 2, "8": 2 }
       },
       {
-        "text": "Je passe tout de suite à l’action tangible.",
+        "text": "Comprendre et clarifier le vrai",
         "i18nKey": "questionnaire.auto.q5.option4",
-        "functions": { "Se": 3, "Ni": -1 },
-        "enneagram": { "3": 1, "8": 2, "7": 1 }
-      }
-    ]
-  },
-{
-    "id": 6,
-    "question": "Dans un groupe :",
-    "i18nKey": "questionnaire.auto.q6.title",
-    "options": [
-      {
-        "text": "Je crée de l’harmonie et je connecte les gens.",
-        "i18nKey": "questionnaire.auto.q6.option1",
-        "functions": { "Fe": 3, "Ti": -1 },
-        "enneagram": { "2": 2, "9": 1 }
-      },
-      {
-        "text": "Je garde mon indépendance et mes limites internes.",
-        "i18nKey": "questionnaire.auto.q6.option2",
-        "functions": { "Fi": 3, "Te": -1 },
-        "enneagram": { "4": 2, "9": 1 }
-      },
-      {
-        "text": "J’organise pour avancer et livrer.",
-        "i18nKey": "questionnaire.auto.q6.option3",
-        "functions": { "Te": 3, "Fi": -1 },
-        "enneagram": { "3": 2, "8": 1 }
-      },
-      {
-        "text": "J’analyse la logique de ce qui se passe.",
-        "i18nKey": "questionnaire.auto.q6.option4",
-        "functions": { "Ti": 3, "Fe": -1 },
-        "enneagram": { "1": 1, "5": 2 }
+        "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
+        "enneagram": { "5": 3, "6": 1, "7": 1 }
       }
     ]
   },
   {
-    "id": 7,
-    "question": "Sous pression courte :",
+  "id": 6,
+  "question": "Laquelle de ces suites de mots te correspond le plus ?",
+  "i18nKey": "questionnaire.auto.q6.title",
+  "options": [
+    {
+      "text": "identité, authenticité, émotion, originalité, profondeur, intensité, beauté, singularité, sensibilité, mélancolie",
+      "i18nKey": "questionnaire.auto.q6.option1",
+      "functions": { "Fi": 3, "Fe": 1, "Te": -4, "Ti": -1 },
+      "enneagram": { "4": 4, "9": 1 }
+    },
+    {
+      "text": "savoir, analyse, logique, autonomie, réflexion, compréhension, objectivité, réserve, curiosité",
+      "i18nKey": "questionnaire.auto.q6.option2",
+      "functions": { "Ti": 4, "Te": 1, "Fe": -4, "Fi": -1 },
+      "enneagram": { "5": 4, "6": 1 }
+    },
+    {
+      "text": "sécurité, loyauté, doute, prudence, engagement, peur, soutien, solidarité, fiabilité, vigilance",
+      "i18nKey": "questionnaire.auto.q6.option3",
+      "functions": { "Si": 4, "Te": 1, "Fe": -4, "Fi": -1 },
+      "enneagram": { "6": 4, "1": 1 }
+    }
+  ]
+},
+{
+    "id": 7,  
+    "question": "Quel type de personnalité se rapproche le plus de toi ?",
     "i18nKey": "questionnaire.auto.q7.title",
     "options": [
       {
-        "text": "Je réagis vite et je tire parti du terrain.",
+        "text": "perfection, règles, discipline, éthique, ordre, rigueur, structure, responsabilité",
         "i18nKey": "questionnaire.auto.q7.option1",
-        "functions": { "Se": 3, "Ni": -1 },
-        "enneagram": { "7": 1, "8": 2 }
+        "functions": { "Si": 3, "Te": 2, "Ne": -2, "Se": -2 },
+        "enneagram": { "1": 4 }
       },
       {
-        "text": "Je simplifie et je fixe un cap clair.",
+        "text": "aide, amour, soutien, empathie, chaleur, écoute, générosité",
         "i18nKey": "questionnaire.auto.q7.option2",
-        "functions": { "Te": 3, "Fi": -1 },
-        "enneagram": { "1": 1, "3": 2 }
+        "functions": { "Fe": 3, "Fi": 1, "Ti": -3, "Te": -1 },
+        "enneagram": { "2": 4, "9": 2 }
       },
       {
-        "text": "Je cherche la ligne directrice cachée.",
+        "text": "succès, ambition, productivité, motivation, efficacité, reconnaissance",
         "i18nKey": "questionnaire.auto.q7.option3",
-        "functions": { "Ni": 3, "Se": -1 },
-        "enneagram": { "5": 1, "9": 2 }
-      },
-      {
-        "text": "Je m’appuie sur ce qui a déjà fait ses preuves.",
-        "i18nKey": "questionnaire.auto.q7.option4",
-        "functions": { "Si": 3, "Ne": -1 },
-        "enneagram": { "1": 1, "6": 2 }
+        "functions": { "Te": 1, "Fe": 1, "Ti": -1, "Fi": -1 },
+        "enneagram": { "3": 4 }
       }
     ]
   },
   {
-    "id": 8,
-    "question": "Pour trancher un désaccord technique :",
+    "id": 8,   
+    "question": "Laquelle de ces suites de mots te correspond le plus ?",
     "i18nKey": "questionnaire.auto.q8.title",
     "options": [
       {
-        "text": "Je teste en conditions réelles.",
+        "text": "plaisir, optimisme, spontanéité, variété, liberté, imagination, fun, enthousiasme",
         "i18nKey": "questionnaire.auto.q8.option1",
-        "functions": { "Se": 3, "Ni": -1, "Te": 1 },
-        "enneagram": { "3": 1, "8": 2 }
+        "functions": { "Se": 3 },
+        "enneagram": { "7": 4 }
       },
       {
-        "text": "Je compare avec des standards et des précédents.",
+        "text": "puissance, intensité, autorité, indépendance, confrontation, énergie, protection",
         "i18nKey": "questionnaire.auto.q8.option2",
-        "functions": { "Si": 3, "Ne": -1, "Ti": 1 },
-        "enneagram": { "1": 1, "6": 2 }
+        "functions": { "Te": 3, "Fi": -3 },
+        "enneagram": { "8": 4 }
       },
       {
-        "text": "Je modélise le problème et j’en déduis la solution.",
+        "text": "paix, harmonie, stabilité, confort, patience, acceptation, union, réceptivité",
         "i18nKey": "questionnaire.auto.q8.option3",
-        "functions": { "Ti": 3, "Fe": -1, "Ni": 1 },
-        "enneagram": { "1": 1, "5": 2 }
-      },
-      {
-        "text": "Je cherche la solution qui préserve la cohésion.",
-        "i18nKey": "questionnaire.auto.q8.option4",
-        "functions": { "Fe": 3, "Ti": -1 },
-        "enneagram": { "2": 2, "9": 1 }
+        "functions": { "Fe": 3, "Ti": -3 },
+        "enneagram": { "9": 4 }
       }
     ]
   },
   {
-    "id": 9,
-    "question": "Ta relation aux règles :",
+    "id": 9,   
+    "question": "Entre ces deux façons de vivre, laquelle te parle le plus ?",
     "i18nKey": "questionnaire.auto.q9.title",
     "options": [
       {
-        "text": "Je respecte si ça a du sens et de l’historique.",
+        "text": "Vivre chaque jour comme le dernier",
         "i18nKey": "questionnaire.auto.q9.option1",
-        "functions": { "Si": 3, "Ne": -1 },
-        "enneagram": { "1": 1, "6": 2 }
+        "functions": { "Se": 3, "Ne": 3, "Ni": -3, "Si": -3 },
+        "enneagram": { "7": 2, "8": 3 }
       },
       {
-        "text": "Je les change si elles bloquent l’efficacité.",
+        "text": "Planifier pour réussir",
         "i18nKey": "questionnaire.auto.q9.option2",
-        "functions": { "Te": 3, "Fi": -1 },
-        "enneagram": { "3": 1, "8": 2 }
-      },
-      {
-        "text": "Je m’en écarte si ça heurte mes valeurs.",
-        "i18nKey": "questionnaire.auto.q9.option3",
-        "functions": { "Fi": 3, "Te": -1 },
-        "enneagram": { "4": 2, "9": 1 }
-      },
-      {
-        "text": "Je les discute si elles sont illogiques.",
-        "i18nKey": "questionnaire.auto.q9.option4",
-        "functions": { "Ti": 3, "Fe": -1 },
-        "enneagram": { "1": 1, "5": 2 }
+        "functions": { "Si": 3, "Ni": 3, "Ne": -3, "Se": -3 },
+        "enneagram": { "1": 2, "6": 3 }
       }
     ]
   },
   {
-    "id": 10,
-    "question": "Quand tu te projettes :",
+    "id": 10,    
+    "question": "Lequel de ces proverbes te parle le plus ?",
     "i18nKey": "questionnaire.auto.q10.title",
     "options": [
       {
-        "text": "Je vois le fil conducteur des événements.",
+        "text": "« Le sourire que tu donnes revient vers toi. »",
         "i18nKey": "questionnaire.auto.q10.option1",
-        "functions": { "Ni": 3, "Se": -1 },
-        "enneagram": { "5": 1, "9": 2 }
+        "functions": { "Fi": 2, "Fe": 2, "Te": -2, "Ti": -2 },
+        "enneagram": { "4": 2, "9": 2 }
       },
       {
-        "text": "J’imagine plusieurs scénarios alternatifs.",
+        "text": "« La logique est l’art du vrai. »",
         "i18nKey": "questionnaire.auto.q10.option2",
-        "functions": { "Ne": 3, "Si": -1 },
-        "enneagram": { "5": 1, "7": 2 }
-      },
-      {
-        "text": "Je transpose ce qui a marché hier.",
-        "i18nKey": "questionnaire.auto.q10.option3",
-        "functions": { "Si": 3, "Ne": -1 },
-        "enneagram": { "1": 1, "6": 2 }
-      },
-      {
-        "text": "Je me base sur ce que je peux tester tout de suite.",
-        "i18nKey": "questionnaire.auto.q10.option4",
-        "functions": { "Se": 3, "Ni": -1 },
-        "enneagram": { "7": 1, "8": 2 }
+        "functions": { "Te": 2, "Ti": 2, "Fi": -2, "Fe": -2 },
+        "enneagram": { "5": 2, "6": 2 }
       }
     ]
   },
   {
-    "id": 11,
-    "question": "Vis-à-vis des autres :",
+    "id": 11,   
+    "question": "Quel style te ressemble le plus ?",
     "i18nKey": "questionnaire.auto.q11.title",
     "options": [
       {
-        "text": "Je veux qu’on se sente respectés et entendus.",
+        "text": "Plutôt stable et régulier(ère)",
         "i18nKey": "questionnaire.auto.q11.option1",
-        "functions": { "Fe": 3, "Ti": -1 },
-        "enneagram": { "2": 2, "9": 1 }
+        "functions": { "Si": 3, "Ni": 1, "Ne": -3, "Se": -1 },
+        "enneagram": { "6": 3, "1": 1 }
       },
       {
-        "text": "Je garde mon authenticité sans surjouer.",
+        "text": "Plutôt aventureux(se) et curieux(se)",
         "i18nKey": "questionnaire.auto.q11.option2",
-        "functions": { "Fi": 3, "Te": -1 },
-        "enneagram": { "4": 2, "5": 1 }
+        "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+        "enneagram": { "8": 3, "7": 2 }
       },
       {
-        "text": "Je clarifie les critères et responsabilités.",
+        "text": "Plutôt visionnaire et synthétique",
         "i18nKey": "questionnaire.auto.q11.option3",
-        "functions": { "Te": 3, "Fi": -1 },
-        "enneagram": { "1": 1, "3": 2 }
+        "functions": { "Ni": 3, "Se": -3 },
+        "enneagram": { "6": 1, "5": 1 }
       },
       {
-        "text": "Je clarifie les concepts pour éviter le flou.",
+        "text": "Plutôt créatif(ve) et ouvert(e) aux possibilités",
         "i18nKey": "questionnaire.auto.q11.option4",
-        "functions": { "Ti": 3, "Fe": -1 },
-        "enneagram": { "1": 1, "5": 2 }
+        "functions": { "Ne": 3, "Se": 1, "Si": -3 },
+        "enneagram": { "4": 2, "7": 2 }
       }
     ]
   },
   {
-    "id": 12,
-    "question": "Quand tu doutes :",
+    "id": 12,    
+    "question": "Quel rapport as-tu avec les règles ?",
     "i18nKey": "questionnaire.auto.q12.title",
     "options": [
       {
-        "text": "Je reviens aux faits et aux traces du passé.",
+        "text": "Je m’appuie dessus pour sécuriser",
         "i18nKey": "questionnaire.auto.q12.option1",
-        "functions": { "Si": 3, "Ne": -1 },
-        "enneagram": { "1": 1, "6": 2 }
+        "functions": { "Si": 3, "Ni": 1, "Ne": -3, "Se": -1 },
+        "enneagram": { "6": 3, "1": 1 }
       },
       {
-        "text": "Je cherche le pattern sous-jacent.",
+        "text": "Je les change si elles freinent le résultat",
         "i18nKey": "questionnaire.auto.q12.option2",
-        "functions": { "Ni": 3, "Se": -1 },
-        "enneagram": { "5": 1, "9": 2 }
+        "functions": { "Te": 2, "Ti": 1, "Fi": -1, "Fe": -1 },
+        "enneagram": { "3": 2, "8": 3 }
       },
       {
-        "text": "Je multiplie les pistes et je compare.",
+        "text": "Je les discute si elles sont illogiques",
         "i18nKey": "questionnaire.auto.q12.option3",
-        "functions": { "Ne": 3, "Si": -1, "Ti": 1 },
-        "enneagram": { "5": 1, "7": 2 }
+        "functions": { "Ti": 2, "Te": 1, "Fe": -2, "Fi": -1 },
+        "enneagram": { "5": 2 }
       },
       {
-        "text": "Je fais un test rapide sur le terrain.",
+        "text": "Je m’en écarte si elles heurtent mes valeurs",
         "i18nKey": "questionnaire.auto.q12.option4",
-        "functions": { "Se": 3, "Ni": -1 },
-        "enneagram": { "7": 1, "8": 2 }
+        "functions": { "Fi": 3, "Te": -3 },
+        "enneagram": { "4": 3 }
       }
     ]
   },
   {
-    "id": 13,
-    "question": "Ta manière d’être efficace :",
+    "id": 13,    
+    "question": "Laquelle de ces expressions te parle le plus ?",
     "i18nKey": "questionnaire.auto.q13.title",
     "options": [
       {
-        "text": "Des critères, des jalons, du concret.",
+        "text": "« Une image vaut mille mots »",
         "i18nKey": "questionnaire.auto.q13.option1",
-        "functions": { "Te": 3, "Fi": -1, "Si": 1 },
-        "enneagram": { "1": 1, "3": 2 }
+        "functions": { "Si": 2, "Se": 2, "Ne": -2, "Ni": -2 },
+        "enneagram": { "6": 1 }
       },
       {
-        "text": "Un modèle clair et logique.",
+        "text": "« Une idée vaut mille images »",
         "i18nKey": "questionnaire.auto.q13.option2",
-        "functions": { "Ti": 3, "Fe": -1, "Ni": 1 },
-        "enneagram": { "1": 1, "5": 2 }
-      },
-      {
-        "text": "Des choix alignés à mes valeurs.",
-        "i18nKey": "questionnaire.auto.q13.option3",
-        "functions": { "Fi": 3, "Te": -1 },
-        "enneagram": { "4": 2, "9": 1 }
-      },
-      {
-        "text": "Des actions visibles et mesurables.",
-        "i18nKey": "questionnaire.auto.q13.option4",
-        "functions": { "Se": 3, "Ni": -1 },
-        "enneagram": { "3": 1, "8": 2 }
+        "functions": { "Ni": 2, "Ne": 2, "Si": -2, "Se": -2 },
+        "enneagram": { "4": 1 }
       }
     ]
   },
   {
-    "id": 14,
-    "question": "Quand quelqu’un propose une idée bancale :",
+    "id": 14,   
+    "question": "Quel proverbe reflète le mieux ta personnalité ?",
     "i18nKey": "questionnaire.auto.q14.title",
     "options": [
       {
-        "text": "Je l’encadre et je reformule en plan faisable.",
+        "text": "« Rester les pieds sur terre »",
         "i18nKey": "questionnaire.auto.q14.option1",
-        "functions": { "Te": 3, "Fi": -1 },
-        "enneagram": { "3": 2, "8": 1 }
+        "functions": { "Si": 2, "Se": 2, "Ne": -2, "Ni": -2 },
+        "enneagram": { "6": 1 }
       },
       {
-        "text": "Je questionne jusqu’à trouver la faille.",
+        "text": "« Avoir la tête dans les étoiles »",
         "i18nKey": "questionnaire.auto.q14.option2",
-        "functions": { "Ti": 3, "Fe": -1 },
-        "enneagram": { "1": 1, "5": 2 }
-      },
-      {
-        "text": "J’essaie de valoriser et d’inclure la personne.",
-        "i18nKey": "questionnaire.auto.q14.option3",
-        "functions": { "Fe": 3, "Ti": -1 },
-        "enneagram": { "2": 2, "9": 1 }
-      },
-      {
-        "text": "Je propose des alternatives créatives.",
-        "i18nKey": "questionnaire.auto.q14.option4",
-        "functions": { "Ne": 3, "Si": -1 },
-        "enneagram": { "4": 2, "7": 1 }
+        "functions": { "Ni": 2, "Ne": 2, "Si": -2, "Se": -2 },
+        "enneagram": { "4": 1 }
       }
     ]
   },
   {
-    "id": 15,
-    "question": "Ta préférence au quotidien :",
+    "id": 15,    
+    "question": "Tu te considères comme quelqu’un de…",
     "i18nKey": "questionnaire.auto.q15.title",
     "options": [
       {
-        "text": "Routines et repères stables.",
+        "text": "Plutôt rationnel",
         "i18nKey": "questionnaire.auto.q15.option1",
-        "functions": { "Si": 3, "Ne": -1 },
-        "enneagram": { "1": 1, "6": 2 }
+        "functions": { "Ti": 2, "Te": 1, "Fe": -2, "Fi": -1 },
+        "enneagram": { "5": 2 }
       },
       {
-        "text": "Découvertes et variations.",
+        "text": "Plutôt émotionnel",
         "i18nKey": "questionnaire.auto.q15.option2",
-        "functions": { "Ne": 3, "Si": -1 },
-        "enneagram": { "3": 1, "7": 2 }
-      },
-      {
-        "text": "Vision de fond et continuité interne.",
-        "i18nKey": "questionnaire.auto.q15.option3",
-        "functions": { "Ni": 3, "Se": -1 },
-        "enneagram": { "5": 1, "9": 2 }
-      },
-      {
-        "text": "Action et retour immédiat.",
-        "i18nKey": "questionnaire.auto.q15.option4",
-        "functions": { "Se": 3, "Ni": -1 },
-        "enneagram": { "7": 1, "8": 2 }
+        "functions": { "Fi": 2, "Fe": 1, "Te": -2, "Ti": -1 },
+        "enneagram": { "4": 2 }
       }
     ]
   },
   {
-    "id": 16,
-    "question": "Quand tu aides :",
+    "id": 16,   
+    "question": "Laquelle de ces capacités te représente le mieux ?",
     "i18nKey": "questionnaire.auto.q16.title",
     "options": [
       {
-        "text": "Je crée du lien et je facilite les échanges.",
+        "text": "Alignement personnel et intégrité",
         "i18nKey": "questionnaire.auto.q16.option1",
-        "functions": { "Fe": 3, "Ti": -1 },
-        "enneagram": { "2": 2, "9": 1 }
+        "functions": { "Fi": 4, "Te": -3 },
+        "enneagram": { "4": 3, "9": 1 }
       },
       {
-        "text": "Je respecte l’autonomie et les limites de chacun.",
+        "text": "Soutien relationnel et accompagnement",
         "i18nKey": "questionnaire.auto.q16.option2",
-        "functions": { "Fi": 3, "Te": -1 },
-        "enneagram": { "4": 2, "9": 1 }
+        "functions": { "Fe": 4, "Ti": -3 },
+        "enneagram": { "2": 3, "9": 1 }
       },
       {
-        "text": "Je mets des outils/process utiles.",
+        "text": "Capacité à produire et organiser",
         "i18nKey": "questionnaire.auto.q16.option3",
-        "functions": { "Te": 3, "Fi": -1 },
-        "enneagram": { "1": 1, "3": 2 }
+        "functions": { "Te": 3, "Fi": -3 },
+        "enneagram": { "3": 2, "8": 2 }
       },
       {
-        "text": "Je clarifie pour que la personne comprenne seule.",
+        "text": "Clarté intellectuelle et précision",
         "i18nKey": "questionnaire.auto.q16.option4",
-        "functions": { "Ti": 3, "Fe": -1 },
-        "enneagram": { "1": 1, "5": 2 }
+        "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
+        "enneagram": { "5": 3, "6": 1 }
       }
     ]
   },
   {
-    "id": 17,
-    "question": "Sous incertitude :",
-    "i18nKey": "questionnaire.auto.q17.title",
-    "options": [
-      {
-        "text": "Je me fie aux indices profonds.",
-        "i18nKey": "questionnaire.auto.q17.option1",
-        "functions": { "Ni": 3, "Se": -1 },
-        "enneagram": { "5": 1, "9": 2 }
-      },
-      {
-        "text": "Je multiplie les essais rapides.",
-        "i18nKey": "questionnaire.auto.q17.option2",
-        "functions": { "Se": 3, "Ni": -1 },
-        "enneagram": { "7": 1, "8": 2 }
-      },
-      {
-        "text": "Je crée plusieurs hypothèses concurrentes.",
-        "i18nKey": "questionnaire.auto.q17.option3",
-        "functions": { "Ne": 3, "Si": -1, "Ti": 1 },
-        "enneagram": { "5": 1, "7": 2 }
-      },
-      {
-        "text": "Je reviens aux précédents et aux règles.",
-        "i18nKey": "questionnaire.auto.q17.option4",
-        "functions": { "Si": 3, "Ne": -1 },
-        "enneagram": { "1": 1, "6": 2 }
-      }
-    ]
-  },
-  {
-    "id": 18,
-    "question": "Quand tu t’exprimes :",
-    "i18nKey": "questionnaire.auto.q18.title",
-    "options": [
-      {
-        "text": "Je parle de ce qui est vrai pour moi.",
-        "i18nKey": "questionnaire.auto.q18.option1",
-        "functions": { "Fi": 3, "Te": -1 },
-        "enneagram": { "4": 2, "9": 1 }
-      },
-      {
-        "text": "Je cherche les mots qui rassemblent.",
-        "i18nKey": "questionnaire.auto.q18.option2",
-        "functions": { "Fe": 3, "Ti": -1 },
-        "enneagram": { "2": 2, "9": 1 }
-      },
-      {
-        "text": "Je structure et je vais droit au but.",
-        "i18nKey": "questionnaire.auto.q18.option3",
-        "functions": { "Te": 3, "Fi": -1 },
-        "enneagram": { "3": 2, "8": 1 }
-      },
-      {
-        "text": "Je précise chaque terme pour éviter le flou.",
-        "i18nKey": "questionnaire.auto.q18.option4",
-        "functions": { "Ti": 3, "Fe": -1 },
-        "enneagram": { "1": 1, "5": 2 }
-      }
-    ]
-  },
-  {
-    "id": 19,
-    "question": "Face à une erreur :",
-    "i18nKey": "questionnaire.auto.q19.title",
-    "options": [
-      {
-        "text": "Je corrige le process pour que ça n’arrive plus.",
-        "i18nKey": "questionnaire.auto.q19.option1",
-        "functions": { "Te": 3, "Fi": -1, "Si": 1 },
-        "enneagram": { "1": 2, "3": 1 }
-      },
-      {
-        "text": "Je comprends le mécanisme qui a déraillé.",
-        "i18nKey": "questionnaire.auto.q19.option2",
-        "functions": { "Ti": 3, "Fe": -1, "Ni": 1 },
-        "enneagram": { "1": 1, "5": 2 }
-      },
-      {
-        "text": "Je repère les signes avant-coureurs.",
-        "i18nKey": "questionnaire.auto.q19.option3",
-        "functions": { "Ni": 3, "Se": -1 },
-        "enneagram": { "5": 1, "9": 2 }
-      },
-      {
-        "text": "Je fais un test terrain pour sécuriser.",
-        "i18nKey": "questionnaire.auto.q19.option4",
-        "functions": { "Se": 3, "Ni": -1 },
-        "enneagram": { "7": 1, "8": 2 }
-      }
-    ]
-  },
-  {
-    "id": 20,
-    "question": "Ta motivation profonde :",
-    "i18nKey": "questionnaire.auto.q20.title",
-    "options": [
-      {
-        "text": "Être aligné avec qui je suis.",
-        "i18nKey": "questionnaire.auto.q20.option1",
-        "functions": { "Fi": 3, "Te": -1 },
-        "enneagram": { "4": 2, "9": 1 }
-      },
-      {
-        "text": "Élever les autres et la relation.",
-        "i18nKey": "questionnaire.auto.q20.option2",
-        "functions": { "Fe": 3, "Ti": -1 },
-        "enneagram": { "2": 2, "9": 1 }
-      },
-      {
-        "text": "Transformer en résultats concrets.",
-        "i18nKey": "questionnaire.auto.q20.option3",
-        "functions": { "Te": 3, "Fi": -1 },
-        "enneagram": { "3": 2, "8": 1 }
-      },
-      {
-        "text": "Comprendre et clarifier le vrai.",
-        "i18nKey": "questionnaire.auto.q20.option4",
-        "functions": { "Ti": 3, "Fe": -1 },
-        "enneagram": { "1": 1, "5": 2 }
-      }
-    ]
-  }
+  "id": 17,
+  "question": "Vous vous qualifiez comme quelqu’un de :",
+  "i18nKey": "questionnaire.auto.q17.title",
+  "options": [
+    {
+      "text": "Plutôt terre-à-terre",
+      "i18nKey": "questionnaire.auto.q17.option1",
+      "functions": { "Si": 2, "Se": 2, "Ne": -2, "Ni": -2 },
+      "enneagram": {}
+    },
+    {
+      "text": "Plutôt évasif",
+      "i18nKey": "questionnaire.auto.q17.option2",
+      "functions": { "Ni": 2, "Ne": 2, "Si": -2, "Se": -2 },
+      "enneagram": {}
+    }
+  ]
+},
+{
+  "id": 18,
+  "question": "Je me considère comme quelqu’un :",
+  "i18nKey": "questionnaire.auto.q18.title",
+  "options": [
+    {
+      "text": "D’introverti",
+      "i18nKey": "questionnaire.auto.q18.option1",
+      "functions": { "Si": 4, "Ni": 4, "Fi": 4, "Ti": 4, "Ne": -4, "Se": -4, "Fe": -4, "Te": -4 },
+      "enneagram": {}
+    },
+    {
+      "text": "D’extraverti",
+      "i18nKey": "questionnaire.auto.q18.option2",
+      "functions": { "Se": 4, "Ne": 4, "Fe": 4, "Te": 4, "Ni": -4, "Si": -4, "Fi": -4, "Ti": -4 },
+      "enneagram": {}
+    }
+  ]
+},
+{
+  "id": 19,
+  "question": "Quand tu prends une décision importante, ta motivation principale est…",
+  "i18nKey": "questionnaire.auto.q19.title",
+  "options": [
+    {
+      "text": "Faire ce qui est juste, même si c’est difficile",
+      "i18nKey": "questionnaire.auto.q19.option1",
+      "functions": { },
+      "enneagram": { "1": 4 }
+    },
+    {
+      "text": "Aider, soutenir et être indispensable aux autres",
+      "i18nKey": "questionnaire.auto.q19.option2",
+      "functions": { },
+      "enneagram": { "2": 4 }
+    },
+    {
+      "text": "Réussir, atteindre mes objectifs et être reconnu",
+      "i18nKey": "questionnaire.auto.q19.option3",
+      "functions": { },
+      "enneagram": { "3": 4 }
+    },
+    {
+      "text": "Protéger mon indépendance et mes émotions",
+      "i18nKey": "questionnaire.auto.q19.option4",
+      "functions": { },
+      "enneagram": { "4": 4 }
+    }
+  ]
+},
+{
+  "id": 20,
+  "question": "Ton plus grand moteur intérieur, c’est…",
+  "i18nKey": "questionnaire.auto.q20.title",
+  "options": [
+    {
+      "text": "Chercher à comprendre, analyser et trouver la vérité",
+      "i18nKey": "questionnaire.auto.q20.option1",
+      "functions": { },
+      "enneagram": { "5": 4 }
+    },
+    {
+      "text": "Sécuriser mon avenir et éviter les imprévus",
+      "i18nKey": "questionnaire.auto.q20.option2",
+      "functions": { },
+      "enneagram": { "6": 4 }
+    },
+    {
+      "text": "Profiter de la vie, explorer et multiplier les expériences",
+      "i18nKey": "questionnaire.auto.q20.option3",
+      "functions": { },
+      "enneagram": { "7": 4 }
+    },
+    {
+      "text": "Avoir le contrôle, prendre les devants et diriger",
+      "i18nKey": "questionnaire.auto.q20.option4",
+      "functions": { },
+      "enneagram": { "8": 4 }
+    },
+    {
+      "text": "Préserver la paix, éviter les conflits et rester serein",
+      "i18nKey": "questionnaire.auto.q20.option5",
+      "functions": { },
+      "enneagram": { "9": 4 }
+    }
+  ]
+}
 ];
 
 const EXTERNAL_QUESTIONS = [
-  {
-    "id": 1,
-    "question": "Quand un imprévu arrive, votre proche :",
-    "i18nKey": "questionnaire.external.q1.title",
-    "options": [
-      { "text": "Agit vite et ajuste en direct.", "i18nKey": "questionnaire.external.q1.option1", "functions": { "Se": 3, "Ni": -1, "Te": 1 }, "enneagram": { "7": 1, "8": 2 } },
-      { "text": "Prend du recul pour capter le sens global.", "i18nKey": "questionnaire.external.q1.option2", "functions": { "Ni": 3, "Se": -1 }, "enneagram": { "5": 1, "9": 2 } },
-      { "text": "Cherche un précédent et une règle applicable.", "i18nKey": "questionnaire.external.q1.option3", "functions": { "Si": 3, "Ne": -1 }, "enneagram": { "1": 1, "6": 2 } },
-      { "text": "Déplie la logique du problème avant d’agir.", "i18nKey": "questionnaire.external.q1.option4", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } }
-    ]
-  },
-  {
-    "id": 2,
-    "question": "Dans une discussion de groupe, il/elle :",
-    "i18nKey": "questionnaire.external.q2.title",
-    "options": [
-      { "text": "Encourage chacun à participer et garde l’harmonie.", "i18nKey": "questionnaire.external.q2.option1", "functions": { "Fe": 3, "Ti": -1 }, "enneagram": { "2": 2, "9": 1 } },
-      { "text": "Exprime ses idées avec authenticité, même si ça dérange.", "i18nKey": "questionnaire.external.q2.option2", "functions": { "Fi": 3, "Te": -1 }, "enneagram": { "4": 2, "6": 1 } },
-      { "text": "Recentre la discussion vers un objectif concret.", "i18nKey": "questionnaire.external.q2.option3", "functions": { "Te": 3, "Fi": -1 }, "enneagram": { "3": 2, "8": 1 } },
-      { "text": "Pose des questions pour clarifier la logique.", "i18nKey": "questionnaire.external.q2.option4", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } }
-    ]
-  },
-  {
-    "id": 3,
-    "question": "Son rapport aux valeurs :",
-    "i18nKey": "questionnaire.external.q3.title",
-    "options": [
-      { "text": "Reste authentique même si c’est impopulaire.", "i18nKey": "questionnaire.external.q3.option1", "functions": { "Fi": 3, "Te": -1 }, "enneagram": { "4": 2, "9": 1 } },
-      { "text": "Privilégie la cohésion et le ressenti du groupe.", "i18nKey": "questionnaire.external.q3.option2", "functions": { "Fe": 3, "Ti": -1 }, "enneagram": { "2": 2, "9": 1 } },
-      { "text": "Fait primer l’efficacité mesurable.", "i18nKey": "questionnaire.external.q3.option3", "functions": { "Te": 3, "Fi": -1 }, "enneagram": { "3": 2, "8": 1 } },
-      { "text": "Fait primer la justesse logique.", "i18nKey": "questionnaire.external.q3.option4", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } }
-    ]
-  },
-  {
-    "id": 4,
-    "question": "Quand il/elle apprend quelque chose de nouveau :",
-    "i18nKey": "questionnaire.external.q4.title",
-    "options": [
-      { "text": "S’appuie sur ses expériences et repères passés.", "i18nKey": "questionnaire.external.q4.option1", "functions": { "Si": 3, "Ne": -1 }, "enneagram": { "1": 1, "6": 2 } },
-      { "text": "Expérimente rapidement pour voir ce que ça donne.", "i18nKey": "questionnaire.external.q4.option2", "functions": { "Se": 3, "Ni": -1 }, "enneagram": { "7": 1, "8": 2 } },
-      { "text": "Imagine des scénarios alternatifs et créatifs.", "i18nKey": "questionnaire.external.q4.option3", "functions": { "Ne": 3, "Si": -1 }, "enneagram": { "5": 1, "7": 2 } },
-      { "text": "Capte le sens profond sans tout expliquer.", "i18nKey": "questionnaire.external.q4.option4", "functions": { "Ni": 3, "Se": -1 }, "enneagram": { "5": 1, "9": 2 } }
-    ]
-  },
-  {
-    "id": 5,
-    "question": "Quand il/elle doit gérer un problème pratique :",
-    "i18nKey": "questionnaire.external.q5.title",
-    "options": [
-      { "text": "Cherche une règle ou un exemple du passé.", "i18nKey": "questionnaire.external.q5.option1", "functions": { "Si": 3, "Ne": -1 }, "enneagram": { "1": 1, "6": 2 } },
-      { "text": "Teste une solution concrète tout de suite.", "i18nKey": "questionnaire.external.q5.option2", "functions": { "Se": 3, "Ni": -1 }, "enneagram": { "7": 1, "8": 2 } },
-      { "text": "Cherche une explication logique détaillée.", "i18nKey": "questionnaire.external.q5.option3", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } },
-      { "text": "Se demande comment garder la cohésion humaine.", "i18nKey": "questionnaire.external.q5.option4", "functions": { "Fe": 3, "Ti": -1 }, "enneagram": { "2": 2, "9": 1 } }
-    ]
-  },
-  {
-    "id": 6,
-    "question": "Quand il/elle prend des décisions rapides :",
-    "i18nKey": "questionnaire.external.q6.title",
-    "options": [
-      { "text": "S’appuie sur ses intuitions globales.", "i18nKey": "questionnaire.external.q6.option1", "functions": { "Ni": 3, "Se": -1 }, "enneagram": { "5": 1, "9": 2 } },
-      { "text": "Suit ses valeurs personnelles sans compromis.", "i18nKey": "questionnaire.external.q6.option2", "functions": { "Fi": 3, "Te": -1 }, "enneagram": { "4": 2, "9": 1 } },
-      { "text": "Se concentre sur l’efficacité immédiate.", "i18nKey": "questionnaire.external.q6.option3", "functions": { "Te": 3, "Fi": -1 }, "enneagram": { "3": 2, "8": 1 } },
-      { "text": "Teste directement sur le terrain.", "i18nKey": "questionnaire.external.q6.option4", "functions": { "Se": 3, "Ni": -1 }, "enneagram": { "7": 1, "8": 2 } }
-    ]
-  },
-  {
-    "id": 7,
-    "question": "Dans ses relations votre proche a tendance à :",
-    "i18nKey": "questionnaire.external.q7.title",
-    "options": [
-      { "text": "Apaiser les tensions et cherche l’harmonie.", "i18nKey": "questionnaire.external.q7.option1", "functions": { "Fe": 3, "Ti": -1 }, "enneagram": { "2": 1, "9": 2 } },
-      { "text": "Affirme son authenticité et ses ressentis.", "i18nKey": "questionnaire.external.q7.option2", "functions": { "Fi": 3, "Te": -1 }, "enneagram": { "4": 2, "6": 1 } },
-      { "text": "Donne des directives claires et concrètes.", "i18nKey": "questionnaire.external.q7.option3", "functions": { "Te": 3, "Fi": -1 }, "enneagram": { "3": 2, "8": 1 } },
-      { "text": "Privilégie la précision et la logique.", "i18nKey": "questionnaire.external.q7.option4", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } }
-    ]
-  },
-  {
-    "id": 8,
-    "question": "Face à une nouvelle idée votre proche :",
-    "i18nKey": "questionnaire.external.q8.title",
-    "options": [
-      { "text": "Cherche comment ça a été fait ailleurs.", "i18nKey": "questionnaire.external.q8.option1", "functions": { "Si": 3, "Ne": -1 }, "enneagram": { "1": 1, "6": 2 } },
-      { "text": "Imagine d’autres pistes à partir de là.", "i18nKey": "questionnaire.external.q8.option2", "functions": { "Ne": 3, "Si": -1 }, "enneagram": { "3": 1, "7": 2 } },
-      { "text": "Capte directement où ça peut mener.", "i18nKey": "questionnaire.external.q8.option3", "functions": { "Ni": 3, "Se": -1 }, "enneagram": { "5": 1, "9": 2 } },
-      { "text": "Teste concrètement et observe le résultat.", "i18nKey": "questionnaire.external.q8.option4", "functions": { "Se": 3, "Ni": -1 }, "enneagram": { "7": 1, "8": 2 } }
-    ]
-  },
-  {
-    "id": 9,
-    "question": "Quand il/elle exprime une opinion :",
-    "i18nKey": "questionnaire.external.q9.title",
-    "options": [
-      { "text": "Met en avant sa vérité personnelle.", "i18nKey": "questionnaire.external.q9.option1", "functions": { "Fi": 3, "Te": -1 }, "enneagram": { "4": 2, "9": 1 } },
-      { "text": "Adapte son discours pour rassembler.", "i18nKey": "questionnaire.external.q9.option2", "functions": { "Fe": 3, "Ti": -1 }, "enneagram": { "2": 2, "9": 1 } },
-      { "text": "Structure en étapes logiques et mesurables.", "i18nKey": "questionnaire.external.q9.option3", "functions": { "Te": 3, "Fi": -1 }, "enneagram": { "3": 2, "8": 1 } },
-      { "text": "Défend une cohérence intellectuelle.", "i18nKey": "questionnaire.external.q9.option4", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } }
-    ]
-  },
-  {
-    "id": 10,
-    "question": "Son rapport aux règles :",
-    "i18nKey": "questionnaire.external.q10.title",
-    "options": [
-      { "text": "S’appuie dessus pour sécuriser.", "i18nKey": "questionnaire.external.q10.option1", "functions": { "Si": 3, "Ne": -1 }, "enneagram": { "1": 1, "6": 2 } },
-      { "text": "Les change si elles freinent le résultat.", "i18nKey": "questionnaire.external.q10.option2", "functions": { "Te": 3, "Fi": -1 }, "enneagram": { "3": 1, "8": 2 } },
-      { "text": "Les discute si elles sont illogiques.", "i18nKey": "questionnaire.external.q10.option3", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } },
-      { "text": "S’en écarte si ça heurte ses valeurs.", "i18nKey": "questionnaire.external.q10.option4", "functions": { "Fi": 3, "Te": -1 }, "enneagram": { "4": 2, "9": 1 } }
-    ]
-  },
+  
+    {
+      "id": 1,
+      "question": "Quelle citation reflète le mieux la vision du monde de votre proche ?",
+      "i18nKey": "questionnaire.ext.q1.title",
+      "options": [
+        {
+          "text": "Aristote : « L’esprit est gouverné par la logique. »",
+          "i18nKey": "questionnaire.ext.q1.option1",
+          "functions": { "Ti": 3, "Te": 3, "Fe": -3, "Fi": -3 },
+          "enneagram": { "5": 3, "6": 2, "7": 2, "2": -3, "4": -3 }
+        },
+        {
+          "text": "Kierkegaard : « La vérité est d’abord une question de subjectivité. »",
+          "i18nKey": "questionnaire.ext.q1.option2",
+          "functions": { "Fi": 3, "Fe": 3, "Ti": -3, "Te": -3 },
+          "enneagram": { "2": 3, "4": 3, "9": 3, "5": -3, "6": -2, "7": -2 }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "question": "Laquelle de ces suites de mots correspond le plus à votre proche ?",
+      "i18nKey": "questionnaire.ext.q2.title",
+      "options": [
+        {
+          "text": "valeurs, authenticité, intégrité, conviction, profondeur, identité, cohérence, intériorité, sensibilité",
+          "i18nKey": "questionnaire.ext.q2.option1",
+          "functions": { "Fi": 3, "Fe": 1, "Te": -3, "Ti": -1 },
+          "enneagram": { "4": 3, "9": 1 }
+        },
+        {
+          "text": "harmonie, relation, consensus, empathie, coopération, chaleur, soutien, adaptation, inclusion",
+          "i18nKey": "questionnaire.ext.q2.option2",
+          "functions": { "Fe": 3, "Fi": 1, "Ti": -3, "Te": -1 },
+          "enneagram": { "2": 3, "9": 1 }
+        },
+        {
+          "text": "logique, analyse, structure, précision, objectivité, réflexion, schémas, clarté, scepticisme",
+          "i18nKey": "questionnaire.ext.q2.option3",
+          "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
+          "enneagram": { "5": 3, "6": 1 }
+        },
+        {
+          "text": "efficacité, organisation, performance, stratégie, planification, action, mesure, pragmatisme",
+          "i18nKey": "questionnaire.ext.q2.option4",
+          "functions": { "Te": 3, "Ti": 1, "Fi": -3, "Fe": -1 },
+          "enneagram": { "3": 3, "8": 3 }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "question": "Laquelle de ces affirmations correspond le plus à votre proche ?",
+      "i18nKey": "questionnaire.ext.q3.title",
+      "options": [
+        {
+          "text": "« Qui ne tente rien n’a rien. »",
+          "i18nKey": "questionnaire.ext.q3.option1",
+          "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+          "enneagram": { "8": 3, "3": 2 }
+        },
+        {
+          "text": "« Mieux vaut prévenir que guérir. »",
+          "i18nKey": "questionnaire.ext.q3.option2",
+          "functions": { "Si": 3, "Ni": 1, "Ne": -3, "Se": -1 },
+          "enneagram": { "6": 3, "1": 1 }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "question": "Laquelle de ces suites de mots décrit le mieux votre proche ?",
+      "i18nKey": "questionnaire.ext.q4.title",
+      "options": [
+        {
+          "text": "vision, symboles, anticipation, signification, futur, profondeur, connexion, synthèse, destin, révélation",
+          "i18nKey": "questionnaire.ext.q4.option1",
+          "functions": { "Ni": 3, "Se": -3 },
+          "enneagram": { "4": 1, "9": 1 }
+        },
+        {
+          "text": "possibilités, idées, associations, créativité, improvisation, ouverture, exploration, adaptation",
+          "i18nKey": "questionnaire.ext.q4.option2",
+          "functions": { "Ne": 3, "Se": 1, "Si": -3 },
+          "enneagram": { "4": 3, "7": 1 }
+        },
+        {
+          "text": "mémoire, habitude, tradition, stabilité, sécurité, expérience, repères, constance, confort",
+          "i18nKey": "questionnaire.ext.q4.option3",
+          "functions": { "Si": 3, "Ni": 1, "Ne": -3, "Se": -1 },
+          "enneagram": { "6": 3, "1": 1 }
+        },
+        {
+          "text": "action, spontanéité, intensité, plaisir, présence, expérimentation, réactivité, mouvement",
+          "i18nKey": "questionnaire.ext.q4.option4",
+          "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+          "enneagram": { "8": 3, "7": 2 }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "question": "Laquelle de ces descriptions reflète le mieux la motivation profonde de votre proche ?",
+      "i18nKey": "questionnaire.ext.q5.title",
+      "options": [
+        {
+          "text": "Être aligné avec qui il/elle est",
+          "i18nKey": "questionnaire.ext.q5.option1",
+          "functions": { "Fi": 3, "Ti": 1, "Te": -3, "Fe": -1 },
+          "enneagram": { "4": 3 }
+        },
+        {
+          "text": "Élever les autres et renforcer la relation",
+          "i18nKey": "questionnaire.ext.q5.option2",
+          "functions": { "Fe": 3, "Te": 1, "Ti": -3, "Fi": -1 },
+          "enneagram": { "2": 3 }
+        },
+        {
+          "text": "Obtenir des résultats concrets",
+          "i18nKey": "questionnaire.ext.q5.option3",
+          "functions": { "Te": 3 },
+          "enneagram": { "3": 2, "8": 2 }
+        },
+        {
+          "text": "Comprendre et clarifier le vrai",
+          "i18nKey": "questionnaire.ext.q5.option4",
+          "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
+          "enneagram": { "5": 3, "6": 1, "7": 1 }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "question": "Laquelle de ces suites de mots correspond le plus à votre proche ?",
+      "i18nKey": "questionnaire.ext.q6.title",
+      "options": [
+        {
+          "text": "identité, authenticité, émotion, originalité, profondeur, intensité, beauté, singularité, sensibilité, mélancolie",
+          "i18nKey": "questionnaire.ext.q6.option1",
+          "functions": { "Fi": 3, "Fe": 1, "Te": -4, "Ti": -1 },
+          "enneagram": { "4": 4, "9": 1 }
+        },
+        {
+          "text": "savoir, analyse, logique, autonomie, réflexion, compréhension, objectivité, réserve, curiosité",
+          "i18nKey": "questionnaire.ext.q6.option2",
+          "functions": { "Ti": 4, "Te": 1, "Fe": -4, "Fi": -1 },
+          "enneagram": { "5": 4, "6": 1 }
+        },
+        {
+          "text": "sécurité, loyauté, doute, prudence, engagement, peur, soutien, solidarité, fiabilité, vigilance",
+          "i18nKey": "questionnaire.ext.q6.option3",
+          "functions": { "Si": 4, "Te": 1, "Fe": -4, "Fi": -1 },
+          "enneagram": { "6": 4, "1": 1 }
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "question": "Quel type de personnalité se rapproche le plus de votre proche ?",
+      "i18nKey": "questionnaire.ext.q7.title",
+      "options": [
+        {
+          "text": "perfection, règles, discipline, éthique, ordre, rigueur, structure, responsabilité",
+          "i18nKey": "questionnaire.ext.q7.option1",
+          "functions": { "Si": 3, "Te": 2, "Ne": -2, "Se": -2 },
+          "enneagram": { "1": 4 }
+        },
+        {
+          "text": "aide, amour, soutien, empathie, chaleur, écoute, générosité",
+          "i18nKey": "questionnaire.ext.q7.option2",
+          "functions": { "Fe": 3, "Fi": 1, "Ti": -3, "Te": -1 },
+          "enneagram": { "2": 4, "9": 2 }
+        },
+        {
+          "text": "succès, ambition, productivité, motivation, efficacité, reconnaissance",
+          "i18nKey": "questionnaire.ext.q7.option3",
+          "functions": { "Te": 1, "Fe": 1, "Ti": -1, "Fi": -1 },
+          "enneagram": { "3": 4 }
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "question": "Laquelle de ces suites de mots correspond le plus à votre proche ?",
+      "i18nKey": "questionnaire.ext.q8.title",
+      "options": [
+        {
+          "text": "plaisir, optimisme, spontanéité, variété, liberté, imagination, fun, enthousiasme",
+          "i18nKey": "questionnaire.ext.q8.option1",
+          "functions": { "Se": 3 },
+          "enneagram": { "7": 4 }
+        },
+        {
+          "text": "puissance, intensité, autorité, indépendance, confrontation, énergie, protection",
+          "i18nKey": "questionnaire.ext.q8.option2",
+          "functions": { "Te": 3, "Fi": -3 },
+          "enneagram": { "8": 4 }
+        },
+        {
+          "text": "paix, harmonie, stabilité, confort, patience, acceptation, union, réceptivité",
+          "i18nKey": "questionnaire.ext.q8.option3",
+          "functions": { "Fe": 3, "Ti": -3 },
+          "enneagram": { "9": 4 }
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "question": "Entre ces deux façons de vivre, laquelle correspond le plus à votre proche ?",
+      "i18nKey": "questionnaire.ext.q9.title",
+      "options": [
+        {
+          "text": "Vivre chaque jour comme le dernier",
+          "i18nKey": "questionnaire.ext.q9.option1",
+          "functions": { "Se": 3, "Ne": 3, "Ni": -3, "Si": -3 },
+          "enneagram": { "7": 2, "8": 3 }
+        },
+        {
+          "text": "Planifier pour réussir",
+          "i18nKey": "questionnaire.ext.q9.option2",
+          "functions": { "Si": 3, "Ni": 3, "Ne": -3, "Se": -3 },
+          "enneagram": { "1": 2, "6": 3 }
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "question": "Lequel de ces proverbes parle le plus à votre proche ?",
+      "i18nKey": "questionnaire.ext.q10.title",
+      "options": [
+        {
+          "text": "« Le sourire que tu donnes revient vers toi. »",
+          "i18nKey": "questionnaire.ext.q10.option1",
+          "functions": { "Fi": 2, "Fe": 2, "Te": -2, "Ti": -2 },
+          "enneagram": { "4": 2, "9": 2 }
+        },
+        {
+          "text": "« La logique est l’art du vrai. »",
+          "i18nKey": "questionnaire.ext.q10.option2",
+          "functions": { "Te": 2, "Ti": 2, "Fi": -2, "Fe": -2 },
+          "enneagram": { "5": 2, "6": 2 }
+        }
+      ]
+    },
   {
     "id": 11,
-    "question": "Dans les choix rapides votre proche :",
-    "i18nKey": "questionnaire.external.q11.title",
+    "question": "Quel style ressemble le plus à votre proche ?",
+    "i18nKey": "questionnaire.ext.q11.title",
     "options": [
-      { "text": "Suit l’intuition globale.", "i18nKey": "questionnaire.external.q11.option1", "functions": { "Ni": 3, "Se": -1 }, "enneagram": { "5": 1, "9": 2 } },
-      { "text": "Tente directement et ajuste.", "i18nKey": "questionnaire.external.q11.option2", "functions": { "Se": 3, "Ni": -1 }, "enneagram": { "7": 1, "8": 2 } },
-      { "text": "Fait plusieurs scénarios mentaux.", "i18nKey": "questionnaire.external.q11.option3", "functions": { "Ne": 3, "Si": -1 }, "enneagram": { "5": 1, "7": 2 } },
-      { "text": "Réplique un précédent fiable.", "i18nKey": "questionnaire.external.q11.option4", "functions": { "Si": 3, "Ne": -1 }, "enneagram": { "1": 1, "6": 2 } }
+      {
+        "text": "Plutôt stable et régulier(ère)",
+        "i18nKey": "questionnaire.ext.q11.option1",
+        "functions": { "Si": 3, "Ni": 1, "Ne": -3, "Se": -1 },
+        "enneagram": { "6": 3, "1": 1 }
+      },
+      {
+        "text": "Plutôt aventureux(se) et curieux(se)",
+        "i18nKey": "questionnaire.ext.q11.option2",
+        "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+        "enneagram": { "8": 3, "7": 2 }
+      },
+      {
+        "text": "Plutôt visionnaire et synthétique",
+        "i18nKey": "questionnaire.ext.q11.option3",
+        "functions": { "Ni": 3, "Se": -3 },
+        "enneagram": { "6": 1, "5": 1 }
+      },
+      {
+        "text": "Plutôt créatif(ve) et ouvert(e) aux possibilités",
+        "i18nKey": "questionnaire.ext.q11.option4",
+        "functions": { "Ne": 3, "Se": 1, "Si": -3 },
+        "enneagram": { "4": 2, "7": 2 }
+      }
     ]
   },
   {
     "id": 12,
-    "question": "Quand il/elle défend un point :",
-    "i18nKey": "questionnaire.external.q12.title",
+    "question": "Quel rapport votre proche entretient-il/elle avec les règles ?",
+    "i18nKey": "questionnaire.ext.q12.title",
     "options": [
-      { "text": "S’aligne à ses valeurs internes.", "i18nKey": "questionnaire.external.q12.option1", "functions": { "Fi": 3, "Te": -1 }, "enneagram": { "4": 2, "9": 1 } },
-      { "text": "Cherche les mots qui rassemblent.", "i18nKey": "questionnaire.external.q12.option2", "functions": { "Fe": 3, "Ti": -1 }, "enneagram": { "2": 2, "9": 1 } },
-      { "text": "Met en avant la structure et le résultat.", "i18nKey": "questionnaire.external.q12.option3", "functions": { "Te": 3, "Fi": -1 }, "enneagram": { "3": 2, "8": 1 } },
-      { "text": "Démontre la cohérence logique.", "i18nKey": "questionnaire.external.q12.option4", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } }
+      {
+        "text": "Il/elle s’appuie dessus pour sécuriser",
+        "i18nKey": "questionnaire.ext.q12.option1",
+        "functions": { "Si": 3, "Ni": 1, "Ne": -3, "Se": -1 },
+        "enneagram": { "6": 3, "1": 1 }
+      },
+      {
+        "text": "Il/elle les change si elles freinent le résultat",
+        "i18nKey": "questionnaire.ext.q12.option2",
+        "functions": { "Te": 2, "Ti": 1, "Fi": -1, "Fe": -1 },
+        "enneagram": { "3": 2, "8": 3 }
+      },
+      {
+        "text": "Il/elle les discute si elles sont illogiques",
+        "i18nKey": "questionnaire.ext.q12.option3",
+        "functions": { "Ti": 2, "Te": 1, "Fe": -2, "Fi": -1 },
+        "enneagram": { "5": 2 }
+      },
+      {
+        "text": "Il/elle s’en écarte si elles heurtent ses valeurs",
+        "i18nKey": "questionnaire.ext.q12.option4",
+        "functions": { "Fi": 3, "Te": -3 },
+        "enneagram": { "4": 3 }
+      }
     ]
   },
   {
     "id": 13,
-    "question": "Face à l’erreur votre proche :",
-    "i18nKey": "questionnaire.external.q13.title",
+    "question": "Laquelle de ces expressions décrit le mieux votre proche ?",
+    "i18nKey": "questionnaire.ext.q13.title",
     "options": [
-      { "text": "Corrige le process durablement.", "i18nKey": "questionnaire.external.q13.option1", "functions": { "Te": 3, "Fi": -1, "Si": 1 }, "enneagram": { "1": 2, "3": 1 } },
-      { "text": "Comprend le mécanisme de la faille.", "i18nKey": "questionnaire.external.q13.option2", "functions": { "Ti": 3, "Fe": -1, "Ni": 1 }, "enneagram": { "1": 1, "5": 2 } },
-      { "text": "Repère les patterns annonciateurs.", "i18nKey": "questionnaire.external.q13.option3", "functions": { "Ni": 3, "Se": -1 }, "enneagram": { "5": 1, "9": 2 } },
-      { "text": "Refait un test concret de sécurité.", "i18nKey": "questionnaire.external.q13.option4", "functions": { "Se": 3, "Ni": -1 }, "enneagram": { "7": 1, "8": 2 } }
+      {
+        "text": "« Une image vaut mille mots »",
+        "i18nKey": "questionnaire.ext.q13.option1",
+        "functions": { "Si": 2, "Se": 2, "Ne": -2, "Ni": -2 },
+        "enneagram": { "6": 1 }
+      },
+      {
+        "text": "« Une idée vaut mille images »",
+        "i18nKey": "questionnaire.ext.q13.option2",
+        "functions": { "Ni": 2, "Ne": 2, "Si": -2, "Se": -2 },
+        "enneagram": { "4": 1 }
+      }
     ]
   },
   {
     "id": 14,
-    "question": "Le style général de votre proche :",
-    "i18nKey": "questionnaire.external.q14.title",
+    "question": "Quel proverbe reflète le mieux la personnalité de votre proche ?",
+    "i18nKey": "questionnaire.ext.q14.title",
     "options": [
-      { "text": "Plutôt stable et régulier(ère).", "i18nKey": "questionnaire.external.q14.option1", "functions": { "Si": 3, "Ne": -1 }, "enneagram": { "1": 1, "6": 2 } },
-      { "text": "Plutôt aventureux(se) et curieux(se).", "i18nKey": "questionnaire.external.q14.option2", "functions": { "Ne": 3, "Si": -1 }, "enneagram": { "3": 1, "7": 2 } },
-      { "text": "Plutôt visionnaire et synthétique.", "i18nKey": "questionnaire.external.q14.option3", "functions": { "Ni": 3, "Se": -1 }, "enneagram": { "5": 1, "9": 2 } },
-      { "text": "Plutôt pragmatique et physique.", "i18nKey": "questionnaire.external.q14.option4", "functions": { "Se": 3, "Ni": -1 }, "enneagram": { "7": 1, "8": 2 } }
+      {
+        "text": "« Rester les pieds sur terre »",
+        "i18nKey": "questionnaire.ext.q14.option1",
+        "functions": { "Si": 2, "Se": 2, "Ne": -2, "Ni": -2 },
+        "enneagram": { "6": 1 }
+      },
+      {
+        "text": "« Avoir la tête dans les étoiles »",
+        "i18nKey": "questionnaire.ext.q14.option2",
+        "functions": { "Ni": 2, "Ne": 2, "Si": -2, "Se": -2 },
+        "enneagram": { "4": 1 }
+      }
     ]
   },
   {
     "id": 15,
-    "question": "Dans les débats votre proche :",
-    "i18nKey": "questionnaire.external.q15.title",
+    "question": "Diriez-vous que votre proche est plutôt…",
+    "i18nKey": "questionnaire.ext.q15.title",
     "options": [
-      { "text": "Reste axé(e) résultats et décisions.", "i18nKey": "questionnaire.external.q15.option1", "functions": { "Te": 3, "Fi": -1 }, "enneagram": { "3": 2, "8": 1 } },
-      { "text": "Priorise la clarté conceptuelle.", "i18nKey": "questionnaire.external.q15.option2", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } },
-      { "text": "Cherche la cohésion et la paix.", "i18nKey": "questionnaire.external.q15.option3", "functions": { "Fe": 3, "Ti": -1 }, "enneagram": { "2": 2, "9": 1 } },
-      { "text": "Affirme son authenticité tranquille.", "i18nKey": "questionnaire.external.q15.option4", "functions": { "Fi": 3, "Te": -1 }, "enneagram": { "4": 2, "9": 1 } }
+      {
+        "text": "Rationnel",
+        "i18nKey": "questionnaire.ext.q15.option1",
+        "functions": { "Ti": 2, "Te": 1, "Fe": -2, "Fi": -1 },
+        "enneagram": { "5": 2 }
+      },
+      {
+        "text": "Émotionnel",
+        "i18nKey": "questionnaire.ext.q15.option2",
+        "functions": { "Fi": 2, "Fe": 1, "Te": -2, "Ti": -1 },
+        "enneagram": { "4": 2 }
+      }
     ]
   },
   {
     "id": 16,
-    "question": "Face à la nouveauté :",
-    "i18nKey": "questionnaire.external.q16.title",
+    "question": "Laquelle de ces capacités représente le mieux votre proche ?",
+    "i18nKey": "questionnaire.ext.q16.title",
     "options": [
-      { "text": "Observe d’abord les usages établis.", "i18nKey": "questionnaire.external.q16.option1", "functions": { "Si": 3, "Ne": -1 }, "enneagram": { "1": 1, "6": 2 } },
-      { "text": "Imagine des variantes originales.", "i18nKey": "questionnaire.external.q16.option2", "functions": { "Ne": 3, "Si": -1, "Ti": 1 }, "enneagram": { "5": 1, "7": 2 } },
-      { "text": "Capte rapidement l’intention profonde.", "i18nKey": "questionnaire.external.q16.option3", "functions": { "Ni": 3, "Se": -1 }, "enneagram": { "5": 1, "9": 2 } },
-      { "text": "Essaie tout de suite pour sentir.", "i18nKey": "questionnaire.external.q16.option4", "functions": { "Se": 3, "Ni": -1 }, "enneagram": { "7": 1, "8": 2 } }
+      {
+        "text": "Alignement personnel et intégrité",
+        "i18nKey": "questionnaire.ext.q16.option1",
+        "functions": { "Fi": 4, "Te": -3 },
+        "enneagram": { "4": 3, "9": 1 }
+      },
+      {
+        "text": "Soutien relationnel et accompagnement",
+        "i18nKey": "questionnaire.ext.q16.option2",
+        "functions": { "Fe": 4, "Ti": -3 },
+        "enneagram": { "2": 3, "9": 1 }
+      },
+      {
+        "text": "Capacité à produire et organiser",
+        "i18nKey": "questionnaire.ext.q16.option3",
+        "functions": { "Te": 3, "Fi": -3 },
+        "enneagram": { "3": 2, "8": 2 }
+      },
+      {
+        "text": "Clarté intellectuelle et précision",
+        "i18nKey": "questionnaire.ext.q16.option4",
+        "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
+        "enneagram": { "5": 3, "6": 1 }
+      }
     ]
   },
   {
     "id": 17,
-    "question": "Avec la hiérarchie/les règles :",
-    "i18nKey": "questionnaire.external.q17.title",
+    "question": "Vous qualifieriez votre proche comme quelqu’un de…",
+    "i18nKey": "questionnaire.ext.q17.title",
     "options": [
-      { "text": "S’aligne si c’est logique et utile.", "i18nKey": "questionnaire.external.q17.option1", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } },
-      { "text": "S’aligne si c’est humainement juste.", "i18nKey": "questionnaire.external.q17.option2", "functions": { "Fe": 3, "Ti": -1 }, "enneagram": { "2": 2, "9": 1 } },
-      { "text": "S’aligne si c’est efficace pour livrer.", "i18nKey": "questionnaire.external.q17.option3", "functions": { "Te": 3, "Fi": -1 }, "enneagram": { "3": 2, "8": 1 } },
-      { "text": "S’aligne si ça respecte ses valeurs.", "i18nKey": "questionnaire.external.q17.option4", "functions": { "Fi": 3, "Te": -1 }, "enneagram": { "4": 2, "9": 1 } }
+      {
+        "text": "Plutôt terre-à-terre",
+        "i18nKey": "questionnaire.ext.q17.option1",
+        "functions": { "Si": 2, "Se": 2, "Ne": -2, "Ni": -2 },
+        "enneagram": {}
+      },
+      {
+        "text": "Plutôt évasif",
+        "i18nKey": "questionnaire.ext.q17.option2",
+        "functions": { "Ni": 2, "Ne": 2, "Si": -2, "Se": -2 },
+        "enneagram": {}
+      }
     ]
   },
   {
     "id": 18,
-    "question": "Le style de décision de votre proche :",
-    "i18nKey": "questionnaire.external.q18.title",
+    "question": "Diriez-vous que votre proche est plutôt…",
+    "i18nKey": "questionnaire.ext.q18.title",
     "options": [
-      { "text": "Pragmatique, terrain d’abord.", "i18nKey": "questionnaire.external.q18.option1", "functions": { "Se": 3, "Ni": -1, "Te": 1 }, "enneagram": { "3": 1, "8": 2 } },
-      { "text": "Structuré, étapes et critères.", "i18nKey": "questionnaire.external.q18.option2", "functions": { "Te": 3, "Fi": -1, "Si": 1 }, "enneagram": { "1": 1, "3": 2 } },
-      { "text": "Intuitif, capture la direction implicite.", "i18nKey": "questionnaire.external.q18.option3", "functions": { "Ni": 3, "Se": -1 }, "enneagram": { "5": 1, "9": 2 } },
-      { "text": "Logique, démontre avant de trancher.", "i18nKey": "questionnaire.external.q18.option4", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } }
+      {
+        "text": "Introverti",
+        "i18nKey": "questionnaire.ext.q18.option1",
+        "functions": { "Si": 4, "Ni": 4, "Fi": 4, "Ti": 4, "Ne": -4, "Se": -4, "Fe": -4, "Te": -4 },
+        "enneagram": {}
+      },
+      {
+        "text": "Extraverti",
+        "i18nKey": "questionnaire.ext.q18.option2",
+        "functions": { "Se": 4, "Ne": 4, "Fe": 4, "Te": 4, "Ni": -4, "Si": -4, "Fi": -4, "Ti": -4 },
+        "enneagram": {}
+      }
     ]
   },
   {
     "id": 19,
-    "question": "Dans la durée votre proche :",
-    "i18nKey": "questionnaire.external.q19.title",
+    "question": "Quand votre proche prend une décision importante, sa motivation principale est…",
+    "i18nKey": "questionnaire.ext.q19.title",
     "options": [
-      { "text": "Tient le cap par habitudes solides.", "i18nKey": "questionnaire.external.q19.option1", "functions": { "Si": 3, "Ne": -1 }, "enneagram": { "1": 1, "6": 2 } },
-      { "text": "Rafraîchit par des idées nouvelles.", "i18nKey": "questionnaire.external.q19.option2", "functions": { "Ne": 3, "Si": -1 }, "enneagram": { "3": 1, "7": 2 } },
-      { "text": "Garde la cohérence de fond.", "i18nKey": "questionnaire.external.q19.option3", "functions": { "Ni": 3, "Se": -1 }, "enneagram": { "5": 1, "9": 2 } },
-      { "text": "Assure par des actions tangibles.", "i18nKey": "questionnaire.external.q19.option4", "functions": { "Se": 3, "Ni": -1 }, "enneagram": { "7": 1, "8": 2 } }
+      {
+        "text": "Faire ce qui est juste, même si c’est difficile",
+        "i18nKey": "questionnaire.ext.q19.option1",
+        "functions": {},
+        "enneagram": { "1": 4 }
+      },
+      {
+        "text": "Aider, soutenir et être indispensable aux autres",
+        "i18nKey": "questionnaire.ext.q19.option2",
+        "functions": {},
+        "enneagram": { "2": 4 }
+      },
+      {
+        "text": "Réussir, atteindre ses objectifs et être reconnu",
+        "i18nKey": "questionnaire.ext.q19.option3",
+        "functions": {},
+        "enneagram": { "3": 4 }
+      },
+      {
+        "text": "Protéger son indépendance et ses émotions",
+        "i18nKey": "questionnaire.ext.q19.option4",
+        "functions": {},
+        "enneagram": { "4": 4 }
+      }
     ]
   },
   {
     "id": 20,
-    "question": "Ce qu’on retient le plus de lui/elle :",
-    "i18nKey": "questionnaire.external.q20.title",
+    "question": "Le plus grand moteur intérieur de votre proche, c’est…",
+    "i18nKey": "questionnaire.ext.q20.title",
     "options": [
-      { "text": "Alignement personnel et intégrité.", "i18nKey": "questionnaire.external.q20.option1", "functions": { "Fi": 3, "Te": -1 }, "enneagram": { "4": 2, "9": 1 } },
-      { "text": "Soutien relationnel et fédération.", "i18nKey": "questionnaire.external.q20.option2", "functions": { "Fe": 3, "Ti": -1 }, "enneagram": { "2": 2, "9": 1 } },
-      { "text": "Capacité à délivrer et organiser.", "i18nKey": "questionnaire.external.q20.option3", "functions": { "Te": 3, "Fi": -1 }, "enneagram": { "3": 2, "8": 1 } },
-      { "text": "Clarté intellectuelle et précision.", "i18nKey": "questionnaire.external.q20.option4", "functions": { "Ti": 3, "Fe": -1 }, "enneagram": { "1": 1, "5": 2 } }
+      {
+        "text": "Chercher à comprendre, analyser et trouver la vérité",
+        "i18nKey": "questionnaire.ext.q20.option1",
+        "functions": {},
+        "enneagram": { "5": 4 }
+      },
+      {
+        "text": "Sécuriser son avenir et éviter les imprévus",
+        "i18nKey": "questionnaire.ext.q20.option2",
+        "functions": {},
+        "enneagram": { "6": 4 }
+      },
+      {
+        "text": "Profiter de la vie, explorer et multiplier les expériences",
+        "i18nKey": "questionnaire.ext.q20.option3",
+        "functions": {},
+        "enneagram": { "7": 4 }
+      },
+      {
+        "text": "Avoir le contrôle, prendre les devants et diriger",
+        "i18nKey": "questionnaire.ext.q20.option4",
+        "functions": {},
+        "enneagram": { "8": 4 }
+      },
+      {
+        "text": "Préserver la paix, éviter les conflits et rester serein",
+        "i18nKey": "questionnaire.ext.q20.option5",
+        "functions": {},
+        "enneagram": { "9": 4 }
+      }
     ]
   }
 ];
