@@ -931,6 +931,12 @@ const translations = {
     "results.details.coherence.weak": "<strong>Faible</strong> → réponses peu cohérentes entre elles",
     "results.details.downloadPdf": "Télécharger PDF",
     "results.details.share": "Partager",
+
+    "results.career.title": "Carrière & Passions probables",
+    "results.career.text": "Les personnes avec ce profil s’épanouissent souvent dans des contextes où leurs qualités naturelles peuvent s’exprimer. Elles aiment travailler dans des environnements qui valorisent leur manière unique de voir et d’agir.",
+    "results.mirror.title": "Profil miroir (opposé)",
+    "results.mirror.text": "Ton profil miroir est {mirror}. Il représente une approche presque inverse de la tienne.",
+
     "question.label": "Question",
     alerts: {
       missingEvaluations: "Il est nécessaire de compléter l'ensemble des évaluations pour avoir accès à votre page de résultats détaillés. Envoyez votre code unique à vos proches pour qu'ils puissent compléter votre profil et vous donner accès à vos résultats !"
@@ -2068,6 +2074,12 @@ const translations = {
     "results.details.coherence.weak": "<strong>Weak</strong> → responses not very consistent with each other",
     "results.details.downloadPdf": "Download PDF",
     "results.details.share": "Share",
+
+    "results.career.title": "Career & Likely Passions",
+    "results.career.text": "People with this profile often thrive in contexts where their natural qualities can be expressed. They enjoy working in environments that value their unique way of seeing and acting.",
+    "results.mirror.title": "Mirror Profile (opposite)",
+    "results.mirror.text": "Your mirror profile is {mirror}. It represents an almost inverse approach to yours.",
+
     "question.label": "Question",
     alerts: {
       missingEvaluations: "You need to complete all evaluations to access your detailed results page. Share your unique code with your relatives so they can complete your profile and give you access to your results!"
