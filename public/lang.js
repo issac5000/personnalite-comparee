@@ -932,6 +932,8 @@ const translations = {
     "results.details.downloadPdf": "Télécharger PDF",
     "results.details.share": "Partager",
 
+    "results.detailed.title": "Résultats complémentaires",
+
     "results.career.title": "Carrière & Passions probables",
     "results.career.text": "Les personnes avec ce profil s’épanouissent souvent dans des contextes où leurs qualités naturelles peuvent s’exprimer. Elles aiment travailler dans des environnements qui valorisent leur manière unique de voir et d’agir.",
     "results.mirror.title": "Profil miroir (opposé)",
@@ -2074,6 +2076,8 @@ const translations = {
     "results.details.coherence.weak": "<strong>Weak</strong> → responses not very consistent with each other",
     "results.details.downloadPdf": "Download PDF",
     "results.details.share": "Share",
+
+    "results.detailed.title": "Complementary Results",
 
     "results.career.title": "Career & Likely Passions",
     "results.career.text": "People with this profile often thrive in contexts where their natural qualities can be expressed. They enjoy working in environments that value their unique way of seeing and acting.",
