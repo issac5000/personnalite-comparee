@@ -4011,20 +4011,21 @@ window.showSupport = showSupport;
 </div>
 
 <!-- Résumé IA -->
-<div id="ai-profile-summary" class="mt-6 bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
-  <h4 class="font-semibold text-gray-900 text-lg mb-5 flex items-center gap-2">
-    <span class="material-icons text-green-500">psychology</span>
-    <span data-i18n="results.details.aiSummaryTitle">
-      Description succincte du profil par <span class="font-bold text-green-600">Psycho'Bot</span>
-    </span>
-  </h4>
-  <div id="ai-summary-content" class="relative text-base leading-relaxed text-gray-700 max-h-80 overflow-y-auto bg-gray-50 rounded-xl p-5 shadow-inner">
+<div id="ai-profile-summary" class="mt-6 bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+  <!-- Bandeau Psycho'Bot -->
+  <div class="bg-green-100 px-6 py-3 border-b border-green-200 flex items-center gap-2">
+    <span class="material-icons text-green-600">psychology</span>
+    <h4 class="font-semibold text-green-800 text-lg" data-i18n="results.details.aiSummaryTitle">
+      Description succincte du profil par <span class="font-bold">Psycho'Bot</span>
+    </h4>
+  </div>
+
+  <!-- Contenu -->
+  <div id="ai-summary-content" class="p-6 text-base leading-relaxed text-gray-700 space-y-4">
     <span data-i18n="results.details.generating" class="italic text-gray-500">Génération en cours…</span>
-    <div id="scroll-indicator" aria-hidden="true" class="pointer-events-none hidden absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-gray-50 flex items-end justify-center pb-1 text-gray-500">
-      <span class="text-xl animate-bounce">⌄</span>
-    </div>
   </div>
 </div>
+
 
 
                             <!-- Détail des évaluations -->
