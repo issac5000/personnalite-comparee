@@ -402,6 +402,15 @@
   border: none !important;
 }
 
+        #enneagramChart {
+          min-height: 280px;
+        }
+        @media (max-width: 640px) {
+          #enneagramChart {
+            min-height: 350px;
+          }
+        }
+
     </style>
 
     <!-- Open Graph -->
@@ -4278,11 +4287,29 @@ window.showSupport = showSupport;
                 },
                 options: {
                     indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    responsive: true,
                     scales: {
-                        x: { beginAtZero: true, max: 100 }
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                font: { size: 10 }
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                font: { size: 10 }
+                            }
+                        }
                     },
                     plugins: {
-                        legend: { display: false },
+                        legend: {
+                            display: false,
+                            labels: {
+                                font: { size: 10 }
+                            }
+                        },
                         tooltip: {
                             callbacks: {
                                 label: ctx => `${ctx.parsed.x}% - ${enneagramDescriptions[enneaLabels[ctx.dataIndex]]}`
