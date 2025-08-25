@@ -2008,14 +2008,15 @@ function displayResults(results) {
         const ennea = String(finalResults.enneagramType || "");
 
         // Choix du texte : MBTI > Ennéagramme > Fallback
-        let careerText =
-          (translations[lang]["results"]["career"]["mbti"] &&
-           translations[lang]["results"]["career"]["mbti"][mbti]) ||
+       let careerText =
+  (translations[lang].results.career.mbti &&
+   translations[lang].results.career.mbti[mbti]) ||
 
-          (translations[lang]["results"]["career"]["ennea"] &&
-           translations[lang]["results"]["career"]["ennea"][ennea]) ||
+  (translations[lang].results.career.ennea &&
+   translations[lang].results.career.ennea[ennea]) ||
 
-          translations[lang]["results"]["career"]["fallback"];
+  translations[lang].results.career.fallback;
+
 
         // Debug pour vérifier
         console.log("MBTI:", mbti);
