@@ -1989,8 +1989,8 @@ const uniqueCode = genererUniqueCode();
 }
 
 function displayResults(results) {
-    const finalResults = results;
-    const resultsHTML = generateResultsHTML(finalResults);
+    window.finalResults = results;
+    const resultsHTML = generateResultsHTML(window.finalResults || {});
     
     const resultsSection = document.createElement('div');
     resultsSection.className = 'bg-blue-50 py-16 px-4 sm:px-6 lg:px-8';
@@ -2002,10 +2002,12 @@ function displayResults(results) {
         initCountUp(resultsSection);
 
         applyTranslations();
+        const finalResults = window.finalResults || {};
         const lang = document.documentElement.lang || 'fr';
-        const mbti = finalResults.mbtiType;
-        const ennea = finalResults.enneagramType;
+        const mbti = (finalResults.mbtiType || "").toUpperCase();
+        const ennea = String(finalResults.enneagramType || "");
 
+        // Choix du texte : MBTI > Ennéagramme > Fallback
         let careerText =
           (translations[lang]["results"]["career"]["mbti"] &&
            translations[lang]["results"]["career"]["mbti"][mbti]) ||
@@ -2015,6 +2017,12 @@ function displayResults(results) {
 
           translations[lang]["results"]["career"]["fallback"];
 
+        // Debug pour vérifier
+        console.log("MBTI:", mbti);
+        console.log("Ennéagramme:", ennea);
+        console.log("Texte carrière choisi:", careerText);
+
+        // Injection dans le bloc
         document.getElementById("careerProfileText").innerText = careerText;
 
         setTimeout(() => {
