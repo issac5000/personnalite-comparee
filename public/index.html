@@ -1733,6 +1733,13 @@ const { error: insertError } = await supabase
             return "Faible";
         }
 
+        function computeEnneagramWing(scores, coreType) {
+            if (!scores || !coreType) return null;
+            const left = coreType === '1' ? '9' : String(Number(coreType) - 1);
+            const right = coreType === '9' ? '1' : String(Number(coreType) + 1);
+            return (scores[left] || 0) >= (scores[right] || 0) ? left : right;
+        }
+
        function computeWeightedResults(evaluations) {
     const functions = ['Fi','Fe','Ti','Te','Ni','Ne','Si','Se'];
     const types = ['1','2','3','4','5','6','7','8','9'];
@@ -1952,6 +1959,7 @@ async function calculateResults() {
     const enneagramType = Object.keys(enneagramScores).reduce((a, b) =>
         enneagramScores[a] > enneagramScores[b] ? a : b
     );
+    const enneagramWing = computeEnneagramWing(enneagramScores, enneagramType);
 
     const traitPairs = [
         [E, I],
@@ -1979,6 +1987,7 @@ const uniqueCode = genererUniqueCode();
         code: uniqueCode,
         mbtiType,
         enneagramType,
+        enneagramWing,
         mbtiCertainty,
         enneagramCertainty,
         certaintyScore,
@@ -1994,6 +2003,7 @@ const uniqueCode = genererUniqueCode();
         code: uniqueCode,
         mbtiType,
         enneagramType,
+        enneagramWing,
         mbtiCertainty,
         enneagramCertainty,
         certaintyScore,
@@ -2062,7 +2072,8 @@ console.log("Texte carrière choisi:", careerText);
             const enneaName = translations[lang][enneaNameKey] || '';
             const enneaDescKey = `enneagramme.types.${results.enneagramType}.desc`;
             const enneaDesc = translations[lang][enneaDescKey] || '';
-            
+            const wingDisplay = results.enneagramWing ? `w${results.enneagramWing}` : '';
+
             return `
                 <div class="max-w-4xl mx-auto">
                     <div class="text-center">
@@ -2079,7 +2090,7 @@ console.log("Texte carrière choisi:", careerText);
                                 </div>
                                 <div class="mt-4 md:mt-0">
                                     <span class="personality-badge bg-green-100 text-green-800">${results.mbtiType}</span>
-                                    <span class="personality-badge bg-blue-100 text-blue-800 ml-2">Type ${results.enneagramType}</span>
+                                    <span class="personality-badge bg-blue-100 text-blue-800 ml-2">Type ${results.enneagramType}${wingDisplay}</span>
                                 </div>
                             </div>
                             
@@ -2119,7 +2130,7 @@ console.log("Texte carrière choisi:", careerText);
                                 <div>
                                     <h4 class="text-lg font-medium text-gray-900" data-i18n="results.enneagram.title">Profil Ennéagramme</h4>
                                     <div class="mt-4 bg-blue-50 rounded-lg p-4">
-                                        <p class="text-gray-700 font-medium">Type ${results.enneagramType} - <span data-i18n="${enneaNameKey}">${enneaName}</span></p>
+                                        <p class="text-gray-700 font-medium">Type ${results.enneagramType}${wingDisplay} - <span data-i18n="${enneaNameKey}">${enneaName}</span></p>
                                         <p class="text-gray-600 text-sm mt-1" data-i18n="${enneaDescKey}">${enneaDesc}</p>
                                     </div>
                                 </div>
@@ -3897,6 +3908,7 @@ window.showSupport = showSupport;
             });
             const certaintyScore = result.overallCertainty ??
                 (result.user.certainty_score != null ? Number(result.user.certainty_score) : null);
+            const enneaWing = computeEnneagramWing(result.user.enneagram_scores, result.user.enneagram_type);
             const finalProfile = {
                 uniqueCode: userCode,
                 name: `${result.user.mbti_type} — type ${result.user.enneagram_type}`,
@@ -3905,6 +3917,7 @@ window.showSupport = showSupport;
                     mbti: result.user.mbti_type,
                     mbtiCertainty: result.mbtiCertainty ?? certaintyScore,
                     enneagram: result.user.enneagram_type,
+                    enneagramWing: enneaWing,
                     enneagramCertainty: result.enneagramCertainty ?? certaintyScore,
                     overallCertainty: certaintyScore
                 },
@@ -3927,6 +3940,8 @@ window.showSupport = showSupport;
         function displayDetailedResults(profile, code) {
             const lang = localStorage.getItem('lang') || 'fr';
             const coherenceLabel = translations[lang]['results.details.coherence.label'];
+            const wing = profile.results.enneagramWing || computeEnneagramWing(profile.enneagramScores, profile.results.enneagram);
+            const enneaDisplay = `Type ${profile.results.enneagram}${wing ? 'w' + wing : ''}`;
             // Créer une nouvelle modale pour les résultats
             const resultsModal = document.createElement('div');
             resultsModal.id = 'results-modal';
@@ -3968,7 +3983,7 @@ window.showSupport = showSupport;
   <!-- Ennéagramme -->
   <div class="bg-purple-50 rounded-2xl p-6 shadow-sm">
     <h4 class="font-semibold text-purple-900 mb-2" data-i18n="results.details.enneagramTitle">Ennéagramme</h4>
-    <div class="text-2xl font-bold text-purple-600 mb-2">${profile.results.enneagram}</div>
+    <div class="text-2xl font-bold text-purple-600 mb-2">${enneaDisplay}</div>
     <div class="mt-2">
       ${
         profile.results.enneagramCertainty != null
