@@ -3911,7 +3911,7 @@ window.showSupport = showSupport;
             const enneaWing = computeEnneagramWing(result.user.enneagram_scores, result.user.enneagram_type);
             const finalProfile = {
                 uniqueCode: userCode,
-                name: `${result.user.mbti_type} — type ${result.user.enneagram_type}`,
+                name: `${result.user.mbti_type} — Type ${result.user.enneagram_type}${enneaWing ? 'w' + enneaWing : ''}`,
                 self: { mbti: selfProfile.mbtiType, enneagram: selfProfile.enneagramType },
                 results: {
                     mbti: result.user.mbti_type,
@@ -4154,7 +4154,7 @@ window.showSupport = showSupport;
     initCountUp(resultsModal);
     applyTranslations();
     const titleEl = resultsModal.querySelector('[data-i18n="results.details.title"]');
-    if (titleEl) { titleEl.innerHTML = titleEl.innerHTML.replace('{name}', profile.name); }
+    if (titleEl) { titleEl.innerHTML = titleEl.innerHTML.replace('{name}', `${profile.results.mbti} — ${enneaDisplay}`); }
 
     // Texte carrière : MBTI > Ennéagramme > fallback
     const careerEl = document.getElementById("careerProfileText");
