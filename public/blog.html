@@ -1159,6 +1159,13 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             return "Faible";
         }
 
+        function computeEnneagramWing(scores, coreType) {
+            if (!scores || !coreType) return null;
+            const left = coreType === '1' ? '9' : String(Number(coreType) - 1);
+            const right = coreType === '9' ? '1' : String(Number(coreType) + 1);
+            return (scores[left] || 0) >= (scores[right] || 0) ? left : right;
+        }
+
        function computeWeightedResults(evaluations) {
     const baseWeights = {
         family: 30,
@@ -3288,14 +3295,16 @@ function showSupport() {
             });
             const certaintyScore = result.overallCertainty ??
                 (result.user.certainty_score != null ? Number(result.user.certainty_score) : null);
+            const enneaWing = computeEnneagramWing(result.user.enneagram_scores, result.user.enneagram_type);
             const finalProfile = {
                 uniqueCode: userCode,
-                name: `${result.user.mbti_type} — type ${result.user.enneagram_type}`,
+                name: `${result.user.mbti_type} — Type ${result.user.enneagram_type}${enneaWing ? 'w' + enneaWing : ''}`,
                 self: { mbti: selfProfile.mbtiType, enneagram: selfProfile.enneagramType },
                 results: {
                     mbti: result.user.mbti_type,
                     mbtiCertainty: result.mbtiCertainty ?? certaintyScore,
                     enneagram: result.user.enneagram_type,
+                    enneagramWing: enneaWing,
                     enneagramCertainty: result.enneagramCertainty ?? certaintyScore,
                     overallCertainty: certaintyScore
                 },
@@ -3347,7 +3356,7 @@ function showSupport() {
           </div>
           <div class="bg-purple-50 rounded-lg p-4">
             <h4 class="font-semibold text-purple-900 mb-2">Ennéagramme</h4>
-            <div class="text-2xl font-bold text-purple-600 mb-2">${profile.results.enneagram}</div>
+            <div class="text-2xl font-bold text-purple-600 mb-2">Type ${profile.results.enneagram}${profile.results.enneagramWing ? 'w' + profile.results.enneagramWing : ''}</div>
             <div class="mt-2">
               ${
                 profile.results.enneagramCertainty != null
