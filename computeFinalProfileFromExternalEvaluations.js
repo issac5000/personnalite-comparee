@@ -130,17 +130,42 @@ const COHERENCE_COEFFICIENT = {
   Faible: 0.4,
 };
 
+// Bonus de majorité additif (simple et lisible)
+const BETA = 0.15;
+
+/**
+ * Compute certainty percentage for a given typing field using:
+ *  - coherence weights (Forte/Moyenne/Faible)
+ *  - additive majority bonus: score(type) = sum(weights) + BETA * count
+ * Returns an integer 0..100.
+ */
 function certaintyFromTypes(evaluations, typeField, weightField) {
   if (!evaluations.length) return 0;
-  const totals = {};
+
+  const counts = {};   // # d'évals par type
+  const weights = {};  // somme des poids (cohérence) par type
+  let totalWeight = 0;
+
   evaluations.forEach(e => {
     const t = e[typeField];
-    if (!t) return;
     const w = e[weightField] || 0;
-    totals[t] = (totals[t] || 0) + w;
+    if (!t || !w) return;
+    counts[t]  = (counts[t]  || 0) + 1;
+    weights[t] = (weights[t] || 0) + w;
+    totalWeight += w;
   });
-  const topWeight = Math.max(...Object.values(totals), 0);
-  return Math.round((topWeight / evaluations.length) * 100);
+
+  if (totalWeight === 0) return 0;
+
+  const scored = Object.keys(weights).map(t => ({
+    t,
+    s: weights[t] + BETA * (counts[t] || 0),
+  }));
+
+  const top = scored.reduce((a, b) => (b.s > a.s ? b : a), { t: null, s: 0 });
+  const sumS = scored.reduce((s, x) => s + x.s, 0) || 1;
+
+  return Math.round((top.s / sumS) * 100);
 }
 
 function computeFinalProfileFromExternalEvaluations(evaluations) {
@@ -207,23 +232,10 @@ function computeFinalProfileFromExternalEvaluations(evaluations) {
     majorityEnnea = Object.entries(enCounts).sort((a, b) => b[1] - a[1])[0][0];
   }
 
-  // --- Step 3: apply external convergence bonus/malus ---------------------
-  enriched.forEach(e => {
-    let matches = 0;
-    for (let i = 0; i < 4; i++) {
-      if (e.mbtiType[i] === majorityLetters[i]) matches++;
-    }
-    if (majorityEnnea && e.enneagramType === majorityEnnea) matches++;
-
-    let mult = 1;
-    if (matches === 5) mult = 1.1;
-    else if (matches === 3) mult = 0.9;
-    else if (matches === 2) mult = 0.8;
-    else if (matches <= 1) mult = 0.75;
-
-    e.weightMBTI *= mult;
-    e.weightEnnea *= mult;
-  });
+  // --- Step 3: convergence multiplicative (DÉSACTIVÉE) ---------------------
+  // On ne modifie plus e.weightMBTI / e.weightEnnea avec des multiplicateurs.
+  // L'information de majorité reste implicite via la somme des votes dans la certitude.
+  // enriched.forEach(e => { /* no-op */ });
 
   // --- Step 4: compute weighted averages ----------------------------------
   const avgFunctions = weightedAverage(
