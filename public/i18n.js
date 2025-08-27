@@ -6,16 +6,7 @@ function applyTranslations(lang = null) {
 
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const key = el.getAttribute("data-i18n");
-    let value = translations[lang];
-    if (value) {
-      key.split('.').forEach(k => {
-        value = value && Object.prototype.hasOwnProperty.call(value, k)
-          ? value[k]
-          : undefined;
-      });
-    } else {
-      value = undefined;
-    }
+    const value = translations[lang] ? translations[lang][key] : null;
 
     // on écrase toujours le texte si une traduction existe
     if (value !== undefined && value !== null) {
