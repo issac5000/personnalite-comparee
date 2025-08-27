@@ -7,7 +7,7 @@ const AUTO_QUESTIONS = [
       {
         "text": "Aristote : « L’esprit est gouverné par la logique. »",
         "i18nKey": "questionnaire.auto.q1.option1",
-        "functions": { "Ti": 4, "Te": 3, "Fe": -3, "Fi": -3 },
+        "functions": { "Ti": 3, "Te": 3, "Fe": -3, "Fi": -3 },
         "enneagram": { "5": 3, "6": 2, "7": 2, "2": -3, "4": -3 }
       },
       {
@@ -38,7 +38,7 @@ const AUTO_QUESTIONS = [
       {
         "text": "logique, analyse, structure, précision, objectivité, réflexion, schémas, clarté, scepticisme",
         "i18nKey": "questionnaire.auto.q2.option3",
-        "functions": { "Ti": 4, "Te": 1, "Fe": -3, "Fi": -1 },
+        "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
         "enneagram": { "5": 3, "6": 1 }
       },
       {
@@ -57,7 +57,7 @@ const AUTO_QUESTIONS = [
       {
         "text": "« Qui ne tente rien n’a rien. »",
         "i18nKey": "questionnaire.auto.q3.option1",
-        "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+        "functions": { "Se": 3, "Ne": 3, "Ni": -3, "Si": -1 },
         "enneagram": { "8": 3, "3": 2 }
       },
       {
@@ -94,7 +94,7 @@ const AUTO_QUESTIONS = [
       {
         "text": "action, spontanéité, intensité, plaisir, présence, expérimentation, réactivité, mouvement",
         "i18nKey": "questionnaire.auto.q4.option4",
-        "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+        "functions": { "Se": 3, "Ne": 2, "Ni": -3, "Si": -1 },
         "enneagram": { "8": 3, "7": 2 }
       }
     ]
@@ -125,7 +125,7 @@ const AUTO_QUESTIONS = [
       {
         "text": "Comprendre et clarifier le vrai",
         "i18nKey": "questionnaire.auto.q5.option4",
-        "functions": { "Ti": 4, "Te": 1, "Fe": -3, "Fi": -1 },
+        "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
         "enneagram": { "5": 3, "6": 1, "7": 1 }
       }
     ]
@@ -150,7 +150,7 @@ const AUTO_QUESTIONS = [
     {
       "text": "sécurité, loyauté, doute, prudence, engagement, peur, soutien, solidarité, fiabilité, vigilance",
       "i18nKey": "questionnaire.auto.q6.option3",
-      "functions": { "Si": 2, "Te": 1, "Fe": -4, "Fi": -1 },
+      "functions": { "Si": 3, "Te": 1, "Fe": -4, "Fi": -1 },
       "enneagram": { "6": 4, "1": 1 }
     }
   ]
@@ -163,7 +163,7 @@ const AUTO_QUESTIONS = [
       {
         "text": "perfection, règles, discipline, éthique, ordre, rigueur, structure, responsabilité",
         "i18nKey": "questionnaire.auto.q7.option1",
-        "functions": { "Si": 2, "Te": 2, "Ne": -2, "Se": -2 },
+        "functions": { "Si": 3, "Te": 2, "Ne": -2, "Se": -2 },
         "enneagram": { "1": 4 }
       },
       {
@@ -251,13 +251,13 @@ const AUTO_QUESTIONS = [
       {
         "text": "Plutôt stable et régulier(ère)",
         "i18nKey": "questionnaire.auto.q11.option1",
-        "functions": { "Si": 2, "Ni": 3, "Ne": -3, "Se": -1 },
+        "functions": { "Si": 3, "Ni": 2, "Ne": -3, "Se": -1 },
         "enneagram": { "6": 3, "1": 1 }
       },
       {
         "text": "Plutôt aventureux(se) et curieux(se)",
         "i18nKey": "questionnaire.auto.q11.option2",
-        "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+        "functions": { "Se": 3, "Ne": 3, "Ni": -3, "Si": -1 },
         "enneagram": { "8": 3, "7": 2 }
       },
       {
@@ -282,7 +282,7 @@ const AUTO_QUESTIONS = [
       {
         "text": "Je m’appuie dessus pour sécuriser",
         "i18nKey": "questionnaire.auto.q12.option1",
-        "functions": { "Si": 2, "Ni": 2, "Ne": -3, "Se": -1 },
+        "functions": { "Si": 3, "Ni": 2, "Ne": -3, "Se": -1 },
         "enneagram": { "6": 3, "1": 1 }
       },
       {
@@ -294,7 +294,7 @@ const AUTO_QUESTIONS = [
       {
         "text": "Je les discute si elles sont illogiques",
         "i18nKey": "questionnaire.auto.q12.option3",
-        "functions": { "Ti": 3, "Te": 1, "Fe": -2, "Fi": -1 },
+        "functions": { "Ti": 2, "Te": 1, "Fe": -2, "Fi": -1 },
         "enneagram": { "5": 2 }
       },
       {
@@ -338,7 +338,7 @@ const AUTO_QUESTIONS = [
       {
         "text": "« Avoir la tête dans les étoiles »",
         "i18nKey": "questionnaire.auto.q14.option2",
-        "functions": { "Ni": 3, "Ne": 2, "Si": -2, "Se": -2 },
+        "functions": { "Ni": 2, "Ne": 2, "Si": -2, "Se": -2 },
         "enneagram": { "4": 1 }
       }
     ]
@@ -420,7 +420,7 @@ const AUTO_QUESTIONS = [
     {
       "text": "D’introverti",
       "i18nKey": "questionnaire.auto.q18.option1",
-      "functions": { "Si": 3, "Ni": 4, "Fi": 4, "Ti": 4, "Ne": -4, "Se": -4, "Fe": -4, "Te": -4 },
+      "functions": { "Si": 4, "Ni": 4, "Fi": 4, "Ti": 4, "Ne": -4, "Se": -4, "Fe": -4, "Te": -4 },
       "enneagram": {}
     },
     {
@@ -511,7 +511,7 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "Aristote : « L’esprit est gouverné par la logique. »",
           "i18nKey": "questionnaire.ext.q1.option1",
-          "functions": { "Ti": 4, "Te": 3, "Fe": -3, "Fi": -3 },
+          "functions": { "Ti": 3, "Te": 3, "Fe": -3, "Fi": -3 },
           "enneagram": { "5": 3, "6": 2, "7": 2, "2": -3, "4": -3 }
         },
         {
@@ -542,7 +542,7 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "logique, analyse, structure, précision, objectivité, réflexion, schémas, clarté, scepticisme",
           "i18nKey": "questionnaire.ext.q2.option3",
-          "functions": { "Ti": 4, "Te": 1, "Fe": -3, "Fi": -1 },
+          "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
           "enneagram": { "5": 3, "6": 1 }
         },
         {
@@ -561,7 +561,7 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "« Qui ne tente rien n’a rien. »",
           "i18nKey": "questionnaire.ext.q3.option1",
-          "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+          "functions": { "Se": 3, "Ne": 3, "Ni": -3, "Si": -1 },
           "enneagram": { "8": 3, "3": 2 }
         },
         {
@@ -598,7 +598,7 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "action, spontanéité, intensité, plaisir, présence, expérimentation, réactivité, mouvement",
           "i18nKey": "questionnaire.ext.q4.option4",
-          "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+          "functions": { "Se": 3, "Ne": 2, "Ni": -3, "Si": -1 },
           "enneagram": { "8": 3, "7": 2 }
         }
       ]
@@ -629,7 +629,7 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "Comprendre et clarifier le vrai",
           "i18nKey": "questionnaire.ext.q5.option4",
-          "functions": { "Ti": 4, "Te": 1, "Fe": -3, "Fi": -1 },
+          "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
           "enneagram": { "5": 3, "6": 1, "7": 1 }
         }
       ]
@@ -654,7 +654,7 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "sécurité, loyauté, doute, prudence, engagement, peur, soutien, solidarité, fiabilité, vigilance",
           "i18nKey": "questionnaire.ext.q6.option3",
-          "functions": { "Si": 2, "Te": 1, "Fe": -4, "Fi": -1 },
+          "functions": { "Si": 3, "Te": 1, "Fe": -4, "Fi": -1 },
           "enneagram": { "6": 4, "1": 1 }
         }
       ]
@@ -667,7 +667,7 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "perfection, règles, discipline, éthique, ordre, rigueur, structure, responsabilité",
           "i18nKey": "questionnaire.ext.q7.option1",
-          "functions": { "Si": 2, "Te": 2, "Ne": -2, "Se": -2 },
+          "functions": { "Si": 3, "Te": 2, "Ne": -2, "Se": -2 },
           "enneagram": { "1": 4 }
         },
         {
@@ -755,13 +755,13 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "Plutôt stable et régulier(ère)",
         "i18nKey": "questionnaire.ext.q11.option1",
-        "functions": { "Si": 2, "Ni": 3, "Ne": -3, "Se": -1 },
+        "functions": { "Si": 3, "Ni": 2, "Ne": -3, "Se": -1 },
         "enneagram": { "6": 3, "1": 1 }
       },
       {
         "text": "Plutôt aventureux(se) et curieux(se)",
         "i18nKey": "questionnaire.ext.q11.option2",
-        "functions": { "Se": 3, "Ne": 1, "Ni": -3, "Si": -1 },
+        "functions": { "Se": 3, "Ne": 3, "Ni": -3, "Si": -1 },
         "enneagram": { "8": 3, "7": 2 }
       },
       {
@@ -786,7 +786,7 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "Il/elle s’appuie dessus pour sécuriser",
         "i18nKey": "questionnaire.ext.q12.option1",
-        "functions": { "Si": 2, "Ni": 2, "Ne": -3, "Se": -1 },
+        "functions": { "Si": 3, "Ni": 2, "Ne": -3, "Se": -1 },
         "enneagram": { "6": 3, "1": 1 }
       },
       {
@@ -798,7 +798,7 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "Il/elle les discute si elles sont illogiques",
         "i18nKey": "questionnaire.ext.q12.option3",
-        "functions": { "Ti": 3, "Te": 1, "Fe": -2, "Fi": -1 },
+        "functions": { "Ti": 2, "Te": 1, "Fe": -2, "Fi": -1 },
         "enneagram": { "5": 2 }
       },
       {
@@ -842,7 +842,7 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "« Avoir la tête dans les étoiles »",
         "i18nKey": "questionnaire.ext.q14.option2",
-        "functions": { "Ni": 3, "Ne": 2, "Si": -2, "Se": -2 },
+        "functions": { "Ni": 2, "Ne": 2, "Si": -2, "Se": -2 },
         "enneagram": { "4": 1 }
       }
     ]
@@ -924,7 +924,7 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "Introverti",
         "i18nKey": "questionnaire.ext.q18.option1",
-        "functions": { "Si": 3, "Ni": 4, "Fi": 4, "Ti": 4, "Ne": -4, "Se": -4, "Fe": -4, "Te": -4 },
+        "functions": { "Si": 4, "Ni": 4, "Fi": 4, "Ti": 4, "Ne": -4, "Se": -4, "Fe": -4, "Te": -4 },
         "enneagram": {}
       },
       {
