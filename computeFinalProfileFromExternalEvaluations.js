@@ -127,7 +127,7 @@ function internalCoherenceEnneagram(scores) {
 const COHERENCE_COEFFICIENT = {
   Forte: 1.0,
   Moyenne: 0.7,
-  Faible: 0.4,
+  Faible: 0.3,
 };
 
 // Bonus de majorité additif (simple et lisible)
