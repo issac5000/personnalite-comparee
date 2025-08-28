@@ -4089,7 +4089,7 @@ window.showSupport = showSupport;
       <span data-i18n="results.details.mbtiDichotomies">Dichotomies MBTI</span>
     </h4>
     <div class="bg-white rounded-xl p-3 sm:p-4 shadow-inner w-full overflow-hidden">
-      <canvas id="mbtiChart" class="w-full h-auto" style="max-width: 100%;"></canvas>
+      <canvas id="mbtiChart" height="300" class="w-full h-auto" style="max-width: 100%;"></canvas>
     </div>
   </div>
 
@@ -4311,7 +4311,7 @@ window.showSupport = showSupport;
                         data: mbtiData.map(d => d.value),
                         backgroundColor: '#93C5FD',
                         borderRadius: 8,
-                        barThickness: 16,
+                        barThickness: 20,
                         categoryPercentage: 0.6
                     }]
                 },
