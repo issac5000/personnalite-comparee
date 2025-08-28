@@ -1467,9 +1467,13 @@ function displayQuestion(index) {
             }
             
             if (finishButton) {
-                finishButton.addEventListener('click', function() {
+                finishButton.addEventListener('click', async function() {
                     if (Object.keys(answers).length === AUTO_QUESTIONS.length) {
-                        calculateResults();
+                        await calculateResults();
+                        const resultsSection = document.getElementById('results-section');
+                        if (resultsSection) {
+                            resultsSection.scrollIntoView({ behavior: 'smooth' });
+                        }
                     } else {
                         alert('Veuillez répondre à toutes les questions avant de terminer.');
                     }
@@ -1980,16 +1984,13 @@ function displayResults(results) {
     
     const resultsSection = document.createElement('div');
     resultsSection.className = 'bg-blue-50 py-16 px-4 sm:px-6 lg:px-8';
+    resultsSection.id = 'results-section';
     resultsSection.innerHTML = resultsHTML;
     
     const autoEvalSection = document.getElementById('home-mbti');
     if (autoEvalSection) {
         autoEvalSection.parentNode.insertBefore(resultsSection, autoEvalSection.nextSibling);
         initCountUp(resultsSection);
-
-        setTimeout(() => {
-            resultsSection.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
     }
     
     localStorage.setItem('personalityTestResults', JSON.stringify(results));
