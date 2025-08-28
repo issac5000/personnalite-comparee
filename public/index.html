@@ -733,7 +733,7 @@
     </div>
 </div>
 
-
+<div id="results-anchor"></div>
 
 <!-- Evaluate a friend Section -->
 <div id="home-enneagramme" data-aos="fade-left" class="section section-fonce py-16 px-4 sm:px-6 lg:px-8">
@@ -1190,6 +1190,8 @@ if (window.location.href.includes("external")) {
         let answers = {};
         let testType = 'auto'; // 'auto' ou 'proche'
         let userCode = genererUniqueCode();
+        let isSubmitting = false;
+        let hasRendered = false;
 
 
 
@@ -1490,20 +1492,36 @@ function displayQuestion(index) {
             }
             
             if (finishButton) {
-                finishButton.addEventListener('click', async function() {
-                    if (Object.keys(answers).length === AUTO_QUESTIONS.length) {
-                        await calculateResults();
-                        const profileSection = document.getElementById('retourver-profil');
-                        if (profileSection) {
-                            // Attendre que le DOM soit mis à jour avant de lancer le scroll
-                            setTimeout(() => {
-                                profileSection.scrollIntoView({ behavior: 'smooth' });
-                            }, 100);
-                        }
-                    } else {
-                        alert('Veuillez répondre à toutes les questions avant de terminer.');
+                finishButton.addEventListener('click', async function () {
+                    if (isSubmitting) return;
+                    if (hasRendered) {
+                        scrollToResults();
+                        return;
                     }
+                    if (Object.keys(answers).length !== AUTO_QUESTIONS.length) {
+                        alert('Veuillez répondre à toutes les questions avant de terminer.');
+                        return;
+                    }
+                    isSubmitting = true;
+                    finishButton.setAttribute('aria-disabled', 'true');
+                    finishButton.style.pointerEvents = 'none';
+                    await calculateResults();
+                    finishButton.removeAttribute('aria-disabled');
+                    finishButton.style.pointerEvents = '';
+                    isSubmitting = false;
+                    hasRendered = true;
+                    scrollToResults();
                 });
+            }
+        }
+
+        function scrollToResults() {
+            const resultsSection = document.getElementById('results-anchor');
+            if (resultsSection) {
+                const header = document.getElementById('site-header');
+                const offset = header ? header.offsetHeight : 0;
+                const top = resultsSection.getBoundingClientRect().top + window.scrollY - offset;
+                window.scrollTo({ top, behavior: 'smooth' });
             }
         }
 
@@ -2022,46 +2040,40 @@ const uniqueCode = genererUniqueCode();
 function displayResults(results) {
     window.finalResults = results;
     const resultsHTML = generateResultsHTML(window.finalResults || {});
-    
-    const resultsSection = document.createElement('div');
-    resultsSection.className = 'bg-blue-50 py-16 px-4 sm:px-6 lg:px-8';
-    resultsSection.id = 'results-section';
-    resultsSection.innerHTML = resultsHTML;
-    
-    const autoEvalSection = document.getElementById('home-mbti');
-    if (autoEvalSection) {
-        autoEvalSection.parentNode.insertBefore(resultsSection, autoEvalSection.nextSibling);
+
+    const resultsSection = document.getElementById('results-anchor');
+    if (resultsSection) {
+        resultsSection.className = 'bg-blue-50 py-16 px-4 sm:px-6 lg:px-8';
+        resultsSection.innerHTML = resultsHTML;
         initCountUp(resultsSection);
 
-        applyTranslations();
-        const finalResults = window.finalResults || {};
-        const lang = document.documentElement.lang || 'fr';
-        const mbti = (finalResults.mbtiType || "").toUpperCase();
-        const ennea = String(finalResults.enneagramType || "");
+        if (typeof applyTranslations === 'function') {
+            applyTranslations();
+            const finalResults = window.finalResults || {};
+            const lang = document.documentElement.lang || 'fr';
+            const mbti = (finalResults.mbtiType || "").toUpperCase();
+            const ennea = String(finalResults.enneagramType || "");
 
-        // Choix du texte : MBTI > Ennéagramme > Fallback
-       let careerText =
-  (translations[lang].results.career.mbti &&
-   translations[lang].results.career.mbti[mbti]) ||
+            // Choix du texte : MBTI > Ennéagramme > Fallback
+            let careerText =
+                (translations[lang].results.career.mbti &&
+                    translations[lang].results.career.mbti[mbti]) ||
+                (translations[lang].results.career.ennea &&
+                    translations[lang].results.career.ennea[ennea]) ||
+                translations[lang].results.career.fallback;
 
-  (translations[lang].results.career.ennea &&
-   translations[lang].results.career.ennea[ennea]) ||
+            // Debug pour vérifier
+            console.log("MBTI demandé:", mbti);
+            console.log("Ennéagramme demandé:", ennea);
+            console.log("Clés MBTI trad dispo:", Object.keys(translations[lang].results.career.mbti));
+            console.log("Clés Ennéa trad dispo:", Object.keys(translations[lang].results.career.ennea));
+            console.log("Texte carrière choisi:", careerText);
 
-  translations[lang].results.career.fallback;
-
-
-        // Debug pour vérifier
-       console.log("MBTI demandé:", mbti);
-console.log("Ennéagramme demandé:", ennea);
-console.log("Clés MBTI trad dispo:", Object.keys(translations[lang].results.career.mbti));
-console.log("Clés Ennéa trad dispo:", Object.keys(translations[lang].results.career.ennea));
-console.log("Texte carrière choisi:", careerText);
-
-
-        // Injection dans le bloc
-        document.getElementById("careerProfileText").innerText = careerText;
+            // Injection dans le bloc
+            document.getElementById("careerProfileText").innerText = careerText;
+        }
     }
-    
+
     localStorage.setItem('personalityTestResults', JSON.stringify(results));
     localStorage.removeItem('personalityTestProgress');
 }
@@ -2207,13 +2219,14 @@ console.log("Texte carrière choisi:", careerText);
                 localStorage.removeItem('personalityTestResults');
                 currentQuestionIndex = 0;
                 answers = {};
-                
+                hasRendered = false;
+
                 // Supprimer la section des résultats si elle existe
                 const resultsSection = document.querySelector('.bg-blue-50');
                 if (resultsSection && resultsSection.innerHTML.includes('Vos résultats')) {
                     resultsSection.remove();
                 }
-                
+
                 displayQuestion(0);
             }
         }
