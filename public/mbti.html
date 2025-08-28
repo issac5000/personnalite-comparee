@@ -1476,8 +1476,6 @@ function displayQuestion(index) {
                         const icon = finishButton.querySelector('i');
                         if (icon) icon.remove();
                         if (typeof applyTranslations === 'function') { applyTranslations(); }
-                        scrollToResults();
-                        location.hash = 'results-section';
                     } else {
                         alert('Veuillez répondre à toutes les questions avant de terminer.');
                     }
@@ -2038,12 +2036,22 @@ async function calculateResults() {
 function displayResults(results) {
     const resultsHTML = generateResultsHTML(results);
 
-    const resultsSection = document.getElementById('results-section');
-    if (resultsSection) {
-        resultsSection.className = 'bg-blue-50 py-16 px-4 sm:px-6 lg:px-8';
-        resultsSection.innerHTML = resultsHTML;
-        initCountUp(resultsSection);
-    }
+    const existing = document.getElementById('results-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'results-modal';
+    modal.className = 'modal show';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 class="text-xl font-bold text-gray-900">Vos résultats</h2>
+                <span class="close" onclick="closeResultsModal()">&times;</span>
+            </div>
+            <div class="modal-body">${resultsHTML}</div>
+        </div>`;
+    document.body.appendChild(modal);
+    initCountUp(modal);
 
     localStorage.setItem('personalityTestResults', JSON.stringify(results));
     localStorage.removeItem('personalityTestProgress');
@@ -4378,6 +4386,15 @@ function showSupport() {
                 closeResultsModal();
             }
         }
+
+        document.addEventListener('keydown', function(event) {
+            const profileModal = document.getElementById('profile-modal');
+            const resultsModal = document.getElementById('results-modal');
+            if (event.key === 'Escape') {
+                if (resultsModal) { closeResultsModal(); }
+                if (profileModal) { closeProfileModal(); }
+            }
+        });
 
         // Permettre la saisie du code avec Entrée
         document.addEventListener('DOMContentLoaded', function() {
