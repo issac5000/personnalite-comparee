@@ -4052,13 +4052,19 @@ function showSupport() {
                     datasets: [{
                         data: mbtiData.map(d => d.value),
                         backgroundColor: '#93C5FD',
-                        borderRadius: 8
+                        borderRadius: 8,
+                        barThickness: 16,
+                        categoryPercentage: 0.6
                     }]
                 },
                 options: {
                     indexAxis: 'y',
                     scales: {
-                        x: { beginAtZero: true, max: 100 }
+                        x: { beginAtZero: true, max: 100 },
+                        y: { ticks: { autoSkip: false } }
+                    },
+                    layout: {
+                        padding: { top: 10, bottom: 10 }
                     },
                     plugins: {
                         legend: { display: false },
