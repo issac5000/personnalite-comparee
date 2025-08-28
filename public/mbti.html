@@ -1475,14 +1475,18 @@ function displayQuestion(index) {
                         const icon = finishButton.querySelector('i');
                         if (icon) icon.remove();
                         if (typeof applyTranslations === 'function') { applyTranslations(); }
-                        const resultsSection = document.getElementById('results-section');
-                        if (resultsSection) {
-                            resultsSection.scrollIntoView({ behavior: 'smooth' });
-                        }
+                        setTimeout(scrollToResults, 50);
                     } else {
                         alert('Veuillez répondre à toutes les questions avant de terminer.');
                     }
                 });
+            }
+        }
+
+        function scrollToResults() {
+            const resultEl = document.getElementById('results-section');
+            if (resultEl) {
+                resultEl.scrollIntoView({ behavior: 'smooth' });
             }
         }
 
