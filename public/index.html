@@ -1511,7 +1511,7 @@ function displayQuestion(index) {
                     isSubmitting = false;
                     hasRendered = true;
                     const span = finishButton.querySelector('span[data-i18n]');
-                    if (span) span.setAttribute('data-i18n', 'button.finishTest.done');
+                    if (span) span.setAttribute('data-i18n', 'button.finishTest.saved');
                     const icon = finishButton.querySelector('i');
                     if (icon) icon.remove();
                     if (typeof applyTranslations === 'function') { applyTranslations(); }
