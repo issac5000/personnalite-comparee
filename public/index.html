@@ -1495,7 +1495,7 @@ function displayQuestion(index) {
                 finishButton.addEventListener('click', async function () {
                     if (isSubmitting) return;
                     if (hasRendered) {
-                        setTimeout(scrollToResults, 100);
+                        scrollToResults();
                         location.hash = 'results-section';
                         return;
                     }
@@ -1516,19 +1516,62 @@ function displayQuestion(index) {
                     const icon = finishButton.querySelector('i');
                     if (icon) icon.remove();
                     if (typeof applyTranslations === 'function') { applyTranslations(); }
-                    setTimeout(scrollToResults, 100);
+                    scrollToResults();
                     location.hash = 'results-section';
                 });
             }
         }
 
-        function scrollToResults() {
-            const resultEl = document.getElementById('results-section');
-            if (!resultEl) return;
-            const header = document.getElementById('site-header');
-            const headerHeight = header ? header.offsetHeight : 0;
-            const y = resultEl.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-            window.scrollTo({ top: y, behavior: 'smooth' });
+        function getScrollableAncestor(el) {
+            let p = el.parentElement;
+            while (p) {
+                const style = getComputedStyle(p);
+                const canScroll = /(auto|scroll)/.test(style.overflowY) || p.scrollHeight > p.clientHeight;
+                if (canScroll) return p;
+                p = p.parentElement;
+            }
+            return document.scrollingElement || document.documentElement; // fallback window
+        }
+
+        function waitForVisible(selector, timeout = 2000) {
+            return new Promise((resolve, reject) => {
+                const start = performance.now();
+                const tick = () => {
+                    const el = document.querySelector(selector);
+                    if (el && el.offsetHeight > 0) return resolve(el);
+                    if (performance.now() - start > timeout) return reject(new Error('timeout'));
+                    requestAnimationFrame(tick);
+                };
+                tick();
+            });
+        }
+
+        async function scrollToResults() {
+            try {
+                const el = await waitForVisible('#results-section', 2500);
+                const header = document.querySelector('#site-header, header.sticky, .header.sticky');
+                const headerH = header ? header.offsetHeight : 0;
+                const scroller = getScrollableAncestor(el);
+                const rect = el.getBoundingClientRect();
+                const baseY = (scroller === document.scrollingElement || scroller === document.documentElement)
+                    ? window.pageYOffset
+                    : scroller.scrollTop;
+                const targetY = baseY + rect.top - headerH - 8;
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        if (scroller === document.scrollingElement || scroller === document.documentElement) {
+                            window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+                        } else {
+                            try { scroller.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' }); }
+                            catch { scroller.scrollTop = Math.max(0, targetY); }
+                        }
+                        try { history.replaceState(null, '', '#results-section'); } catch {}
+                    });
+                });
+            } catch (e) {
+                const el = document.getElementById('results-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         // Mise à jour des boutons de navigation
