@@ -980,6 +980,7 @@
             </div>
         </div>
     </div>
+<div id="results-section"></div>
 
    <!-- Footer -->
     <p class="text-xs text-gray-500 text-center mb-4">MBTI® est une marque déposée de The Myers-Briggs Company. Ce site propose une approche inspirée et n’est ni affilié, ni agréé, ni soutenu par cette société.</p>
@@ -1379,7 +1380,8 @@ function displayQuestion(index) {
                         const icon = finishButton.querySelector('i');
                         if (icon) icon.remove();
                         if (typeof applyTranslations === 'function') { applyTranslations(); }
-                        setTimeout(scrollToResults, 50);
+                        setTimeout(scrollToResults, 100);
+                        location.hash = 'results-section';
                     } else {
                         alert('Veuillez répondre à toutes les questions avant de terminer.');
                     }
@@ -1389,9 +1391,11 @@ function displayQuestion(index) {
 
         function scrollToResults() {
             const resultEl = document.getElementById('results-section');
-            if (resultEl) {
-                resultEl.scrollIntoView({ behavior: 'smooth' });
-            }
+            if (!resultEl) return;
+            const header = document.getElementById('site-header');
+            const headerHeight = header ? header.offsetHeight : 0;
+            const y = resultEl.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+            window.scrollTo({ top: y, behavior: 'smooth' });
         }
 
         // Mise à jour des boutons de navigation
@@ -1894,18 +1898,14 @@ async function calculateResults() {
 
 function displayResults(results) {
     const resultsHTML = generateResultsHTML(results);
-    
-    const resultsSection = document.createElement('div');
-    resultsSection.className = 'bg-blue-50 py-16 px-4 sm:px-6 lg:px-8';
-    resultsSection.id = 'results-section';
-    resultsSection.innerHTML = resultsHTML;
-    
-    const autoEvalSection = document.getElementById('home-mbti');
-    if (autoEvalSection) {
-        autoEvalSection.parentNode.insertBefore(resultsSection, autoEvalSection.nextSibling);
+
+    const resultsSection = document.getElementById('results-section');
+    if (resultsSection) {
+        resultsSection.className = 'bg-blue-50 py-16 px-4 sm:px-6 lg:px-8';
+        resultsSection.innerHTML = resultsHTML;
         initCountUp(resultsSection);
     }
-    
+
     localStorage.setItem('personalityTestResults', JSON.stringify(results));
     localStorage.removeItem('personalityTestProgress');
 }
@@ -2077,10 +2077,11 @@ function displayResults(results) {
                 currentQuestionIndex = 0;
                 answers = {};
                 
-                // Supprimer la section des résultats si elle existe
-                const resultsSection = document.querySelector('.bg-blue-50');
-                if (resultsSection && resultsSection.innerHTML.includes('Vos résultats')) {
-                    resultsSection.remove();
+                // Réinitialiser la section des résultats si elle existe
+                const resultsSection = document.getElementById('results-section');
+                if (resultsSection) {
+                    resultsSection.innerHTML = '';
+                    resultsSection.className = '';
                 }
                 
                 displayQuestion(0);
