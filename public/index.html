@@ -1510,6 +1510,11 @@ function displayQuestion(index) {
                     finishButton.style.pointerEvents = '';
                     isSubmitting = false;
                     hasRendered = true;
+                    const span = finishButton.querySelector('span[data-i18n]');
+                    if (span) span.setAttribute('data-i18n', 'button.finishTest.done');
+                    const icon = finishButton.querySelector('i');
+                    if (icon) icon.remove();
+                    if (typeof applyTranslations === 'function') { applyTranslations(); }
                     scrollToResults();
                 });
             }
