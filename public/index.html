@@ -1493,9 +1493,12 @@ function displayQuestion(index) {
                 finishButton.addEventListener('click', async function() {
                     if (Object.keys(answers).length === AUTO_QUESTIONS.length) {
                         await calculateResults();
-                        const resultsSection = document.getElementById('results-section');
-                        if (resultsSection) {
-                            resultsSection.scrollIntoView({ behavior: 'smooth' });
+                        const profileSection = document.getElementById('retourver-profil');
+                        if (profileSection) {
+                            // Attendre que le DOM soit mis à jour avant de lancer le scroll
+                            setTimeout(() => {
+                                profileSection.scrollIntoView({ behavior: 'smooth' });
+                            }, 100);
                         }
                     } else {
                         alert('Veuillez répondre à toutes les questions avant de terminer.');
