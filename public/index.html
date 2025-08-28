@@ -1495,7 +1495,8 @@ function displayQuestion(index) {
                 finishButton.addEventListener('click', async function () {
                     if (isSubmitting) return;
                     if (hasRendered) {
-                        setTimeout(scrollToResults, 50);
+                        setTimeout(scrollToResults, 100);
+                        location.hash = 'results-section';
                         return;
                     }
                     if (Object.keys(answers).length !== AUTO_QUESTIONS.length) {
@@ -1515,16 +1516,19 @@ function displayQuestion(index) {
                     const icon = finishButton.querySelector('i');
                     if (icon) icon.remove();
                     if (typeof applyTranslations === 'function') { applyTranslations(); }
-                    setTimeout(scrollToResults, 50);
+                    setTimeout(scrollToResults, 100);
+                    location.hash = 'results-section';
                 });
             }
         }
 
         function scrollToResults() {
             const resultEl = document.getElementById('results-section');
-            if (resultEl) {
-                resultEl.scrollIntoView({ behavior: 'smooth' });
-            }
+            if (!resultEl) return;
+            const header = document.getElementById('site-header');
+            const headerHeight = header ? header.offsetHeight : 0;
+            const y = resultEl.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+            window.scrollTo({ top: y, behavior: 'smooth' });
         }
 
         // Mise à jour des boutons de navigation
@@ -2223,10 +2227,11 @@ function displayResults(results) {
                 answers = {};
                 hasRendered = false;
 
-                // Supprimer la section des résultats si elle existe
-                const resultsSection = document.querySelector('.bg-blue-50');
-                if (resultsSection && resultsSection.innerHTML.includes('Vos résultats')) {
-                    resultsSection.remove();
+                // Réinitialiser la section des résultats si elle existe
+                const resultsSection = document.getElementById('results-section');
+                if (resultsSection) {
+                    resultsSection.innerHTML = '';
+                    resultsSection.className = '';
                 }
 
                 displayQuestion(0);
