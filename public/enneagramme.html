@@ -4023,29 +4023,26 @@ function showSupport() {
             }
 
             const mbtiCtx = mbtiCanvas.getContext('2d');
-            const mbtiPairs = [
-                { label: 'Fi / Te', a: 'Fi', b: 'Te' },
-                { label: 'Fe / Ti', a: 'Fe', b: 'Ti' },
-                { label: 'Si / Ne', a: 'Si', b: 'Ne' },
-                { label: 'Se / Ni', a: 'Se', b: 'Ni' }
-            ];
             const clamp = (val) => Math.min(100, Math.max(0, val));
-            const mbtiData = mbtiPairs.map(pair => {
-                const aScore = profile.mbtiScores[pair.a] || 0;
-                const bScore = profile.mbtiScores[pair.b] || 0;
-                const dominant = aScore > bScore ? pair.a : pair.b;
-                const rawValue = (aScore + bScore) === 0 ? 0 : Math.round((Math.max(aScore, bScore) / (aScore + bScore)) * 100);
-                return { label: pair.label, value: clamp(rawValue), dominant };
-            });
+            const mbtiData = [
+                { label: 'Fi', value: clamp(profile.mbtiScores.Fi || 0) },
+                { label: 'Fe', value: clamp(profile.mbtiScores.Fe || 0) },
+                { label: 'Ti', value: clamp(profile.mbtiScores.Ti || 0) },
+                { label: 'Te', value: clamp(profile.mbtiScores.Te || 0) },
+                { label: 'Si', value: clamp(profile.mbtiScores.Si || 0) },
+                { label: 'Se', value: clamp(profile.mbtiScores.Se || 0) },
+                { label: 'Ni', value: clamp(profile.mbtiScores.Ni || 0) },
+                { label: 'Ne', value: clamp(profile.mbtiScores.Ne || 0) }
+            ];
             const mbtiDescriptions = {
                 Fi: 'Sentiment Introverti',
-                Te: 'Pensée Extravertie',
                 Fe: 'Sentiment Extraverti',
                 Ti: 'Pensée Introvertie',
+                Te: 'Pensée Extravertie',
                 Si: 'Sensation Introvertie',
-                Ne: 'Intuition Extravertie',
                 Se: 'Sensation Extravertie',
-                Ni: 'Intuition Introvertie'
+                Ni: 'Intuition Introvertie',
+                Ne: 'Intuition Extravertie'
             };
             Chart.register(ChartDataLabels);
             new Chart(mbtiCtx, {
@@ -4067,13 +4064,13 @@ function showSupport() {
                         legend: { display: false },
                         tooltip: {
                             callbacks: {
-                                label: ctx => `${mbtiDescriptions[mbtiData[ctx.dataIndex].dominant]}: ${ctx.parsed.x}%`
+                                label: ctx => `${mbtiDescriptions[mbtiData[ctx.dataIndex].label]}: ${ctx.parsed.x}%`
                             }
                         },
                         datalabels: {
                             anchor: 'end',
                             align: 'end',
-                            formatter: (value, ctx) => `${value}% ${mbtiData[ctx.dataIndex].dominant}`
+                            formatter: value => `${value}%`
                         }
                     },
                     animation: {
