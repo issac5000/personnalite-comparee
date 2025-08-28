@@ -733,7 +733,7 @@
     </div>
 </div>
 
-<div id="results-anchor"></div>
+<div id="results-section"></div>
 
 <!-- Evaluate a friend Section -->
 <div id="home-enneagramme" data-aos="fade-left" class="section section-fonce py-16 px-4 sm:px-6 lg:px-8">
@@ -1495,7 +1495,7 @@ function displayQuestion(index) {
                 finishButton.addEventListener('click', async function () {
                     if (isSubmitting) return;
                     if (hasRendered) {
-                        scrollToResults();
+                        setTimeout(scrollToResults, 50);
                         return;
                     }
                     if (Object.keys(answers).length !== AUTO_QUESTIONS.length) {
@@ -1515,18 +1515,15 @@ function displayQuestion(index) {
                     const icon = finishButton.querySelector('i');
                     if (icon) icon.remove();
                     if (typeof applyTranslations === 'function') { applyTranslations(); }
-                    scrollToResults();
+                    setTimeout(scrollToResults, 50);
                 });
             }
         }
 
         function scrollToResults() {
-            const resultsSection = document.getElementById('results-anchor');
-            if (resultsSection) {
-                const header = document.getElementById('site-header');
-                const offset = header ? header.offsetHeight : 0;
-                const top = resultsSection.getBoundingClientRect().top + window.scrollY - offset;
-                window.scrollTo({ top, behavior: 'smooth' });
+            const resultEl = document.getElementById('results-section');
+            if (resultEl) {
+                resultEl.scrollIntoView({ behavior: 'smooth' });
             }
         }
 
@@ -2046,7 +2043,7 @@ function displayResults(results) {
     window.finalResults = results;
     const resultsHTML = generateResultsHTML(window.finalResults || {});
 
-    const resultsSection = document.getElementById('results-anchor');
+    const resultsSection = document.getElementById('results-section');
     if (resultsSection) {
         resultsSection.className = 'bg-blue-50 py-16 px-4 sm:px-6 lg:px-8';
         resultsSection.innerHTML = resultsHTML;
