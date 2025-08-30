@@ -816,10 +816,8 @@
         </div>
     </div>
 
-    <script type="module">
-      import { showModal, closeModal } from "./common.js";
-      window.closeModal = closeModal;
-
+    <script src="common.js"></script>
+    <script>
       function showPrivacyPolicy() {
         const lang = localStorage.getItem('lang') || 'fr';
         const date = new Date().toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US');
@@ -949,7 +947,11 @@
 <script src="i18n.js"></script>
 
 <script type="module">
-  import { supabase } from "./common.js";
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+  const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"; 
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   // -------- Utils --------
   const nowIso = () => new Date().toISOString();

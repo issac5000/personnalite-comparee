@@ -1,9 +1,3 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg";
-export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
 const mobileMenuButton = document.getElementById('mobile-menu-button');
 const mobileMenu = document.getElementById('mobile-menu');
 const menuIcon = document.getElementById('menu-icon');
@@ -246,5 +240,3 @@ function showContact(){
   `;
   showModal('<span data-i18n="footer.contact.support.title">Support</span>', content);
 }
-
-export { showModal, closeModal };
