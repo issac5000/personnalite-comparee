@@ -1056,7 +1056,8 @@
 
    
       
-    <script>
+    <script type="module">
+        import { supabase } from "./common.js";
         // Configuration et données
                 // Récupère les questions externes depuis Supabase si l'utilisateur est un proche
 let questions = AUTO_QUESTIONS;
@@ -1504,15 +1505,8 @@ function displayQuestion(index) {
             }
             return false;
         }
-
-        // === Configuration Supabase ===
-
-        const SUPABASE_URL = 'https://swjnpvfkloubshksobau.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg';
-
-// Le client Supabase sera initialisé après le chargement du script
-
-
+        
+        // Supabase client imported from common.js
         /**
          * Enregistre le profil utilisateur (auto‑évaluation) dans Supabase.
          * Cette fonction insère un enregistrement dans la table "users".
@@ -4452,13 +4446,7 @@ function showSupport() {
   </script>
 
   <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-  const supabaseUrl = "https://swjnpvfkloubshksobau.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg";
-
-  const supabase = createClient(supabaseUrl, supabaseKey);
-  window.supabase = supabase;
+  import { supabase } from "./common.js";
 
   const externalForm = document.getElementById("external-form");
 
@@ -4836,8 +4824,6 @@ addChatStyles();
   #pc-constellation{position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none;}
 </style>
 
-<!-- Supabase UMD (expose window.supabase) -->
-<script src="https://unpkg.com/@supabase/supabase-js"></script>
 <script src="nav.js"></script>
 <script src="lang.js"></script>
 <script src="i18n.js"></script>
@@ -4864,11 +4850,7 @@ addChatStyles();
 </script>
 
 <script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-  const SUPABASE_URL = "https://swjnpvfkloubshksobau.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3am5wdmZrbG91YnNoa3NvYmF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwOTUxMzEsImV4cCI6MjA2OTY3MTEzMX0.A6rnIJyfIIxDT0c2XW_zGeUXpdYCgBFd6MTzBGFZ-Cg"; 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+  import { supabase } from "./common.js";
 
   // -------- Utils --------
   const nowIso = () => new Date().toISOString();
