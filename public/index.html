@@ -4140,14 +4140,14 @@ window.shareProfileResults = shareProfileResults;
                                     </div>
                                     <span class="text-sm text-green-600 font-medium" data-i18n="results.details.completed">✓ Complétée</span>
                                 </div>
-                                ${profile.externalEvaluations.map(eval => `
-                                    <div class="flex items-center justify-between p-3 ${eval.completed ? 'bg-green-50' : 'bg-gray-50'} rounded-lg">
+                                ${profile.externalEvaluations.map(evaluation => `
+                                    <div class="flex items-center justify-between p-3 ${evaluation.completed ? 'bg-green-50' : 'bg-gray-50'} rounded-lg">
                                         <div>
-                                            <span class="text-sm font-medium text-gray-700">${eval.relation}</span>
-                                            <div class="text-xs text-gray-500">${eval.mbti} — type ${eval.enneagram} — MBTI : <strong>${coherenceLabel} ${eval.coherenceMBTI}</strong> — Ennéagramme : <strong>${coherenceLabel} ${eval.coherenceEnneagramme}</strong></div>
+                                            <span class="text-sm font-medium text-gray-700">${evaluation.relation}</span>
+                                            <div class="text-xs text-gray-500">${evaluation.mbti} — type ${evaluation.enneagram} — MBTI : <strong>${coherenceLabel} ${evaluation.coherenceMBTI}</strong> — Ennéagramme : <strong>${coherenceLabel} ${evaluation.coherenceEnneagramme}</strong></div>
                                         </div>
-                                          <span class="text-sm ${eval.completed ? 'text-green-600' : 'text-gray-500'} font-medium">
-                                              ${eval.completed ? `<span data-i18n="results.details.completedOn">✓ Complétée le</span> ${new Date(eval.completedAt).toLocaleDateString('fr-FR')}` : `<span data-i18n="results.details.pendingShort">⏳ En attente</span>`}
+                                          <span class="text-sm ${evaluation.completed ? 'text-green-600' : 'text-gray-500'} font-medium">
+                                              ${evaluation.completed ? `<span data-i18n="results.details.completedOn">✓ Complétée le</span> ${new Date(evaluation.completedAt).toLocaleDateString('fr-FR')}` : `<span data-i18n="results.details.pendingShort">⏳ En attente</span>`}
                                           </span>
                                     </div>
                                 `).join('')}
