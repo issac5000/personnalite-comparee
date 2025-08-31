@@ -667,7 +667,7 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "perfection, règles, discipline, éthique, ordre, rigueur, structure, responsabilité",
           "i18nKey": "questionnaire.ext.q7.option1",
-          "functions": { "Si": 3, "Te": 2, "Ne": -1, "Se": -2 },
+          "functions": { "Si": 3, "Te": 2, "Ne": -1, "Se": -1 },
           "enneagram": { "1": 5 }
         },
         {
