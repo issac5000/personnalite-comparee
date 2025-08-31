@@ -1444,9 +1444,12 @@ if (window.location.href.includes("external")) {
               const v = Math.abs(timeData[k] - 128) / 128; // 0..1
               if (v > peak) peak = v;
             }
-            const eased = smooth[i] + (peak - smooth[i]) * 0.24;
+            // Expand dynamics slightly so medium volumes appear taller
+            peak = Math.pow(peak, 0.75);
+            const eased = smooth[i] + (peak - smooth[i]) * 0.26;
             smooth[i] = eased;
-            const h = Math.max(2, eased * (cssH - 8));
+            const ampMult = 1.6; // make bars higher
+            const h = Math.max(2, Math.min(cssH - 2, eased * (cssH - 8) * ampMult));
             if (h > peaks[i]) peaks[i] = h; else peaks[i] = Math.max(2, peaks[i] - (0.06 * dt));
             const y = cssH - h;
             const r = Math.min(6, h/2);
