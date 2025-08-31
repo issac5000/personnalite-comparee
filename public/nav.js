@@ -209,6 +209,16 @@
 
       const langToggle=document.getElementById('lang-toggle');
       const langMenu=document.getElementById('lang-menu');
+      const brandHomeEl = document.getElementById('brand-home');
+      const applyBrandStyling = ()=>{
+        if(!brandHomeEl) return;
+        const lang = document.documentElement.lang || localStorage.getItem('lang') || 'fr';
+        if(lang === 'en'){
+          brandHomeEl.innerHTML = 'Compared <span class="text-blue-600">Personality</span>';
+        } else {
+          brandHomeEl.innerHTML = 'Personnalité <span class="text-blue-600">Comparée</span>';
+        }
+      };
       if(langToggle&&langMenu){
         const changeLanguage=lang=>{
           if(window.i18n&&typeof i18n.setLanguage==='function'){
@@ -218,6 +228,7 @@
           if(typeof switchLang==='function') switchLang(lang);
           if(typeof applyTranslations==='function') applyTranslations();
           if(typeof updatePlaceholders==='function') updatePlaceholders();
+          applyBrandStyling();
         };
         langToggle.addEventListener('click',e=>{
           e.stopPropagation();
@@ -236,6 +247,8 @@
             langMenu.classList.add('hidden');
           }
         });
+        // Ensure initial brand styling
+        applyBrandStyling();
       }
 
       // Dynamically adjust body top padding to header height

@@ -1781,7 +1781,7 @@ const translations = {
     "blog.peurs.conclusion.p2": "Each type holds unique potential once fear stops dictating behavior. Type 1 inspires through integrity, Type 2 through genuine generosity, Type 3 through its ability to achieve, Type 4 through creative depth, Type 5 through vision, Type 6 through brave loyalty, Type 7 through resilient joy, Type 8 through fair protection and Type 9 through unifying talent.",
     "blog.peurs.conclusion.p3": "Moving forward on this path takes time, kindness and sometimes outside support. But each insight frees a bit more inner space. Facing our fears reveals them as messengers rather than tyrants. <strong>Understanding them is the first step to freedom</strong>.",
     "blog.peurs.back": "← Back to the blog",
-    "brand.name": "Compared Personality",
+    "brand.name": "Compared <span class=\"text-blue-600\">Personality</span>",
     "menu.home": "Home",
     "menu.mbti": "MBTI-inspired model",
     "menu.enneagram": "Enneagram",
