@@ -697,40 +697,7 @@
     </footer>
     <script src="questions-v2.js"></script>
 
-<script>
-  const mobileMenuButton = document.getElementById('mobile-menu-button');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const menuIcon = document.getElementById('menu-icon');
-
-  if (mobileMenuButton && mobileMenu) {
-    mobileMenuButton.addEventListener('click', function() {
-      const isOpen = mobileMenu.classList.contains('active');
-      if (isOpen) {
-        mobileMenu.classList.remove('active');
-        menuIcon.classList.remove('fa-times');
-        menuIcon.classList.add('fa-bars');
-        mobileMenuButton.setAttribute('aria-expanded', 'false');
-      } else {
-        mobileMenu.classList.add('active');
-        menuIcon.classList.remove('fa-bars');
-        menuIcon.classList.add('fa-times');
-        mobileMenuButton.setAttribute('aria-expanded', 'true');
-      }
-      // Remove persistent focus outline on mobile after tap
-      try { mobileMenuButton.blur(); } catch {}
-    });
-
-    const mobileLinks = mobileMenu.querySelectorAll('a');
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.remove('active');
-        menuIcon.classList.remove('fa-times');
-        menuIcon.classList.add('fa-bars');
-        mobileMenuButton.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
-</script>
+<!-- Mobile menu behavior handled by nav.js for this page -->
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script>
   AOS.init({

@@ -162,10 +162,49 @@
         });
       }
 
-      // Ensure hamburger button does not keep focus after tap (mobile)
-      const mobileMenuBtn = document.getElementById('mobile-menu-button');
-      if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', () => { try { mobileMenuBtn.blur(); } catch {} });
+      // Blog pages: ensure hamburger opens/closes the mobile menu
+      const path = (location.pathname || '').split('/').pop();
+      if (path === 'blog-enneagramme-instincts.html' || path === 'blog-mbti-4-dimensions.html') {
+        const mobileMenuBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        if (mobileMenuBtn && mobileMenu) {
+          // Mark as initialized to avoid accidental double-binding if inline exists
+          if (!mobileMenuBtn.dataset.hamburgerInit) {
+            mobileMenuBtn.dataset.hamburgerInit = '1';
+            mobileMenuBtn.addEventListener('click', (e)=>{
+              e.stopPropagation();
+              const isOpen = mobileMenu.classList.contains('active') || mobileMenu.style.display === 'block';
+              if (isOpen) {
+                mobileMenu.classList.remove('active');
+                mobileMenu.style.display = 'none';
+                if (menuIcon) { menuIcon.classList.add('fa-bars'); menuIcon.classList.remove('fa-times'); }
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+              } else {
+                mobileMenu.classList.add('active');
+                mobileMenu.style.display = 'block';
+                if (menuIcon) { menuIcon.classList.remove('fa-bars'); menuIcon.classList.add('fa-times'); }
+                mobileMenuBtn.setAttribute('aria-expanded', 'true');
+              }
+              try { mobileMenuBtn.blur(); } catch {}
+            }, {capture: true});
+            // Close when clicking a link inside
+            mobileMenu.querySelectorAll('a').forEach(link => {
+              link.addEventListener('click', ()=>{
+                mobileMenu.classList.remove('active');
+                mobileMenu.style.display = 'none';
+                if (menuIcon) { menuIcon.classList.add('fa-bars'); menuIcon.classList.remove('fa-times'); }
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+              });
+            });
+          }
+        }
+      } else {
+        // Other pages: keep only blur behavior (they already manage toggle inline)
+        const mobileMenuBtn = document.getElementById('mobile-menu-button');
+        if (mobileMenuBtn) {
+          mobileMenuBtn.addEventListener('click', () => { try { mobileMenuBtn.blur(); } catch {} });
+        }
       }
 
       const langToggle=document.getElementById('lang-toggle');
