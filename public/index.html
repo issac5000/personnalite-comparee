@@ -2155,13 +2155,16 @@ async function calculateFinalProfile(code) {
     try {
         const { data: user, error: userError } = await supabase
             .from('users')
-            .select('id, code, mbti_scores, enneagram_scores, mbti_type, enneagram_type, certainty_score')
+            .select('id, code, mbti_scores, enneagram_scores, mbti_type, enneagram_type, certainty_score, auto_mbti_type, auto_enneagram_type')
             .eq('code', code)
             .single();
         if (userError || !user) {
             console.error('Utilisateur introuvable pour ce code :', code, userError);
             return null;
         }
+        // Conserver un instantané de l'auto-évaluation avant la mise à jour
+        const autoMbti = user.auto_mbti_type || user.mbti_type || null;
+        const autoEnneagram = user.auto_enneagram_type || user.enneagram_type || null;
         const { data: evaluations, error: evalError } = await supabase
             .from('external_evaluations')
             .select('relation, mbti_scores, enneagram_scores, created_at')
@@ -2201,7 +2204,10 @@ async function calculateFinalProfile(code) {
             evaluations,
             mbtiCertainty: weighted.mbtiCertainty,
             enneagramCertainty: weighted.enneagramCertainty,
-            overallCertainty
+            overallCertainty,
+            // Renvoyer l'auto-évaluation pour comparaison côté client (sans changer le schéma)
+            autoMbti,
+            autoEnneagram
         };
     } catch (err) {
         console.error('Erreur lors du calcul du profil final :', err);
@@ -2213,7 +2219,7 @@ async function fetchUserProfileFromSupabase(code) {
     try {
         const { data, error } = await supabase
             .from('users')
-            .select('id, code, mbti_scores, enneagram_scores, mbti_type, enneagram_type, certainty_score')
+            .select('id, code, mbti_scores, enneagram_scores, mbti_type, enneagram_type, certainty_score, auto_mbti_type, auto_enneagram_type')
             .eq('code', code);
 
         if (error) {
@@ -4023,7 +4029,13 @@ window.shareProfileResults = shareProfileResults;
                     ? {
                         mbti: user.mbti_type,
                         enneagram: user.enneagram_type,
-                        certainty: overallCertainty
+                        certainty: overallCertainty,
+                        // Ajouter les champs d'auto-évaluation pour comparaison IA (si disponibles)
+                        autoMbti: result.autoMbti || user.auto_mbti_type || null,
+                        autoEnneagram: result.autoEnneagram || user.auto_enneagram_type || null,
+                        // Rappeler explicitement que le profil affiché est basé sur l'externe
+                        externalMbti: user.mbti_type,
+                        externalEnneagram: user.enneagram_type
                     }
                     : null
             };
@@ -4845,8 +4857,50 @@ window.shareProfileResults = shareProfileResults;
     const container = document.querySelector('#results-modal #ai-summary-content');
     if (!container || container.dataset.loading === '1') return;
 
-    const { autoMbti, autoEnneagram, externalMbti, externalEnneagram } = profile.results || {};
-    const cacheKey = `ai-summary:${code}:${autoMbti}:${autoEnneagram}:${externalMbti}:${externalEnneagram}`;
+    // 0) Préférence: valeurs déjà fournies par le profil (si disponibles)
+    let autoMbti = (profile && profile.results && profile.results.autoMbti) || null;
+    let autoEnneagram = (profile && profile.results && profile.results.autoEnneagram) || null;
+    let externalMbti = (profile && profile.results && (profile.results.externalMbti || profile.results.mbti)) || null;
+    let externalEnneagram = (profile && profile.results && (profile.results.externalEnneagram || profile.results.enneagram)) || null;
+
+    // 1) Récupérer l'auto-évaluation depuis le localStorage (fallback)
+    try {
+        if (!autoMbti || !autoEnneagram) {
+            const raw = localStorage.getItem('userProfile_' + code);
+            if (raw) {
+            const up = JSON.parse(raw);
+            autoMbti = autoMbti || up.mbtiType || null;
+            autoEnneagram = autoEnneagram || up.enneagramType || null;
+        }
+        }
+    } catch (_) {}
+
+    // 2) Récupérer/Calculer les évaluations externes depuis Supabase pour calculer un profil agrégé (si non fourni)
+    try {
+        if ((!externalMbti || !externalEnneagram) && typeof fetchUserProfileFromSupabase === 'function' && typeof computeWeightedResults === 'function') {
+            const r = await fetchUserProfileFromSupabase(code);
+            const evaluations = (r && Array.isArray(r.evaluations)) ? r.evaluations : [];
+            if (evaluations.length > 0) {
+                const weighted = computeWeightedResults(evaluations);
+                externalMbti = weighted.mbtiType || null;
+                externalEnneagram = weighted.enneagramType || null;
+            }
+        }
+    } catch (e) {
+        console.warn('Impossible de calculer le profil externe agrégé:', e);
+    }
+
+    // 3) Fallbacks si on n'a pas pu distinguer
+    // - Si aucune auto trouvée mais le profil affiché n'a pas d'évaluations externes, on prend le profil courant comme auto
+    if (!autoMbti || !autoEnneagram) {
+        if (!externalMbti && !externalEnneagram && profile && profile.results) {
+            autoMbti = autoMbti || profile.results.mbti || null;
+            autoEnneagram = autoEnneagram || profile.results.enneagram || null;
+        }
+    }
+
+    // Construire la clé de cache en fonction des infos disponibles
+    const cacheKey = `ai-summary:${code}:${autoMbti || ''}:${autoEnneagram || ''}:${externalMbti || ''}:${externalEnneagram || ''}`;
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
         console.info('[AI Summary]', 'cache hit', cacheKey);
@@ -4858,30 +4912,22 @@ window.shareProfileResults = shareProfileResults;
     console.info('[AI Summary]', 'cache miss', cacheKey);
     container.setAttribute('data-loading', '1');
 
-    let messages = [
-        { 
-            role: 'system', 
-            content: "Tu es Psycho'Bot, un psychologue pédagogique. Écris en français clair et nuancé, sans jargon." 
-        },
-        { 
-            role: 'user', 
-            content: `Voici deux profils de la même personne :
-
-1) **Auto-évaluation (vision subjective)**  
-MBTI=${autoMbti}, Ennéagramme=${autoEnneagram}
-
-2) **Évaluations externes (vision des proches)**  
-MBTI=${externalMbti}, Ennéagramme=${externalEnneagram}
-
-Ta tâche :  
-- Compare les deux visions (points de convergence / divergences).  
-- Montre ce que cela révèle : biais personnels, angles morts, cohérence ou contradictions.  
-- Termine par une synthèse positive : comment cette comparaison peut aider à mieux se connaître.  
-
-Style : concis mais détaillé, phrases courtes, ton positif et pédagogique.  
-Max 350 mots.`
-        }
-    ];
+    let messages;
+    const canCompare = !!(autoMbti && autoEnneagram && externalMbti && externalEnneagram);
+    if (canCompare) {
+        messages = [
+            { role: 'system', content: "Tu es Psycho'Bot, un psychologue pédagogique. Écris en français clair et nuancé, sans jargon." },
+            { role: 'user', content: `Voici deux profils de la même personne:\n\n1) Auto-évaluation (vision subjective)\nMBTI=${autoMbti}, Ennéagramme=${autoEnneagram}\n\n2) Évaluations externes (vision des proches)\nMBTI=${externalMbti}, Ennéagramme=${externalEnneagram}\n\nTa tâche :\n- Compare les deux visions (convergences/divergences).\n- Explique ce que cela révèle : biais, angles morts, cohérence/contradictions.\n- Termine par une synthèse positive : comment cette comparaison aide à mieux se connaître.\n\nStyle : concis mais nuancé, phrases courtes, ton positif et pédagogique.\nMax 350 mots.` }
+        ];
+    } else {
+        // Repli: description simple d'un seul profil
+        const mbti = (profile && profile.results && profile.results.mbti) || autoMbti || externalMbti || '';
+        const enneagram = (profile && profile.results && profile.results.enneagram) || autoEnneagram || externalEnneagram || '';
+        messages = [
+            { role: 'system', content: 'Tu es un psychologue pédagogique. Écris en français, clair et nuancé, sans jargon.' },
+            { role: 'user', content: `Profil combiné : MBTI=${mbti}, Ennéagramme=${enneagram}.\nRédige une description concise (max 150 mots) :\n1) forces principales, 2) point faible récurrent, 3) piste d’amélioration.\nLangage clair, ton positif, phrases courtes.` }
+        ];
+    }
 
     let totalText = '';
     let attempts = 0;
