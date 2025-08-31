@@ -511,14 +511,14 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "« L’esprit est gouverné par la logique. »",
           "i18nKey": "questionnaire.ext.q1.option1",
-          "functions": { "Ti": 3, "Te": 3, "Fe": -3, "Fi": -3 },
-          "enneagram": { "5": 2, "6": 1, "7": 2, "2": -3, "4": -3 }
+          "functions": { "Ti": 3, "Te": 3, "Fe": -1, "Fi": -1 },
+          "enneagram": { "5": 2, "6": 1, "7": 2, "2": -1, "4": -1 }
         },
         {
           "text": "« La vérité est d’abord une question de subjectivité. »",
           "i18nKey": "questionnaire.ext.q1.option2",
-          "functions": { "Fi": 3, "Fe": 3, "Ti": -3, "Te": -3 },
-          "enneagram": { "2": 3, "4": 2, "9": 3, "5": -3, "6": -2, "7": -2 }
+          "functions": { "Fi": 3, "Fe": 3, "Ti": -1, "Te": -1 },
+          "enneagram": { "2": 3, "4": 2, "9": 3, "5": -1, "6": -1, "7": -1 }
         }
       ]
     },
@@ -530,25 +530,25 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "valeurs, authenticité, intégrité, conviction, profondeur, identité, cohérence, intériorité, sensibilité",
           "i18nKey": "questionnaire.ext.q2.option1",
-          "functions": { "Fi": 3, "Fe": 1, "Te": -3, "Ti": -1 },
+          "functions": { "Fi": 3, "Fe": 1, "Te": -1, "Ti": -1 },
           "enneagram": { "4": 3, "9": 1 }
         },
         {
           "text": "harmonie, relation, consensus, empathie, coopération, chaleur, soutien, adaptation, inclusion",
           "i18nKey": "questionnaire.ext.q2.option2",
-          "functions": { "Fe": 3, "Fi": 1, "Ti": -3, "Te": -1 },
+          "functions": { "Fe": 3, "Fi": 1, "Ti": -1, "Te": -1 },
           "enneagram": { "2": 3, "9": 1 }
         },
         {
           "text": "logique, analyse, structure, précision, objectivité, réflexion, schémas, clarté, scepticisme",
           "i18nKey": "questionnaire.ext.q2.option3",
-          "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
+          "functions": { "Ti": 3, "Te": 1, "Fe": -1, "Fi": -1 },
           "enneagram": { "5": 3, "6": 1 }
         },
         {
           "text": "efficacité, organisation, performance, stratégie, planification, action, mesure, pragmatisme",
           "i18nKey": "questionnaire.ext.q2.option4",
-          "functions": { "Te": 2, "Ti": 1, "Fi": -3, "Fe": -1 },
+          "functions": { "Te": 2, "Ti": 1, "Fi": -1, "Fe": -1 },
           "enneagram": { "3": 3, "8": 2 }
         }
       ]
@@ -561,13 +561,13 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "« Qui ne tente rien n’a rien. »",
           "i18nKey": "questionnaire.ext.q3.option1",
-          "functions": { "Se": 3, "Ne": 3, "Ni": -3, "Si": -1 },
+          "functions": { "Se": 3, "Ne": 3, "Ni": -1, "Si": -1 },
           "enneagram": { "8": 1, "3": 2 }
         },
         {
           "text": "« Mieux vaut prévenir que guérir. »",
           "i18nKey": "questionnaire.ext.q3.option2",
-          "functions": { "Si": 2, "Ni": 2, "Ne": -3, "Se": -1 },
+          "functions": { "Si": 2, "Ni": 2, "Ne": -1, "Se": -1 },
           "enneagram": { "6": 1, "1": 1 }
         }
       ]
@@ -580,25 +580,25 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "vision, symboles, anticipation, signification, futur, profondeur, connexion, synthèse, destin, révélation",
           "i18nKey": "questionnaire.ext.q4.option1",
-          "functions": { "Ni": 4, "Se": -3 },
+          "functions": { "Ni": 4, "Se": -1 },
           "enneagram": { "9": 1 }
         },
         {
           "text": "possibilités, idées, associations, créativité, improvisation, ouverture, exploration, adaptation",
           "i18nKey": "questionnaire.ext.q4.option2",
-          "functions": { "Ne": 3, "Se": 1, "Si": -3 },
+          "functions": { "Ne": 3, "Se": 1, "Si": -1 },
           "enneagram": { "4": 1, "7": 1 }
         },
         {
           "text": "mémoire, habitude, tradition, stabilité, sécurité, expérience, repères, constance, confort",
           "i18nKey": "questionnaire.ext.q4.option3",
-          "functions": { "Si": 2, "Ni": 3, "Ne": -3, "Se": -1 },
+          "functions": { "Si": 2, "Ni": 3, "Ne": -1, "Se": -1 },
           "enneagram": { "6": 2, "1": 2 }
         },
         {
           "text": "action, spontanéité, intensité, plaisir, présence, expérimentation, réactivité, mouvement",
           "i18nKey": "questionnaire.ext.q4.option4",
-          "functions": { "Se": 3, "Ne": 2, "Ni": -3, "Si": -1 },
+          "functions": { "Se": 3, "Ne": 2, "Ni": -1, "Si": -1 },
           "enneagram": { "8": 1, "7": 2 }
         }
       ]
@@ -611,13 +611,13 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "Être aligné avec qui il/elle est",
           "i18nKey": "questionnaire.ext.q5.option1",
-          "functions": { "Fi": 3, "Ti": 1, "Te": -3, "Fe": -1 },
+          "functions": { "Fi": 3, "Ti": 1, "Te": -1, "Fe": -1 },
           "enneagram": { "4": 2 }
         },
         {
           "text": "Élever les autres et renforcer la relation",
           "i18nKey": "questionnaire.ext.q5.option2",
-          "functions": { "Fe": 3, "Te": 1, "Ti": -3, "Fi": -1 },
+          "functions": { "Fe": 3, "Te": 1, "Ti": -1, "Fi": -1 },
           "enneagram": { "2": 3 }
         },
         {
@@ -629,7 +629,7 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "Comprendre et clarifier le vrai",
           "i18nKey": "questionnaire.ext.q5.option4",
-          "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
+          "functions": { "Ti": 3, "Te": 1, "Fe": -1, "Fi": -1 },
           "enneagram": { "5": 2, "6": 1, "7": 1 }
         }
       ]
@@ -642,19 +642,19 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "identité, authenticité, émotion, originalité, profondeur, intensité, beauté, singularité, sensibilité, mélancolie",
           "i18nKey": "questionnaire.ext.q6.option1",
-          "functions": { "Fi": 3, "Fe": 1, "Te": -4, "Ti": -1 },
+          "functions": { "Fi": 3, "Fe": 1, "Te": -1, "Ti": -1 },
           "enneagram": { "4": 3, "9": 1 }
         },
         {
           "text": "savoir, analyse, logique, autonomie, réflexion, compréhension, objectivité, réserve, curiosité",
           "i18nKey": "questionnaire.ext.q6.option2",
-          "functions": { "Ti": 4, "Te": 1, "Fe": -4, "Fi": -1 },
+          "functions": { "Ti": 4, "Te": 1, "Fe": -1, "Fi": -1 },
           "enneagram": { "5": 2, "6": 1 }
         },
         {
           "text": "sécurité, loyauté, doute, prudence, engagement, peur, soutien, solidarité, fiabilité, vigilance",
           "i18nKey": "questionnaire.ext.q6.option3",
-          "functions": { "Si": 3, "Te": 1, "Fe": -4, "Fi": -1 },
+          "functions": { "Si": 3, "Te": 1, "Fe": -1, "Fi": -1 },
           "enneagram": { "6": 3, "1": 2 }
         }
       ]
@@ -667,13 +667,13 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "perfection, règles, discipline, éthique, ordre, rigueur, structure, responsabilité",
           "i18nKey": "questionnaire.ext.q7.option1",
-          "functions": { "Si": 3, "Te": 2, "Ne": -2, "Se": -2 },
+          "functions": { "Si": 3, "Te": 2, "Ne": -1, "Se": -2 },
           "enneagram": { "1": 5 }
         },
         {
           "text": "aide, amour, soutien, empathie, chaleur, écoute, générosité",
           "i18nKey": "questionnaire.ext.q7.option2",
-          "functions": { "Fe": 3, "Fi": 1, "Ti": -3, "Te": -1 },
+          "functions": { "Fe": 3, "Fi": 1, "Ti": -1, "Te": -1 },
           "enneagram": { "2": 4, "9": 2 }
         },
         {
@@ -698,13 +698,13 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "puissance, intensité, autorité, indépendance, confrontation, énergie, protection",
           "i18nKey": "questionnaire.ext.q8.option2",
-          "functions": { "Te": 2, "Fi": -3 },
+          "functions": { "Te": 2, "Fi": -1 },
           "enneagram": { "8": 4 }
         },
         {
           "text": "paix, harmonie, stabilité, confort, patience, acceptation, union, réceptivité",
           "i18nKey": "questionnaire.ext.q8.option3",
-          "functions": { "Fe": 3, "Ti": -3 },
+          "functions": { "Fe": 3, "Ti": -1 },
           "enneagram": { "9": 4 }
         }
       ]
@@ -717,13 +717,13 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "Vivre chaque jour comme le dernier",
           "i18nKey": "questionnaire.ext.q9.option1",
-          "functions": { "Se": 3, "Ne": 3, "Ni": -3, "Si": -3 },
+          "functions": { "Se": 3, "Ne": 3, "Ni": -1, "Si": -1 },
           "enneagram": { "7": 2, "8": 1 }
         },
         {
           "text": "Planifier pour réussir",
           "i18nKey": "questionnaire.ext.q9.option2",
-          "functions": { "Si": 3, "Ni": 4, "Ne": -3, "Se": -3 },
+          "functions": { "Si": 3, "Ni": 4, "Ne": -1, "Se": -1 },
           "enneagram": { "1": 2, "6": 1 }
         }
       ]
@@ -736,13 +736,13 @@ const EXTERNAL_QUESTIONS = [
         {
           "text": "« Le sourire que tu donnes revient vers toi. »",
           "i18nKey": "questionnaire.ext.q10.option1",
-          "functions": { "Fi": 2, "Fe": 2, "Te": -2, "Ti": -2 },
+          "functions": { "Fi": 2, "Fe": 2, "Te": -1, "Ti": -1 },
           "enneagram": { "2": 1, "9": 2 }
         },
         {
           "text": "« La logique est l’art du vrai. »",
           "i18nKey": "questionnaire.ext.q10.option2",
-          "functions": { "Te": 2, "Ti": 3, "Fi": -2, "Fe": -2 },
+          "functions": { "Te": 2, "Ti": 3, "Fi": -1, "Fe": -1 },
           "enneagram": { "5": 2, "6": 1 }
         }
       ]
@@ -755,25 +755,25 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "Plutôt stable et régulier(ère)",
         "i18nKey": "questionnaire.ext.q11.option1",
-        "functions": { "Si": 3, "Ni": 2, "Ne": -3, "Se": -1 },
+        "functions": { "Si": 3, "Ni": 2, "Ne": -1, "Se": -1 },
         "enneagram": { "6": 1, "1": 2 }
       },
       {
         "text": "Plutôt aventureux(se) et curieux(se)",
         "i18nKey": "questionnaire.ext.q11.option2",
-        "functions": { "Se": 3, "Ne": 3, "Ni": -3, "Si": -1 },
+        "functions": { "Se": 3, "Ne": 3, "Ni": -1, "Si": -1 },
         "enneagram": { "8": 1, "7": 2 }
       },
       {
         "text": "Plutôt visionnaire et synthétique",
         "i18nKey": "questionnaire.ext.q11.option3",
-        "functions": { "Ni": 3, "Se": -3 },
+        "functions": { "Ni": 3, "Se": -1 },
         "enneagram": { "6": 1, "5": 1 }
       },
       {
         "text": "Plutôt créatif(ve) et ouvert(e) aux possibilités",
         "i18nKey": "questionnaire.ext.q11.option4",
-        "functions": { "Ne": 3, "Se": 1, "Si": -3 },
+        "functions": { "Ne": 3, "Se": 1, "Si": -1 },
         "enneagram": { "4": 2, "7": 2 }
       }
     ]
@@ -786,7 +786,7 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "Il/elle s’appuie dessus pour sécuriser",
         "i18nKey": "questionnaire.ext.q12.option1",
-        "functions": { "Si": 3, "Ni": 2, "Ne": -3, "Se": -1 },
+        "functions": { "Si": 3, "Ni": 2, "Ne": -1, "Se": -1 },
         "enneagram": { "6": 3, "1": 2 }
       },
       {
@@ -798,13 +798,13 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "Il/elle les discute si elles sont illogiques",
         "i18nKey": "questionnaire.ext.q12.option3",
-        "functions": { "Ti": 2, "Te": 1, "Fe": -2, "Fi": -1 },
+        "functions": { "Ti": 2, "Te": 1, "Fe": -1, "Fi": -1 },
         "enneagram": { "5": 2 }
       },
       {
         "text": "Il/elle s’en écarte si elles heurtent ses valeurs",
         "i18nKey": "questionnaire.ext.q12.option4",
-        "functions": { "Fi": 3, "Te": -3 },
+        "functions": { "Fi": 3, "Te": -1 },
         "enneagram": { "4": 2 }
       }
     ]
@@ -855,13 +855,13 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "Rationnel",
         "i18nKey": "questionnaire.ext.q15.option1",
-        "functions": { "Ti": 3, "Te": 1, "Fe": -2, "Fi": -1 },
+        "functions": { "Ti": 2, "Te": 2, "Fe": -2, "Fi": -2 },
         "enneagram": { "5": 2 }
       },
       {
         "text": "Émotionnel",
         "i18nKey": "questionnaire.ext.q15.option2",
-        "functions": { "Fi": 2, "Fe": 1, "Te": -2, "Ti": -1 },
+        "functions": { "Fi": 2, "Fe": 2, "Te": -2, "Ti": -2 },
         "enneagram": { "4": 1 }
       }
     ]
@@ -874,25 +874,25 @@ const EXTERNAL_QUESTIONS = [
       {
         "text": "Alignement personnel et intégrité",
         "i18nKey": "questionnaire.ext.q16.option1",
-        "functions": { "Fi": 4, "Te": -3 },
+        "functions": { "Fi": 4, "Te": -1 },
         "enneagram": { "4": 2, "9": 1 }
       },
       {
         "text": "Soutien relationnel et accompagnement",
         "i18nKey": "questionnaire.ext.q16.option2",
-        "functions": { "Fe": 4, "Ti": -3 },
+        "functions": { "Fe": 4, "Ti": -1 },
         "enneagram": { "2": 3, "9": 1 }
       },
       {
         "text": "Capacité à produire et organiser",
         "i18nKey": "questionnaire.ext.q16.option3",
-        "functions": { "Te": 2, "Fi": -3 },
+        "functions": { "Te": 2, "Fi": -1 },
         "enneagram": { "3": 2, "8": 2 }
       },
       {
         "text": "Clarté intellectuelle et précision",
         "i18nKey": "questionnaire.ext.q16.option4",
-        "functions": { "Ti": 3, "Te": 1, "Fe": -3, "Fi": -1 },
+        "functions": { "Ti": 3, "Te": 1, "Fe": -1, "Fi": -1 },
         "enneagram": { "5": 2, "6": 1 }
       }
     ]
