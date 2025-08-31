@@ -4905,7 +4905,7 @@ window.shareProfileResults = shareProfileResults;
     }
 
     // Construire la clé de cache en fonction des infos disponibles
-    const cacheKey = `ai-summary:v2:${code}:${autoMbti || ''}:${autoEnneagram || ''}:${externalMbti || ''}:${externalEnneagram || ''}`;
+    const cacheKey = `ai-summary:v3:${code}:${autoMbti || ''}:${autoEnneagram || ''}:${externalMbti || ''}:${externalEnneagram || ''}`;
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
         console.info('[AI Summary]', 'cache hit', cacheKey);
@@ -4917,22 +4917,22 @@ window.shareProfileResults = shareProfileResults;
     console.info('[AI Summary]', 'cache miss', cacheKey);
     container.setAttribute('data-loading', '1');
 
-    let messages;
-    const canCompare = !!(autoMbti && autoEnneagram && externalMbti && externalEnneagram);
-    if (canCompare) {
-        messages = [
-            { role: 'system', content: "Tu es Psycho'Bot, un psychologue pédagogique. Écris en français clair et nuancé, sans jargon. Adresse-toi directement à la personne (tutoiement), ton amical, empathique, bienveillant et concret." },
-            { role: 'user', content: `Voici deux profils de la même personne:\n\n1) Auto-évaluation (vision subjective)\nMBTI=${autoMbti}, Ennéagramme=${autoEnneagram}\n\n2) Évaluations externes (vision des proches)\nMBTI=${externalMbti}, Ennéagramme=${externalEnneagram}\n\nTa tâche :\n- Compare les deux visions (convergences/divergences).\n- Explique ce que cela révèle : biais, angles morts, cohérence/contradictions.\n- Termine par une synthèse positive : comment cette comparaison aide à mieux se connaître.\n\nStyle : concis mais nuancé, phrases courtes, ton positif et pédagogique.\nMax 350 mots.` }
-        ];
-    } else {
-        // Repli: description simple d'un seul profil
-        const mbti = (profile && profile.results && profile.results.mbti) || autoMbti || externalMbti || '';
-        const enneagram = (profile && profile.results && profile.results.enneagram) || autoEnneagram || externalEnneagram || '';
-        messages = [
-            { role: 'system', content: "Tu es Psycho'Bot, un psychologue pédagogique. Écris en français clair et nuancé, sans jargon. Adresse-toi directement à la personne (tutoiement), ton amical, empathique, bienveillant et concret." },
-            { role: 'user', content: `Profil combiné : MBTI=${mbti}, Ennéagramme=${enneagram}.\nRédige une description concise (max 150 mots) :\n1) forces principales, 2) point faible récurrent, 3) piste d’amélioration.\nLangage clair, ton positif, phrases courtes.` }
-        ];
-    }
+    // Toujours générer un COMPARATIF, même si certaines infos manquent.
+    const mbtiAuto = autoMbti || 'indisponible';
+    const enneaAuto = autoEnneagram || 'indisponible';
+    const mbtiExt = externalMbti || 'indisponible';
+    const enneaExt = externalEnneagram || 'indisponible';
+
+    const messages = [
+        {
+            role: 'system',
+            content: "Tu es Psycho'Bot, un psychologue pédagogique. Écris en français clair et nuancé, sans jargon. Adresse-toi directement à la personne (tutoiement), ton amical, empathique, bienveillant et concret."
+        },
+        {
+            role: 'user',
+            content: `Comparatif entre auto-évaluation et évaluations externes pour la même personne.\n\n1) Auto-évaluation (vision subjective)\nMBTI=${mbtiAuto}, Ennéagramme=${enneaAuto}\n\n2) Évaluations externes (vision des proches)\nMBTI=${mbtiExt}, Ennéagramme=${enneaExt}\n\nTa tâche (respecte impérativement cette structure) :\n- Convergences (où ça se rejoint).\n- Divergences (où ça diffère).\n- Lecture psychologique : biais possibles, angles morts, cohérences/contradictions.\n- Synthèse positive : comment cette comparaison aide à mieux te connaître.\n\nRègles : 350 mots max, phrases courtes, tutoiement, ton positif et pédagogique. Si une info est manquante, indique en quoi cette absence peut biaiser l'analyse et compare tout de même ce qui est disponible. N'inclus pas de diagnostic médical/clinique.`
+        }
+    ];
 
     let totalText = '';
     let attempts = 0;
