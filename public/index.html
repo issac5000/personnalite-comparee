@@ -58,6 +58,13 @@
             transform: rotateX(3deg) rotateY(3deg) scale(1.05);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
+        /* Podcast visualizer */
+        #home-podcast-visual {
+          display: block;
+          background-color: #f3f4f6; /* tailwind gray-100 */
+          border-radius: 20px;
+          border: 1px solid rgba(0,0,0,0.04);
+        }
 
         [class*="card"]:hover {
             transform: perspective(600px) rotateX(3deg) rotateY(-3deg) scale(1.05);
@@ -607,6 +614,7 @@
                     </a>
                     <div id="mobile-home-menu" class="hidden pl-4 space-y-1">
                         <a href="index.html#home-how" class="block px-3 py-2 rounded-md text-sm text-gray-700" data-i18n="menu.home.how">Comment ça marche</a>
+                        <a href="index.html#home-podcast" class="block px-3 py-2 rounded-md text-sm text-gray-700" data-i18n="menu.home.podcast">Podcast</a>
                         <a href="index.html#home-mbti" class="block px-3 py-2 rounded-md text-sm text-gray-700" data-i18n="menu.home.auto_eval">Auto-évaluation</a>
                         <a href="index.html#home-enneagramme" class="block px-3 py-2 rounded-md text-sm text-gray-700" data-i18n="menu.home.eval_friend">Évaluer un proche</a>
                         <a href="index.html#home-ia" class="block px-3 py-2 rounded-md text-sm text-gray-700" data-i18n="menu.home.chatbot">Parler avec Psycho'Bot</a>
@@ -717,7 +725,7 @@
                 </div>
             </div>
         </div>
-    </section>
+  </section>
 
 <!-- How it works -->
 <div id="home-how" data-aos="fade-right" class="section section-fonce py-20 px-4 sm:px-6 lg:px-8">
@@ -778,6 +786,20 @@
     </div>
   </div>
 </div>
+
+<!-- Podcast Section -->
+<section id="home-podcast" data-aos="fade-up" class="section section-clair py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-5xl mx-auto text-center">
+    <h2 data-i18n="home.podcast.title" class="text-3xl font-extrabold text-gray-900 sm:text-4xl mb-6">
+      Podcast pour comprendre en profondeur Personnalité Comparée
+    </h2>
+    <canvas id="home-podcast-visual" class="w-full mt-4" style="height:64px"></canvas>
+    <audio id="home-podcast-audio" controls controlsList="nodownload" preload="metadata" class="w-full mt-4">
+      <source src="intro.m4a" type="audio/mp4">
+      Votre navigateur ne supporte pas la lecture audio.
+    </audio>
+  </div>
+</section>
 
 
   <!-- Auto-evaluation Section -->
@@ -1311,7 +1333,7 @@ if (window.location.href.includes("external")) {
         }
 
         // Menu mobile
-        function setupMobileMenu() {
+    function setupMobileMenu() {
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             const menuIcon = document.getElementById('menu-icon');
@@ -1345,8 +1367,129 @@ if (window.location.href.includes("external")) {
                         mobileMenuButton.setAttribute('aria-expanded', 'false');
                     });
                 });
-            }
         }
+    }
+
+    // Podcast audio visualizer
+    (function(){
+      const audio = document.getElementById('home-podcast-audio');
+      const canvas = document.getElementById('home-podcast-visual');
+      if(!audio || !canvas) return;
+      const ctx = canvas.getContext('2d');
+      let ac = null, src = null, analyser = null, rafId = null;
+      const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+      const resize = ()=>{
+        const cssW = canvas.clientWidth || 600;
+        const cssH = canvas.clientHeight || 72;
+        canvas.width = cssW * dpr;
+        canvas.height = cssH * dpr;
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+      };
+      resize();
+      let resizeTO; window.addEventListener('resize', ()=>{ clearTimeout(resizeTO); resizeTO=setTimeout(resize, 120); });
+      const initAudio = ()=>{
+        if (ac) return true;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return false;
+          ac = new AudioCtx();
+          src = ac.createMediaElementSource(audio);
+          analyser = ac.createAnalyser();
+          analyser.fftSize = 1024; // finer resolution for time-domain bars
+          analyser.smoothingTimeConstant = 0.8;
+          analyser.minDecibels = -90;
+          analyser.maxDecibels = -10;
+          src.connect(analyser);
+          src.connect(ac.destination);
+          return true;
+        } catch(e) {
+          return false;
+        }
+      };
+      const draw = ()=>{
+        if (!analyser) return;
+        // Bars driven by time-domain peaks across the whole buffer
+        const fftSize = analyser.fftSize; // match analyser
+        const timeData = new Uint8Array(fftSize);
+        const cssW = canvas.clientWidth || 600;
+        const cssH = canvas.clientHeight || 96;
+        const barCount = Math.max(32, Math.min(96, Math.floor(cssW / 8))); // responsive number of bars
+        const gap = 2;
+        const barWidth = (cssW / barCount) - gap;
+        const samplesPerBar = Math.max(1, Math.floor(fftSize / barCount));
+        const smooth = new Float32Array(barCount);
+        const peaks = new Float32Array(barCount);
+        let t0 = performance.now();
+        const render = ()=>{
+          rafId = requestAnimationFrame(render);
+          analyser.getByteTimeDomainData(timeData);
+          ctx.clearRect(0,0,cssW,cssH);
+          // multi-stop horizontal gradient across width for a richer look
+          const grad = ctx.createLinearGradient(0, 0, cssW, 0);
+          grad.addColorStop(0.00, '#22d3ee'); // cyan-400
+          grad.addColorStop(0.33, '#3b82f6'); // blue-500
+          grad.addColorStop(0.66, '#8b5cf6'); // violet-500
+          grad.addColorStop(1.00, '#ec4899'); // pink-500
+          ctx.shadowColor = 'rgba(139,92,246,0.28)'; // violet glow
+          ctx.shadowBlur = 12;
+          const now = performance.now();
+          const dt = Math.min(33, now - t0); t0 = now;
+          let x = 0;
+          for (let i=0;i<barCount;i++){
+            // compute peak amplitude within this segment
+            const start = i * samplesPerBar;
+            const end = Math.min(fftSize, start + samplesPerBar);
+            let peak = 0;
+            for (let k=start;k<end;k++){
+              const v = Math.abs(timeData[k] - 128) / 128; // 0..1
+              if (v > peak) peak = v;
+            }
+            const eased = smooth[i] + (peak - smooth[i]) * 0.24;
+            smooth[i] = eased;
+            const h = Math.max(2, eased * (cssH - 8));
+            if (h > peaks[i]) peaks[i] = h; else peaks[i] = Math.max(2, peaks[i] - (0.06 * dt));
+            const y = cssH - h;
+            const r = Math.min(6, h/2);
+            ctx.fillStyle = grad;
+            // draw bar with rounded top
+            ctx.beginPath();
+            ctx.moveTo(x, cssH);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.lineTo(x + barWidth - r, y);
+            ctx.quadraticCurveTo(x + barWidth, y, x + barWidth, y + r);
+            ctx.lineTo(x + barWidth, cssH);
+            ctx.closePath();
+            ctx.fill();
+            // subtle top highlight line
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = 'rgba(255,255,255,0.22)';
+            ctx.fillRect(x, Math.max(0, y-1), barWidth, 1);
+            ctx.shadowBlur = 12;
+            // falling peak cap
+            const capY = cssH - peaks[i] - 2;
+            ctx.fillStyle = grad; // cap follows width gradient
+            ctx.fillRect(x, Math.max(0, capY), barWidth, 2);
+            x += barWidth + gap;
+          }
+          ctx.shadowBlur = 0;
+        };
+        render();
+      };
+      const start = async ()=>{
+        if (!initAudio()) return;
+        if (ac && ac.state === 'suspended') { try { await ac.resume(); } catch {} }
+        if (!rafId) draw();
+      };
+      const stop = async ()=>{
+        if (ac && ac.state === 'running') { try { await ac.suspend(); } catch {} }
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        // keep last frame for a subtle paused look
+      };
+      audio.addEventListener('play', start);
+      audio.addEventListener('pause', stop);
+      audio.addEventListener('ended', stop);
+    })();
 
         function setupDesktopDropdowns() {
             const dropdowns = [

@@ -1,0 +1,11 @@
+* text=auto
+
+# Ensure audio/video and other binaries are not line-normalized
+*.m4a -text
+*.mp3 -text
+*.mp4 -text
+*.png -text
+*.jpg -text
+*.jpeg -text
+*.gif -text
+*.pdf -text
