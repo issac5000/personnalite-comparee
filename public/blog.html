@@ -3326,6 +3326,15 @@ function showSupport() {
             }
 
             const selfProfile = getProfileFromScores(initial.user.mbti_scores || {}, initial.user.enneagram_scores || {});
+            // Backfill DB auto_* si manquants
+            try {
+                if ((!initial.user.auto_mbti_type || !initial.user.auto_enneagram_type) && selfProfile.mbtiType && selfProfile.enneagramType) {
+                    await supabase
+                      .from('users')
+                      .update({ auto_mbti_type: selfProfile.mbtiType, auto_enneagram_type: selfProfile.enneagramType })
+                      .eq('id', initial.user.id);
+                }
+            } catch (e) { console.warn('Backfill auto_* failed:', e); }
 
             const result = await calculateFinalProfile(userCode);
 
@@ -3359,7 +3368,11 @@ function showSupport() {
                     mbtiCertainty: result.mbtiCertainty ?? certaintyScore,
                     enneagram: result.user.enneagram_type,
                     enneagramCertainty: result.enneagramCertainty ?? certaintyScore,
-                    overallCertainty: certaintyScore
+                    overallCertainty: certaintyScore,
+                    autoMbti: selfProfile.mbtiType,
+                    autoEnneagram: selfProfile.enneagramType,
+                    externalMbti: result.user.mbti_type,
+                    externalEnneagram: result.user.enneagram_type
                 },
                 externalEvaluations: externalProfiles,
                 mbtiScores: result.user.mbti_scores,
@@ -3693,7 +3706,15 @@ function showSupport() {
             let externalMbti = (profile && profile.results && (profile.results.externalMbti || profile.results.mbti)) || null;
             let externalEnneagram = (profile && profile.results && (profile.results.externalEnneagram || profile.results.enneagram)) || null;
 
-            // 1) Auto-évaluation depuis localStorage (fallback)
+            // 1) Auto-éval depuis profile.self si présent (fallback robuste)
+            try {
+                if ((!autoMbti || !autoEnneagram) && profile && profile.self) {
+                    autoMbti = autoMbti || profile.self.mbti || profile.self.mbtiType || null;
+                    autoEnneagram = autoEnneagram || profile.self.enneagram || profile.self.enneagramType || null;
+                }
+            } catch (_) {}
+
+            // 1b) Auto-évaluation depuis localStorage (fallback)
             try {
                 if (!autoMbti || !autoEnneagram) {
                     const raw = localStorage.getItem('userProfile_' + code);
