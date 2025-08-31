@@ -4841,68 +4841,89 @@ window.shareProfileResults = shareProfileResults;
             requestAnimationFrame(update);
         }
 
-        async function initAiProfileSummary(profile, code) {
-            const container = document.querySelector('#results-modal #ai-summary-content');
-            if (!container || container.dataset.loading === '1') return;
+       async function initAiProfileSummary(profile, code) {
+    const container = document.querySelector('#results-modal #ai-summary-content');
+    if (!container || container.dataset.loading === '1') return;
 
-            const { mbti, enneagram } = profile.results || {};
-            const cacheKey = `ai-summary:${code}:${mbti}:${enneagram}`;
-            const cached = localStorage.getItem(cacheKey);
-            if (cached) {
-                console.info('[AI Summary]', 'cache hit', cacheKey);
-                container.textContent = cached;
-                setupScrollIndicator(container);
-                return;
-            }
+    const { autoMbti, autoEnneagram, externalMbti, externalEnneagram } = profile.results || {};
+    const cacheKey = `ai-summary:${code}:${autoMbti}:${autoEnneagram}:${externalMbti}:${externalEnneagram}`;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+        console.info('[AI Summary]', 'cache hit', cacheKey);
+        container.textContent = cached;
+        setupScrollIndicator(container);
+        return;
+    }
 
-            console.info('[AI Summary]', 'cache miss', cacheKey);
-            container.setAttribute('data-loading', '1');
+    console.info('[AI Summary]', 'cache miss', cacheKey);
+    container.setAttribute('data-loading', '1');
 
-            let messages = [
-                { role: 'system', content: 'Tu es un psychologue pédagogique. Écris en français, clair et nuancé, sans jargon.' },
-                { role: 'user', content: `Profil combiné : MBTI=${mbti}, Ennéagramme=${enneagram}.\nRédige une description concise (max 150 mots) :\n1) forces principales, 2) point faible récurrent, 3) piste d’amélioration.\nLangage clair, ton positif, phrases courtes.` }
-            ];
+    let messages = [
+        { 
+            role: 'system', 
+            content: "Tu es Psycho'Bot, un psychologue pédagogique. Écris en français clair et nuancé, sans jargon." 
+        },
+        { 
+            role: 'user', 
+            content: `Voici deux profils de la même personne :
 
-            let totalText = '';
-            let attempts = 0;
+1) **Auto-évaluation (vision subjective)**  
+MBTI=${autoMbti}, Ennéagramme=${autoEnneagram}
 
-            while (true) {
-                try {
-                    const response = await fetch('/api/psy-results', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ messages })
-                    });
+2) **Évaluations externes (vision des proches)**  
+MBTI=${externalMbti}, Ennéagramme=${externalEnneagram}
 
-                    if (!response.ok) throw new Error('bad response');
-                    const data = await response.json();
-                    totalText += data.content || '';
+Ta tâche :  
+- Compare les deux visions (points de convergence / divergences).  
+- Montre ce que cela révèle : biais personnels, angles morts, cohérence ou contradictions.  
+- Termine par une synthèse positive : comment cette comparaison peut aider à mieux se connaître.  
 
-                    if (data.finish_reason && data.finish_reason !== 'stop') {
-                        messages.push({ role: 'assistant', content: data.content || '' });
-                        messages.push({ role: 'user', content: 'continue' });
-                        continue;
-                    }
-
-                    const finalText = totalText.trim();
-                    container.textContent = finalText || "Description indisponible pour le moment.";
-                    if (finalText) localStorage.setItem(cacheKey, finalText);
-                    break;
-                } catch (e) {
-                    console.error('Erreur IA:', e);
-                    attempts++;
-                    if (attempts < 2) {
-                        container.textContent = "Échec de la génération, nouvelle tentative…";
-                        continue;
-                    }
-                    container.textContent = "Impossible de terminer la description";
-                    break;
-                }
-            }
-
-            container.removeAttribute('data-loading');
-            setupScrollIndicator(container);
+Style : concis mais détaillé, phrases courtes, ton positif et pédagogique.  
+Max 350 mots.`
         }
+    ];
+
+    let totalText = '';
+    let attempts = 0;
+
+    while (true) {
+        try {
+            const response = await fetch('/api/psy-results', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages })
+            });
+
+            if (!response.ok) throw new Error('bad response');
+            const data = await response.json();
+            totalText += data.content || '';
+
+            if (data.finish_reason && data.finish_reason !== 'stop') {
+                messages.push({ role: 'assistant', content: data.content || '' });
+                messages.push({ role: 'user', content: 'continue' });
+                continue;
+            }
+
+            const finalText = totalText.trim();
+            container.textContent = finalText || "Description indisponible pour le moment.";
+            if (finalText) localStorage.setItem(cacheKey, finalText);
+            break;
+        } catch (e) {
+            console.error('Erreur IA:', e);
+            attempts++;
+            if (attempts < 2) {
+                container.textContent = "Échec de la génération, nouvelle tentative…";
+                continue;
+            }
+            container.textContent = "Impossible de terminer la description";
+            break;
+        }
+    }
+
+    container.removeAttribute('data-loading');
+    setupScrollIndicator(container);
+}
+
 
         function closeResultsModal() {
             const modal = document.getElementById('results-modal');
