@@ -52,7 +52,8 @@
       caret:document.getElementById(cfg.c)
     })).filter(obj=>obj.button&&obj.menu&&obj.caret);
 
-    const isMobile=()=>window.matchMedia('(max-width: 768px)').matches;
+    // Consider tablet widths as mobile for menus to avoid crowding
+    const isMobile=()=>window.matchMedia('(max-width: 1023px)').matches;
 
     mobileMenus.forEach(current=>{
       current.button.addEventListener('click',e=>{
@@ -94,6 +95,32 @@
         }
       });
     });
+
+    // Brand name/logo: navigate home from any page; on home, just scroll to top
+    const brandHome = document.getElementById('brand-home');
+    if (brandHome) {
+      const goHome = (e)=>{
+        e.preventDefault();
+        const p = location.pathname || '';
+        const onHome = p.endsWith('/index.html') || p === '/' || p === '';
+        if (onHome) {
+          try { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+          catch { window.scrollTo(0,0); }
+        } else {
+          location.href = 'index.html';
+        }
+      };
+      brandHome.style.cursor = 'pointer';
+      brandHome.setAttribute('role','link');
+      brandHome.setAttribute('tabindex','0');
+      brandHome.addEventListener('click', goHome);
+      brandHome.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') goHome(e); });
+      const logoEl = brandHome.previousElementSibling;
+      if (logoEl && logoEl.tagName === 'IMG') {
+        logoEl.style.cursor = 'pointer';
+        logoEl.addEventListener('click', goHome);
+      }
+    }
 
     const privacyLink = document.getElementById('privacy-link');
     if (privacyLink) {
@@ -163,5 +190,20 @@
           }
         });
       }
+
+      // Dynamically adjust body top padding to header height
+      const headerEl = document.getElementById('site-header');
+      const setHeaderOffset = ()=>{
+        if(!headerEl) return;
+        const h = headerEl.offsetHeight || 64;
+        document.body.style.paddingTop = h + 'px';
+        document.documentElement.style.setProperty('--header-h', h + 'px');
+      };
+      setHeaderOffset();
+      let resizeTO;
+      window.addEventListener('resize', ()=>{
+        clearTimeout(resizeTO);
+        resizeTO = setTimeout(setHeaderOffset, 100);
+      });
     });
   })();

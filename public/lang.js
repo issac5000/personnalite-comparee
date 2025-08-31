@@ -935,6 +935,8 @@ const translations = {
     "results.details.share": "Partager",
 
     "results.detailed.title": "Résultats complémentaires",
+    "results.career.title": "Carrière & Passions probables",
+    "results.career.title": "Carrière & Passions probables",
 
     "results.mirror.title": "Profil miroir (opposé)",
     "results.mirror.text": "Ton profil miroir est {mirror}. Il représente une approche presque inverse de la tienne.",
@@ -977,12 +979,21 @@ const translations = {
 
     "question.label": "Question",
     alerts: {
-      missingEvaluations: "Il est nécessaire de compléter l'ensemble des évaluations pour avoir accès à votre page de résultats détaillés. Envoyez votre code unique à vos proches pour qu'ils puissent compléter votre profil et vous donner accès à vos résultats !"
+      missingEvaluations: "Il est nécessaire de compléter l'ensemble des évaluations pour avoir accès à votre page de résultats détaillés. Envoyez votre code unique à vos proches pour qu'ils puissent compléter votre profil et vous donner accès à vos résultats !",
+      selectAnswer: "Veuillez sélectionner une réponse avant de continuer.",
+      completeAll: "Veuillez répondre à toutes les questions avant de terminer."
+    },
+
+    profileModal: {
+      step2: {
+        allCompleted: "Toutes terminées",
+        completedSuffix: "terminées"
+      }
     },
     "shareCodeAlert": "Voici ton code à donner à 3 proches : ",
 "questionnaire.auto.q1.title": "Quelle citation reflète le mieux ta vision du monde ?",
-"questionnaire.auto.q1.option1": "Aristote : « L’esprit est gouverné par la logique. »",
-"questionnaire.auto.q1.option2": "Kierkegaard : « La vérité est d’abord une question de subjectivité. »",
+"questionnaire.auto.q1.option1": "« L’esprit est gouverné par la logique. »",
+"questionnaire.auto.q1.option2": "« La vérité est d’abord une question de subjectivité. »",
 
 "questionnaire.auto.q2.title": "Laquelle de ces suites de mots te correspond le plus ?",
 "questionnaire.auto.q2.option1": "valeurs, authenticité, intégrité, conviction, profondeur, identité, cohérence, intériorité, sensibilité",
@@ -1080,8 +1091,8 @@ const translations = {
 "questionnaire.auto.q20.option5": "Préserver la paix, éviter les conflits et rester serein",
 
 "questionnaire.ext.q1.title": "Quelle citation reflète le mieux la vision du monde de votre proche ?",
-"questionnaire.ext.q1.option1": "Aristote : « L’esprit est gouverné par la logique. »",
-"questionnaire.ext.q1.option2": "Kierkegaard : « La vérité est d’abord une question de subjectivité. »",
+"questionnaire.ext.q1.option1": "« L’esprit est gouverné par la logique. »",
+"questionnaire.ext.q1.option2": "« La vérité est d’abord une question de subjectivité. »",
 
 "questionnaire.ext.q2.title": "Laquelle de ces suites de mots correspond le plus à votre proche ?",
 "questionnaire.ext.q2.option1": "valeurs, authenticité, intégrité, conviction, profondeur, identité, cohérence, intériorité, sensibilité",
@@ -2116,6 +2127,8 @@ const translations = {
     "results.details.share": "Share",
 
     "results.detailed.title": "Complementary Results",
+    "results.career.title": "Career & Likely Passions",
+    "results.career.title": "Career & Likely Passions",
 
     "results.mirror.title": "Mirror Profile (opposite)",
     "results.mirror.text": "Your mirror profile is {mirror}. It represents an almost inverse approach to yours.",
@@ -2158,13 +2171,22 @@ const translations = {
 
     "question.label": "Question",
     alerts: {
-      missingEvaluations: "You need to complete all evaluations to access your detailed results page. Share your unique code with your relatives so they can complete your profile and give you access to your results!"
+      missingEvaluations: "You need to complete all evaluations to access your detailed results page. Share your unique code with your relatives so they can complete your profile and give you access to your results!",
+      selectAnswer: "Please select an answer before continuing.",
+      completeAll: "Please answer all questions before finishing."
+    },
+
+    profileModal: {
+      step2: {
+        allCompleted: "All completed",
+        completedSuffix: "completed"
+      }
     },
     "shareCodeAlert": "Here is your code to give to 3 relatives: ",
     "questionnaire.auto.q1.title": "Which quote best reflects your worldview?",
 "questionnaire.auto.q1.title": "Which quote best reflects your worldview?",
-"questionnaire.auto.q1.option1": "Aristotle: “The mind is governed by logic.”",
-"questionnaire.auto.q1.option2": "Kierkegaard: “Truth is first a matter of subjectivity.”",
+"questionnaire.auto.q1.option1": "“The mind is governed by logic.”",
+"questionnaire.auto.q1.option2": "“Truth is first a matter of subjectivity.”",
 
 "questionnaire.auto.q2.title": "Which of these word sets fits you best?",
 "questionnaire.auto.q2.option1": "values, authenticity, integrity, conviction, depth, identity, coherence, inner world, sensitivity",
@@ -2262,8 +2284,8 @@ const translations = {
 
 
 "questionnaire.ext.q1.title": "Which quote best reflects your close one’s worldview?",
-"questionnaire.ext.q1.option1": "Aristotle: “The mind is governed by logic.”",
-"questionnaire.ext.q1.option2": "Kierkegaard: “Truth is first a matter of subjectivity.”",
+"questionnaire.ext.q1.option1": "“The mind is governed by logic.”",
+"questionnaire.ext.q1.option2": "“Truth is first a matter of subjectivity.”",
 
 "questionnaire.ext.q2.title": "Which set of words best matches your close one?",
 "questionnaire.ext.q2.option1": "values, authenticity, integrity, conviction, depth, identity, coherence, inwardness, sensitivity",
@@ -2362,6 +2384,11 @@ const translations = {
 "questionnaire.ext.q20.option5": "Preserving peace, avoiding conflict, and staying serene"
 }
 };
+
+// Expose translations globally so inline scripts can access them
+if (typeof window !== 'undefined') {
+  window.translations = translations;
+}
 const i18n = {
   t(key) {
     const lang = document.documentElement.lang || 'fr';

@@ -5,13 +5,13 @@ const AUTO_QUESTIONS = [
     "i18nKey": "questionnaire.auto.q1.title",
     "options": [
       {
-        "text": "Aristote : « L’esprit est gouverné par la logique. »",
+        "text": "« L’esprit est gouverné par la logique. »",
         "i18nKey": "questionnaire.auto.q1.option1",
         "functions": { "Ti": 3, "Te": 3, "Fe": -3, "Fi": -3 },
         "enneagram": { "5": 2, "6": 1, "7": 2, "2": -3, "4": -3 }
       },
       {
-        "text": "Kierkegaard : « La vérité est d’abord une question de subjectivité. »",
+        "text": "« La vérité est d’abord une question de subjectivité. »",
         "i18nKey": "questionnaire.auto.q1.option2",
         "functions": { "Fi": 3, "Fe": 3, "Ti": -3, "Te": -3 },
         "enneagram": { "2": 3, "4": 2, "9": 3, "5": -3, "6": -2, "7": -2 }
@@ -501,6 +501,28 @@ const AUTO_QUESTIONS = [
 }
 ];
 
+// Normalize negative weights to match positive opposite in dichotomies
+(function normalizeWeights(){
+  const pairs = [ ['Te','Fi'], ['Ti','Fe'], ['Se','Ni'], ['Si','Ne'] ];
+  const apply = (opt)=>{
+    if (!opt || !opt.functions) return;
+    const f = opt.functions;
+    pairs.forEach(([a,b])=>{
+      if (a in f && b in f) {
+        if (f[a] > 0 && f[b] < 0 && f[b] !== -Math.abs(f[a])) {
+          f[b] = -Math.abs(f[a]);
+        } else if (f[b] > 0 && f[a] < 0 && f[a] !== -Math.abs(f[b])) {
+          f[a] = -Math.abs(f[b]);
+        }
+      }
+    });
+  };
+  const lists = [AUTO_QUESTIONS, EXTERNAL_QUESTIONS];
+  lists.forEach(list => Array.isArray(list) && list.forEach(q => {
+    if (q && Array.isArray(q.options)) q.options.forEach(apply);
+  }));
+})();
+
 const EXTERNAL_QUESTIONS = [
   
     {
@@ -509,13 +531,13 @@ const EXTERNAL_QUESTIONS = [
       "i18nKey": "questionnaire.ext.q1.title",
       "options": [
         {
-          "text": "Aristote : « L’esprit est gouverné par la logique. »",
+          "text": "« L’esprit est gouverné par la logique. »",
           "i18nKey": "questionnaire.ext.q1.option1",
           "functions": { "Ti": 3, "Te": 3, "Fe": -3, "Fi": -3 },
           "enneagram": { "5": 2, "6": 1, "7": 2, "2": -3, "4": -3 }
         },
         {
-          "text": "Kierkegaard : « La vérité est d’abord une question de subjectivité. »",
+          "text": "« La vérité est d’abord une question de subjectivité. »",
           "i18nKey": "questionnaire.ext.q1.option2",
           "functions": { "Fi": 3, "Fe": 3, "Ti": -3, "Te": -3 },
           "enneagram": { "2": 3, "4": 2, "9": 3, "5": -3, "6": -2, "7": -2 }

@@ -19,7 +19,12 @@ function applyTranslations(lang = null) {
 
 function switchLang(lang) {
   localStorage.setItem('lang', lang);
+  try { document.documentElement.setAttribute('lang', lang); } catch {}
   applyTranslations(lang);
 }
 
-document.addEventListener('DOMContentLoaded', () => applyTranslations());
+document.addEventListener('DOMContentLoaded', () => {
+  const lang = localStorage.getItem('lang') || 'fr';
+  try { document.documentElement.setAttribute('lang', lang); } catch {}
+  applyTranslations(lang);
+});

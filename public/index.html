@@ -55,7 +55,9 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
         .progress-bar {
-            transition: width 0.5s ease-in-out;
+            transition: width 0.5s ease-in-out, background 0.3s ease-in-out;
+            border-radius: 9999px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.08);
         }
         .question-card {
             min-height: 300px;
@@ -127,6 +129,40 @@
         .close:focus {
             color: #374151;
         }
+
+        /* Profile modal - enhanced look */
+        #profile-modal .modal-content {
+            border-radius: 22px;
+            border: 1px solid #e7eefc;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+            box-shadow: 0 28px 60px -12px rgba(16, 24, 40, 0.18), 0 16px 36px -18px rgba(16, 24, 40, 0.12);
+        }
+        #profile-modal .modal-header {
+            border-top-left-radius: 22px;
+            border-top-right-radius: 22px;
+            border-bottom-color: #eaf0ff;
+        }
+        #profile-modal .modal-body { padding: 2rem; }
+        /* Blue key badge with subtle relief */
+        .pc-icon-badge {
+            width: 64px; height: 64px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 9999px;
+            background: linear-gradient(145deg, #e8f1ff, #f5f9ff);
+            border: 1px solid rgba(59, 130, 246, 0.18);
+            box-shadow: 0 10px 28px rgba(37, 99, 235, 0.18), inset 0 -2px 6px rgba(255,255,255,0.9);
+        }
+        .pc-icon-badge i { color: #2563eb; font-size: 28px; text-shadow: 0 1px 0 rgba(255,255,255,0.85); }
+        .pc-icon-lg { width: 72px; height: 72px; box-shadow: 0 12px 30px rgba(37,99,235,0.16), inset 0 -2px 6px rgba(255,255,255,0.95); }
+        .pc-icon-lg i { font-size: 32px; }
+
+        /* Soft card used in profile modal */
+        #profile-modal .pc-soft-card {
+          border-radius: 20px;
+          background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+          border: 1px solid #e7eefc;
+          box-shadow: 0 6px 16px rgba(16,24,40,0.06);
+        }
         
         @keyframes modalFadeIn {
             from { opacity: 0; }
@@ -144,7 +180,7 @@
             }
         }
         
-        @media (max-width: 768px) {
+        @media (max-width: 1023px) {
             .desktop-nav {
                 display: none;
             }
@@ -178,7 +214,8 @@
             z-index: 1000;
             background: inherit;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-            height: 64px;
+            height: auto;
+            min-height: 64px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -202,7 +239,7 @@
             display: block;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1023px) {
             #site-header {
                 position: fixed;
                 top: 0;
@@ -211,7 +248,8 @@
                 z-index: 1000;
                 background: inherit;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-                height: 56px;
+                height: auto;
+                min-height: 56px;
             }
             body {
                 padding-top: 56px;
@@ -411,6 +449,34 @@
           }
         }
 
+        /* Animation: logo spins once every 5s (pulse) */
+        @keyframes pc-spin-y {
+          0%, 90% { transform: rotateY(0deg); }
+          100%    { transform: rotateY(360deg); }
+        }
+        img[src$="logotitre.png"],
+        img[src$="logo pc 3.png"] {
+          display: inline-block;
+          animation: pc-spin-y 5s ease-in-out infinite;
+          transform-style: preserve-3d;
+          backface-visibility: visible;
+          will-change: transform;
+          transform-origin: center center;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          img[src$="logotitre.png"],
+          img[src$="logo pc 3.png"] { animation: none; }
+        }
+
+        /* Site-wide rounded buttons without changing colors */
+        button,
+        input[type="button"],
+        input[type="submit"],
+        .btn,
+        a.btn {
+          border-radius: 1rem !important; /* 16px approx */
+        }
+
     </style>
 
     <!-- Open Graph -->
@@ -440,12 +506,17 @@
     <!-- Navigation -->
     <header id="site-header" class="sticky-header">
         <div class="flex items-center">
-            <div class="flex-shrink-0 flex items-center">
-                <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span id="brand-home" class="ml-3 text-[1.05rem] sm:text-xl font-bold text-black" data-i18n="brand.name">Personnalité Comparée</span>
+            <div class="flex items-center min-w-0">
+                <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span id="brand-home" class="ml-3 text-[1.05rem] sm:text-xl font-bold text-black truncate max-w-[65vw] sm:max-w-[60vw] md:max-w-none" data-i18n="brand.name">Personnalité Comparée</span>
             </div>
-            <div class="relative ml-4">
+            <div class="relative ml-4 shrink-0">
                 <button id="lang-toggle" class="p-2" aria-haspopup="true" aria-expanded="false">
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12A9 9 0 113 12a9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3.6v16.8"/></svg>
+                    <svg class="w-5 h-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c3.5 3 3.5 15 0 18"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-3.5 3-3.5 15 0 18"/>
+                    </svg>
                 </button>
                 <div id="lang-menu" class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg ring-1 ring-black/5 hidden z-50">
                     <button data-lang="en" class="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100"><span class="mr-2">🇬🇧</span> English</button>
@@ -453,7 +524,7 @@
                 </div>
             </div>
         </div>
-        <nav class="desktop-nav hidden md:ml-6 md:flex md:items-center md:space-x-8">
+        <nav class="desktop-nav hidden lg:ml-6 lg:flex lg:items-center lg:space-x-8">
             <div id="home-menu-container" class="relative">
                 <a id="home-menu-button" href="index.html" class="inline-flex items-center gap-2 text-gray-900 px-1 pt-1 text-sm font-medium" aria-haspopup="true" aria-expanded="false">
                     <span data-i18n="menu.home">Accueil</span>
@@ -507,14 +578,14 @@
                 Mon profil
             </button>
         </nav>
-        <div class="-mr-2 flex items-center md:hidden">
-            <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
+        <div class="-mr-2 flex items-center lg:hidden">
+            <button type="button" id="mobile-menu-button" class="shrink-0 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none lg:hidden" aria-controls="mobile-menu" aria-expanded="false">
                 <span class="sr-only" data-i18n="nav.open_main">Ouvrir le menu principal</span>
                 <i class="fas fa-bars" id="menu-icon"></i>
             </button>
         </div>
         <!-- Menu mobile -->
-        <div class="mobile-menu md:hidden" id="mobile-menu">
+        <div class="mobile-menu lg:hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
                 <div>
                     <a id="mobile-home-button" href="index.html" class="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-900" aria-expanded="false">
@@ -581,8 +652,8 @@
 
         <div class="relative max-w-5xl mx-auto px-6 pb-16 text-center">
 <video autoplay loop muted playsinline class="mx-auto mb-4 w-36 sm:w-40 h-auto">
-  <source src="/logo.mp4" type="video/mp4">
-  <img src="/logobanniere.jpeg" alt="Nouveau logo">
+  <source src="logo.mp4" type="video/mp4">
+  <img src="logobanniere.jpeg" alt="Nouveau logo">
 </video>
 
 
@@ -718,7 +789,7 @@
             </div>
 
             <!-- Navigation boutons -->
-<div class="mt-8 flex justify-center">
+<div class="mt-8 flex justify-center gap-3">
                 <button id="prev-question" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" style="display: none;">
                     <i class="fas fa-arrow-left mr-2"></i> <span data-i18n="prevQuestion">Question précédente</span>
                 </button>
@@ -893,7 +964,7 @@
           <form onsubmit="event.preventDefault(); viewResults(document.getElementById('code-saisi').value);" autocomplete="off" class="mt-12 max-w-lg mx-auto">
             <div class="flex flex-col sm:flex-row items-center gap-4">
               <label for="code-saisi" class="sr-only" data-i18n="retrieve.codeLabel">Code reçu</label>
-              <input type="text" id="code-saisi" class="flex-1 px-6 py-3 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-300 text-base text-center shadow-sm transition" placeholder="ABC123" maxlength="12" data-i18n-placeholder="retrieve.placeholder" required>
+              <input type="text" id="code-saisi" class="flex-1 px-6 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 placeholder:text-gray-300 text-base text-center transition" placeholder="ABC123" maxlength="12" data-i18n-placeholder="retrieve.placeholder" required>
               <button type="submit" class="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-lg font-semibold shadow hover:bg-gray-800 transition">
                 <i class="fas fa-eye"></i> <span data-i18n="retrieve.viewButton">Voir le profil</span>
               </button>
@@ -1413,12 +1484,12 @@ function displayQuestion(index) {
     <div class="question-container fade active bg-transparent overflow-hidden">
       <div class="px-6 py-4">
         <div class="flex justify-between items-center mb-4">
-          <span class="text-sm font-medium text-blue-600">
+          <span class="text-sm font-medium text-black">
             <span data-i18n="question.label">Question</span> ${index + 1}/${AUTO_QUESTIONS.length}
           </span>
           <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
-            <div class="progress-bar bg-blue-600 h-2.5 rounded-full transition-all duration-500"
-                 style="width: ${progress}%"></div>
+            <div class="progress-bar h-2.5 rounded-full transition-all duration-500"
+                 style="width: ${progress}%; background: linear-gradient(90deg, hsl(${Math.round((progress/100)*120)} 90% 62%), hsl(${Math.round((progress/100)*120)} 90% 52%))"></div>
           </div>
         </div>
 
@@ -1433,7 +1504,7 @@ function displayQuestion(index) {
                      name="question${question.id}"
                      type="radio"
                      value="${optionIndex}"
-                     class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 mt-1"
+                     class="focus:ring-black h-4 w-4 text-black border-gray-300 mt-1"
                      ${answers[question.id] === optionIndex ? 'checked' : ''}>
               <label for="q${question.id}-${optionIndex}"
                      class="ml-3 block text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-900 transition-colors"
@@ -1488,7 +1559,9 @@ function displayQuestion(index) {
                             displayQuestion(currentQuestionIndex);
                         }
                     } else {
-                        alert('Veuillez sélectionner une réponse avant de continuer.');
+                        const lang = document.documentElement.lang || localStorage.getItem('lang') || 'fr';
+                        const msg = (window.translations && window.translations[lang] && window.translations[lang].alerts && window.translations[lang].alerts.selectAnswer) || 'Veuillez sélectionner une réponse avant de continuer.';
+                        alert(msg);
                     }
                 });
             }
@@ -1501,7 +1574,9 @@ function displayQuestion(index) {
                         return;
                     }
                     if (Object.keys(answers).length !== AUTO_QUESTIONS.length) {
-                        alert('Veuillez répondre à toutes les questions avant de terminer.');
+                        const lang = document.documentElement.lang || localStorage.getItem('lang') || 'fr';
+                        const msg = (window.translations && window.translations[lang] && window.translations[lang].alerts && window.translations[lang].alerts.completeAll) || 'Veuillez répondre à toutes les questions avant de terminer.';
+                        alert(msg);
                         return;
                     }
                     isSubmitting = true;
@@ -3305,10 +3380,10 @@ window.shareProfileResults = shareProfileResults;
             const content = `
                 <div class="max-w-4xl mx-auto">
 <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                        <div class="bg-blue-600 px-6 py-4 flex justify-between items-center">
+                        <div class="bg-black px-6 py-4 flex justify-between items-center">
                             <div>
                                 <h2 class="text-2xl font-bold text-white" data-i18n="home.modal.externalEval.title">Évaluation externe</h2>
-                                <p class="text-blue-100 mt-1"><span data-i18n="home.modal.externalEval.codeLabel">Code:</span> ${code} | <span data-i18n="home.modal.externalEval.relationLabel">Relation:</span> ${relationLabels[relation]}</p>
+                                <p class="text-gray-200 mt-1"><span data-i18n="home.modal.externalEval.codeLabel">Code:</span> ${code} | <span data-i18n="home.modal.externalEval.relationLabel">Relation:</span> ${relationLabels[relation]}</p>
                             </div>
                             <span class="close" onclick="closeModal()" style="color: white;">&times;</span>
                         </div>
@@ -3379,9 +3454,9 @@ window.shareProfileResults = shareProfileResults;
             questionsContent.innerHTML = `
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm font-medium text-blue-600"><span data-i18n="question.label">Question</span> ${index + 1}/${EXTERNAL_QUESTIONS.length}</span>
+                        <span class="text-sm font-medium text-black"><span data-i18n="question.label">Question</span> ${index + 1}/${EXTERNAL_QUESTIONS.length}</span>
                         <div class="w-full bg-gray-200 rounded-full h-2.5 ml-4">
-                            <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                            <div class="progress-bar h-2.5 rounded-full transition-all duration-500" style="width: ${progress}%; background: linear-gradient(90deg, hsl(${Math.round((progress/100)*120)} 90% 62%), hsl(${Math.round((progress/100)*120)} 90% 52%))"></div>
                         </div>
                     </div>
 <h3 class="text-xl font-medium text-gray-900 mb-6" data-i18n="questionnaire.ext.q${question.id}.title">${question.question}</h3>
@@ -3394,7 +3469,7 @@ window.shareProfileResults = shareProfileResults;
     const dataI18n = value === 0 ? 'question.option.dontknow' : `questionnaire.ext.q${question.id}.option${optionIndex + 1}`;
     return `
       <div class="flex items-start${extraClass}">
-        <input id="eq${question.id}-${optionIndex}" name="external_question${question.id}" type="radio" value="${value}"${dataChoice} class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 mt-1" ${externalAnswers[question.id] === value ? 'checked' : ''}>
+        <input id="eq${question.id}-${optionIndex}" name="external_question${question.id}" type="radio" value="${value}"${dataChoice} class="focus:ring-black h-4 w-4 text-black border-gray-300 mt-1" ${externalAnswers[question.id] === value ? 'checked' : ''}>
         <label for="eq${question.id}-${optionIndex}" class="ml-3 block text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-900 transition-colors">
           <span data-i18n="${dataI18n}">${option.text}</span>
         </label>
@@ -3442,7 +3517,9 @@ window.shareProfileResults = shareProfileResults;
                             displayExternalQuestion(currentExternalQuestionIndex);
                         }
                     } else {
-                        alert('Veuillez sélectionner une réponse avant de continuer.');
+                        const lang = document.documentElement.lang || localStorage.getItem('lang') || 'fr';
+                        const msg = (window.translations && window.translations[lang] && window.translations[lang].alerts && window.translations[lang].alerts.selectAnswer) || 'Veuillez sélectionner une réponse avant de continuer.';
+                        alert(msg);
                     }
                 });
             }
@@ -3508,10 +3585,12 @@ window.shareProfileResults = shareProfileResults;
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 if (btn.disabled) return;
-                if (Object.keys(externalAnswers).length !== EXTERNAL_QUESTIONS.length) {
-                    alert('Veuillez répondre à toutes les questions avant de terminer.');
-                    return;
-                }
+            if (Object.keys(externalAnswers).length !== EXTERNAL_QUESTIONS.length) {
+                const lang = document.documentElement.lang || localStorage.getItem('lang') || 'fr';
+                const msg = (window.translations && window.translations[lang] && window.translations[lang].alerts && window.translations[lang].alerts.completeAll) || 'Veuillez répondre à toutes les questions avant de terminer.';
+                alert(msg);
+                return;
+            }
                 setLoadingState();
                 await new Promise(r => setTimeout(r, 0));
 
@@ -3794,15 +3873,22 @@ window.shareProfileResults = shareProfileResults;
             // Si toutes les évaluations requises sont terminées, afficher le statut vert, sinon statut orange.
             if (completedEvaluations >= totalEvaluationsRequired) {
                 evaluationsStatus.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800';
-                evaluationsStatus.innerHTML = '<i class="fas fa-check mr-1"></i> Toutes terminées';
+                const langStatus = document.documentElement.lang || localStorage.getItem('lang') || 'fr';
+                const allDoneLabel = (window.translations && window.translations[langStatus] && window.translations[langStatus].profileModal && window.translations[langStatus].profileModal.step2 && window.translations[langStatus].profileModal.step2.allCompleted) || 'Toutes terminées';
+                evaluationsStatus.innerHTML = `<i class="fas fa-check mr-1"></i> ${allDoneLabel}`;
             } else {
                 evaluationsStatus.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800';
-                evaluationsStatus.innerHTML = `<i class="fas fa-clock mr-1"></i> ${completedEvaluations}/${totalEvaluationsRequired} terminées`;
+                const langStatus = document.documentElement.lang || localStorage.getItem('lang') || 'fr';
+                const completedSuffix = (window.translations && window.translations[langStatus] && window.translations[langStatus].profileModal && window.translations[langStatus].profileModal.step2 && window.translations[langStatus].profileModal.step2.completedSuffix) || 'terminées';
+                evaluationsStatus.innerHTML = `<i class="fas fa-clock mr-1"></i> ${completedEvaluations}/${totalEvaluationsRequired} ${completedSuffix}`;
             }
             
             // Mettre à jour la barre de progression
             const progressPercent = (totalProgress / maxProgress) * 100;
-            document.getElementById('progress-bar').style.width = progressPercent + '%';
+            const pb = document.getElementById('progress-bar');
+            pb.style.width = progressPercent + '%';
+            const hue2 = Math.round((progressPercent/100)*120);
+            pb.style.background = `linear-gradient(90deg, hsl(${hue2} 90% 62%), hsl(${hue2} 90% 52%))`;
             const lang = localStorage.getItem('lang') || 'fr';
             const suffix = translations[lang]['profileModal.step2.progressSuffix'] || '';
             document.getElementById('progress-text').textContent = `${totalProgress}/${maxProgress} ${suffix}`;
@@ -4204,7 +4290,7 @@ window.shareProfileResults = shareProfileResults;
 
 
 <div class="mt-6 mb-6 flex justify-center">
-  <img src="/logobanniere.jpeg" alt="Logo Personnalité Comparée" class="h-24 object-contain opacity-90" />
+  <img src="logobanniere.jpeg" alt="Logo Personnalité Comparée" class="h-24 object-contain opacity-90" />
 </div>
 
 
@@ -4623,8 +4709,8 @@ window.shareProfileResults = shareProfileResults;
                 <!-- Étape 1: Saisie du code -->
                 <div id="code-input-step" class="profile-step">
                     <div class="text-center mb-6">
-                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
-                            <i class="fas fa-key text-blue-600 text-xl"></i>
+                        <div class="mx-auto pc-icon-badge mb-5">
+                            <i class="fas fa-key"></i>
                         </div>
                         <h3 class="text-lg font-medium text-gray-900 mb-2" data-i18n="profileModal.step1.title">Accédez à votre profil</h3>
                         <p class="text-sm text-gray-500" data-i18n="profileModal.step1.desc">Entrez votre code unique pour consulter vos résultats</p>
@@ -4634,9 +4720,9 @@ window.shareProfileResults = shareProfileResults;
                         <div>
                             <label for="profile-code" class="block text-sm font-medium text-gray-700 mb-2" data-i18n="profileModal.codeLabel">Code unique</label>
                             <input type="text" id="profile-code" placeholder="Entrez votre code (ex: ABC123)"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-center text-lg font-mono tracking-wider uppercase" data-i18n-placeholder="profileModal.codePlaceholder">
+                                   class="w-full px-4 py-3 border border-gray-200 rounded-2xl shadow-md focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 text-center text-lg font-mono tracking-wider uppercase transition-all" data-i18n-placeholder="profileModal.codePlaceholder">
                         </div>
-                        <button onclick="checkProfileCode()" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
+                        <button onclick="checkProfileCode()" class="w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-2xl text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black shadow-md">
                             <i class="fas fa-sign-in-alt mr-2"></i>
                             <span data-i18n="profileModal.accessButton">Accéder à mon profil</span>
                         </button>
@@ -4647,15 +4733,15 @@ window.shareProfileResults = shareProfileResults;
                 <!-- Étape 2: Statut des évaluations -->
                 <div id="profile-status-step" class="profile-step" style="display: none;">
                     <div class="text-center mb-6">
-                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
-                            <i class="fas fa-user-circle text-blue-600 text-xl"></i>
+                        <div class="mx-auto pc-icon-badge pc-icon-lg mb-5">
+                            <i class="fas fa-user-circle"></i>
                         </div>
                         <h3 class="text-lg font-medium text-gray-900 mb-2"><span data-i18n="profileModal.step2.title">Profil de</span> <span id="profile-name"></span></h3>
                         <p class="text-sm text-gray-500"><span data-i18n="profileModal.step2.codeLabel">Code:</span> <span id="display-code" class="font-mono font-bold"></span></p>
                     </div>
 
                     <!-- Statut des évaluations -->
-                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <div class="pc-soft-card p-5 mb-6">
                         <h4 class="font-medium text-gray-900 mb-3" data-i18n="profileModal.step2.statusTitle">Statut des évaluations</h4>
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
@@ -4679,13 +4765,13 @@ window.shareProfileResults = shareProfileResults;
                                 <span id="progress-text">0/4</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                <div id="progress-bar" class="progress-bar h-2 rounded-full transition-all duration-500" style="width: 0%; background: linear-gradient(90deg, hsl(0 90% 62%), hsl(0 90% 52%))"></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Message selon le statut -->
-                    <div id="status-message" class="rounded-lg p-4 mb-4">
+                    <div id="status-message" class="pc-soft-card p-4 mb-4">
                         <!-- Sera rempli dynamiquement -->
                     </div>
 

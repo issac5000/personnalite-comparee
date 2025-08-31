@@ -58,6 +58,34 @@
             transition: all 0.3s ease;
         }
 
+        /* Animation: logo spins once every 5s (pulse) */
+        @keyframes pc-spin-y {
+          0%, 90% { transform: rotateY(0deg); }
+          100%    { transform: rotateY(360deg); }
+        }
+        img[src$="logotitre.png"],
+        img[src$="logo pc 3.png"] {
+          display: inline-block;
+          animation: pc-spin-y 5s ease-in-out infinite;
+          transform-style: preserve-3d;
+          backface-visibility: visible;
+          will-change: transform;
+          transform-origin: center center;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          img[src$="logotitre.png"],
+          img[src$="logo pc 3.png"] { animation: none; }
+        }
+
+        /* Site-wide rounded buttons without changing colors */
+        button,
+        input[type="button"],
+        input[type="submit"],
+        .btn,
+        a.btn {
+          border-radius: 1rem !important; /* 16px approx */
+        }
+
         button:hover {
             transform: rotateX(3deg) rotateY(3deg) scale(1.05);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
@@ -157,7 +185,7 @@
             }
         }
         
-        @media (max-width: 768px) {
+        @media (max-width: 1023px) {
             .desktop-nav {
                 display: none;
             }
@@ -191,7 +219,8 @@
             z-index: 1000;
             background: inherit;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
-            height: 64px;
+            height: auto;
+            min-height: 64px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -215,7 +244,7 @@
             display: block;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1023px) {
             #site-header {
                 position: fixed;
                 top: 0;
@@ -224,7 +253,8 @@
                 z-index: 1000;
                 background: inherit;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-                height: 56px;
+                height: auto;
+                min-height: 56px;
             }
             body {
                 padding-top: 56px;
@@ -396,12 +426,17 @@
 <!-- Navigation -->
     <header id="site-header" class="sticky-header">
         <div class="flex items-center">
-            <div class="flex-shrink-0 flex items-center">
-                <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span id="brand-home" class="ml-3 text-[1.05rem] sm:text-xl font-bold text-black" data-i18n="brand.name">Personnalité Comparée</span>
+            <div class="flex items-center min-w-0">
+                <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span id="brand-home" class="ml-3 text-[1.05rem] sm:text-xl font-bold text-black truncate max-w-[65vw] sm:max-w-[60vw] md:max-w-none" data-i18n="brand.name">Personnalité Comparée</span>
             </div>
-            <div class="relative ml-4">
+            <div class="relative ml-4 shrink-0">
                 <button id="lang-toggle" class="p-2" aria-haspopup="true" aria-expanded="false">
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12A9 9 0 113 12a9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3.6v16.8"/></svg>
+                    <svg class="w-5 h-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c3.5 3 3.5 15 0 18"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-3.5 3-3.5 15 0 18"/>
+                    </svg>
                 </button>
                 <div id="lang-menu" class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg ring-1 ring-black/5 hidden z-50">
                     <button data-lang="en" class="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100"><span class="mr-2">🇬🇧</span> English</button>
@@ -409,7 +444,7 @@
                 </div>
             </div>
         </div>
-        <nav class="desktop-nav hidden md:ml-6 md:flex md:items-center md:space-x-8">
+        <nav class="desktop-nav hidden lg:ml-6 lg:flex lg:items-center lg:space-x-8">
             <div id="home-menu-container" class="relative group">
                 <a id="home-menu-button" href="index.html" class="inline-flex items-center gap-2 text-gray-900 px-1 pt-1 text-sm font-medium" aria-haspopup="true" aria-expanded="false">
                     <span data-i18n="menu.home">Accueil</span>
@@ -460,14 +495,14 @@
             <a href="blog.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium" data-i18n="menu.blog">Blog</a>
             <a href="index.html#home-faq" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium" data-i18n="menu.faq">FAQ</a>
         </nav>
-        <div class="-mr-2 flex items-center md:hidden">
-            <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
+        <div class="-mr-2 flex items-center lg:hidden">
+            <button type="button" id="mobile-menu-button" class="shrink-0 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none lg:hidden" aria-controls="mobile-menu" aria-expanded="false">
                 <span class="sr-only">Ouvrir le menu principal</span>
                 <i class="fas fa-bars" id="menu-icon"></i>
             </button>
         </div>
         <!-- Menu mobile -->
-        <div class="mobile-menu md:hidden" id="mobile-menu">
+        <div class="mobile-menu lg:hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
                 <div>
                     <a id="mobile-home-button" href="index.html" class="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-900" aria-expanded="false">
