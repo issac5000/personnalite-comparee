@@ -4900,7 +4900,7 @@ window.shareProfileResults = shareProfileResults;
     }
 
     // Construire la clé de cache en fonction des infos disponibles
-    const cacheKey = `ai-summary:${code}:${autoMbti || ''}:${autoEnneagram || ''}:${externalMbti || ''}:${externalEnneagram || ''}`;
+    const cacheKey = `ai-summary:v2:${code}:${autoMbti || ''}:${autoEnneagram || ''}:${externalMbti || ''}:${externalEnneagram || ''}`;
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
         console.info('[AI Summary]', 'cache hit', cacheKey);
