@@ -4395,14 +4395,14 @@ function showSupport() {
             const canCompare = !!(autoMbti && autoEnneagram && externalMbti && externalEnneagram);
             if (canCompare) {
                 messages = [
-                    { role: 'system', content: "Tu es Psycho'Bot, un psychologue pédagogique. Écris en français clair et nuancé, sans jargon." },
+                    { role: 'system', content: "Tu es Psycho'Bot, un psychologue pédagogique. Écris en français clair et nuancé, sans jargon. Adresse-toi directement à la personne (tutoiement), ton amical, empathique, bienveillant et concret." },
                     { role: 'user', content: `Voici deux profils de la même personne:\n\n1) Auto-évaluation (vision subjective)\nMBTI=${autoMbti}, Ennéagramme=${autoEnneagram}\n\n2) Évaluations externes (vision des proches)\nMBTI=${externalMbti}, Ennéagramme=${externalEnneagram}\n\nTa tâche :\n- Compare les deux visions (convergences/divergences).\n- Explique ce que cela révèle : biais, angles morts, cohérence/contradictions.\n- Termine par une synthèse positive : comment cette comparaison aide à mieux se connaître.\n\nStyle : concis mais nuancé, phrases courtes, ton positif et pédagogique.\nMax 350 mots.` }
                 ];
             } else {
                 const mbti = (profile && profile.results && profile.results.mbti) || autoMbti || externalMbti || '';
                 const enneagram = (profile && profile.results && profile.results.enneagram) || autoEnneagram || externalEnneagram || '';
                 messages = [
-                    { role: 'system', content: 'Tu es un psychologue pédagogique. Écris en français, clair et nuancé, sans jargon.' },
+                    { role: 'system', content: "Tu es Psycho'Bot, un psychologue pédagogique. Écris en français clair et nuancé, sans jargon. Adresse-toi directement à la personne (tutoiement), ton amical, empathique, bienveillant et concret." },
                     { role: 'user', content: `Profil combiné : MBTI=${mbti}, Ennéagramme=${enneagram}.\nRédige une description concise (max 150 mots) :\n1) forces principales, 2) point faible récurrent, 3) piste d’amélioration.\nLangage clair, ton positif, phrases courtes.` }
                 ];
             }
