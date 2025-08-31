@@ -4868,10 +4868,10 @@ window.shareProfileResults = shareProfileResults;
         if (!autoMbti || !autoEnneagram) {
             const raw = localStorage.getItem('userProfile_' + code);
             if (raw) {
-            const up = JSON.parse(raw);
-            autoMbti = autoMbti || up.mbtiType || null;
-            autoEnneagram = autoEnneagram || up.enneagramType || null;
-        }
+                const up = JSON.parse(raw);
+                autoMbti = autoMbti || up.mbtiType || null;
+                autoEnneagram = autoEnneagram || up.enneagramType || null;
+            }
         }
     } catch (_) {}
 
@@ -4884,6 +4884,11 @@ window.shareProfileResults = shareProfileResults;
                 const weighted = computeWeightedResults(evaluations);
                 externalMbti = weighted.mbtiType || null;
                 externalEnneagram = weighted.enneagramType || null;
+            }
+            // 2b) Compléter l'auto depuis la DB si encore manquant
+            if ((!autoMbti || !autoEnneagram) && r && r.user) {
+                autoMbti = autoMbti || r.user.auto_mbti_type || null;
+                autoEnneagram = autoEnneagram || r.user.auto_enneagram_type || null;
             }
         }
     } catch (e) {

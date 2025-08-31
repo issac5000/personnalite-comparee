@@ -4250,6 +4250,11 @@ function showSupport() {
                         externalMbti = weighted.mbtiType || null;
                         externalEnneagram = weighted.enneagramType || null;
                     }
+                    // 2b) Compléter l'auto depuis la DB si encore manquant
+                    if ((!autoMbti || !autoEnneagram) && r && r.user) {
+                        autoMbti = autoMbti || r.user.auto_mbti_type || null;
+                        autoEnneagram = autoEnneagram || r.user.auto_enneagram_type || null;
+                    }
                 }
             } catch (e) {
                 console.warn('Impossible de calculer le profil externe agrégé:', e);
