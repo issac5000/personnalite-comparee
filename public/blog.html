@@ -3372,6 +3372,9 @@ function showSupport() {
 
         function displayDetailedResults(profile, code) {
             // Créer une nouvelle modale pour les résultats
+            const overall = (profile.results && profile.results.overallCertainty != null)
+              ? Number(profile.results.overallCertainty)
+              : Math.round(((Number(profile.results?.mbtiCertainty ?? 0) + Number(profile.results?.enneagramCertainty ?? 0)) || 0) / 2);
             const resultsModal = document.createElement('div');
             resultsModal.id = 'results-modal';
             resultsModal.className = 'modal show';
@@ -3426,15 +3429,11 @@ function showSupport() {
 
         <!-- Certitude globale -->
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
-          ${
-            profile.results.overallCertainty != null
-              ? `<p class="mb-1">Certitude globale</p>
-                 <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
-                   <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-green-500 transition-all duration-1000" data-width="${profile.results.overallCertainty}" style="width:0"></div>
-                   <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.overallCertainty}%</span>
-                 </div>`
-              : `<p>Certitude : Données en cours...</p>`
-          }
+          <p class="mb-1">Certitude globale</p>
+          <div class="relative w-full bg-gray-200 h-6 rounded overflow-hidden" data-aos="fade-right">
+            <div class="certainty-bar absolute left-0 top-0 h-full rounded bg-green-500 transition-all duration-1000" data-width="${overall}" style="width:0"></div>
+            <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${overall}%</span>
+          </div>
           <p class="text-sm text-gray-600 mt-2">Basé sur les évaluations de vos proches</p>
           ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
         </div>

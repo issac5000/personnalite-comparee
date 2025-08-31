@@ -1881,6 +1881,10 @@ function displayQuestion(index) {
         code: userProfile.code,
         mbti_scores: userProfile.mbtiScores,
         enneagram_scores: userProfile.enneagramScores,
+        // Stocke les types auto pour récupération multi-appareils
+        auto_mbti_type: userProfile.mbtiType,
+        auto_enneagram_type: userProfile.enneagramType,
+        // Les champs mbti_type/enneagram_type seront mis à jour plus tard
         mbti_type: userProfile.mbtiType,
         enneagram_type: userProfile.enneagramType,
         certainty_score: 0
@@ -4295,6 +4299,10 @@ window.shareProfileResults = shareProfileResults;
             const lang = localStorage.getItem('lang') || 'fr';
             const coherenceLabel = translations[lang]['results.details.coherence.label'];
             const wing = profile.results.enneagramWing || computeEnneagramWing(profile.enneagramScores, profile.results.enneagram);
+            // Fallback pour certitude globale si absente
+            const overall = (profile.results && profile.results.overallCertainty != null)
+              ? Number(profile.results.overallCertainty)
+              : Math.round(((Number(profile.results?.mbtiCertainty ?? 0) + Number(profile.results?.enneagramCertainty ?? 0)) || 0) / 2);
             const enneaDisplay = `Type ${profile.results.enneagram}${wing ? 'w' + wing : ''}`;
             // Créer une nouvelle modale pour les résultats
             const resultsModal = document.createElement('div');
@@ -4354,15 +4362,11 @@ window.shareProfileResults = shareProfileResults;
 
 <!-- Certitude globale -->
 <div class="bg-gray-50 rounded-2xl p-6 shadow-sm mb-6">
-  ${
-    profile.results.overallCertainty != null
-      ? `<p class="mb-1" data-i18n="results.details.overallCertainty">Certitude globale</p>
-         <div class="relative w-full bg-gray-200 h-6 rounded-full overflow-hidden" data-aos="fade-right">
-           <div class="certainty-bar absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-green-300 via-green-400 to-green-500 transition-all duration-1000" data-width="${profile.results.overallCertainty}" style="width:0"></div>
-           <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${profile.results.overallCertainty}%</span>
-         </div>`
-      : `<p data-i18n="results.details.pending">Certitude : Données en cours...</p>`
-  }
+  <p class="mb-1" data-i18n="results.details.overallCertainty">Certitude globale</p>
+  <div class="relative w-full bg-gray-200 h-6 rounded-full overflow-hidden" data-aos="fade-right">
+    <div class="certainty-bar absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-green-300 via-green-400 to-green-500 transition-all duration-1000" data-width="${overall}" style="width:0"></div>
+    <span class="absolute w-full text-center text-white font-bold text-sm leading-6">${overall}%</span>
+  </div>
   <p class="text-sm text-gray-600 mt-2" data-i18n="results.details.basedOnRelatives">Basé sur les évaluations de vos proches</p>
   ${profile.externalCount < 3 ? `<p class="text-sm text-yellow-700 mt-2" data-i18n="results.details.increaseCertainty">🔎 Augmentez votre niveau de certitude en complétant les 3 évaluations externes (famille, partenaire, ami ou collègue).</p>` : ''}
 </div>
