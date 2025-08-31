@@ -34,6 +34,15 @@
         body {
             transition: background-color 0.3s, color 0.3s;
         }
+        /* Make specific words visually thicker than font-weight allows */
+        .pc-superbold { -webkit-text-stroke: 0.2px currentColor; }
+        /* Subtle marker-like highlight effect for a single word */
+        .pc-highlight {
+          background-image: linear-gradient(180deg, transparent 58%, #fef08a 58%);
+          background-repeat: no-repeat;
+          border-radius: .15em;
+          padding: 0 .08em; /* tiny side padding so the highlight peeks out */
+        }
         .rotate-180 {
             transform: rotate(180deg);
         }
@@ -664,7 +673,7 @@
             
             <!-- Titre principal avec hiérarchie claire -->
             <h1 data-i18n="heroTitle" class="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-slate-900 mb-6 leading-tight">
-                Et si vous vous connaissiez<br><span class="text-blue-600 font-medium"><strong>vraiment</strong></span> ?
+                Et si vous vous connaissiez<br><span class="text-blue-600 font-black pc-superbold pc-highlight"><strong>vraiment</strong></span> ?
             </h1>
             
             <!-- Sous-titre épuré -->

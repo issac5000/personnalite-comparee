@@ -1,7 +1,7 @@
 const translations = {
   fr: {
     siteTitle: "Personnalité Comparée | Test dérivé MBTI & Ennéagramme Gratuit",
-    heroTitle: "Et si vous vous connaissiez<br><span class=\"text-blue-600 font-medium\"><strong>vraiment</strong></span> ?",
+    heroTitle: "Et si vous vous connaissiez<br><span class=\"text-blue-600 font-extrabold pc-superbold pc-highlight\"><strong>vraiment</strong></span> ?",
     heroSubtitle: "La première plateforme qui combine <span class=\"font-medium text-slate-800\">test dérivé MBTI®</span> & <span class=\"font-medium text-slate-800\">Ennéagramme</span>, validation par l’entourage et <span class=\"font-medium text-slate-800\">IA spécialisée</span> pour répondre à toutes vos questions.",
     indicatorMBTI: "16 profils inspirés du MBTI",
     indicatorEnneagram: "9 types Ennéagramme",
@@ -1193,7 +1193,7 @@ const translations = {
   },
   en: {
     siteTitle: "Compared Personality | Free MBTI-inspired & Enneagram Test",
-    heroTitle: "What if you <br><span class=\"text-blue-600 font-medium\"><strong>really</strong></span> knew yourself?",
+    heroTitle: "What if you <br><span class=\"text-blue-600 font-extrabold pc-superbold pc-highlight\"><strong>really</strong></span> knew yourself?",
     heroSubtitle: "The first platform combining <span class=\"font-medium text-slate-800\">MBTI®-inspired test</span> & <span class=\"font-medium text-slate-800\">Enneagram</span>, feedback from relatives, and <span class=\"font-medium text-slate-800\">specialized AI</span> to answer all your questions.",
     indicatorMBTI: "16 MBTI profiles",
     indicatorEnneagram: "9 Enneagram types",
