@@ -430,7 +430,7 @@
                 <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span id="brand-home" class="ml-3 text-[1.05rem] sm:text-xl font-bold text-black truncate max-w-[65vw] sm:max-w-[60vw] md:max-w-none" data-i18n="brand.name">Personnalité Comparée</span>
             </div>
             <div class="relative ml-4 shrink-0">
-                <button id="lang-toggle" class="p-2" aria-haspopup="true" aria-expanded="false">
+                <button id="lang-toggle" class="p-2 focus:outline-none" aria-haspopup="true" aria-expanded="false">
                     <svg class="w-5 h-5 text-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                         <circle cx="12" cy="12" r="9"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18"/>
@@ -3523,6 +3523,8 @@ function showSupport() {
                         menuIcon.className = 'fas fa-times';
                         mobileMenuButton.setAttribute('aria-expanded', 'true');
                     }
+                    // Remove persistent focus outline on mobile after tap
+                    try { mobileMenuButton.blur(); } catch {}
                 });
                 
                 // Fermer le menu quand on clique sur un lien

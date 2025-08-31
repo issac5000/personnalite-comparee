@@ -162,6 +162,12 @@
         });
       }
 
+      // Ensure hamburger button does not keep focus after tap (mobile)
+      const mobileMenuBtn = document.getElementById('mobile-menu-button');
+      if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', () => { try { mobileMenuBtn.blur(); } catch {} });
+      }
+
       const langToggle=document.getElementById('lang-toggle');
       const langMenu=document.getElementById('lang-menu');
       if(langToggle&&langMenu){
@@ -177,6 +183,8 @@
         langToggle.addEventListener('click',e=>{
           e.stopPropagation();
           langMenu.classList.toggle('hidden');
+          // Remove persistent focus outline on mobile after tap
+          try { langToggle.blur(); } catch {}
         });
         langMenu.querySelectorAll('button[data-lang]').forEach(btn=>{
           btn.addEventListener('click',()=>{
