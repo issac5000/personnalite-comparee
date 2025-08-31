@@ -1896,27 +1896,48 @@ const { error: insertError } = await supabase
         };
     }
 
-    const avg = (keys, field) => {
-        const totals = Object.fromEntries(keys.map(k => [k, 0]));
-        evaluations.forEach(ev => {
-            const scores = ev[field] || {};
-            keys.forEach(k => { totals[k] += Number(scores[k] || 0); });
+    // Pondération par cohérence des évaluateurs
+    const COHERENCE_WEIGHTS = { Forte:1.0, Moyenne:0.7, Faible:0.4 };
+
+    // Totaux pondérés et sommes de poids
+    const funcTotals = Object.fromEntries(functions.map(k => [k, 0]));
+    const enneaTotals = Object.fromEntries(types.map(k => [k, 0]));
+    let funcWeightSum = 0;
+    let enneaWeightSum = 0;
+
+    evaluations.forEach(ev => {
+        const fn = ev.mbti_scores || ev.function_scores || {};
+        const en = ev.enneagram_scores || {};
+        const cohMbti = getCohérenceMBTI(fn);
+        const cohEnnea = getCohérenceEnnéagramme(en);
+        const wMbti = COHERENCE_WEIGHTS[cohMbti] || 0;
+        const wEnnea = COHERENCE_WEIGHTS[cohEnnea] || 0;
+
+        // Accumuler les fonctions
+        functions.forEach(f => {
+            funcTotals[f] += Number(fn[f] || 0) * wMbti;
         });
-        const count = evaluations.length;
-        return Object.fromEntries(keys.map(k => [k, totals[k] / count]));
-    };
+        funcWeightSum += wMbti;
 
-    const avgFunc = avg(functions, 'mbti_scores');
-    const avgEnnea = avg(types, 'enneagram_scores');
+        // Accumuler les scores Ennéagramme
+        types.forEach(t => {
+            enneaTotals[t] += Number(en[t] || 0) * wEnnea;
+        });
+        enneaWeightSum += wEnnea;
+    });
 
-    const E = avgFunc.Fe + avgFunc.Te + avgFunc.Se + avgFunc.Ne;
-    const I = avgFunc.Fi + avgFunc.Ti + avgFunc.Si + avgFunc.Ni;
-    const S = avgFunc.Si + avgFunc.Se;
-    const N = avgFunc.Ni + avgFunc.Ne;
-    const T = avgFunc.Ti + avgFunc.Te;
-    const F = avgFunc.Fi + avgFunc.Fe;
-    const J = avgFunc.Te + avgFunc.Fe;
-    const P = avgFunc.Se + avgFunc.Ne;
+    const avgFunc = Object.fromEntries(functions.map(f => [f, funcWeightSum ? funcTotals[f] / funcWeightSum : 0]));
+    const avgEnnea = Object.fromEntries(types.map(t => [t, enneaWeightSum ? enneaTotals[t] / enneaWeightSum : 0]));
+
+    // Déterminer le type à partir des moyennes pondérées
+    const E = (avgFunc.Fe || 0) + (avgFunc.Te || 0) + (avgFunc.Se || 0) + (avgFunc.Ne || 0);
+    const I = (avgFunc.Fi || 0) + (avgFunc.Ti || 0) + (avgFunc.Si || 0) + (avgFunc.Ni || 0);
+    const S = (avgFunc.Si || 0) + (avgFunc.Se || 0);
+    const N = (avgFunc.Ni || 0) + (avgFunc.Ne || 0);
+    const T = (avgFunc.Ti || 0) + (avgFunc.Te || 0);
+    const F = (avgFunc.Fi || 0) + (avgFunc.Fe || 0);
+    const J = (avgFunc.Te || 0) + (avgFunc.Fe || 0);
+    const P = (avgFunc.Se || 0) + (avgFunc.Ne || 0);
     const mbtiType =
         (E >= I ? 'E' : 'I') +
         (S >= N ? 'S' : 'N') +
@@ -1928,21 +1949,21 @@ const { error: insertError } = await supabase
         .slice(0,4)
         .map(([f])=>f);
     const totalFunc = Object.values(avgFunc).reduce((a,b)=>a+b,0);
-    const mbtiPercentages = Object.fromEntries(functions.map(f=>[f, totalFunc?Math.round(avgFunc[f]/totalFunc*100):0]));
+    const mbtiPercentages = Object.fromEntries(functions.map(f=>[f, totalFunc?Math.round((avgFunc[f]/totalFunc)*100):0]));
 
     let enneagramType = null; let max = -Infinity;
     Object.entries(avgEnnea).forEach(([t,v])=>{ if(v>max){max=v; enneagramType=t;} });
     const left = enneagramType==='1'?'9':String(Number(enneagramType)-1);
     const right = enneagramType==='9'?'1':String(Number(enneagramType)+1);
-    const enneagramWing = avgEnnea[left] >= avgEnnea[right] ? left : right;
+    const enneagramWing = (avgEnnea[left] || 0) >= (avgEnnea[right] || 0) ? left : right;
 
-    const COHERENCE_WEIGHTS = { Forte:1.0, Moyenne:0.7, Faible:0.4 };
+    // Certitudes: conserver ta logique de pondération par cohérence au niveau des types
     const mbtiWeightTotals = {};
     const enneagramWeightTotals = {};
     evaluations.forEach(ev => {
-        const { mbtiType: tMbti, enneagramType: tEnnea } = getProfileFromScores(ev.mbti_scores, ev.enneagram_scores);
-        const cohMbti = getCohérenceMBTI(ev.mbti_scores);
-        const cohEnnea = getCohérenceEnnéagramme(ev.enneagram_scores);
+        const { mbtiType: tMbti, enneagramType: tEnnea } = getProfileFromScores(ev.mbti_scores || ev.function_scores || {}, ev.enneagram_scores || {});
+        const cohMbti = getCohérenceMBTI(ev.mbti_scores || ev.function_scores || {});
+        const cohEnnea = getCohérenceEnnéagramme(ev.enneagram_scores || {});
         const wMbti = COHERENCE_WEIGHTS[cohMbti] || 0;
         const wEnnea = COHERENCE_WEIGHTS[cohEnnea] || 0;
         mbtiWeightTotals[tMbti] = (mbtiWeightTotals[tMbti] || 0) + wMbti;
@@ -4180,9 +4201,19 @@ window.shareProfileResults = shareProfileResults;
       <span class="material-icons text-blue-500">bar_chart</span>
       <span data-i18n="results.details.mbtiDichotomies">Dichotomies MBTI</span>
     </h4>
-    <div class="bg-white rounded-xl p-3 sm:p-4 shadow-inner w-full overflow-hidden">
-      <canvas id="mbtiChart" height="300" class="w-full h-auto" style="max-width: 100%;"></canvas>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="bg-white rounded-xl p-3 sm:p-4 shadow-inner w-full overflow-hidden">
+        <div class="text-xs text-gray-600 mb-2">Brut (pondéré par cohérence)</div>
+        <canvas id="mbtiChartRaw" height="260" class="w-full h-auto" style="max-width: 100%;"></canvas>
+      </div>
+      <div class="bg-white rounded-xl p-3 sm:p-4 shadow-inner w-full overflow-hidden">
+        <div class="text-xs text-gray-600 mb-2">Ajusté stack (80% données / 20% stack)</div>
+        <canvas id="mbtiChartAdj" height="260" class="w-full h-auto" style="max-width: 100%;"></canvas>
+      </div>
     </div>
+    <p class="text-[11px] sm:text-xs text-gray-500 mt-2">
+      Note: brut = contributions positives normalisées; ajusté = brut mélangé à la hiérarchie de la stack du type final.
+    </p>
   </div>
 
   <!-- Ennéagramme -->
@@ -4192,8 +4223,11 @@ window.shareProfileResults = shareProfileResults;
       <span data-i18n="results.details.enneagramTypes">Types Ennéagramme</span>
     </h4>
     <div class="bg-white rounded-xl p-3 sm:p-4 shadow-inner w-full overflow-hidden">
-      <canvas id="enneagramChart" class="w-full h-auto" style="max-width: 100%;"></canvas>
+      <canvas id="enneagramChart" height="300" class="w-full h-auto" style="max-width: 100%;"></canvas>
     </div>
+    <p class="text-[11px] sm:text-xs text-gray-500 mt-2">
+      Note: barres = scores Ennéagramme pondérés par la cohérence des évaluations.
+    </p>
   </div>
 </div>
 
@@ -4351,7 +4385,8 @@ window.shareProfileResults = shareProfileResults;
         }
 
         function renderCharts(profile, container) {
-            const mbtiCanvas = container.querySelector('#mbtiChart');
+            const mbtiCanvasRaw = container.querySelector('#mbtiChartRaw');
+            const mbtiCanvasAdj = container.querySelector('#mbtiChartAdj');
             const enneaCanvas = container.querySelector('#enneagramChart');
             const enoughEvaluations = profile.externalCount >= 3;
             const hasMbtiScores = profile.mbtiScores && Object.values(profile.mbtiScores).some(v => v > 0);
@@ -4361,9 +4396,13 @@ window.shareProfileResults = shareProfileResults;
                 const message = document.createElement('p');
                 message.className = 'text-sm text-gray-500 text-center';
                 message.textContent = 'Données en attente (minimum 3 évaluations externes requises).';
-                if (mbtiCanvas) {
-                    mbtiCanvas.remove();
-                    mbtiCanvas.parentElement.appendChild(message.cloneNode(true));
+                if (mbtiCanvasRaw) {
+                    mbtiCanvasRaw.remove();
+                    mbtiCanvasRaw.parentElement.appendChild(message.cloneNode(true));
+                }
+                if (mbtiCanvasAdj) {
+                    mbtiCanvasAdj.remove();
+                    mbtiCanvasAdj.parentElement.appendChild(message.cloneNode(true));
                 }
                 if (enneaCanvas) {
                     enneaCanvas.remove();
@@ -4371,18 +4410,80 @@ window.shareProfileResults = shareProfileResults;
                 }
                 return;
             }
+            // 1) MBTI RAW (data only, positive contributions normalized)
+            const rawMBTICtx = mbtiCanvasRaw.getContext('2d');
+            const raw = profile.mbtiScores || {};
+            const rawPos = {
+                Fi: Math.max(0, raw.Fi || 0),
+                Fe: Math.max(0, raw.Fe || 0),
+                Ti: Math.max(0, raw.Ti || 0),
+                Te: Math.max(0, raw.Te || 0),
+                Si: Math.max(0, raw.Si || 0),
+                Se: Math.max(0, raw.Se || 0),
+                Ni: Math.max(0, raw.Ni || 0),
+                Ne: Math.max(0, raw.Ne || 0)
+            };
+            const rawSum = Object.values(rawPos).reduce((a,b)=>a+b,0);
+            const rawPct = k => rawSum ? Math.round((rawPos[k] / rawSum) * 100) : 0;
+            const mbtiRawData = [
+                { label: 'Fi', value: rawPct('Fi') },
+                { label: 'Fe', value: rawPct('Fe') },
+                { label: 'Ti', value: rawPct('Ti') },
+                { label: 'Te', value: rawPct('Te') },
+                { label: 'Si', value: rawPct('Si') },
+                { label: 'Se', value: rawPct('Se') },
+                { label: 'Ni', value: rawPct('Ni') },
+                { label: 'Ne', value: rawPct('Ne') }
+            ];
 
-            const mbtiCtx = mbtiCanvas.getContext('2d');
-            const clamp = (val) => Math.min(100, Math.max(0, val));
-            const mbtiData = [
-                { label: 'Fi', value: clamp(profile.mbtiScores.Fi || 0) },
-                { label: 'Fe', value: clamp(profile.mbtiScores.Fe || 0) },
-                { label: 'Ti', value: clamp(profile.mbtiScores.Ti || 0) },
-                { label: 'Te', value: clamp(profile.mbtiScores.Te || 0) },
-                { label: 'Si', value: clamp(profile.mbtiScores.Si || 0) },
-                { label: 'Se', value: clamp(profile.mbtiScores.Se || 0) },
-                { label: 'Ni', value: clamp(profile.mbtiScores.Ni || 0) },
-                { label: 'Ne', value: clamp(profile.mbtiScores.Ne || 0) }
+            // 2) MBTI ADJUSTED (stack-guided display: 80% data, 20% stack baseline)
+            const type = String(profile.results.mbti || '').toUpperCase();
+            const STACKS = {
+              INTJ:['Ni','Te','Fi','Se'], ENTJ:['Te','Ni','Se','Fi'],
+              INTP:['Ti','Ne','Si','Fe'], ENTP:['Ne','Ti','Fe','Si'],
+              INFJ:['Ni','Fe','Ti','Se'], ENFJ:['Fe','Ni','Se','Ti'],
+              INFP:['Fi','Ne','Si','Te'], ENFP:['Ne','Fi','Te','Si'],
+              ISTJ:['Si','Te','Fi','Ne'], ESTJ:['Te','Si','Ne','Fi'],
+              ISFJ:['Si','Fe','Ti','Ne'], ESFJ:['Fe','Si','Ne','Ti'],
+              ISTP:['Ti','Se','Ni','Fe'], ESTP:['Se','Ti','Fe','Ni'],
+              ISFP:['Fi','Se','Ni','Te'], ESFP:['Se','Fi','Te','Ni']
+            };
+            const level = { dom:1.0, aux:0.8, tert:0.5, inf:0.3, shadow:0.2 };
+            const stack = STACKS[type] || [];
+            const weight = {
+              Fi: level.shadow, Fe: level.shadow, Ti: level.shadow, Te: level.shadow,
+              Si: level.shadow, Se: level.shadow, Ni: level.shadow, Ne: level.shadow
+            };
+            if (stack.length === 4) {
+              weight[stack[0]] = level.dom;
+              weight[stack[1]] = level.aux;
+              weight[stack[2]] = level.tert;
+              weight[stack[3]] = level.inf;
+            }
+            // Pondération data + baseline stack (affichage hybride pour éviter 0% incohérents)
+            const weighted = Object.fromEntries(Object.entries(rawPos).map(([k,v])=>[k, v * (weight[k] || level.shadow)]));
+            const sumWeighted = Object.values(weighted).reduce((a,b)=>a+b,0);
+            const dataNorm = Object.fromEntries(Object.entries(weighted).map(([k,v])=>[k, sumWeighted? v/sumWeighted : 0]));
+
+            // Baseline: normaliser les poids de stack sur 8 fonctions (shadow à 0.2)
+            const baseWeights = {
+                Fi: weight.Fi, Fe: weight.Fe, Ti: weight.Ti, Te: weight.Te,
+                Si: weight.Si, Se: weight.Se, Ni: weight.Ni, Ne: weight.Ne
+            };
+            const baseSum = Object.values(baseWeights).reduce((a,b)=>a+b,0) || 1;
+            const stackNorm = Object.fromEntries(Object.entries(baseWeights).map(([k,v])=>[k, v/baseSum]));
+
+            const ALPHA = 0.8; // 80% données, 20% baseline stack
+            const blend = k => ALPHA*(dataNorm[k]||0) + (1-ALPHA)*(stackNorm[k]||0);
+            const mbtiAdjData = [
+                { label: 'Fi', value: Math.round(blend('Fi')*100) },
+                { label: 'Fe', value: Math.round(blend('Fe')*100) },
+                { label: 'Ti', value: Math.round(blend('Ti')*100) },
+                { label: 'Te', value: Math.round(blend('Te')*100) },
+                { label: 'Si', value: Math.round(blend('Si')*100) },
+                { label: 'Se', value: Math.round(blend('Se')*100) },
+                { label: 'Ni', value: Math.round(blend('Ni')*100) },
+                { label: 'Ne', value: Math.round(blend('Ne')*100) }
             ];
             const mbtiDescriptions = {
                 Fi: 'Sentiment Introverti',
@@ -4395,12 +4496,12 @@ window.shareProfileResults = shareProfileResults;
                 Ne: 'Intuition Extravertie'
             };
             Chart.register(ChartDataLabels);
-            new Chart(mbtiCtx, {
+            new Chart(rawMBTICtx, {
                 type: 'bar',
                 data: {
-                    labels: mbtiData.map(d => d.label),
+                    labels: mbtiRawData.map(d => d.label),
                     datasets: [{
-                        data: mbtiData.map(d => d.value),
+                        data: mbtiRawData.map(d => d.value),
                         backgroundColor: '#93C5FD',
                         borderRadius: 8,
                         barThickness: 20,
@@ -4420,13 +4521,55 @@ window.shareProfileResults = shareProfileResults;
                         legend: { display: false },
                         tooltip: {
                             callbacks: {
-                                label: ctx => `${mbtiDescriptions[mbtiData[ctx.dataIndex].label]}: ${ctx.parsed.x}%`
+                                label: ctx => `${mbtiDescriptions[mbtiRawData[ctx.dataIndex].label]}: ${Math.round(ctx.parsed.x)}%`
                             }
                         },
                         datalabels: {
                             anchor: 'end',
                             align: 'end',
-                            formatter: value => `${value}%`
+                            formatter: value => `${Math.round(value)}%`
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutCubic'
+                    }
+                }
+            });
+
+            const adjMBTICtx = mbtiCanvasAdj.getContext('2d');
+            new Chart(adjMBTICtx, {
+                type: 'bar',
+                data: {
+                    labels: mbtiAdjData.map(d => d.label),
+                    datasets: [{
+                        data: mbtiAdjData.map(d => d.value),
+                        backgroundColor: '#60A5FA',
+                        borderRadius: 8,
+                        barThickness: 20,
+                        categoryPercentage: 0.6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true, max: 100 },
+                        y: { ticks: { autoSkip: false } }
+                    },
+                    layout: {
+                        padding: { top: 10, bottom: 10 }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${mbtiDescriptions[mbtiAdjData[ctx.dataIndex].label]}: ${Math.round(ctx.parsed.x)}%`
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'end',
+                            formatter: value => `${Math.round(value)}%`
                         }
                     },
                     animation: {
@@ -4438,7 +4581,9 @@ window.shareProfileResults = shareProfileResults;
 
             const enneaCtx = enneaCanvas.getContext('2d');
             const enneaLabels = Object.keys(profile.enneagramScores).sort();
-            const enneaValues = enneaLabels.map(k => Math.round(profile.enneagramScores[k]));
+            const enneaPos = Object.fromEntries(enneaLabels.map(k => [k, Math.max(0, profile.enneagramScores[k] || 0)]));
+            const sumPosEnnea = Object.values(enneaPos).reduce((a,b)=>a+b,0);
+            const enneaValues = enneaLabels.map(k => sumPosEnnea ? Math.round((enneaPos[k] / sumPosEnnea) * 100) : 0);
             const maxIndex = enneaValues.indexOf(Math.max(...enneaValues));
             const enneaColors = enneaValues.map((v, i) => i === maxIndex ? '#A855F7' : '#D8B4FE');
             const enneagramDescriptions = {
@@ -4466,7 +4611,7 @@ window.shareProfileResults = shareProfileResults;
                 },
                 options: {
                     indexAxis: 'y',
-                    maintainAspectRatio: false,
+                    maintainAspectRatio: true,
                     responsive: true,
                     scales: {
                         x: {
@@ -4491,13 +4636,13 @@ window.shareProfileResults = shareProfileResults;
                         },
                         tooltip: {
                             callbacks: {
-                                label: ctx => `${ctx.parsed.x}% - ${enneagramDescriptions[enneaLabels[ctx.dataIndex]]}`
+                                label: ctx => `${Math.round(ctx.parsed.x)}% - ${enneagramDescriptions[enneaLabels[ctx.dataIndex]]}`
                             }
                         },
                         datalabels: {
                             anchor: 'end',
                             align: 'end',
-                            formatter: value => `${value}%`
+                            formatter: value => `${Math.round(value)}%`
                         }
                     },
                     animation: {
