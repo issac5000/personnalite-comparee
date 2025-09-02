@@ -1558,8 +1558,8 @@ if (window.location.href.includes("external")) {
     stopLoop();
     if (!unlockAudio()) return;
     resumeCtx();
-    // 👉 en lecture: on laisse passer les taps vers <audio> (pause, seek, etc.)
-    setCanvasPE(false);
+    // MODIFICATION: On garde le canvas interactif pendant la lecture pour permettre pause
+    setCanvasPE(true);
     if (!rafId) loopPlay();
   }
   function startPulse(){
@@ -1634,6 +1634,8 @@ if (window.location.href.includes("external")) {
     // on retire tout kick résiduel
     cleanupGestures();
     canvas.removeEventListener('pointerdown', localKick);
+    // AJOUT: Ajouter l'écouteur pour toggle play/pause pendant la lecture
+    canvas.addEventListener('pointerdown', togglePlayPause, { passive: true });
     startPlay();
   }, { passive:true });
 
@@ -1642,7 +1644,12 @@ if (window.location.href.includes("external")) {
     startPulse();
   }, { passive:true });
 
-  audio.addEventListener('ended', () => { startPulse(); }, { passive:true });
+  audio.addEventListener('ended', () => { 
+    // AJOUT: Retirer l'écouteur de toggle et remettre localKick
+    canvas.removeEventListener('pointerdown', togglePlayPause);
+    canvas.addEventListener('pointerdown', localKick, { passive:true });
+    startPulse(); 
+  }, { passive:true });
 
   // ---- Bootstrap iOS/Android : 1er vrai geste, une seule fois ----
   const gestureOnce = async () => {
@@ -1662,6 +1669,20 @@ if (window.location.href.includes("external")) {
     unlockAudio(); await resumeCtx();
     if (kickAllowed) { try{ await audio.play(); }catch{} }
   }
+
+  // AJOUT: Fonction pour toggle play/pause pendant la lecture
+  async function togglePlayPause(){
+    try {
+      if (audio.paused) {
+        await audio.play();
+      } else {
+        audio.pause();
+      }
+    } catch (e) {
+      console.warn('Erreur toggle play/pause:', e);
+    }
+  }
+
   canvas.addEventListener('pointerdown', localKick, { passive:true });
 
   // Visibilité
@@ -1673,6 +1694,9 @@ if (window.location.href.includes("external")) {
   // Rendu initial
   startPulse();
 })();
+
+
+
 
 
         function setupDesktopDropdowns() {
