@@ -1462,7 +1462,7 @@ if (window.location.href.includes("external")) {
         }
     }
 
-  // Podcast audio visualizer optimisé + effet pulse en pause (corrigé)
+// Podcast audio visualizer optimisé + effet pulse en pause (corrigé mobile)
 (function(){
   const audio = document.getElementById('home-podcast-audio');
   const canvas = document.getElementById('home-podcast-visual');
@@ -1500,6 +1500,7 @@ if (window.location.href.includes("external")) {
       src.connect(ac.destination);
       return true;
     } catch(e) {
+      console.warn("initAudio error", e);
       return false;
     }
   };
@@ -1510,7 +1511,6 @@ if (window.location.href.includes("external")) {
 
   const renderFrame = ()=>{
     if (!analyser) return;
-
     if (!freqData) {
       freqData = new Uint8Array(analyser.frequencyBinCount);
       timeData = new Uint8Array(analyser.fftSize);
@@ -1559,7 +1559,7 @@ if (window.location.href.includes("external")) {
       let amp = (a0 + a1 + a2) / (3*255); 
       const floor = Math.min(0.15, 0.02 + envRms * 0.10);
       amp = Math.max(amp, floor);
-      const target = Math.pow(amp, 1.0) * (0.58 + envRms * 1.12);
+      const target = amp * (0.58 + envRms * 1.12);
       const prev = smooth[i] || 0;
       const up = prev + (target - prev) * 0.85;
       const down = prev * 0.62; 
@@ -1626,14 +1626,16 @@ if (window.location.href.includes("external")) {
   };
 
   const startPlay = async ()=>{
-    stop(); // coupe le pulse si actif
+    stop();
     if (!initAudio()) return;
-    if (ac && ac.state === 'suspended') { try { await ac.resume(); } catch {} }
+    if (ac && ac.state === 'suspended') {
+      try { await ac.resume(); } catch(e) {}
+    }
     if (!rafId) loopPlay();
   };
 
   const startPulse = ()=>{
-    stop(); // coupe le visualizer si actif
+    stop();
     if (!rafId) loopPulse();
   };
 
@@ -1644,14 +1646,20 @@ if (window.location.href.includes("external")) {
     else startPulse();
   });
 
-  audio.addEventListener('play', startPlay);
+  // 👇 clé : lancer init seulement sur interaction user
+  audio.addEventListener('play', startPlay, { once:false });
   audio.addEventListener('pause', startPulse);
   audio.addEventListener('ended', startPulse);
 
+  // Fallback : tap pour débloquer l’audio sur mobile
+  document.addEventListener('touchstart', ()=> {
+    if (ac && ac.state === "suspended") ac.resume();
+  }, { once:true });
+
   // --- Rendu initial : pulse ---
-  initAudio();
   startPulse();
 })();
+
 
 
 
