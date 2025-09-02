@@ -1462,7 +1462,7 @@ if (window.location.href.includes("external")) {
         }
     }
 
-// Visualizer audio — mobile pause OK + temps visible + perfs PC
+   // Visualizer audio — mobile pause OK + durée visible + perfs PC (corrigé)
 (function () {
   const audio  = document.getElementById('home-podcast-audio');
   const canvas = document.getElementById('home-podcast-visual');
@@ -1471,9 +1471,9 @@ if (window.location.href.includes("external")) {
   // ---- Mobile-friendly player ----
   audio.setAttribute('playsinline', 'true');
   audio.setAttribute('webkit-playsinline', 'true');
-  audio.preload = audio.preload || 'metadata';
-  // force les contrôles natifs sur mobile
-  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) audio.controls = true;
+  audio.preload = 'metadata'; // ✅ force metadata pour voir la durée
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) audio.controls = true;
   audio.crossOrigin = audio.crossOrigin || 'anonymous';
 
   // Canvas ctx
@@ -1481,15 +1481,21 @@ if (window.location.href.includes("external")) {
 
   // WebAudio
   let ac=null, src=null, analyser=null, bootstrapped=false;
-  let kickAllowed = true;    // ne force play qu'avant 1er démarrage
+  let kickAllowed = true;
   let firstPlayDone = false;
 
   // RAF & état
   let rafId = null, dpr = Math.max(1, Math.floor(devicePixelRatio||1));
 
   // ----- Utils -----
-  const setCanvasPE = (interactive) => { canvas.style.pointerEvents = interactive ? 'auto' : 'none'; };
-  setCanvasPE(true); // avant lecture: on garde interactif pour débloquer iOS
+  const setCanvasPE = (interactive) => {
+    if (isMobile) {
+      canvas.style.pointerEvents = "none"; // ✅ jamais interactif sur mobile
+    } else {
+      canvas.style.pointerEvents = interactive ? 'auto' : 'none';
+    }
+  };
+  setCanvasPE(true);
 
   function resize(){
     dpr = Math.max(1, Math.floor(devicePixelRatio||1));
@@ -1535,9 +1541,8 @@ if (window.location.href.includes("external")) {
   function ensureBuffers(){
     if (!analyser) return;
     if (!freqData){
-      const isMob=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       const cores=navigator.hardwareConcurrency||4;
-      segments=isMob?84:Math.min(144,96+Math.floor(cores)*6);
+      segments=isMobile?84:Math.min(144,96+Math.floor(cores)*6);
       initLUT();
       freqData=new Uint8Array(analyser.frequencyBinCount);
       timeData=new Uint8Array(analyser.fftSize);
@@ -1558,13 +1563,11 @@ if (window.location.href.includes("external")) {
     stopLoop();
     if (!unlockAudio()) return;
     resumeCtx();
-    // MODIFICATION: On garde le canvas interactif pendant la lecture pour permettre pause
     setCanvasPE(true);
     if (!rafId) loopPlay();
   }
   function startPulse(){
     stopLoop();
-    // 👉 à l'arrêt: canvas ré-interactif pour débloquer iOS au prochain tap
     setCanvasPE(true);
     if (!rafId) loopPulse();
   }
@@ -1624,34 +1627,26 @@ if (window.location.href.includes("external")) {
 
   // ---- Événements audio ----
   audio.addEventListener('loadedmetadata', ()=> {
-    // iOS affiche mieux le temps une fois la metadata dispo
-    // rien à faire ici, mais l'événement confirme que la durée est connue
+    // iOS affiche bien la durée après metadata
   });
 
   audio.addEventListener('play', () => {
     firstPlayDone = true;
-    kickAllowed   = false;    // on ne forcera plus jamais play()
-    // on retire tout kick résiduel
+    kickAllowed   = false;
     cleanupGestures();
     canvas.removeEventListener('pointerdown', localKick);
-    // AJOUT: Ajouter l'écouteur pour toggle play/pause pendant la lecture
-    canvas.addEventListener('pointerdown', togglePlayPause, { passive: true });
+    if (!isMobile) canvas.addEventListener('pointerdown', togglePlayPause, { passive: true }); // ✅ seulement sur PC
     startPlay();
   }, { passive:true });
 
-  audio.addEventListener('pause', () => {
-    // surtout ne pas relancer play ici
-    startPulse();
-  }, { passive:true });
-
+  audio.addEventListener('pause', () => { startPulse(); }, { passive:true });
   audio.addEventListener('ended', () => { 
-    // AJOUT: Retirer l'écouteur de toggle et remettre localKick
     canvas.removeEventListener('pointerdown', togglePlayPause);
-    canvas.addEventListener('pointerdown', localKick, { passive:true });
+    if (!isMobile) canvas.addEventListener('pointerdown', localKick, { passive:true });
     startPulse(); 
   }, { passive:true });
 
-  // ---- Bootstrap iOS/Android : 1er vrai geste, une seule fois ----
+  // ---- Bootstrap iOS/Android ----
   const gestureOnce = async () => {
     unlockAudio(); await resumeCtx();
     if (!firstPlayDone && kickAllowed) { try{ await audio.play(); }catch{} }
@@ -1670,20 +1665,12 @@ if (window.location.href.includes("external")) {
     if (kickAllowed) { try{ await audio.play(); }catch{} }
   }
 
-  // AJOUT: Fonction pour toggle play/pause pendant la lecture
   async function togglePlayPause(){
-    try {
-      if (audio.paused) {
-        await audio.play();
-      } else {
-        audio.pause();
-      }
-    } catch (e) {
-      console.warn('Erreur toggle play/pause:', e);
-    }
+    try { if (audio.paused) await audio.play(); else audio.pause(); }
+    catch (e) { console.warn('Erreur toggle play/pause:', e); }
   }
 
-  canvas.addEventListener('pointerdown', localKick, { passive:true });
+  if (!isMobile) canvas.addEventListener('pointerdown', localKick, { passive:true });
 
   // Visibilité
   document.addEventListener('visibilitychange', () => {
@@ -1694,6 +1681,8 @@ if (window.location.href.includes("external")) {
   // Rendu initial
   startPulse();
 })();
+
+
 
 
 
