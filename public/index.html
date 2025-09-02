@@ -1462,7 +1462,7 @@ if (window.location.href.includes("external")) {
         }
     }
 
-// Visualizer audio — mobile pause FIXED + temps visible + perfs PC
+// Visualizer audio — MOBILE PAUSE WORKING + temps visible + perfs PC
 (function () {
   const audio  = document.getElementById('home-podcast-audio');
   const canvas = document.getElementById('home-podcast-visual');
@@ -1473,15 +1473,20 @@ if (window.location.href.includes("external")) {
   audio.setAttribute('webkit-playsinline', 'true');
   audio.preload = audio.preload || 'metadata';
   
-  // Détection mobile améliorée
+  // Détection mobile
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   
-  // Force les contrôles natifs sur mobile MAIS les rend accessibles
   if (isMobile) {
     audio.controls = true;
-    // S'assurer que l'audio reste accessible même avec le canvas par-dessus
+    // CRUCIAL: Canvas complètement non-interactif sur mobile
+    canvas.style.pointerEvents = 'none';
+    canvas.style.position = 'absolute';
+    canvas.style.zIndex = '1'; // Derrière l'audio
+    
+    // Audio par-dessus et interactif
     audio.style.position = 'relative';
     audio.style.zIndex = '10';
+    audio.style.pointerEvents = 'auto';
   }
   
   audio.crossOrigin = audio.crossOrigin || 'anonymous';
@@ -1491,24 +1496,13 @@ if (window.location.href.includes("external")) {
 
   // WebAudio
   let ac=null, src=null, analyser=null, bootstrapped=false;
-  let kickAllowed = true;    // ne force play qu'avant 1er démarrage
+  let kickAllowed = true;
   let firstPlayDone = false;
 
   // RAF & état
   let rafId = null, dpr = Math.max(1, Math.floor(devicePixelRatio||1));
 
   // ----- Utils -----
-  const setCanvasPE = (interactive) => { 
-    canvas.style.pointerEvents = interactive ? 'auto' : 'none'; 
-    // Sur mobile, on garde toujours les contrôles audio accessibles
-    if (isMobile && audio.controls) {
-      audio.style.pointerEvents = 'auto';
-    }
-  };
-  
-  // Modification importante : sur mobile, on laisse le canvas moins intrusif
-  setCanvasPE(!isMobile); // Sur desktop: interactif avant lecture, sur mobile: non-intrusif
-
   function resize(){
     dpr = Math.max(1, Math.floor(devicePixelRatio||1));
     const r = canvas.getBoundingClientRect();
@@ -1574,17 +1568,11 @@ if (window.location.href.includes("external")) {
     stopLoop();
     if (!unlockAudio()) return;
     resumeCtx();
-    // Modification cruciale : sur mobile, on ne bloque JAMAIS les interactions
-    if (!isMobile) {
-      setCanvasPE(false); // Seulement sur desktop
-    }
     if (!rafId) loopPlay();
   }
   
   function startPulse(){
     stopLoop();
-    // Sur tous les devices, canvas redevient interactif à l'arrêt (pour débloquer iOS si besoin)
-    setCanvasPE(true);
     if (!rafId) loopPulse();
   }
 
@@ -1642,17 +1630,10 @@ if (window.location.href.includes("external")) {
   }
 
   // ---- Événements audio ----
-  audio.addEventListener('loadedmetadata', ()=> {
-    // iOS affiche mieux le temps une fois la metadata dispo
-  });
-
   audio.addEventListener('play', () => {
     firstPlayDone = true;
-    kickAllowed   = false;    // on ne forcera plus jamais play()
+    kickAllowed = false;
     cleanupGestures();
-    if (!isMobile) {
-      canvas.removeEventListener('pointerdown', localKick);
-    }
     startPlay();
   }, { passive:true });
 
@@ -1660,13 +1641,21 @@ if (window.location.href.includes("external")) {
     startPulse();
   }, { passive:true });
 
-  audio.addEventListener('ended', () => { startPulse(); }, { passive:true });
+  audio.addEventListener('ended', () => { 
+    startPulse(); 
+  }, { passive:true });
 
-  // ---- Bootstrap iOS/Android : 1er vrai geste, une seule fois ----
+  // ---- Bootstrap pour déblocage initial ----
   const gestureOnce = async () => {
-    unlockAudio(); await resumeCtx();
-    if (!firstPlayDone && kickAllowed) { try{ await audio.play(); }catch{} }
+    unlockAudio(); 
+    await resumeCtx();
     cleanupGestures();
+    
+    // Sur mobile, on ne force PAS le play automatique
+    // On laisse l'utilisateur utiliser les contrôles natifs
+    if (!isMobile && !firstPlayDone && kickAllowed) { 
+      try{ await audio.play(); }catch{} 
+    }
   };
   
   function cleanupGestures(){
@@ -1674,23 +1663,43 @@ if (window.location.href.includes("external")) {
       .forEach(ev => document.removeEventListener(ev, gestureOnce, true));
   }
   
+  // Écoute les gestes sur tout le document pour débloquer l'AudioContext
   ['pointerdown','touchstart','mousedown','keydown','pointerup','click']
     .forEach(ev => document.addEventListener(ev, gestureOnce, { once:true, passive:true, capture:true }));
 
-  // Fonction de kick local - seulement sur desktop maintenant
-  async function localKick(){
-    if (firstPlayDone || isMobile) return; // Pas de kick sur mobile
-    unlockAudio(); await resumeCtx();
-    if (kickAllowed) { try{ await audio.play(); }catch{} }
+  // Canvas kick SEULEMENT sur desktop
+  async function desktopCanvasKick(){
+    if (firstPlayDone || isMobile) return;
+    unlockAudio(); 
+    await resumeCtx();
+    if (kickAllowed) { 
+      try{ await audio.play(); }catch{} 
+    }
   }
   
+  // Canvas interactif seulement sur desktop
   if (!isMobile) {
-    canvas.addEventListener('pointerdown', localKick, { passive:true });
+    canvas.style.pointerEvents = 'auto';
+    canvas.addEventListener('pointerdown', desktopCanvasKick, { passive:true });
+    
+    // Sur desktop, on peut désactiver le canvas pendant la lecture
+    audio.addEventListener('play', () => {
+      canvas.style.pointerEvents = 'none';
+    });
+    audio.addEventListener('pause', () => {
+      canvas.style.pointerEvents = 'auto';
+    });
+    audio.addEventListener('ended', () => {
+      canvas.style.pointerEvents = 'auto';
+    });
   }
 
   // Visibilité
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') { stopLoop(); return; }
+    if (document.visibilityState === 'hidden') { 
+      stopLoop(); 
+      return; 
+    }
     (audio.paused ? startPulse() : startPlay());
   }, { passive:true });
 
