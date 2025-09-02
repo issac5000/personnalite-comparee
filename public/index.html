@@ -1462,28 +1462,31 @@ if (window.location.href.includes("external")) {
         }
     }
 
-// Podcast audio visualizer — mobile all devices OK + perfs PC
+// Podcast audio visualizer — pause mobile fix + perfs OK
 (function () {
   const audio  = document.getElementById('home-podcast-audio');
   const canvas = document.getElementById('home-podcast-visual');
   if (!audio || !canvas) return;
 
-  // Durcisseurs mobiles
+  // iOS inline + CORS si besoin
   audio.setAttribute('playsinline', 'true');
   audio.setAttribute('webkit-playsinline', 'true');
   audio.crossOrigin = audio.crossOrigin || 'anonymous';
 
   const ctx = canvas.getContext('2d', { alpha: true });
 
-  // WebAudio nodes
-  let ac = null, src = null, analyser = null;
-  let bootstrapped = false;
+  // WebAudio
+  let ac = null, src = null, analyser = null, bootstrapped = false;
 
-  // RAF & state
+  // Flags pour éviter de relancer play après la 1ère fois
+  let kickAllowed = true;      // on ne force play() qu'avant le 1er démarrage
+  let firstPlayDone = false;   // bascule à true au premier 'play'
+
+  // RAF & état
   let rafId = null;
-  let mode = 'idle'; // 'idle' | 'pulse' | 'play'
+  let mode = 'idle';
 
-  // DPR / sizing
+  // DPR & resize
   let dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
   function resize() {
     dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
@@ -1498,27 +1501,22 @@ if (window.location.href.includes("external")) {
   addEventListener('resize', () => { clearTimeout(resize._t); resize._t = setTimeout(resize, 100); }, { passive: true });
   addEventListener('orientationchange', () => setTimeout(resize, 180), { passive: true });
 
-  // Bootstrap WebAudio uniquement pendant un vrai geste (iOS)
+  // Bootstrap audio uniquement sur geste user
   function unlockAudio() {
     if (bootstrapped) return true;
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return false;
     try {
       ac = new AudioCtx();
-      // IMPORTANT: créer la source après création du contexte et AVANT play
       src = ac.createMediaElementSource(audio);
       analyser = ac.createAnalyser();
-
-      // FFT & smoothing (perfs mobiles)
       const prefersReduced = matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
       analyser.fftSize = prefersReduced ? 64 : 128;
       analyser.smoothingTimeConstant = 0.12;
       analyser.minDecibels = -90;
       analyser.maxDecibels = -10;
-
       src.connect(analyser);
       src.connect(ac.destination);
-
       bootstrapped = true;
       return true;
     } catch (e) {
@@ -1527,61 +1525,53 @@ if (window.location.href.includes("external")) {
     }
   }
 
-  async function tryResumePlay() {
+  async function resumeContext() {
     if (ac && ac.state === 'suspended') {
       try { await ac.resume(); } catch {}
     }
-    // Kickstart lecture si l’UA l’exige (ex: tap sur canvas, pas sur le bouton natif)
-    if (audio.paused) {
-      try { await audio.play(); } catch { /* l’utilisateur utilisera le bouton natif */ }
-    }
   }
 
-  // Buffers + mapping (lazy)
+  // ⚠️ Ne force play() que si c'est le premier démarrage
+  async function maybeKickPlayOnce() {
+    if (!kickAllowed) return;
+    try { if (audio.paused) await audio.play(); } catch {}
+  }
+
+  // Buffers & perfs
   let freqData = null, timeData = null, binMap = null, smooth = null;
-  let segments = 120; // compromis perfs/qualité
-  // cache trig par segment (réduit CPU)
-  let cosLUT = null, sinLUT = null;
+  let segments = 120, cosLUT = null, sinLUT = null;
 
   function initLUT() {
     cosLUT = new Float32Array(segments);
     sinLUT = new Float32Array(segments);
     for (let i = 0; i < segments; i++) {
-      const angle = (i / segments) * Math.PI * 2;
-      cosLUT[i] = Math.cos(angle);
-      sinLUT[i] = Math.sin(angle);
+      const a = (i / segments) * Math.PI * 2;
+      cosLUT[i] = Math.cos(a); sinLUT[i] = Math.sin(a);
     }
   }
-  initLUT();
-
   function ensureBuffers() {
     if (!analyser) return;
     if (!freqData) {
-      // segments adaptatifs mobiles/PC
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       const cores = navigator.hardwareConcurrency || 4;
       segments = isMobile ? 84 : Math.min(144, 96 + Math.floor(cores) * 6);
       initLUT();
-
       freqData = new Uint8Array(analyser.frequencyBinCount);
       timeData = new Uint8Array(analyser.fftSize);
       binMap = new Uint16Array(segments);
       for (let i = 0; i < segments; i++) {
         const t = i / segments;
-        const idx = Math.min(analyser.frequencyBinCount - 1, Math.floor(t * analyser.frequencyBinCount));
-        binMap[i] = idx;
+        binMap[i] = Math.min(analyser.frequencyBinCount - 1, Math.floor(t * analyser.frequencyBinCount));
       }
       smooth = new Float32Array(segments);
     }
   }
 
-  function stopLoop() {
-    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-  }
-  function loopPlay() { mode = 'play'; rafId = requestAnimationFrame(loopPlay); renderFrame(); }
+  function stopLoop() { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
+  function loopPlay()  { mode = 'play';  rafId = requestAnimationFrame(loopPlay);  renderFrame(); }
   function loopPulse() { mode = 'pulse'; rafId = requestAnimationFrame(loopPulse); renderPulse(); }
 
-  function startPlay() { stopLoop(); if (!unlockAudio()) return; tryResumePlay(); if (!rafId) loopPlay(); }
+  function startPlay()  { stopLoop(); if (!unlockAudio()) return; resumeContext(); if (!rafId) loopPlay(); }
   function startPulse() { stopLoop(); if (!rafId) loopPulse(); }
 
   function renderFrame() {
@@ -1596,9 +1586,8 @@ if (window.location.href.includes("external")) {
     const cx = cssW / 2, cy = cssH / 2;
     const minSide = Math.min(cssW, cssH);
     const radius = minSide * 0.28;
-    const barMax = minSide * 0.17; // léger downscale (perfs)
+    const barMax = minSide * 0.17;
 
-    // RMS env
     let sum = 0;
     for (let k = 0; k < timeData.length; k++) { const d = timeData[k] - 128; sum += d * d; }
     const envRms = Math.min(1, Math.sqrt(sum / timeData.length) / 64);
@@ -1607,17 +1596,14 @@ if (window.location.href.includes("external")) {
     ctx.save();
     ctx.translate(cx, cy);
 
-    // Base circle
     ctx.lineWidth = 1;
     ctx.strokeStyle = 'rgba(148,163,184,0.28)';
     ctx.beginPath(); ctx.arc(0, 0, radius - 1, 0, Math.PI * 2); ctx.stroke();
 
-    // Pas de composite "lighter" (coûteux). On simule un glow léger via alpha+blur modérés.
     for (let i = 0; i < segments; i++) {
-      const bin = binMap[i];
-      const a0 = freqData[bin] || 0;
-      const a1 = freqData[(bin + 1) % freqData.length] || 0;
-      const a2 = freqData[(bin + 2) % freqData.length] || 0;
+      const a0 = freqData[binMap[i]] || 0;
+      const a1 = freqData[(binMap[i] + 1) % freqData.length] || 0;
+      const a2 = freqData[(binMap[i] + 2) % freqData.length] || 0;
       let amp = (a0 + a1 + a2) / (3 * 255);
 
       const floor = Math.min(0.14, 0.02 + envRms * 0.10);
@@ -1632,7 +1618,7 @@ if (window.location.href.includes("external")) {
 
       const len = 4 + next * barMax;
       const cos = cosLUT[i], sin = sinLUT[i];
-      const x1 = cos * radius,        y1 = sin * radius;
+      const x1 = cos * radius,         y1 = sin * radius;
       const x2 = cos * (radius + len), y2 = sin * (radius + len);
 
       const l = Math.min(74, 55 + next * 22);
@@ -1642,10 +1628,7 @@ if (window.location.href.includes("external")) {
       ctx.shadowBlur = 4 + next * 6;
       ctx.lineWidth = 1 + next * 1.1;
 
-      ctx.beginPath();
-      ctx.moveTo(x1, y1);
-      ctx.lineTo(x2, y2);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
     }
 
     ctx.globalAlpha = 1;
@@ -1672,12 +1655,28 @@ if (window.location.href.includes("external")) {
   }
 
   // Événements audio
-  audio.addEventListener('play',  () => { unlockAudio(); startPlay(); }, { passive: true });
-  audio.addEventListener('pause', () => { startPulse(); },              { passive: true });
-  audio.addEventListener('ended', () => { startPulse(); },              { passive: true });
+  audio.addEventListener('play', () => {
+    firstPlayDone = true;
+    kickAllowed = false;              // ❌ on ne relancera plus play() automatiquement
+    // on retire le kick du canvas une fois que ça joue
+    canvas.removeEventListener('pointerdown', localKick, { capture: false });
+    startPlay();
+  }, { passive: true });
 
-  // Bootstrap universel (capture = avant les handlers du navigateur)
-  const gestureOnce = async () => { unlockAudio(); await tryResumePlay(); cleanupGestures(); };
+  audio.addEventListener('pause', () => {
+    // ne surtout pas relancer play ici
+    startPulse();
+  }, { passive: true });
+
+  audio.addEventListener('ended', () => { startPulse(); }, { passive: true });
+
+  // Bootstrap universel (1 seule fois, en capture pour iOS)
+  const gestureOnce = async () => {
+    unlockAudio();
+    await resumeContext();
+    await maybeKickPlayOnce();   // ✅ ne force play qu'avant 1er démarrage
+    cleanupGestures();
+  };
   function cleanupGestures() {
     ['pointerdown','touchstart','mousedown','keydown','pointerup','click']
       .forEach(ev => document.removeEventListener(ev, gestureOnce, true));
@@ -1685,10 +1684,14 @@ if (window.location.href.includes("external")) {
   ['pointerdown','touchstart','mousedown','keydown','pointerup','click']
     .forEach(ev => document.addEventListener(ev, gestureOnce, { once: true, passive: true, capture: true }));
 
-  // Également si l’utilisateur tape sur le visuel/audio
-  const localKick = async () => { unlockAudio(); await tryResumePlay(); };
+  // Kick local via canvas uniquement (PAS sur <audio> pour ne pas gêner le bouton pause)
+  async function localKick() {
+    if (firstPlayDone) return;  // après 1er play, ne jamais relancer
+    unlockAudio();
+    await resumeContext();
+    await maybeKickPlayOnce();
+  }
   canvas.addEventListener('pointerdown', localKick, { passive: true });
-  audio.addEventListener('pointerdown',  localKick, { passive: true });
 
   // Visibilité
   document.addEventListener('visibilitychange', () => {
