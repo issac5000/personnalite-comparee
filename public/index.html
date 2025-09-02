@@ -1462,7 +1462,7 @@ if (window.location.href.includes("external")) {
         }
     }
 
-// Podcast audio visualizer optimisé + effet pulse en pause (VERSION MOBILE CORRIGÉE)
+// Podcast audio visualizer - VERSION SIMPLIFIÉE QUI FONCTIONNE
 (function(){
   const audio = document.getElementById('home-podcast-audio');
   const canvas = document.getElementById('home-podcast-visual');
@@ -1470,16 +1470,10 @@ if (window.location.href.includes("external")) {
 
   const ctx = canvas.getContext('2d');
   let ac = null, src = null, analyser = null, rafId = null;
-  let mode = "idle"; // "idle" | "pulse" | "play"
-  let audioInitialized = false;
-  let userInteracted = false;
+  let audioReady = false;
   
-  // Détection mobile
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
-                   (navigator.maxTouchPoints > 0 && window.innerWidth < 768);
-  
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-  // Réduire les segments sur mobile pour les performances
   const segments = isMobile ? 64 : 128;
 
   const resize = ()=>{
@@ -1493,9 +1487,9 @@ if (window.location.href.includes("external")) {
   resize();
   window.addEventListener('resize', ()=> setTimeout(resize, 120));
 
-  // CORRECTION CLÉE : Initialisation audio sur première interaction
-  const initAudio = ()=>{
-    if (audioInitialized) return true;
+  // Tentative d'initialisation audio (sans bloquer l'affichage)
+  const tryInitAudio = ()=>{
+    if (audioReady) return true;
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return false;
@@ -1503,25 +1497,23 @@ if (window.location.href.includes("external")) {
       ac = new AudioCtx();
       src = ac.createMediaElementSource(audio);
       analyser = ac.createAnalyser();
-      analyser.fftSize = isMobile ? 64 : 128; // Réduire sur mobile
+      analyser.fftSize = isMobile ? 64 : 128;
       analyser.smoothingTimeConstant = 0.12; 
       analyser.minDecibels = -90;
       analyser.maxDecibels = -10;
       src.connect(analyser);
       src.connect(ac.destination);
-      audioInitialized = true;
+      audioReady = true;
       return true;
     } catch(e) {
-      console.warn("initAudio error", e);
       return false;
     }
   };
 
-  // Buffers créés une fois
   let freqData, timeData, binMap, smooth;
 
-  const renderFrame = ()=>{
-    if (!analyser) return;
+  // Rendu avec vraies données audio
+  const renderWithAudio = ()=>{
     if (!freqData) {
       freqData = new Uint8Array(analyser.frequencyBinCount);
       timeData = new Uint8Array(analyser.fftSize);
@@ -1537,9 +1529,9 @@ if (window.location.href.includes("external")) {
     analyser.getByteFrequencyData(freqData);
     analyser.getByteTimeDomainData(timeData);
 
-    const rectDraw = canvas.getBoundingClientRect();
-    const cssW = rectDraw.width || canvas.clientWidth || 600;
-    const cssH = rectDraw.height || canvas.clientHeight || cssW;
+    const rect = canvas.getBoundingClientRect();
+    const cssW = rect.width || 600;
+    const cssH = rect.height || cssW;
     const cx = cssW/2, cy = cssH/2;
     const radius = Math.min(cssW, cssH) * 0.28; 
     const barMax = Math.min(cssW, cssH) * 0.18;  
@@ -1586,7 +1578,6 @@ if (window.location.href.includes("external")) {
       const l = Math.min(76, 56 + next*24);
       ctx.strokeStyle = `hsl(210 100% ${l}%)`;
       
-      // Réduire les effets shadow sur mobile pour les performances
       if (!isMobile) {
         ctx.shadowColor = 'rgba(59,130,246,0.45)';
         ctx.shadowBlur = 6 + next*10;
@@ -1602,6 +1593,57 @@ if (window.location.href.includes("external")) {
     ctx.restore();
   };
 
+  // Rendu avec effet simulé (quand pas d'audio data)
+  const renderSimulated = ()=>{
+    const rect = canvas.getBoundingClientRect();
+    const cssW = rect.width || 600;
+    const cssH = rect.height || cssW;
+    const cx = cssW/2, cy = cssH/2;
+    const radius = Math.min(cssW, cssH) * 0.28; 
+    const barMax = Math.min(cssW, cssH) * 0.18;
+
+    ctx.clearRect(0,0,cssW,cssH);
+    ctx.save();
+    ctx.translate(cx, cy);
+    
+    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = 'rgba(148,163,184,0.30)';
+    ctx.beginPath(); ctx.arc(0,0, radius-1, 0, Math.PI*2); ctx.stroke();
+
+    ctx.lineCap = 'round';
+    ctx.globalCompositeOperation = 'lighter';
+
+    const t = Date.now() * 0.002;
+    for (let i=0;i<segments;i++){
+      // Simulation d'amplitude basée sur le temps et l'index
+      const seed = i * 0.618 + Math.sin(t * 0.8 + i * 0.15) * 0.4;
+      const amp = 0.15 + Math.abs(Math.sin(seed)) * 0.6;
+      
+      const len = 4 + amp * barMax * 0.8; 
+      const angle = (i / segments) * Math.PI * 2;
+      const cos = Math.cos(angle), sin = Math.sin(angle);
+      const x1 = cos * radius, y1 = sin * radius;
+      const x2 = cos * (radius + len), y2 = sin * (radius + len);
+
+      const l = Math.min(76, 50 + amp * 25);
+      ctx.strokeStyle = `hsl(210 100% ${l}%)`;
+      
+      if (!isMobile) {
+        ctx.shadowColor = 'rgba(59,130,246,0.35)';
+        ctx.shadowBlur = 4 + amp * 8;
+      }
+      
+      ctx.lineWidth = 1.2 + amp * 1.0;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.restore();
+  };
+
+  // Effet pulse pour pause
   const renderPulse = ()=>{
     const rect = canvas.getBoundingClientRect();
     const cssW = rect.width || 600;
@@ -1625,14 +1667,20 @@ if (window.location.href.includes("external")) {
     ctx.restore();
   };
 
+  // Boucles d'animation
   const loopPlay = ()=>{
-    mode = "play";
     rafId = requestAnimationFrame(loopPlay);
-    renderFrame();
+    
+    // Essayer d'utiliser les vraies données audio si disponibles
+    if (audioReady && analyser && ac && ac.state === 'running') {
+      renderWithAudio();
+    } else {
+      // Sinon, effet simulé
+      renderSimulated();
+    }
   };
 
   const loopPulse = ()=>{
-    mode = "pulse";
     rafId = requestAnimationFrame(loopPulse);
     renderPulse();
   };
@@ -1641,112 +1689,46 @@ if (window.location.href.includes("external")) {
     if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
   };
 
-  const startPlay = async ()=>{
+  // SIMPLE: Démarrer immédiatement selon l'état de l'audio
+  const startVisualizer = ()=>{
     stop();
-    
-    // CORRECTION : Initialiser l'audio seulement après interaction utilisateur
-    if (!userInteracted) {
-      console.log("Attente d'interaction utilisateur...");
-      return;
-    }
-    
-    if (!initAudio()) return;
-    
-    if (ac && ac.state === 'suspended') {
-      try { 
-        await ac.resume(); 
-        console.log("AudioContext resumed");
-      } catch(e) {
-        console.warn("Impossible de reprendre AudioContext", e);
-      }
-    }
-    
-    if (!rafId) loopPlay();
-  };
-
-  const startPulse = ()=>{
-    stop();
-    if (!rafId) loopPulse();
-  };
-
-  // CORRECTION : Gestionnaire d'interaction utilisateur unifié
-  const handleUserInteraction = async () => {
-    if (userInteracted) return;
-    
-    userInteracted = true;
-    console.log("Première interaction utilisateur détectée");
-    
-    // Initialiser l'audio maintenant
-    if (!audioInitialized) {
-      initAudio();
-    }
-    
-    // Reprendre l'AudioContext si nécessaire
-    if (ac && ac.state === 'suspended') {
-      try {
-        await ac.resume();
-        console.log("AudioContext activé après interaction");
-      } catch(e) {
-        console.warn("Erreur activation AudioContext", e);
-      }
-    }
-    
-    // Si l'audio joue déjà, démarrer la visualisation
     if (!audio.paused) {
-      startPlay();
+      loopPlay(); // Animation active
+    } else {
+      loopPulse(); // Animation pause
     }
   };
 
-  // CORRECTION : Écouter les événements d'interaction sur différents éléments
-  document.addEventListener('click', handleUserInteraction, { once: true });
-  document.addEventListener('touchstart', handleUserInteraction, { once: true });
-  
-  // Également sur l'audio lui-même
-  audio.addEventListener('click', handleUserInteraction);
-  audio.addEventListener('touchstart', handleUserInteraction);
+  // Initialisation audio sur première interaction (optionnel)
+  const initOnInteraction = async ()=>{
+    if (!audioReady) tryInitAudio();
+    if (ac && ac.state === 'suspended') {
+      try { await ac.resume(); } catch(e) {}
+    }
+  };
 
-  // Gestion visibilité - Correction : pas de condition sur userInteracted
+  // Événements
+  audio.addEventListener('play', startVisualizer);
+  audio.addEventListener('pause', startVisualizer);
+  audio.addEventListener('ended', startVisualizer);
+
+  // Interaction pour débloquer l'audio (mobile)
+  document.addEventListener('click', initOnInteraction, { once: true });
+  document.addEventListener('touchstart', initOnInteraction, { once: true });
+
+  // Gestion visibilité
   document.addEventListener('visibilitychange', ()=>{
     if (document.visibilityState === 'hidden') {
       stop();
-    } else if (!audio.paused) {
-      startPlay(); // Toujours démarrer si audio joue
     } else {
-      startPulse();
+      startVisualizer();
     }
   });
 
-  // Événements audio - toujours démarrer l'animation visuelle
-  audio.addEventListener('play', startPlay);
-  audio.addEventListener('pause', startPulse);
-  audio.addEventListener('ended', startPulse);
-
-  // CORRECTION : Déblocage mobile renforcé
-  const unlockAudioContext = async () => {
-    if (ac && ac.state === "suspended") {
-      try {
-        await ac.resume();
-        console.log("AudioContext débloqué");
-      } catch(e) {
-        console.warn("Impossible de débloquer AudioContext", e);
-      }
-    }
-  };
-
-  // Multiple événements pour débloquer sur mobile
-  ['touchstart', 'touchend', 'click', 'play'].forEach(event => {
-    document.addEventListener(event, unlockAudioContext, { once: true });
-  });
-
-  // --- Rendu initial : pulse ---
-  startPulse();
+  // DÉMARRAGE IMMÉDIAT
+  startVisualizer();
   
-  // DEBUG : Log d'état
-  console.log("Audio visualizer initialisé", {
-    isMobile,
-    segments,
-    userAgent: navigator.userAgent
-  });
+  console.log("Audio visualizer démarré", { isMobile, segments });
 })();
 
 
