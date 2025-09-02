@@ -1462,244 +1462,215 @@ if (window.location.href.includes("external")) {
         }
     }
 
-// Podcast audio visualizer — pause mobile fix + perfs OK
+// Visualizer audio — mobile pause OK + temps visible + perfs PC
 (function () {
   const audio  = document.getElementById('home-podcast-audio');
   const canvas = document.getElementById('home-podcast-visual');
   if (!audio || !canvas) return;
 
-  // iOS inline + CORS si besoin
+  // ---- Mobile-friendly player ----
   audio.setAttribute('playsinline', 'true');
   audio.setAttribute('webkit-playsinline', 'true');
+  audio.preload = audio.preload || 'metadata';
+  // force les contrôles natifs sur mobile
+  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) audio.controls = true;
   audio.crossOrigin = audio.crossOrigin || 'anonymous';
 
+  // Canvas ctx
   const ctx = canvas.getContext('2d', { alpha: true });
 
   // WebAudio
-  let ac = null, src = null, analyser = null, bootstrapped = false;
-
-  // Flags pour éviter de relancer play après la 1ère fois
-  let kickAllowed = true;      // on ne force play() qu'avant le 1er démarrage
-  let firstPlayDone = false;   // bascule à true au premier 'play'
+  let ac=null, src=null, analyser=null, bootstrapped=false;
+  let kickAllowed = true;    // ne force play qu'avant 1er démarrage
+  let firstPlayDone = false;
 
   // RAF & état
-  let rafId = null;
-  let mode = 'idle';
+  let rafId = null, dpr = Math.max(1, Math.floor(devicePixelRatio||1));
 
-  // DPR & resize
-  let dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-  function resize() {
-    dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-    const rect = canvas.getBoundingClientRect();
-    const cssW = rect.width  || 300;
-    const cssH = rect.height || cssW;
-    canvas.width  = Math.max(1, Math.round(cssW * dpr));
-    canvas.height = Math.max(1, Math.round(cssH * dpr));
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  // ----- Utils -----
+  const setCanvasPE = (interactive) => { canvas.style.pointerEvents = interactive ? 'auto' : 'none'; };
+  setCanvasPE(true); // avant lecture: on garde interactif pour débloquer iOS
+
+  function resize(){
+    dpr = Math.max(1, Math.floor(devicePixelRatio||1));
+    const r = canvas.getBoundingClientRect();
+    const w = r.width||300, h=(r.height||w);
+    canvas.width  = Math.max(1, Math.round(w*dpr));
+    canvas.height = Math.max(1, Math.round(h*dpr));
+    ctx.setTransform(dpr,0,0,dpr,0,0);
   }
   resize();
-  addEventListener('resize', () => { clearTimeout(resize._t); resize._t = setTimeout(resize, 100); }, { passive: true });
-  addEventListener('orientationchange', () => setTimeout(resize, 180), { passive: true });
+  addEventListener('resize', ()=>{ clearTimeout(resize._t); resize._t=setTimeout(resize,100); }, {passive:true});
+  addEventListener('orientationchange', ()=> setTimeout(resize,180), {passive:true});
 
-  // Bootstrap audio uniquement sur geste user
-  function unlockAudio() {
+  function unlockAudio(){
     if (bootstrapped) return true;
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return false;
-    try {
-      ac = new AudioCtx();
+    const AC = window.AudioContext||window.webkitAudioContext;
+    if (!AC) return false;
+    try{
+      ac = new AC();
       src = ac.createMediaElementSource(audio);
       analyser = ac.createAnalyser();
-      const prefersReduced = matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-      analyser.fftSize = prefersReduced ? 64 : 128;
+      const reduced = matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      analyser.fftSize = reduced ? 64 : 128;
       analyser.smoothingTimeConstant = 0.12;
-      analyser.minDecibels = -90;
-      analyser.maxDecibels = -10;
+      analyser.minDecibels = -90; analyser.maxDecibels = -10;
       src.connect(analyser);
       src.connect(ac.destination);
       bootstrapped = true;
       return true;
-    } catch (e) {
-      console.warn('unlockAudio error', e);
-      return false;
-    }
+    }catch(e){ console.warn('unlockAudio',e); return false; }
   }
+  async function resumeCtx(){ if (ac && ac.state==='suspended'){ try{ await ac.resume(); }catch{} } }
+  async function maybeKickPlayOnce(){ if (!kickAllowed && firstPlayDone) return; try{ if (audio.paused) await audio.play(); }catch{} }
 
-  async function resumeContext() {
-    if (ac && ac.state === 'suspended') {
-      try { await ac.resume(); } catch {}
-    }
+  // ---- Render data ----
+  let freqData=null, timeData=null, binMap=null, smooth=null;
+  let segments=120, cosLUT=null, sinLUT=null;
+
+  function initLUT(){
+    cosLUT=new Float32Array(segments); sinLUT=new Float32Array(segments);
+    for (let i=0;i<segments;i++){ const a=(i/segments)*Math.PI*2; cosLUT[i]=Math.cos(a); sinLUT[i]=Math.sin(a); }
   }
-
-  // ⚠️ Ne force play() que si c'est le premier démarrage
-  async function maybeKickPlayOnce() {
-    if (!kickAllowed) return;
-    try { if (audio.paused) await audio.play(); } catch {}
-  }
-
-  // Buffers & perfs
-  let freqData = null, timeData = null, binMap = null, smooth = null;
-  let segments = 120, cosLUT = null, sinLUT = null;
-
-  function initLUT() {
-    cosLUT = new Float32Array(segments);
-    sinLUT = new Float32Array(segments);
-    for (let i = 0; i < segments; i++) {
-      const a = (i / segments) * Math.PI * 2;
-      cosLUT[i] = Math.cos(a); sinLUT[i] = Math.sin(a);
-    }
-  }
-  function ensureBuffers() {
+  function ensureBuffers(){
     if (!analyser) return;
-    if (!freqData) {
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      const cores = navigator.hardwareConcurrency || 4;
-      segments = isMobile ? 84 : Math.min(144, 96 + Math.floor(cores) * 6);
+    if (!freqData){
+      const isMob=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const cores=navigator.hardwareConcurrency||4;
+      segments=isMob?84:Math.min(144,96+Math.floor(cores)*6);
       initLUT();
-      freqData = new Uint8Array(analyser.frequencyBinCount);
-      timeData = new Uint8Array(analyser.fftSize);
-      binMap = new Uint16Array(segments);
-      for (let i = 0; i < segments; i++) {
-        const t = i / segments;
-        binMap[i] = Math.min(analyser.frequencyBinCount - 1, Math.floor(t * analyser.frequencyBinCount));
+      freqData=new Uint8Array(analyser.frequencyBinCount);
+      timeData=new Uint8Array(analyser.fftSize);
+      binMap=new Uint16Array(segments);
+      for (let i=0;i<segments;i++){
+        const t=i/segments;
+        binMap[i]=Math.min(analyser.frequencyBinCount-1, Math.floor(t*analyser.frequencyBinCount));
       }
-      smooth = new Float32Array(segments);
+      smooth=new Float32Array(segments);
     }
   }
 
-  function stopLoop() { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
-  function loopPlay()  { mode = 'play';  rafId = requestAnimationFrame(loopPlay);  renderFrame(); }
-  function loopPulse() { mode = 'pulse'; rafId = requestAnimationFrame(loopPulse); renderPulse(); }
+  function stopLoop(){ if(rafId){ cancelAnimationFrame(rafId); rafId=null; } }
+  function loopPlay(){ rafId=requestAnimationFrame(loopPlay); renderFrame(); }
+  function loopPulse(){ rafId=requestAnimationFrame(loopPulse); renderPulse(); }
 
-  function startPlay()  { stopLoop(); if (!unlockAudio()) return; resumeContext(); if (!rafId) loopPlay(); }
-  function startPulse() { stopLoop(); if (!rafId) loopPulse(); }
+  function startPlay(){
+    stopLoop();
+    if (!unlockAudio()) return;
+    resumeCtx();
+    // 👉 en lecture: on laisse passer les taps vers <audio> (pause, seek, etc.)
+    setCanvasPE(false);
+    if (!rafId) loopPlay();
+  }
+  function startPulse(){
+    stopLoop();
+    // 👉 à l'arrêt: canvas ré-interactif pour débloquer iOS au prochain tap
+    setCanvasPE(true);
+    if (!rafId) loopPulse();
+  }
 
-  function renderFrame() {
-    if (!analyser) return;
+  function renderFrame(){
+    if(!analyser) return;
     ensureBuffers();
-
     analyser.getByteFrequencyData(freqData);
     analyser.getByteTimeDomainData(timeData);
 
-    const cssW = canvas.width  / dpr;
-    const cssH = canvas.height / dpr;
-    const cx = cssW / 2, cy = cssH / 2;
-    const minSide = Math.min(cssW, cssH);
-    const radius = minSide * 0.28;
-    const barMax = minSide * 0.17;
+    const cssW=canvas.width/dpr, cssH=canvas.height/dpr;
+    const cx=cssW/2, cy=cssH/2, minSide=Math.min(cssW,cssH);
+    const radius=minSide*0.28, barMax=minSide*0.17;
 
-    let sum = 0;
-    for (let k = 0; k < timeData.length; k++) { const d = timeData[k] - 128; sum += d * d; }
-    const envRms = Math.min(1, Math.sqrt(sum / timeData.length) / 64);
+    let sum=0; for(let k=0;k<timeData.length;k++){ const d=timeData[k]-128; sum+=d*d; }
+    const envRms=Math.min(1, Math.sqrt(sum/timeData.length)/64);
 
-    ctx.clearRect(0, 0, cssW, cssH);
-    ctx.save();
-    ctx.translate(cx, cy);
+    ctx.clearRect(0,0,cssW,cssH);
+    ctx.save(); ctx.translate(cx,cy);
+    ctx.lineWidth=1; ctx.strokeStyle='rgba(148,163,184,0.28)';
+    ctx.beginPath(); ctx.arc(0,0,radius-1,0,Math.PI*2); ctx.stroke();
 
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(148,163,184,0.28)';
-    ctx.beginPath(); ctx.arc(0, 0, radius - 1, 0, Math.PI * 2); ctx.stroke();
+    for(let i=0;i<segments;i++){
+      const a0=freqData[binMap[i]]||0, a1=freqData[(binMap[i]+1)%freqData.length]||0, a2=freqData[(binMap[i]+2)%freqData.length]||0;
+      let amp=(a0+a1+a2)/(3*255);
+      const floor=Math.min(0.14, 0.02+envRms*0.10);
+      amp=Math.max(amp,floor);
+      const target=amp*(0.56+envRms*1.05);
 
-    for (let i = 0; i < segments; i++) {
-      const a0 = freqData[binMap[i]] || 0;
-      const a1 = freqData[(binMap[i] + 1) % freqData.length] || 0;
-      const a2 = freqData[(binMap[i] + 2) % freqData.length] || 0;
-      let amp = (a0 + a1 + a2) / (3 * 255);
+      const prev=smooth[i]||0, up=prev+(target-prev)*0.82, down=prev*0.64;
+      const next=target>prev?up:Math.max(target,down);
+      smooth[i]=next;
 
-      const floor = Math.min(0.14, 0.02 + envRms * 0.10);
-      amp = Math.max(amp, floor);
-      const target = amp * (0.56 + envRms * 1.05);
-
-      const prev = smooth[i] || 0;
-      const up = prev + (target - prev) * 0.82;
-      const down = prev * 0.64;
-      const next = target > prev ? up : Math.max(target, down);
-      smooth[i] = next;
-
-      const len = 4 + next * barMax;
-      const cos = cosLUT[i], sin = sinLUT[i];
-      const x1 = cos * radius,         y1 = sin * radius;
-      const x2 = cos * (radius + len), y2 = sin * (radius + len);
-
-      const l = Math.min(74, 55 + next * 22);
-      ctx.globalAlpha = 0.85;
-      ctx.strokeStyle = `hsl(210 100% ${l}%)`;
-      ctx.shadowColor = 'rgba(59,130,246,0.30)';
-      ctx.shadowBlur = 4 + next * 6;
-      ctx.lineWidth = 1 + next * 1.1;
-
-      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      const len=4+next*barMax, cos=cosLUT[i], sin=sinLUT[i];
+      const x1=cos*radius, y1=sin*radius, x2=cos*(radius+len), y2=sin*(radius+len);
+      const l=Math.min(74,55+next*22);
+      ctx.globalAlpha=0.9;
+      ctx.strokeStyle=`hsl(210 100% ${l}%)`;
+      ctx.shadowColor='rgba(59,130,246,0.30)';
+      ctx.shadowBlur=4+next*6;
+      ctx.lineWidth=1+next*1.1;
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
     }
+    ctx.globalAlpha=1; ctx.restore();
+  }
 
-    ctx.globalAlpha = 1;
+  function renderPulse(){
+    const cssW=canvas.width/dpr, cssH=canvas.height/dpr;
+    const cx=cssW/2, cy=cssH/2, radius=Math.min(cssW,cssH)*0.28;
+    ctx.clearRect(0,0,cssW,cssH);
+    ctx.save(); ctx.translate(cx,cy);
+    const t=Date.now()*0.002, scale=1+Math.sin(t)*0.05;
+    ctx.strokeStyle='rgba(148,163,184,0.45)'; ctx.lineWidth=1.6;
+    ctx.beginPath(); ctx.arc(0,0,radius*scale,0,Math.PI*2); ctx.stroke();
     ctx.restore();
   }
 
-  function renderPulse() {
-    const cssW = canvas.width  / dpr;
-    const cssH = canvas.height / dpr;
-    const cx = cssW / 2, cy = cssH / 2;
-    const radius = Math.min(cssW, cssH) * 0.28;
+  // ---- Événements audio ----
+  audio.addEventListener('loadedmetadata', ()=> {
+    // iOS affiche mieux le temps une fois la metadata dispo
+    // rien à faire ici, mais l'événement confirme que la durée est connue
+  });
 
-    ctx.clearRect(0, 0, cssW, cssH);
-    ctx.save(); ctx.translate(cx, cy);
-
-    const t = Date.now() * 0.002;
-    const scale = 1 + Math.sin(t) * 0.05;
-
-    ctx.strokeStyle = 'rgba(148,163,184,0.45)';
-    ctx.lineWidth = 1.6;
-    ctx.beginPath(); ctx.arc(0, 0, radius * scale, 0, Math.PI * 2); ctx.stroke();
-
-    ctx.restore();
-  }
-
-  // Événements audio
   audio.addEventListener('play', () => {
     firstPlayDone = true;
-    kickAllowed = false;              // ❌ on ne relancera plus play() automatiquement
-    // on retire le kick du canvas une fois que ça joue
-    canvas.removeEventListener('pointerdown', localKick, { capture: false });
+    kickAllowed   = false;    // on ne forcera plus jamais play()
+    // on retire tout kick résiduel
+    cleanupGestures();
+    canvas.removeEventListener('pointerdown', localKick);
     startPlay();
-  }, { passive: true });
+  }, { passive:true });
 
   audio.addEventListener('pause', () => {
-    // ne surtout pas relancer play ici
+    // surtout ne pas relancer play ici
     startPulse();
-  }, { passive: true });
+  }, { passive:true });
 
-  audio.addEventListener('ended', () => { startPulse(); }, { passive: true });
+  audio.addEventListener('ended', () => { startPulse(); }, { passive:true });
 
-  // Bootstrap universel (1 seule fois, en capture pour iOS)
+  // ---- Bootstrap iOS/Android : 1er vrai geste, une seule fois ----
   const gestureOnce = async () => {
-    unlockAudio();
-    await resumeContext();
-    await maybeKickPlayOnce();   // ✅ ne force play qu'avant 1er démarrage
+    unlockAudio(); await resumeCtx();
+    if (!firstPlayDone && kickAllowed) { try{ await audio.play(); }catch{} }
     cleanupGestures();
   };
-  function cleanupGestures() {
+  function cleanupGestures(){
     ['pointerdown','touchstart','mousedown','keydown','pointerup','click']
       .forEach(ev => document.removeEventListener(ev, gestureOnce, true));
   }
   ['pointerdown','touchstart','mousedown','keydown','pointerup','click']
-    .forEach(ev => document.addEventListener(ev, gestureOnce, { once: true, passive: true, capture: true }));
+    .forEach(ev => document.addEventListener(ev, gestureOnce, { once:true, passive:true, capture:true }));
 
-  // Kick local via canvas uniquement (PAS sur <audio> pour ne pas gêner le bouton pause)
-  async function localKick() {
-    if (firstPlayDone) return;  // après 1er play, ne jamais relancer
-    unlockAudio();
-    await resumeContext();
-    await maybeKickPlayOnce();
+  async function localKick(){
+    if (firstPlayDone) return;
+    unlockAudio(); await resumeCtx();
+    if (kickAllowed) { try{ await audio.play(); }catch{} }
   }
-  canvas.addEventListener('pointerdown', localKick, { passive: true });
+  canvas.addEventListener('pointerdown', localKick, { passive:true });
 
   // Visibilité
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') stopLoop();
-    else (audio.paused ? startPulse() : startPlay());
-  }, { passive: true });
+    if (document.visibilityState === 'hidden') { stopLoop(); return; }
+    (audio.paused ? startPulse() : startPlay());
+  }, { passive:true });
 
-  // Pulse par défaut
+  // Rendu initial
   startPulse();
 })();
 
