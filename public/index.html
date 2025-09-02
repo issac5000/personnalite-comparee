@@ -1462,7 +1462,7 @@ if (window.location.href.includes("external")) {
         }
     }
 
-// Podcast audio visualizer optimisé + effet pulse en pause (corrigé mobile)
+// Podcast audio visualizer optimisé + effet pulse en pause (VERSION MOBILE CORRIGÉE)
 (function(){
   const audio = document.getElementById('home-podcast-audio');
   const canvas = document.getElementById('home-podcast-visual');
@@ -1471,7 +1471,16 @@ if (window.location.href.includes("external")) {
   const ctx = canvas.getContext('2d');
   let ac = null, src = null, analyser = null, rafId = null;
   let mode = "idle"; // "idle" | "pulse" | "play"
+  let audioInitialized = false;
+  let userInteracted = false;
+  
+  // Détection mobile
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
+                   (navigator.maxTouchPoints > 0 && window.innerWidth < 768);
+  
   const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+  // Réduire les segments sur mobile pour les performances
+  const segments = isMobile ? 64 : 128;
 
   const resize = ()=>{
     const rect = canvas.getBoundingClientRect();
@@ -1484,20 +1493,23 @@ if (window.location.href.includes("external")) {
   resize();
   window.addEventListener('resize', ()=> setTimeout(resize, 120));
 
+  // CORRECTION CLÉE : Initialisation audio sur première interaction
   const initAudio = ()=>{
-    if (ac) return true;
+    if (audioInitialized) return true;
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return false;
+      
       ac = new AudioCtx();
       src = ac.createMediaElementSource(audio);
       analyser = ac.createAnalyser();
-      analyser.fftSize = 128; 
+      analyser.fftSize = isMobile ? 64 : 128; // Réduire sur mobile
       analyser.smoothingTimeConstant = 0.12; 
       analyser.minDecibels = -90;
       analyser.maxDecibels = -10;
       src.connect(analyser);
       src.connect(ac.destination);
+      audioInitialized = true;
       return true;
     } catch(e) {
       console.warn("initAudio error", e);
@@ -1507,7 +1519,6 @@ if (window.location.href.includes("external")) {
 
   // Buffers créés une fois
   let freqData, timeData, binMap, smooth;
-  const segments = 128;
 
   const renderFrame = ()=>{
     if (!analyser) return;
@@ -1574,8 +1585,13 @@ if (window.location.href.includes("external")) {
 
       const l = Math.min(76, 56 + next*24);
       ctx.strokeStyle = `hsl(210 100% ${l}%)`;
-      ctx.shadowColor = 'rgba(59,130,246,0.45)';
-      ctx.shadowBlur = 6 + next*10;
+      
+      // Réduire les effets shadow sur mobile pour les performances
+      if (!isMobile) {
+        ctx.shadowColor = 'rgba(59,130,246,0.45)';
+        ctx.shadowBlur = 6 + next*10;
+      }
+      
       ctx.lineWidth = 1.2 + next*1.2;
       ctx.beginPath();
       ctx.moveTo(x1, y1);
@@ -1627,10 +1643,24 @@ if (window.location.href.includes("external")) {
 
   const startPlay = async ()=>{
     stop();
-    if (!initAudio()) return;
-    if (ac && ac.state === 'suspended') {
-      try { await ac.resume(); } catch(e) {}
+    
+    // CORRECTION : Initialiser l'audio seulement après interaction utilisateur
+    if (!userInteracted) {
+      console.log("Attente d'interaction utilisateur...");
+      return;
     }
+    
+    if (!initAudio()) return;
+    
+    if (ac && ac.state === 'suspended') {
+      try { 
+        await ac.resume(); 
+        console.log("AudioContext resumed");
+      } catch(e) {
+        console.warn("Impossible de reprendre AudioContext", e);
+      }
+    }
+    
     if (!rafId) loopPlay();
   };
 
@@ -1639,28 +1669,85 @@ if (window.location.href.includes("external")) {
     if (!rafId) loopPulse();
   };
 
-  // Gestion visibilité
+  // CORRECTION : Gestionnaire d'interaction utilisateur unifié
+  const handleUserInteraction = async () => {
+    if (userInteracted) return;
+    
+    userInteracted = true;
+    console.log("Première interaction utilisateur détectée");
+    
+    // Initialiser l'audio maintenant
+    if (!audioInitialized) {
+      initAudio();
+    }
+    
+    // Reprendre l'AudioContext si nécessaire
+    if (ac && ac.state === 'suspended') {
+      try {
+        await ac.resume();
+        console.log("AudioContext activé après interaction");
+      } catch(e) {
+        console.warn("Erreur activation AudioContext", e);
+      }
+    }
+    
+    // Si l'audio joue déjà, démarrer la visualisation
+    if (!audio.paused) {
+      startPlay();
+    }
+  };
+
+  // CORRECTION : Écouter les événements d'interaction sur différents éléments
+  document.addEventListener('click', handleUserInteraction, { once: true });
+  document.addEventListener('touchstart', handleUserInteraction, { once: true });
+  
+  // Également sur l'audio lui-même
+  audio.addEventListener('click', handleUserInteraction);
+  audio.addEventListener('touchstart', handleUserInteraction);
+
+  // Gestion visibilité - Correction : pas de condition sur userInteracted
   document.addEventListener('visibilitychange', ()=>{
-    if (document.visibilityState === 'hidden') stop();
-    else if (!audio.paused) startPlay();
-    else startPulse();
+    if (document.visibilityState === 'hidden') {
+      stop();
+    } else if (!audio.paused) {
+      startPlay(); // Toujours démarrer si audio joue
+    } else {
+      startPulse();
+    }
   });
 
-  // 👇 clé : lancer init seulement sur interaction user
-  audio.addEventListener('play', startPlay, { once:false });
+  // Événements audio - toujours démarrer l'animation visuelle
+  audio.addEventListener('play', startPlay);
   audio.addEventListener('pause', startPulse);
   audio.addEventListener('ended', startPulse);
 
-  // Fallback : tap pour débloquer l’audio sur mobile
-  document.addEventListener('touchstart', ()=> {
-    if (ac && ac.state === "suspended") ac.resume();
-  }, { once:true });
+  // CORRECTION : Déblocage mobile renforcé
+  const unlockAudioContext = async () => {
+    if (ac && ac.state === "suspended") {
+      try {
+        await ac.resume();
+        console.log("AudioContext débloqué");
+      } catch(e) {
+        console.warn("Impossible de débloquer AudioContext", e);
+      }
+    }
+  };
+
+  // Multiple événements pour débloquer sur mobile
+  ['touchstart', 'touchend', 'click', 'play'].forEach(event => {
+    document.addEventListener(event, unlockAudioContext, { once: true });
+  });
 
   // --- Rendu initial : pulse ---
   startPulse();
+  
+  // DEBUG : Log d'état
+  console.log("Audio visualizer initialisé", {
+    isMobile,
+    segments,
+    userAgent: navigator.userAgent
+  });
 })();
-
-
 
 
 
