@@ -1462,196 +1462,208 @@ if (window.location.href.includes("external")) {
         }
     }
 
-// Podcast audio visualizer - VERSION SIMPLIFIÉE QUI FONCTIONNE
-(function(){
-  const audio = document.getElementById('home-podcast-audio');
+// Podcast audio visualizer — PC OK + correctifs mobiles (iOS/Android)
+(function () {
+  const audio  = document.getElementById('home-podcast-audio');
   const canvas = document.getElementById('home-podcast-visual');
-  if(!audio || !canvas) return;
+  if (!audio || !canvas) return;
 
-  const ctx = canvas.getContext('2d');
-  let ac = null, src = null, analyser = null, rafId = null;
-  let audioReady = false;
-  
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  // 💡 iOS a besoin de ça pour lire dans la page sans passer plein écran
+  audio.setAttribute('playsinline', 'true');
+  audio.setAttribute('webkit-playsinline', 'true');
+
+  // Contexte 2D optimisé mobile
+  const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true, willReadFrequently: true });
+
+  // WebAudio
+  let ac = null, src = null, analyser = null;
+  let bootstrapped = false;
+
+  // RAF & état
+  let rafId = null;
+  let mode = 'idle'; // 'idle' | 'pulse' | 'play'
+
+  // DPR & resize propre
   const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-  const segments = isMobile ? 64 : 128;
-
-  const resize = ()=>{
+  function resize() {
     const rect = canvas.getBoundingClientRect();
-    const cssW = rect.width || 600;
-    const cssH = rect.height || cssW; 
-    canvas.width = Math.max(1, Math.round(cssW * dpr));
+    const cssW = rect.width  || 300;
+    const cssH = rect.height || cssW;
+    canvas.width  = Math.max(1, Math.round(cssW * dpr));
     canvas.height = Math.max(1, Math.round(cssH * dpr));
-    ctx.setTransform(dpr,0,0,dpr,0,0); 
-  };
+    // On dessine en unités CSS (grâce à cette transform)
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
   resize();
-  window.addEventListener('resize', ()=> setTimeout(resize, 120));
+  window.addEventListener('resize', () => { clearTimeout(resize._t); resize._t = setTimeout(resize, 120); }, { passive: true });
+  window.addEventListener('orientationchange', () => { setTimeout(resize, 200); }, { passive: true });
 
-  // Tentative d'initialisation audio (sans bloquer l'affichage)
-  const tryInitAudio = ()=>{
-    if (audioReady) return true;
+  // 👉 Bootstrap audio STRICTEMENT sur geste user (iOS)
+  function unlockAudio() {
+    if (bootstrapped) return true;
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return false;
     try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return false;
-      
       ac = new AudioCtx();
       src = ac.createMediaElementSource(audio);
       analyser = ac.createAnalyser();
-      analyser.fftSize = isMobile ? 64 : 128;
-      analyser.smoothingTimeConstant = 0.12; 
+      // FFT modérée pour mobiles (auto-downscale si prefers-reduced-motion)
+      const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      analyser.fftSize = prefersReduced ? 64 : 128;
+      analyser.smoothingTimeConstant = 0.12;
       analyser.minDecibels = -90;
       analyser.maxDecibels = -10;
+
+      // Chaînage
       src.connect(analyser);
       src.connect(ac.destination);
-      audioReady = true;
+
+      bootstrapped = true;
       return true;
-    } catch(e) {
+    } catch (e) {
+      console.warn('unlockAudio error', e);
       return false;
+    }
+  }
+
+  // Petits garde-fous mobiles
+  const tryResume = async () => {
+    if (ac && ac.state === 'suspended') {
+      try { await ac.resume(); } catch {}
     }
   };
 
-  let freqData, timeData, binMap, smooth;
+  // Données de rendu (créées lazy)
+  let freqData = null, timeData = null, binMap = null, smooth = null;
+  let segments = 128;
 
-  // Rendu avec vraies données audio
-  const renderWithAudio = ()=>{
+  function ensureBuffers() {
+    if (!analyser) return;
     if (!freqData) {
       freqData = new Uint8Array(analyser.frequencyBinCount);
       timeData = new Uint8Array(analyser.fftSize);
+      // Ajuste le nombre de segments selon mobile
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      segments = Math.min(128, isMobile ? 96 : 128);
+
       binMap = new Uint16Array(segments);
-      for (let i=0;i<segments;i++){
-        const t = i/segments; 
-        const idx = Math.min(analyser.frequencyBinCount-1, Math.floor(t * analyser.frequencyBinCount));
+      for (let i = 0; i < segments; i++) {
+        const t = i / segments;
+        const idx = Math.min(analyser.frequencyBinCount - 1, Math.floor(t * analyser.frequencyBinCount));
         binMap[i] = idx;
       }
       smooth = new Float32Array(segments);
     }
+  }
+
+  function stopLoop() {
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  }
+
+  function loopPlay() {
+    mode = 'play';
+    rafId = requestAnimationFrame(loopPlay);
+    renderFrame();
+  }
+  function loopPulse() {
+    mode = 'pulse';
+    rafId = requestAnimationFrame(loopPulse);
+    renderPulse();
+  }
+
+  function startPlay() {
+    stopLoop();
+    if (!unlockAudio()) return;
+    tryResume();
+    if (!rafId) loopPlay();
+  }
+  function startPulse() {
+    stopLoop();
+    if (!rafId) loopPulse();
+  }
+
+  function renderFrame() {
+    if (!analyser) return;
+    ensureBuffers();
 
     analyser.getByteFrequencyData(freqData);
     analyser.getByteTimeDomainData(timeData);
 
-    const rect = canvas.getBoundingClientRect();
-    const cssW = rect.width || 600;
-    const cssH = rect.height || cssW;
-    const cx = cssW/2, cy = cssH/2;
-    const radius = Math.min(cssW, cssH) * 0.28; 
-    const barMax = Math.min(cssW, cssH) * 0.18;  
+    // Dimensions en unités CSS (grâce au setTransform)
+    const cssW = canvas.width  / dpr;
+    const cssH = canvas.height / dpr;
+    const cx = cssW / 2, cy = cssH / 2;
 
-    // RMS envelope
-    let sum=0; 
-    for(let k=0;k<timeData.length;k++){ 
-      const d=timeData[k]-128; 
-      sum+=d*d; 
+    // Rayon & longueur bars adaptatifs
+    const minSide = Math.min(cssW, cssH);
+    const radius = minSide * 0.28;
+    const barMax = minSide * 0.18;
+
+    // RMS envelope pour halo/floor
+    let sum = 0;
+    for (let k = 0; k < timeData.length; k++) {
+      const d = timeData[k] - 128; sum += d * d;
     }
-    const envRms = Math.min(1, Math.sqrt(sum/timeData.length)/64);
+    const envRms = Math.min(1, Math.sqrt(sum / timeData.length) / 64);
 
-    ctx.clearRect(0,0,cssW,cssH);
+    ctx.clearRect(0, 0, cssW, cssH);
     ctx.save();
     ctx.translate(cx, cy);
+
+    // Cercle de base
     ctx.lineWidth = 1.2;
     ctx.strokeStyle = 'rgba(148,163,184,0.30)';
-    ctx.beginPath(); ctx.arc(0,0, radius-1, 0, Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, 0, radius - 1, 0, Math.PI * 2); ctx.stroke();
 
     ctx.lineCap = 'round';
     ctx.globalCompositeOperation = 'lighter';
 
-    for (let i=0;i<segments;i++){
+    for (let i = 0; i < segments; i++) {
       const bin = binMap[i];
       const a0 = freqData[bin] || 0;
-      const a1 = freqData[(bin+1)%freqData.length] || 0;
-      const a2 = freqData[(bin+2)%freqData.length] || 0;
-      let amp = (a0 + a1 + a2) / (3*255); 
+      const a1 = freqData[(bin + 1) % freqData.length] || 0;
+      const a2 = freqData[(bin + 2) % freqData.length] || 0;
+      let amp = (a0 + a1 + a2) / (3 * 255);
+
       const floor = Math.min(0.15, 0.02 + envRms * 0.10);
       amp = Math.max(amp, floor);
       const target = amp * (0.58 + envRms * 1.12);
+
       const prev = smooth[i] || 0;
       const up = prev + (target - prev) * 0.85;
-      const down = prev * 0.62; 
+      const down = prev * 0.62;
       const next = target > prev ? up : Math.max(target, down);
       smooth[i] = next;
 
-      const len = 4 + next * barMax; 
+      const len = 4 + next * barMax;
       const angle = (i / segments) * Math.PI * 2;
       const cos = Math.cos(angle), sin = Math.sin(angle);
-      const x1 = cos * radius, y1 = sin * radius;
+      const x1 = cos * radius,        y1 = sin * radius;
       const x2 = cos * (radius + len), y2 = sin * (radius + len);
 
-      const l = Math.min(76, 56 + next*24);
+      const l = Math.min(76, 56 + next * 24);
       ctx.strokeStyle = `hsl(210 100% ${l}%)`;
-      
-      if (!isMobile) {
-        ctx.shadowColor = 'rgba(59,130,246,0.45)';
-        ctx.shadowBlur = 6 + next*10;
-      }
-      
-      ctx.lineWidth = 1.2 + next*1.2;
+      ctx.shadowColor = 'rgba(59,130,246,0.45)';
+      ctx.shadowBlur = 6 + next * 10;
+      ctx.lineWidth = 1.2 + next * 1.2;
+
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
       ctx.stroke();
     }
+
     ctx.globalCompositeOperation = 'source-over';
     ctx.restore();
-  };
+  }
 
-  // Rendu avec effet simulé (quand pas d'audio data)
-  const renderSimulated = ()=>{
-    const rect = canvas.getBoundingClientRect();
-    const cssW = rect.width || 600;
-    const cssH = rect.height || cssW;
-    const cx = cssW/2, cy = cssH/2;
-    const radius = Math.min(cssW, cssH) * 0.28; 
-    const barMax = Math.min(cssW, cssH) * 0.18;
-
-    ctx.clearRect(0,0,cssW,cssH);
-    ctx.save();
-    ctx.translate(cx, cy);
-    
-    ctx.lineWidth = 1.2;
-    ctx.strokeStyle = 'rgba(148,163,184,0.30)';
-    ctx.beginPath(); ctx.arc(0,0, radius-1, 0, Math.PI*2); ctx.stroke();
-
-    ctx.lineCap = 'round';
-    ctx.globalCompositeOperation = 'lighter';
-
-    const t = Date.now() * 0.002;
-    for (let i=0;i<segments;i++){
-      // Simulation d'amplitude basée sur le temps et l'index
-      const seed = i * 0.618 + Math.sin(t * 0.8 + i * 0.15) * 0.4;
-      const amp = 0.15 + Math.abs(Math.sin(seed)) * 0.6;
-      
-      const len = 4 + amp * barMax * 0.8; 
-      const angle = (i / segments) * Math.PI * 2;
-      const cos = Math.cos(angle), sin = Math.sin(angle);
-      const x1 = cos * radius, y1 = sin * radius;
-      const x2 = cos * (radius + len), y2 = sin * (radius + len);
-
-      const l = Math.min(76, 50 + amp * 25);
-      ctx.strokeStyle = `hsl(210 100% ${l}%)`;
-      
-      if (!isMobile) {
-        ctx.shadowColor = 'rgba(59,130,246,0.35)';
-        ctx.shadowBlur = 4 + amp * 8;
-      }
-      
-      ctx.lineWidth = 1.2 + amp * 1.0;
-      ctx.beginPath();
-      ctx.moveTo(x1, y1);
-      ctx.lineTo(x2, y2);
-      ctx.stroke();
-    }
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.restore();
-  };
-
-  // Effet pulse pour pause
-  const renderPulse = ()=>{
-    const rect = canvas.getBoundingClientRect();
-    const cssW = rect.width || 600;
-    const cssH = rect.height || cssW;
-    const cx = cssW/2, cy = cssH/2;
+  function renderPulse() {
+    const cssW = canvas.width  / dpr;
+    const cssH = canvas.height / dpr;
+    const cx = cssW / 2, cy = cssH / 2;
     const radius = Math.min(cssW, cssH) * 0.28;
 
-    ctx.clearRect(0,0,cssW,cssH);
+    ctx.clearRect(0, 0, cssW, cssH);
     ctx.save();
     ctx.translate(cx, cy);
 
@@ -1661,76 +1673,37 @@ if (window.location.href.includes("external")) {
     ctx.strokeStyle = 'rgba(148,163,184,0.5)';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(0,0, radius*scale, 0, Math.PI*2);
+    ctx.arc(0, 0, radius * scale, 0, Math.PI * 2);
     ctx.stroke();
 
     ctx.restore();
-  };
+  }
 
-  // Boucles d'animation
-  const loopPlay = ()=>{
-    rafId = requestAnimationFrame(loopPlay);
-    
-    // Essayer d'utiliser les vraies données audio si disponibles
-    if (audioReady && analyser && ac && ac.state === 'running') {
-      renderWithAudio();
-    } else {
-      // Sinon, effet simulé
-      renderSimulated();
+  // ▶️ Événements lecture
+  audio.addEventListener('play',  () => { unlockAudio(); startPlay(); },  { passive: true });
+  audio.addEventListener('pause', () => { startPulse(); },                { passive: true });
+  audio.addEventListener('ended', () => { startPulse(); },                { passive: true });
+
+  // iOS : créer/résumer le contexte sur le 1er geste (peu importe où l’utilisateur tape)
+  const userGesture = () => { unlockAudio(); tryResume(); document.removeEventListener('pointerdown', userGesture, { capture:false }); };
+  document.addEventListener('pointerdown', userGesture, { passive: true });
+
+  // Si ton UI a un bouton custom, tape dessus = bootstrap aussi
+  canvas.addEventListener('pointerdown', () => { unlockAudio(); tryResume(); }, { passive: true });
+  audio.addEventListener('pointerdown',  () => { unlockAudio(); tryResume(); }, { passive: true });
+
+  // Visibilité / économie batterie
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') stopLoop();
+    else {
+      if (audio.paused) startPulse();
+      else startPlay();
     }
-  };
+  }, { passive: true });
 
-  const loopPulse = ()=>{
-    rafId = requestAnimationFrame(loopPulse);
-    renderPulse();
-  };
-
-  const stop = ()=>{
-    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-  };
-
-  // SIMPLE: Démarrer immédiatement selon l'état de l'audio
-  const startVisualizer = ()=>{
-    stop();
-    if (!audio.paused) {
-      loopPlay(); // Animation active
-    } else {
-      loopPulse(); // Animation pause
-    }
-  };
-
-  // Initialisation audio sur première interaction (optionnel)
-  const initOnInteraction = async ()=>{
-    if (!audioReady) tryInitAudio();
-    if (ac && ac.state === 'suspended') {
-      try { await ac.resume(); } catch(e) {}
-    }
-  };
-
-  // Événements
-  audio.addEventListener('play', startVisualizer);
-  audio.addEventListener('pause', startVisualizer);
-  audio.addEventListener('ended', startVisualizer);
-
-  // Interaction pour débloquer l'audio (mobile)
-  document.addEventListener('click', initOnInteraction, { once: true });
-  document.addEventListener('touchstart', initOnInteraction, { once: true });
-
-  // Gestion visibilité
-  document.addEventListener('visibilitychange', ()=>{
-    if (document.visibilityState === 'hidden') {
-      stop();
-    } else {
-      startVisualizer();
-    }
-  });
-
-  // DÉMARRAGE IMMÉDIAT
-  startVisualizer();
-  
-  console.log("Audio visualizer démarré", { isMobile, segments });
+  // Pulse par défaut au chargement
+  startPulse();
 })();
-
 
 
         function setupDesktopDropdowns() {
