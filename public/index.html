@@ -1462,7 +1462,7 @@ if (window.location.href.includes("external")) {
         }
     }
 
-// Visualizer audio — MOBILE PAUSE WORKING + temps visible + perfs PC
+// Visualizer audio — mobile pause OK + temps visible + perfs PC
 (function () {
   const audio  = document.getElementById('home-podcast-audio');
   const canvas = document.getElementById('home-podcast-visual');
@@ -1472,23 +1472,8 @@ if (window.location.href.includes("external")) {
   audio.setAttribute('playsinline', 'true');
   audio.setAttribute('webkit-playsinline', 'true');
   audio.preload = audio.preload || 'metadata';
-  
-  // Détection mobile
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  
-  if (isMobile) {
-    audio.controls = true;
-    // CRUCIAL: Canvas complètement non-interactif sur mobile
-    canvas.style.pointerEvents = 'none';
-    canvas.style.position = 'absolute';
-    canvas.style.zIndex = '1'; // Derrière l'audio
-    
-    // Audio par-dessus et interactif
-    audio.style.position = 'relative';
-    audio.style.zIndex = '10';
-    audio.style.pointerEvents = 'auto';
-  }
-  
+  // force les contrôles natifs sur mobile
+  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) audio.controls = true;
   audio.crossOrigin = audio.crossOrigin || 'anonymous';
 
   // Canvas ctx
@@ -1496,13 +1481,16 @@ if (window.location.href.includes("external")) {
 
   // WebAudio
   let ac=null, src=null, analyser=null, bootstrapped=false;
-  let kickAllowed = true;
+  let kickAllowed = true;    // ne force play qu'avant 1er démarrage
   let firstPlayDone = false;
 
   // RAF & état
   let rafId = null, dpr = Math.max(1, Math.floor(devicePixelRatio||1));
 
   // ----- Utils -----
+  const setCanvasPE = (interactive) => { canvas.style.pointerEvents = interactive ? 'auto' : 'none'; };
+  setCanvasPE(true); // avant lecture: on garde interactif pour débloquer iOS
+
   function resize(){
     dpr = Math.max(1, Math.floor(devicePixelRatio||1));
     const r = canvas.getBoundingClientRect();
@@ -1534,6 +1522,7 @@ if (window.location.href.includes("external")) {
     }catch(e){ console.warn('unlockAudio',e); return false; }
   }
   async function resumeCtx(){ if (ac && ac.state==='suspended'){ try{ await ac.resume(); }catch{} } }
+  async function maybeKickPlayOnce(){ if (!kickAllowed && firstPlayDone) return; try{ if (audio.paused) await audio.play(); }catch{} }
 
   // ---- Render data ----
   let freqData=null, timeData=null, binMap=null, smooth=null;
@@ -1546,8 +1535,9 @@ if (window.location.href.includes("external")) {
   function ensureBuffers(){
     if (!analyser) return;
     if (!freqData){
+      const isMob=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       const cores=navigator.hardwareConcurrency||4;
-      segments=isMobile?84:Math.min(144,96+Math.floor(cores)*6);
+      segments=isMob?84:Math.min(144,96+Math.floor(cores)*6);
       initLUT();
       freqData=new Uint8Array(analyser.frequencyBinCount);
       timeData=new Uint8Array(analyser.fftSize);
@@ -1568,11 +1558,14 @@ if (window.location.href.includes("external")) {
     stopLoop();
     if (!unlockAudio()) return;
     resumeCtx();
+    // 👉 en lecture: on laisse passer les taps vers <audio> (pause, seek, etc.)
+    setCanvasPE(false);
     if (!rafId) loopPlay();
   }
-  
   function startPulse(){
     stopLoop();
+    // 👉 à l'arrêt: canvas ré-interactif pour débloquer iOS au prochain tap
+    setCanvasPE(true);
     if (!rafId) loopPulse();
   }
 
@@ -1630,76 +1623,50 @@ if (window.location.href.includes("external")) {
   }
 
   // ---- Événements audio ----
+  audio.addEventListener('loadedmetadata', ()=> {
+    // iOS affiche mieux le temps une fois la metadata dispo
+    // rien à faire ici, mais l'événement confirme que la durée est connue
+  });
+
   audio.addEventListener('play', () => {
     firstPlayDone = true;
-    kickAllowed = false;
+    kickAllowed   = false;    // on ne forcera plus jamais play()
+    // on retire tout kick résiduel
     cleanupGestures();
+    canvas.removeEventListener('pointerdown', localKick);
     startPlay();
   }, { passive:true });
 
   audio.addEventListener('pause', () => {
+    // surtout ne pas relancer play ici
     startPulse();
   }, { passive:true });
 
-  audio.addEventListener('ended', () => { 
-    startPulse(); 
-  }, { passive:true });
+  audio.addEventListener('ended', () => { startPulse(); }, { passive:true });
 
-  // ---- Bootstrap pour déblocage initial ----
+  // ---- Bootstrap iOS/Android : 1er vrai geste, une seule fois ----
   const gestureOnce = async () => {
-    unlockAudio(); 
-    await resumeCtx();
+    unlockAudio(); await resumeCtx();
+    if (!firstPlayDone && kickAllowed) { try{ await audio.play(); }catch{} }
     cleanupGestures();
-    
-    // Sur mobile, on ne force PAS le play automatique
-    // On laisse l'utilisateur utiliser les contrôles natifs
-    if (!isMobile && !firstPlayDone && kickAllowed) { 
-      try{ await audio.play(); }catch{} 
-    }
   };
-  
   function cleanupGestures(){
     ['pointerdown','touchstart','mousedown','keydown','pointerup','click']
       .forEach(ev => document.removeEventListener(ev, gestureOnce, true));
   }
-  
-  // Écoute les gestes sur tout le document pour débloquer l'AudioContext
   ['pointerdown','touchstart','mousedown','keydown','pointerup','click']
     .forEach(ev => document.addEventListener(ev, gestureOnce, { once:true, passive:true, capture:true }));
 
-  // Canvas kick SEULEMENT sur desktop
-  async function desktopCanvasKick(){
-    if (firstPlayDone || isMobile) return;
-    unlockAudio(); 
-    await resumeCtx();
-    if (kickAllowed) { 
-      try{ await audio.play(); }catch{} 
-    }
+  async function localKick(){
+    if (firstPlayDone) return;
+    unlockAudio(); await resumeCtx();
+    if (kickAllowed) { try{ await audio.play(); }catch{} }
   }
-  
-  // Canvas interactif seulement sur desktop
-  if (!isMobile) {
-    canvas.style.pointerEvents = 'auto';
-    canvas.addEventListener('pointerdown', desktopCanvasKick, { passive:true });
-    
-    // Sur desktop, on peut désactiver le canvas pendant la lecture
-    audio.addEventListener('play', () => {
-      canvas.style.pointerEvents = 'none';
-    });
-    audio.addEventListener('pause', () => {
-      canvas.style.pointerEvents = 'auto';
-    });
-    audio.addEventListener('ended', () => {
-      canvas.style.pointerEvents = 'auto';
-    });
-  }
+  canvas.addEventListener('pointerdown', localKick, { passive:true });
 
   // Visibilité
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') { 
-      stopLoop(); 
-      return; 
-    }
+    if (document.visibilityState === 'hidden') { stopLoop(); return; }
     (audio.paused ? startPulse() : startPlay());
   }, { passive:true });
 
