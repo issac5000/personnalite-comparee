@@ -1471,6 +1471,82 @@ if (window.location.href.includes("external")) {
       const tCur = document.getElementById('pc-time-current');
       const tTot = document.getElementById('pc-time-total');
       if(!audio || !canvas) return;
+
+      // --- Empêcher l’extinction d’écran pendant la lecture sur mobile ---
+      // 1) Tentative avec l’API Screen Wake Lock (navigateurs modernes)
+      // 2) Fallback: lecture d’une petite vidéo muette/loop (astuce iOS anciens)
+      let wakeLock = null;
+      let keepAwakeVideo = null;
+
+      const requestWakeLock = async () => {
+        try {
+          if ('wakeLock' in navigator && navigator.wakeLock && navigator.wakeLock.request) {
+            wakeLock = await navigator.wakeLock.request('screen');
+            // Nettoyage quand le lock est relâché par le système
+            wakeLock.addEventListener?.('release', () => { wakeLock = null; });
+            return true;
+          }
+        } catch (e) {
+          // Ignore et on tentera le fallback
+        }
+        return false;
+      };
+
+      const releaseWakeLock = async () => {
+        try { if (wakeLock) { await wakeLock.release(); } } catch {}
+        wakeLock = null;
+      };
+
+      const startFallbackVideo = async () => {
+        try {
+          if (keepAwakeVideo) return true;
+          const v = document.createElement('video');
+          v.setAttribute('playsinline', '');
+          v.muted = true;
+          v.loop = true;
+          v.src = 'logo.mp4'; // petite vidéo locale déjà dans le site
+          // hors écran mais pas display:none pour laisser la lecture se faire
+          v.style.position = 'fixed';
+          v.style.left = '-10000px';
+          v.style.top = '0';
+          v.style.width = '1px';
+          v.style.height = '1px';
+          document.body.appendChild(v);
+          await v.play().catch(()=>{});
+          keepAwakeVideo = v;
+          return true;
+        } catch (e) {
+          return false;
+        }
+      };
+
+      const stopFallbackVideo = () => {
+        try {
+          if (keepAwakeVideo) { keepAwakeVideo.pause(); keepAwakeVideo.remove(); }
+        } catch {}
+        keepAwakeVideo = null;
+      };
+
+      const onAudioPlay = async () => {
+        const ok = await requestWakeLock();
+        if (!ok) {
+          // Si l’API n’est pas dispo ou a échoué, on tente le fallback vidéo
+          await startFallbackVideo();
+        }
+      };
+
+      const onAudioStop = async () => {
+        await releaseWakeLock();
+        stopFallbackVideo();
+      };
+
+      // Sur retour d’onglet (visibilitychange), certains navigateurs libèrent le lock.
+      document.addEventListener('visibilitychange', async () => {
+        if (!document.hidden && !audio.paused && !wakeLock) {
+          const ok = await requestWakeLock();
+          if (!ok && !keepAwakeVideo) { await startFallbackVideo(); }
+        }
+      });
       const ctx = canvas.getContext('2d');
       let ac = null, src = null, analyser = null, rafId = null;
       const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
@@ -1602,9 +1678,9 @@ if (window.location.href.includes("external")) {
         if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
         // keep last frame for a subtle paused look
       };
-      audio.addEventListener('play', start);
-      audio.addEventListener('pause', stop);
-      audio.addEventListener('ended', stop);
+      audio.addEventListener('play', () => { onAudioPlay(); start(); });
+      audio.addEventListener('pause', () => { onAudioStop(); stop(); });
+      audio.addEventListener('ended', () => { onAudioStop(); stop(); });
       // --- Lecteur personnalisé (mobile) ---
       const fmt = (s)=>{
         if (!isFinite(s) || s < 0) s = 0;
