@@ -30,7 +30,7 @@
     <!-- Supabase JS library -->
    
     <style>
-        html, body {
+     html, body {
     overflow-x: hidden;
 }
 body {
@@ -43,45 +43,36 @@ body {
   background-image: linear-gradient(180deg, transparent 58%, #fef08a 58%);
   background-repeat: no-repeat;
   border-radius: .15em;
-  padding: 0 .08em; /* tiny side padding so the highlight peeks out */
+  padding: 0 .08em;
 }
-.rotate-180 {
-    transform: rotate(180deg);
-}
+.rotate-180 { transform: rotate(180deg); }
 .gradient-bg {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
-button,
-[class*="card"] {
-    transition: all 0.3s ease;
-}
-
+button, [class*="card"] { transition: all 0.3s ease; }
 button:hover {
     transform: rotateX(3deg) rotateY(3deg) scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
+
 /* Podcast visualizer */
 #home-podcast-visual {
   display: block;
   background: transparent;
   border: none;
-  margin: -4px auto -2px auto; /* ultra rapproché et centré */
+  margin: -4px auto -2px auto;
   width: clamp(220px, 40vw, 360px);
-  aspect-ratio: 1 / 1; /* cercle toujours centré */
+  aspect-ratio: 1 / 1;
   height: auto;
 }
 #home-podcast h2 { margin-bottom: -4px !important; }
-#home-podcast-audio {
-  display: block;
-  width: clamp(220px, 40vw, 360px);
-  margin: -4px auto 0 auto;
-  border-radius: 9999px;
-  background: rgba(255,255,255,0.9);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-}
-/* Lecteur perso (mobile) */
+
+/* ✅ Masquer le lecteur natif partout */
+#home-podcast-audio { display: none !important; }
+
+/* Lecteur custom */
 .pc-player {
-  display: none;
+  display: flex;
   align-items: center;
   gap: 10px;
   width: clamp(220px, 40vw, 360px);
@@ -98,16 +89,15 @@ button:hover {
   justify-content: center;
   width: 40px; height: 40px;
   border-radius: 9999px;
-  border: 1px solid rgba(15,23,42,0.10); /* subtil */
-  background: #fff; /* sans couleur pleine */
-  color: #0f172a; /* icône sombre, lisible */
+  border: 1px solid rgba(15,23,42,0.10);
+  background: #fff;
+  color: #0f172a;
   box-shadow: 0 2px 6px rgba(0,0,0,0.06);
   transition: background-color .15s ease, transform .1s ease;
 }
 .pc-btn:hover { background: #f8fafc; }
 .pc-btn:active { transform: scale(0.97); }
 .pc-btn:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
-.pc-btn i { color: currentColor; }
 .pc-btn i { font-size: 14px; }
 .pc-progress {
   position: relative;
@@ -136,13 +126,13 @@ button:hover {
 }
 .pc-time-sep{opacity:.6}
 
-/* Mobile: lecteur natif activé */
+/* Mobile = même player custom */
 @media (max-width: 640px) {
-  /* ❌ supprimé : #home-podcast-audio { display: none; } */
-  #home-podcast-player { display: flex; width: 100%; max-width: 520px; }
+  #home-podcast-player { width: 100%; max-width: 520px; }
   .pc-player { width: 100%; }
   #home-podcast-visual { width: 100%; max-width: 520px; }
 }
+
 
     
         [class*="card"]:hover {
@@ -1463,10 +1453,16 @@ if (window.location.href.includes("external")) {
         }
     }
 
-   // Visualizer audio — mobile pause OK + durée visible + perfs PC (corrigé)
+  // Visualizer audio + lecteur custom
 (function () {
   const audio  = document.getElementById('home-podcast-audio');
   const canvas = document.getElementById('home-podcast-visual');
+  const btnPlay = document.getElementById('pc-play');
+  const prog    = document.getElementById('pc-progress');
+  const progBar = document.getElementById('pc-progress-bar');
+  const cur     = document.getElementById('pc-current');
+  const dur     = document.getElementById('pc-duration');
+
   if (!audio || !canvas) return;
 
   // ---- Mobile-friendly player ----
@@ -1474,7 +1470,6 @@ if (window.location.href.includes("external")) {
   audio.setAttribute('webkit-playsinline', 'true');
   audio.preload = 'metadata'; // ✅ force metadata pour voir la durée
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (isMobile) audio.controls = true;
   audio.crossOrigin = audio.crossOrigin || 'anonymous';
 
   // Canvas ctx
@@ -1628,7 +1623,7 @@ if (window.location.href.includes("external")) {
 
   // ---- Événements audio ----
   audio.addEventListener('loadedmetadata', ()=> {
-    // iOS affiche bien la durée après metadata
+    dur.textContent = fmt(audio.duration);
   });
 
   audio.addEventListener('play', () => {
@@ -1636,7 +1631,7 @@ if (window.location.href.includes("external")) {
     kickAllowed   = false;
     cleanupGestures();
     canvas.removeEventListener('pointerdown', localKick);
-    if (!isMobile) canvas.addEventListener('pointerdown', togglePlayPause, { passive: true }); // ✅ seulement sur PC
+    if (!isMobile) canvas.addEventListener('pointerdown', togglePlayPause, { passive: true });
     startPlay();
   }, { passive:true });
 
@@ -1681,7 +1676,31 @@ if (window.location.href.includes("external")) {
 
   // Rendu initial
   startPulse();
+
+  // ---- ✅ Ajout du lecteur custom ----
+  const fmt = (t)=> {
+    if (isNaN(t)) return "0:00";
+    const m = Math.floor(t/60);
+    const s = Math.floor(t%60).toString().padStart(2,"0");
+    return `${m}:${s}`;
+  };
+
+  audio.addEventListener("timeupdate", ()=>{
+    cur.textContent = fmt(audio.currentTime);
+    if (audio.duration) progBar.style.width = (audio.currentTime / audio.duration * 100) + "%";
+  });
+
+  prog.addEventListener("click",(e)=>{
+    const rect = prog.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+    audio.currentTime = ratio * audio.duration;
+  });
+
+  btnPlay.addEventListener("click", ()=>{
+    if (audio.paused) audio.play(); else audio.pause();
+  });
 })();
+
 
 
 
