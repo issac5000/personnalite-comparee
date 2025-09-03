@@ -1453,22 +1453,22 @@ if (window.location.href.includes("external")) {
         }
     }
 
-  // Visualizer audio + lecteur custom
+ // Visualizer audio + lecteur custom complet (avec debug durée)
 (function () {
   const audio  = document.getElementById('home-podcast-audio');
   const canvas = document.getElementById('home-podcast-visual');
   const btnPlay = document.getElementById('pc-play');
   const prog    = document.getElementById('pc-progress');
   const progBar = document.getElementById('pc-progress-bar');
-  const cur     = document.getElementById('pc-current');
-  const dur     = document.getElementById('pc-duration');
+  const cur     = document.getElementById('pc-time-current'); 
+  const dur     = document.getElementById('pc-time-total');
 
   if (!audio || !canvas) return;
 
   // ---- Mobile-friendly player ----
   audio.setAttribute('playsinline', 'true');
   audio.setAttribute('webkit-playsinline', 'true');
-  audio.preload = 'metadata'; // ✅ force metadata pour voir la durée
+  audio.preload = 'metadata'; 
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   audio.crossOrigin = audio.crossOrigin || 'anonymous';
 
@@ -1486,7 +1486,7 @@ if (window.location.href.includes("external")) {
   // ----- Utils -----
   const setCanvasPE = (interactive) => {
     if (isMobile) {
-      canvas.style.pointerEvents = "none"; // ✅ jamais interactif sur mobile
+      canvas.style.pointerEvents = "none";
     } else {
       canvas.style.pointerEvents = interactive ? 'auto' : 'none';
     }
@@ -1524,7 +1524,6 @@ if (window.location.href.includes("external")) {
     }catch(e){ console.warn('unlockAudio',e); return false; }
   }
   async function resumeCtx(){ if (ac && ac.state==='suspended'){ try{ await ac.resume(); }catch{} } }
-  async function maybeKickPlayOnce(){ if (!kickAllowed && firstPlayDone) return; try{ if (audio.paused) await audio.play(); }catch{} }
 
   // ---- Render data ----
   let freqData=null, timeData=null, binMap=null, smooth=null;
@@ -1569,46 +1568,87 @@ if (window.location.href.includes("external")) {
   }
 
   function renderFrame(){
-    if(!analyser) return;
-    ensureBuffers();
-    analyser.getByteFrequencyData(freqData);
-    analyser.getByteTimeDomainData(timeData);
+  if(!analyser) return;
+  ensureBuffers();
+  analyser.getByteFrequencyData(freqData);
+  analyser.getByteTimeDomainData(timeData);
 
-    const cssW=canvas.width/dpr, cssH=canvas.height/dpr;
-    const cx=cssW/2, cy=cssH/2, minSide=Math.min(cssW,cssH);
-    const radius=minSide*0.28, barMax=minSide*0.17;
+  const cssW=canvas.width/dpr, cssH=canvas.height/dpr;
+  const cx=cssW/2, cy=cssH/2, minSide=Math.min(cssW,cssH);
+  const radius=minSide*0.28, barMax=minSide*0.22;
 
-    let sum=0; for(let k=0;k<timeData.length;k++){ const d=timeData[k]-128; sum+=d*d; }
-    const envRms=Math.min(1, Math.sqrt(sum/timeData.length)/64);
-
-    ctx.clearRect(0,0,cssW,cssH);
-    ctx.save(); ctx.translate(cx,cy);
-    ctx.lineWidth=1; ctx.strokeStyle='rgba(148,163,184,0.28)';
-    ctx.beginPath(); ctx.arc(0,0,radius-1,0,Math.PI*2); ctx.stroke();
-
-    for(let i=0;i<segments;i++){
-      const a0=freqData[binMap[i]]||0, a1=freqData[(binMap[i]+1)%freqData.length]||0, a2=freqData[(binMap[i]+2)%freqData.length]||0;
-      let amp=(a0+a1+a2)/(3*255);
-      const floor=Math.min(0.14, 0.02+envRms*0.10);
-      amp=Math.max(amp,floor);
-      const target=amp*(0.56+envRms*1.05);
-
-      const prev=smooth[i]||0, up=prev+(target-prev)*0.82, down=prev*0.64;
-      const next=target>prev?up:Math.max(target,down);
-      smooth[i]=next;
-
-      const len=4+next*barMax, cos=cosLUT[i], sin=sinLUT[i];
-      const x1=cos*radius, y1=sin*radius, x2=cos*(radius+len), y2=sin*(radius+len);
-      const l=Math.min(74,55+next*22);
-      ctx.globalAlpha=0.9;
-      ctx.strokeStyle=`hsl(210 100% ${l}%)`;
-      ctx.shadowColor='rgba(59,130,246,0.30)';
-      ctx.shadowBlur=4+next*6;
-      ctx.lineWidth=1+next*1.1;
-      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
-    }
-    ctx.globalAlpha=1; ctx.restore();
+  let sum=0; 
+  for(let k=0;k<timeData.length;k++){ 
+    const d=timeData[k]-128; sum+=d*d; 
   }
+  const envRms=Math.min(1, Math.sqrt(sum/timeData.length)/64);
+
+  ctx.clearRect(0,0,cssW,cssH);
+  ctx.save(); 
+  ctx.translate(cx,cy);
+
+  // ---- Glow intérieur plus clair ----
+  const radial = ctx.createRadialGradient(0,0,radius*0.2, 0,0,radius*1.05);
+  radial.addColorStop(0, `hsla(${200+envRms*100},100%,80%,0.15)`); // très léger
+  radial.addColorStop(1, "transparent");
+  ctx.fillStyle = radial;
+  ctx.fillRect(-cssW/2,-cssH/2,cssW,cssH);
+
+  // ---- Cercle central unique ----
+  ctx.lineWidth = 2.5 + envRms*4;
+  ctx.strokeStyle = `hsla(${200+envRms*120},100%,70%,0.95)`;
+  ctx.shadowBlur = 28;
+  ctx.shadowColor = `hsla(${200+envRms*120},100%,80%,0.9)`;
+  ctx.beginPath();
+  ctx.arc(0,0,radius*(1+envRms*0.05),0,Math.PI*2);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // ---- Barres flashy avec étincelles ----
+  ctx.lineCap = "round";
+  for(let i=0;i<segments;i++){
+    const a0=freqData[binMap[i]]||0, a1=freqData[(binMap[i]+1)%freqData.length]||0, a2=freqData[(binMap[i]+2)%freqData.length]||0;
+    let amp=(a0+a1+a2)/(3*255);
+    const floor=Math.min(0.14, 0.02+envRms*0.10);
+    amp=Math.max(amp,floor);
+    const target=amp*(0.56+envRms*1.1);
+
+    const prev=smooth[i]||0, up=prev+(target-prev)*0.82, down=prev*0.64;
+    const next=target>prev?up:Math.max(target,down);
+    smooth[i]=next;
+
+    const len=8+next*barMax, cos=cosLUT[i], sin=sinLUT[i];
+    const x1=cos*radius, y1=sin*radius, x2=cos*(radius+len), y2=sin*(radius+len);
+
+    // Dégradé plus clair
+    const grad = ctx.createLinearGradient(x1,y1,x2,y2);
+    grad.addColorStop(0, `hsla(${180+envRms*80},100%,80%,0.8)`);
+    grad.addColorStop(1, `hsla(${300+envRms*60},100%,70%,0.9)`);
+
+    ctx.strokeStyle = grad;
+    ctx.lineWidth=2.2+next*1.8;
+    ctx.shadowBlur=10+next*12;
+    ctx.shadowColor=`hsla(${200+next*120},100%,85%,0.7)`;
+    ctx.beginPath(); 
+    ctx.moveTo(x1,y1); 
+    ctx.lineTo(x2,y2); 
+    ctx.stroke();
+
+    // Étincelles au bout des barres
+    ctx.beginPath();
+    ctx.arc(x2,y2, 2+next*2, 0, Math.PI*2);
+    ctx.fillStyle=`hsla(${200+next*100},100%,90%,0.85)`;
+    ctx.shadowBlur=18;
+    ctx.shadowColor=`hsla(${200+next*100},100%,85%,0.9)`;
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+
+
+
+
 
   function renderPulse(){
     const cssW=canvas.width/dpr, cssH=canvas.height/dpr;
@@ -1621,11 +1661,31 @@ if (window.location.href.includes("external")) {
     ctx.restore();
   }
 
-  // ---- Événements audio ----
-  audio.addEventListener('loadedmetadata', ()=> {
-    dur.textContent = fmt(audio.duration);
+  // ---- Format temps ----
+  const fmt = (t)=> {
+    if (isNaN(t)) return "0:00";
+    const m = Math.floor(t/60);
+    const s = Math.floor(t%60).toString().padStart(2,"0");
+    return `${m}:${s}`;
+  };
+
+  // ---- Debug durée ----
+  audio.addEventListener('loadedmetadata', ()=>{
+    console.log("⏱ loadedmetadata déclenché !");
+    console.log("Durée brute détectée :", audio.duration);
   });
 
+  function updateDuration() {
+    if (audio.duration && !isNaN(audio.duration)) {
+      dur.textContent = fmt(audio.duration);
+    } else {
+      dur.textContent = "--:--";
+    }
+  }
+  audio.addEventListener('loadedmetadata', updateDuration);
+  audio.addEventListener('durationchange', updateDuration);
+
+  // ---- Events audio ----
   audio.addEventListener('play', () => {
     firstPlayDone = true;
     kickAllowed   = false;
@@ -1633,13 +1693,20 @@ if (window.location.href.includes("external")) {
     canvas.removeEventListener('pointerdown', localKick);
     if (!isMobile) canvas.addEventListener('pointerdown', togglePlayPause, { passive: true });
     startPlay();
+    btnPlay.innerHTML = '<i class="fa fa-pause"></i>';
   }, { passive:true });
 
-  audio.addEventListener('pause', () => { startPulse(); }, { passive:true });
+  audio.addEventListener('pause', () => { 
+    startPulse(); 
+    btnPlay.innerHTML = '<i class="fa fa-play"></i>';
+  }, { passive:true });
+
   audio.addEventListener('ended', () => { 
     canvas.removeEventListener('pointerdown', togglePlayPause);
     if (!isMobile) canvas.addEventListener('pointerdown', localKick, { passive:true });
     startPulse(); 
+    btnPlay.innerHTML = '<i class="fa fa-play"></i>';
+    cur.textContent = "0:00";
   }, { passive:true });
 
   // ---- Bootstrap iOS/Android ----
@@ -1677,14 +1744,7 @@ if (window.location.href.includes("external")) {
   // Rendu initial
   startPulse();
 
-  // ---- ✅ Ajout du lecteur custom ----
-  const fmt = (t)=> {
-    if (isNaN(t)) return "0:00";
-    const m = Math.floor(t/60);
-    const s = Math.floor(t%60).toString().padStart(2,"0");
-    return `${m}:${s}`;
-  };
-
+  // ---- Player custom ----
   audio.addEventListener("timeupdate", ()=>{
     cur.textContent = fmt(audio.currentTime);
     if (audio.duration) progBar.style.width = (audio.currentTime / audio.duration * 100) + "%";
@@ -1700,8 +1760,6 @@ if (window.location.href.includes("external")) {
     if (audio.paused) audio.play(); else audio.pause();
   });
 })();
-
-
 
 
 
