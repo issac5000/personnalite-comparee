@@ -1569,103 +1569,145 @@ if (window.location.href.includes("external")) {
 
 
 
-  function renderFrame(){ 
-  if(!analyser) return; 
-  ensureBuffers(); 
-  analyser.getByteFrequencyData(freqData); 
-  analyser.getByteTimeDomainData(timeData); 
+  function renderFrame() {
+    if (!analyser) return;
+    ensureBuffers();
+    analyser.getByteFrequencyData(freqData);
+    analyser.getByteTimeDomainData(timeData);
 
-  const cssW=canvas.width/dpr, cssH=canvas.height/dpr; 
-  const cx=cssW/2, cy=cssH/2, minSide=Math.min(cssW,cssH); 
-  const radius=minSide*0.28, barMax=minSide*0.22; 
+    const cssW = canvas.width / dpr, cssH = canvas.height / dpr;
+    const cx = cssW / 2, cy = cssH / 2, minSide = Math.min(cssW, cssH);
+    const radius = minSide * 0.28, barMax = minSide * 0.22;
+    const t = performance.now(); // AMÉLIORATION : On récupère le temps ici pour la rotation
 
-  let sum=0; 
-  for(let k=0;k<timeData.length;k++){ 
-    const d=timeData[k]-128; sum+=d*d; 
-  } 
-  const envRms=Math.min(1, Math.sqrt(sum/timeData.length)/64); 
+    let sum = 0;
+    for (let k = 0; k < timeData.length; k++) {
+        const d = timeData[k] - 128;
+        sum += d * d;
+    }
+    const envRms = Math.min(1, Math.sqrt(sum / timeData.length) / 64);
 
-  ctx.clearRect(0,0,cssW,cssH); 
-  ctx.save(); 
-  ctx.translate(cx,cy); 
+    ctx.clearRect(0, 0, cssW, cssH);
+    ctx.save();
+    ctx.translate(cx, cy);
 
-  // ---- Glow intérieur plus intense ----
-  const radial = ctx.createRadialGradient(0,0,radius*0.12, 0,0,radius*1.1);
-  radial.addColorStop(0, `hsla(${200+envRms*80},100%,85%,0.3)`); 
-  radial.addColorStop(0.5, `hsla(${220+envRms*60},100%,70%,0.18)`); 
-  radial.addColorStop(1, "transparent"); 
-  ctx.fillStyle = radial; 
-  ctx.fillRect(-cssW/2,-cssH/2,cssW,cssH); 
+    // AMÉLIORATION : Rotation lente de l'ensemble de la scène
+    ctx.rotate(t * 0.00005);
 
-  // ---- Cercle central respiration boostée ----
-  const t = performance.now() * 0.0038; // rythme respiration
-  const pulse = (Math.sin(t*1.8) * Math.sin(t*0.45) + 1) * 0.5; 
-  const breathingRadius = radius * (1 + envRms * (0.28 + pulse*0.22)); 
+    // ---- Glow intérieur plus intense ----
+    const radial = ctx.createRadialGradient(0, 0, radius * 0.12, 0, 0, radius * 1.1);
+    radial.addColorStop(0, `hsla(${200 + envRms * 80},100%,85%,0.3)`);
+    radial.addColorStop(0.5, `hsla(${220 + envRms * 60},100%,70%,0.18)`);
+    radial.addColorStop(1, "transparent");
+    ctx.fillStyle = radial;
+    ctx.fillRect(-cssW, -cssH, cssW * 2, cssH * 2); // Légère augmentation de la taille pour couvrir la rotation
 
-  ctx.lineWidth = 3 + envRms*10; 
-  ctx.strokeStyle = `hsla(${200+envRms*120},100%,75%,0.95)`; 
-  ctx.shadowBlur = 45; 
-  ctx.shadowColor = `hsla(${200+envRms*130},100%,82%,0.9)`; 
-  ctx.beginPath(); 
-  ctx.arc(0,0,breathingRadius,0,Math.PI*2); 
-  ctx.stroke(); 
-  ctx.shadowBlur = 0; 
+    // ---- Cercle central respiration boostée ----
+    const pulseTime = t * 0.0038;
+    const pulse = (Math.sin(pulseTime * 1.8) * Math.sin(pulseTime * 0.45) + 1) * 0.5;
+    const breathingRadius = radius * (1 + envRms * (0.28 + pulse * 0.22));
 
-  // ---- Barres flashy synchronisées ----
-  ctx.lineCap = "round"; 
-  for(let i=0;i<segments;i++){ 
-    const a0=freqData[binMap[i]]||0, a1=freqData[(binMap[i]+1)%freqData.length]||0, a2=freqData[(binMap[i]+2)%freqData.length]||0; 
-    let amp=(a0+a1+a2)/(3*255); 
-    const floor=Math.min(0.2, 0.05+envRms*0.15); 
-    amp=Math.max(amp,floor); 
-    const target=amp*(0.7+envRms*1.35); 
-    const prev=smooth[i]||0, up=prev+(target-prev)*0.82, down=prev*0.64; 
-    const next=target>prev?up:Math.max(target,down); 
-    smooth[i]=next; 
+    ctx.lineWidth = 3 + envRms * 10;
+    ctx.strokeStyle = `hsla(${200 + envRms * 120},100%,75%,0.95)`;
+    ctx.shadowBlur = 45;
+    ctx.shadowColor = `hsla(${200 + envRms * 130},100%,82%,0.9)`;
+    ctx.beginPath();
+    ctx.arc(0, 0, breathingRadius, 0, Math.PI * 2);
+    ctx.stroke();
 
-    const len=12+next*barMax*(1+envRms*0.5); 
-    const cos=cosLUT[i], sin=sinLUT[i]; 
-    const x1=cos*radius, y1=sin*radius, x2=cos*(radius+len), y2=sin*(radius+len); 
+    // AMÉLIORATION : Onde de choc sur les basses
+    if (envRms > 0.5) {
+        ctx.strokeStyle = `hsla(${240 + envRms * 100}, 100%, 80%, ${ (envRms - 0.5) * 0.5 })`;
+        ctx.lineWidth = 1 + (envRms - 0.5) * 8;
+        ctx.beginPath();
+        ctx.arc(0, 0, breathingRadius * (1.1 + (envRms - 0.5) * 0.4), 0, Math.PI * 2);
+        ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
 
-    const grad = ctx.createLinearGradient(x1,y1,x2,y2); 
-    grad.addColorStop(0, `hsla(${180+envRms*70},100%,78%,0.85)`); 
-    grad.addColorStop(1, `hsla(${300+envRms*55},100%,72%,0.95)`); 
-    ctx.strokeStyle = grad; 
-    ctx.lineWidth=2.6+next*2.4; 
-    ctx.shadowBlur=15+next*18; 
-    ctx.shadowColor=`hsla(${200+next*120},100%,85%,0.85)`; 
-    ctx.beginPath(); 
-    ctx.moveTo(x1,y1); 
-    ctx.lineTo(x2,y2); 
-    ctx.stroke(); 
+    // ---- Barres flashy synchronisées ----
+    ctx.lineCap = "round";
+    for (let i = 0; i < segments; i++) {
+        const a0 = freqData[binMap[i]] || 0, a1 = freqData[(binMap[i] + 1) % freqData.length] || 0, a2 = freqData[(binMap[i] + 2) % freqData.length] || 0;
+        let amp = (a0 + a1 + a2) / (3 * 255);
+        const floor = Math.min(0.2, 0.05 + envRms * 0.15);
+        amp = Math.max(amp, floor);
+        const target = amp * (0.7 + envRms * 1.35);
+        const prev = smooth[i] || 0, up = prev + (target - prev) * 0.82, down = prev * 0.64;
+        const next = target > prev ? up : Math.max(target, down);
+        smooth[i] = next;
 
-    // Étincelles
-    ctx.beginPath(); 
-    ctx.arc(x2,y2, 2.8+next*2.6, 0, Math.PI*2); 
-    ctx.fillStyle=`hsla(${200+next*100},100%,92%,0.9)`; 
-    ctx.shadowBlur=24; 
-    ctx.shadowColor=`hsla(${200+next*100},100%,88%,0.9)`; 
-    ctx.fill(); 
-  } 
+        const len = 12 + next * barMax * (1 + envRms * 0.5);
+        const cos = cosLUT[i], sin = sinLUT[i];
+        const x1 = cos * radius, y1 = sin * radius, x2 = cos * (radius + len), y2 = sin * (radius + len);
 
-  ctx.restore(); 
+        // AMÉLIORATION : Palette de couleurs plus riche
+        const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+        grad.addColorStop(0, `hsla(${190 + envRms * 70}, 100%, 75%, 0.85)`);
+        grad.addColorStop(0.5, `hsla(${240 + envRms * 80}, 100%, 75%, 0.9)`);
+        grad.addColorStop(1, `hsla(${310 + next * 60}, 100%, 70%, 0.95)`);
+        
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 2.6 + next * 2.4;
+        ctx.shadowBlur = 15 + next * 18;
+        ctx.shadowColor = `hsla(${220 + next * 120},100%,80%,0.85)`;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        // Étincelles
+        // AMÉLIORATION : Étincelles plus vives
+        ctx.beginPath();
+        ctx.arc(x2, y2, 2.8 + next * 2.6, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${280 + next * 100}, 100%, 92%, 0.95)`;
+        ctx.shadowBlur = 28;
+        ctx.shadowColor = `hsla(${280 + next * 100}, 100%, 88%, 1.0)`;
+        ctx.fill();
+    }
+
+    ctx.restore();
 }
 
-function renderPulse(){
-  const cssW=canvas.width/dpr, cssH=canvas.height/dpr;
-  const cx=cssW/2, cy=cssH/2, radius=Math.min(cssW,cssH)*0.28;
-  ctx.clearRect(0,0,cssW,cssH);
-  ctx.save(); ctx.translate(cx,cy);
-  const t=Date.now()*0.002, scale=1+Math.sin(t)*0.08; // boost respiration idle
-  ctx.strokeStyle='rgba(148,163,184,0.45)'; 
-  ctx.lineWidth=1.8;
-  ctx.beginPath(); 
-  ctx.arc(0,0,radius*scale,0,Math.PI*2); 
-  ctx.stroke();
-  ctx.restore();
+/**
+ * ---- VERSION CORRIGÉE ----
+ * Respiration du cercle unique rendue plus conséquente.
+ */
+function renderPulse() {
+    const cssW = canvas.width / dpr, cssH = canvas.height / dpr;
+    const cx = cssW / 2, cy = cssH / 2, radius = Math.min(cssW, cssH) * 0.28;
+    ctx.clearRect(0, 0, cssW, cssH);
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    // Vitesse de respiration légèrement ralentie pour un effet plus "profond"
+    const t = Date.now() * 0.0011;
+    
+    // L'onde sinus qui contrôle la pulsation (de -1 à 1)
+    const wave = Math.sin(t);
+
+    // 1. AMPLITUDE DE RESPIRATION AUGMENTÉE
+    // On passe de 0.06 à 0.12 pour que le cercle grandisse et rétrécisse de façon bien plus visible.
+    const scale = 1 + wave * 0.12;
+
+    // 2. BOOST VISUEL
+    // L'opacité et une lueur pulsent avec la respiration pour renforcer l'effet.
+    // On mappe l'onde (-1 à 1) vers une plage d'opacité plus agréable (ex: 0.4 à 1.0)
+    const alpha = 0.7 + wave * 0.3;
+
+    // On applique une lueur (glow) qui pulse avec l'opacité
+    ctx.shadowColor = `rgba(148, 163, 184, ${alpha * 0.8})`;
+    ctx.shadowBlur = 20;
+    
+    // Dessin du cercle unique
+    ctx.strokeStyle = `rgba(148, 163, 184, ${alpha})`;
+    ctx.lineWidth = 2; // Un peu plus épais pour améliorer la visibilité
+    ctx.beginPath();
+    ctx.arc(0, 0, radius * scale, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.restore();
 }
-
-
 
 
 
