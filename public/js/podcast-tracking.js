@@ -17,10 +17,16 @@ function getCid() {
 
 async function insertEvent(event_name, value) {
   try {
+    // Prefer the site-wide helper if present to match schema/RLS
+    if (typeof window.saveEvent === 'function') {
+      await window.saveEvent(event_name, null, value, { source: 'podcast' });
+      return;
+    }
+    // Fallback: direct insert
     const payload = {
       event_name,
       event_category: 'Media',
-      value, // identifiant de l’épisode (unique, ex: 'intro')
+      value,
       referrer: document.referrer || null,
       occurred_at: new Date().toISOString(),
       client_id: getCid()
@@ -59,4 +65,3 @@ if (!el) {
     }
   });
 }
-
