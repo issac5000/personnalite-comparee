@@ -20,7 +20,8 @@ async function insertEvent(event_name, value) {
     // Prefer the site-wide helper if present to match schema/RLS
     if (typeof window.saveEvent === 'function') {
       await window.saveEvent(event_name, null, value, { source: 'podcast' });
-      return;
+      console.log('[podcast] insert ok', { event_name, value, via: 'saveEvent' });
+      return true;
     }
     // Fallback: direct insert
     const payload = {
@@ -32,7 +33,13 @@ async function insertEvent(event_name, value) {
       client_id: getCid()
     };
     const { error } = await sb.from('events').insert([payload]);
-    if (error) console.error('[podcast] events.insert error', error);
+    if (error) {
+      console.error('[podcast] events.insert error', error);
+      return false;
+    } else {
+      console.log('[podcast] insert ok', { event_name, value, via: 'direct' });
+      return true;
+    }
   } catch (e) { console.error('[podcast] insertEvent exception', e); }
 }
 
@@ -50,31 +57,63 @@ if (!el) {
 
   const episode = el.dataset.episodeId || 'intro';
   const thresholdMs = Number(el.dataset.playThreshold || 15000);
-  let timer = null;
+  let timer = null; // legacy timer (kept unused by default)
+  let playedMs = 0;
+  let lastTime = 0;
   const playedKey = `pp:${episode}:play`;
   const endedKey = `pp:${episode}:ended`;
 
   // Trace de binding pour vérification
-  console.debug('[podcast] Binding listeners', { episode, thresholdMs });
+  console.log('[podcast] Binding listeners', { episode, thresholdMs });
 
-  el.addEventListener('play', () => {
+  const scheduleFromProgress = () => {
     if (sessionStorage.getItem(playedKey)) return;
-    clearTimeout(timer);
-    timer = setTimeout(() => {
+    if (!el.paused && playedMs >= thresholdMs) {
       insertEvent('PodcastPlay', episode);
       sessionStorage.setItem(playedKey, '1');
-      console.debug('[podcast] PodcastPlay envoyé', { episode });
-    }, thresholdMs);
+      console.log('[podcast] PodcastPlay envoyé', { episode, playedMs });
+    }
+  };
+
+  el.addEventListener('play', () => {
+    lastTime = el.currentTime || 0;
   });
 
-  el.addEventListener('pause', () => clearTimeout(timer));
+  el.addEventListener('playing', () => {
+    lastTime = el.currentTime || 0;
+  });
+
+  el.addEventListener('pause', () => {
+    // no-op; keep playedMs accumulated
+  });
+
+  el.addEventListener('seeking', () => {
+    // While seeking, reset lastTime to avoid jump accumulation
+    lastTime = el.currentTime || 0;
+  });
+
+  el.addEventListener('seeked', () => {
+    lastTime = el.currentTime || 0;
+  });
+
+  el.addEventListener('timeupdate', () => {
+    if (sessionStorage.getItem(playedKey)) return; // already counted
+    if (el.paused) { lastTime = el.currentTime || lastTime; return; }
+    const nowT = el.currentTime || 0;
+    let dt = Math.max(0, (nowT - lastTime) * 1000);
+    // Ignore large jumps (likely seek)
+    if (dt > 2000) dt = 0;
+    playedMs += dt;
+    lastTime = nowT;
+    scheduleFromProgress();
+  });
 
   el.addEventListener('ended', () => {
     clearTimeout(timer);
     if (!sessionStorage.getItem(endedKey)) {
       insertEvent('PodcastCompleted', episode);
       sessionStorage.setItem(endedKey, '1');
-      console.debug('[podcast] PodcastCompleted envoyé', { episode });
+      console.log('[podcast] PodcastCompleted envoyé', { episode });
     }
   });
 }
