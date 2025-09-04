@@ -5167,7 +5167,11 @@ addChatStyles();
         event_category: eventName,   // ✅ ajout pour éviter event_category null
         element_selector: extraData.element_selector || null,
         value: extraData.value || null,
-        meta: extraData.meta || {},
+        meta: (() => {
+          const base = extraData.meta || {};
+          const g = window.pcGeo || (JSON.parse(sessionStorage.getItem('pc_geo') || 'null'));
+          return g ? { ...base, country: g.country || null, city: g.city || null, region: g.region || null, continent: g.continent || null } : base;
+        })(),
         page_url: window.location.href,
         referrer: document.referrer,
         user_agent: navigator.userAgent
@@ -5189,7 +5193,11 @@ addChatStyles();
         event_category: eventCategory,
         element_selector: elementSelector,
         value,
-        meta,
+        meta: (() => {
+          const base = meta || {};
+          const g = window.pcGeo || (JSON.parse(sessionStorage.getItem('pc_geo') || 'null'));
+          return g ? { ...base, country: g.country || null, city: g.city || null, region: g.region || null, continent: g.continent || null } : base;
+        })(),
         page_url: window.location.href,
         referrer: document.referrer,
         user_agent: navigator.userAgent
@@ -5206,6 +5214,8 @@ addChatStyles();
   (async () => {
     sessionId = localStorage.getItem("session_id") || crypto.randomUUID();
     localStorage.setItem("session_id", sessionId);
+    // Expose for other modules (e.g., podcast fallback)
+    window.pcSessionId = sessionId;
 
     // upsert initial (crée si nouveau, met à jour sinon)
     await upsertSession(true, "page_view");

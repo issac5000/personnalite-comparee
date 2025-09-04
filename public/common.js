@@ -6,6 +6,37 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 window.supabase = supabase;
 
+// Lightweight, privacy-friendly client geolocation (cached per session)
+// Purpose: enrich analytics events with country/city without server code.
+// Cached in sessionStorage under 'pc_geo' and exposed as window.pcGeo
+(async function initClientGeoOnce(){
+  try {
+    const cached = sessionStorage.getItem('pc_geo');
+    if (cached) {
+      window.pcGeo = JSON.parse(cached);
+      return;
+    }
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 2500); // fail fast
+    const res = await fetch('https://ipwho.is/?fields=country,city,region,continent,success', { signal: ctrl.signal });
+    clearTimeout(to);
+    if (!res.ok) return;
+    const d = await res.json();
+    if (!d || d.success === false) return;
+    const geo = {
+      country: d.country || null,
+      city: d.city || null,
+      region: d.region || null,
+      continent: d.continent || null
+    };
+    sessionStorage.setItem('pc_geo', JSON.stringify(geo));
+    window.pcGeo = geo;
+  } catch (e) {
+    // Silent failure to avoid breaking the site
+    // console.warn('[geo] lookup failed', e);
+  }
+})();
+
 const mobileMenuButton = document.getElementById('mobile-menu-button');
 const mobileMenu = document.getElementById('mobile-menu');
 const menuIcon = document.getElementById('menu-icon');

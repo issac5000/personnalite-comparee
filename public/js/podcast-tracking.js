@@ -24,13 +24,17 @@ async function insertEvent(event_name, value) {
       return true;
     }
     // Fallback: direct insert
+    const g = window.pcGeo || (JSON.parse(sessionStorage.getItem('pc_geo') || 'null'));
     const payload = {
       event_name,
       event_category: 'Media',
       value,
       referrer: document.referrer || null,
       occurred_at: new Date().toISOString(),
-      client_id: getCid()
+      client_id: getCid(),
+      page_url: window.location.href,
+      user_agent: navigator.userAgent,
+      meta: g ? { source: 'podcast', country: g.country || null, city: g.city || null, region: g.region || null, continent: g.continent || null } : { source: 'podcast' }
     };
     const { error } = await sb.from('events').insert([payload]);
     if (error) {
