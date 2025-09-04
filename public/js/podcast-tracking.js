@@ -38,13 +38,24 @@ async function insertEvent(event_name, value) {
 
 const el = document.getElementById('home-podcast-audio');
 if (!el) {
-  console.warn('[podcast] #home-podcast-audio introuvable');
+  const msg = '[podcast] Element <audio id="home-podcast-audio"> introuvable dans le HTML. Ajoutez: <audio id="home-podcast-audio" data-episode-id="intro" ...>';
+  console.warn(msg);
+  alert(msg);
 } else {
+  if (!('episodeId' in el.dataset)) {
+    const warn = '[podcast] Attribut data-episode-id manquant sur #home-podcast-audio. Ajoutez data-episode-id="intro" (ou autre identifiant).';
+    console.warn(warn);
+    alert(warn);
+  }
+
   const episode = el.dataset.episodeId || 'intro';
   const thresholdMs = Number(el.dataset.playThreshold || 15000);
   let timer = null;
   const playedKey = `pp:${episode}:play`;
   const endedKey = `pp:${episode}:ended`;
+
+  // Trace de binding pour vérification
+  console.debug('[podcast] Binding listeners', { episode, thresholdMs });
 
   el.addEventListener('play', () => {
     if (sessionStorage.getItem(playedKey)) return;
@@ -52,6 +63,7 @@ if (!el) {
     timer = setTimeout(() => {
       insertEvent('PodcastPlay', episode);
       sessionStorage.setItem(playedKey, '1');
+      console.debug('[podcast] PodcastPlay envoyé', { episode });
     }, thresholdMs);
   });
 
@@ -62,6 +74,7 @@ if (!el) {
     if (!sessionStorage.getItem(endedKey)) {
       insertEvent('PodcastCompleted', episode);
       sessionStorage.setItem(endedKey, '1');
+      console.debug('[podcast] PodcastCompleted envoyé', { episode });
     }
   });
 }
