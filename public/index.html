@@ -863,7 +863,7 @@ button:hover {
       Podcast pour comprendre en profondeur Personnalité Comparée
     </h2>
     <canvas id="home-podcast-visual"></canvas>
-    <audio id="home-podcast-audio" controls controlsList="nodownload noplaybackrate" preload="metadata">
+    <audio id="home-podcast-audio" controls controlsList="nodownload noplaybackrate" preload="metadata" data-episode-id="intro" data-play-threshold="15000">
       <source src="podaudio.mp3?v=1" type="audio/mpeg">
       Votre navigateur ne supporte pas la lecture audio.
     </audio>
@@ -6104,10 +6104,9 @@ import { supabase } from "./common.js";
 
   // Charge les stats à l'ouverture
   loadFormStats();
-</script>
-
-
-
+    </script>
+    <script type="module" src="./common.js"></script>
+    <script type="module" src="./js/podcast-tracking.js"></script>
 
 </body>
 </html>
