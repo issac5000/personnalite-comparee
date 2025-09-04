@@ -596,7 +596,7 @@ button:hover {
     <header id="site-header" class="sticky-header">
         <div class="flex items-center">
             <div class="flex items-center min-w-0">
-                <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span id="brand-home" class="ml-3 text-[1.05rem] sm:text-xl font-bold text-black truncate max-w-[65vw] sm:max-w-[60vw] md:max-w-none" data-i18n="brand.name">Personnalité Comparée</span>
+                <img src="logo pc 3.png" alt="Personnalité Comparée logo" class="w-10 h-10 rounded-full object-cover"><span id="brand-home" class="ml-3 text-[1.05rem] sm:text-xl font-extrabold text-black truncate max-w-[65vw] sm:max-w-[60vw] md:max-w-none" data-i18n="brand.name">Personnalité Comparée</span>
             </div>
             <div class="relative ml-4 shrink-0">
                 <button id="lang-toggle" class="p-2 focus:outline-none" aria-haspopup="true" aria-expanded="false">
@@ -1622,46 +1622,8 @@ if (window.location.href.includes("external")) {
     }
     ctx.shadowBlur = 0;
 
-    // ---- Barres (MODIFIÉES pour plus de réactivité) ----
-    ctx.lineCap = "round";
-    for (let i = 0; i < segments; i++) {
-        const a0 = freqData[binMap[i]] || 0, a1 = freqData[(binMap[i] + 1) % freqData.length] || 0, a2 = freqData[(binMap[i] + 2) % freqData.length] || 0;
-        let amp = (a0 + a1 + a2) / (3 * 255);
-        const floor = Math.min(0.2, 0.05 + envRms * 0.15);
-        amp = Math.max(amp, floor);
-        const target = amp * (0.7 + envRms * 1.35);
-        const prev = smooth[i] || 0, up = prev + (target - prev) * 0.82, down = prev * 0.64;
-        const next = target > prev ? up : Math.max(target, down);
-        smooth[i] = next;
-        
-        // MODIFIÉ : La longueur des barres est MOINS sensible à l'énergie globale
-        const len = 12 + next * barMax * (1 + envRms * 0.3);
-        const cos = cosLUT[i], sin = sinLUT[i];
-        const x1 = cos * radius, y1 = sin * radius, x2 = cos * (radius + len), y2 = sin * (radius + len);
-
-        const grad = ctx.createLinearGradient(x1, y1, x2, y2);
-        grad.addColorStop(0, `hsla(${190 + envRms * 70}, 65%, 75%, 0.85)`);
-        grad.addColorStop(0.5, `hsla(${240 + envRms * 80}, 70%, 75%, 0.9)`);
-        grad.addColorStop(1, `hsla(${310 + next * 60}, 60%, 72%, 0.95)`);
-        
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 2.6 + next * 2.4;
-        ctx.shadowBlur = 15 + next * 18;
-        ctx.shadowColor = `hsla(${220 + next * 120}, 55%, 80%, 0.85)`;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-
-        // ---- Étincelles (NON MODIFIÉES) ----
-        ctx.beginPath();
-        ctx.arc(x2, y2, 2.8 + next * 2.6, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${280 + next * 100}, 70%, 88%, 0.95)`;
-        ctx.shadowBlur = 28;
-        ctx.shadowColor = `hsla(${280 + next * 100}, 60%, 85%, 1.0)`;
-        ctx.fill();
-    }
-
+    // ---- La section des barres et des étincelles a été retirée ----
+    
     ctx.restore();
 }
 
